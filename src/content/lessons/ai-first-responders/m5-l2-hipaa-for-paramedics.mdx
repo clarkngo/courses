@@ -1,0 +1,179 @@
+---
+title: "HIPAA for Paramedics — Patient Data and AI Tools"
+description: "Patient information is protected health information under federal law. AI tools that touch patient data must meet a different compliance standard than tools used for police work."
+module: 5
+moduleTitle: "Compliance — The Rules Behind the Red Lights"
+lesson: 2
+duration: "13 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Two Laws, One First Responder
+
+Law enforcement and fire/EMS operate under overlapping but distinct legal frameworks when it comes to sensitive data.
+
+Police handle **Criminal Justice Information (CJI)** — governed by the CJIS Security Policy.
+
+Paramedics and EMTs handle **Protected Health Information (PHI)** — governed by HIPAA.
+
+Firefighters often handle both, depending on the call.
+
+AI tools don't care which framework applies. But you need to.
+
+---
+
+## What HIPAA Covers
+
+The **Health Insurance Portability and Accountability Act (HIPAA)** protects health information that could be used to identify a patient. Protected Health Information (PHI) includes any individually identifiable health data transmitted or maintained in any form.
+
+**PHI includes:**
+- Patient name, date of birth, address, phone number
+- Dates of service (admission, discharge, treatment dates)
+- Social Security numbers, medical record numbers, account numbers
+- Geographic data smaller than a state
+- **Any description of a patient's medical condition, treatment, or history**
+- Photos, voice recordings, or video that identifies a patient
+- EMS run reports and patient care reports (PCRs)
+
+**The 18 HIPAA identifiers** are the full list — if your patient data includes any of these linked to health information, it's PHI.
+
+---
+
+## Who HIPAA Applies To in EMS
+
+HIPAA applies to **covered entities** — and EMS agencies are covered entities when they provide treatment and transmit health information.
+
+This means:
+- Public and private ambulance services
+- Fire departments that provide EMS services
+- Hospital-based transport programs
+- Air medical services
+
+If your agency bills for EMS services, you are almost certainly a HIPAA covered entity.
+
+Individual paramedics and EMTs are workforce members of covered entities — which means **HIPAA obligations apply to you personally** through your agency's policies and training requirements.
+
+---
+
+## The HIPAA-AI Problem
+
+AI tools that process PHI must meet HIPAA's technical safeguards:
+
+| HIPAA Requirement | Consumer AI Reality |
+|---|---|
+| Access controls | None — open access to anyone with a login |
+| Audit controls | No PHI-accessible audit logs for your agency |
+| Integrity controls | No guarantee data isn't altered or contaminated |
+| Transmission security | Not HIPAA-compliant encryption standards |
+| Business Associate Agreement (BAA) | Consumer AI companies don't sign BAAs |
+
+The **Business Associate Agreement** is the key document. Under HIPAA, any third party that handles PHI on behalf of a covered entity must sign a BAA — a contract in which they agree to protect the information and comply with HIPAA's requirements.
+
+ChatGPT does not sign BAAs. Google Bard does not sign BAAs for its consumer product. Most popular consumer AI tools do not sign BAAs.
+
+**Without a signed BAA, sharing PHI with a vendor is a HIPAA violation — regardless of how the data is used.**
+
+---
+
+## Where AI Touches EMS Work
+
+Here's where EMS personnel are likely to encounter AI tools — and the compliance considerations for each:
+
+### Patient Care Report (PCR) Auto-Completion
+
+Some approved EMS software now includes AI features that pre-populate PCRs from voice recordings or connected monitoring devices.
+
+**Compliant when:**
+- The software vendor has signed a BAA with your agency
+- Data remains within the agency's compliant environment
+- PHI does not leave the system to external servers
+
+**Not compliant when:**
+- A paramedic records a call summary and uploads it to a consumer AI tool for help finishing the PCR
+- Call audio is sent to any platform without a BAA
+
+### AI-Assisted Triage (Dispatch)
+
+Tools like Corti analyze caller audio in real time to flag potential cardiac arrest or stroke indicators. These tools process patient health information at the point of dispatch.
+
+**Compliance requirement:** The dispatch software vendor must have a BAA with the agency and must be HIPAA-compliant in how they process and store the audio data.
+
+### Post-Call Documentation Assistance
+
+Some agencies are piloting tools that transcribe post-call debriefs or help paramedics organize their documentation notes.
+
+**Same rule:** The tool must have a BAA. The data must stay in a controlled environment.
+
+<CodeLab title="HIPAA Scenario Review">
+
+For each scenario, identify the HIPAA status and the specific compliance issue.
+
+**Scenario 1:** A paramedic describes a patient's symptoms and condition out loud while a personal AI assistant app on their phone transcribes it to help fill out the PCR later.
+
+**Scenario 2:** A fire department's approved EMS software uses AI to auto-populate PCR fields from the cardiac monitor data. The vendor has a signed BAA with the department.
+
+**Scenario 3:** A paramedic takes a photo of a patient's medication bottles with their personal phone and uploads it to ChatGPT to ask what the medications are for.
+
+**Scenario 4:** An EMS supervisor uses an approved, HIPAA-compliant analytics platform (with BAA) to identify patterns in response times and treatment outcomes across 500 anonymized calls.
+
+**Scenario 5:** An EMT pastes a patient's complaint and vital signs into an AI chatbot on their work computer to quickly generate a preliminary differential diagnosis.
+
+---
+
+**Answers:**
+
+1. 🔴 **Violation** — Personal phone, no BAA, PHI leaving the agency's compliant environment. The app has no HIPAA compliance controls.
+
+2. ✅ **Compliant** — Approved software, vendor BAA in place, data stays in controlled environment. This is appropriate AI use in EMS.
+
+3. 🔴 **Violation** — Photo of medication bottles is PHI. ChatGPT has no BAA. PHI sent to commercial servers.
+
+4. ✅ **Compliant** — Anonymized data, approved platform, BAA in place, used for quality improvement. This is legitimate use of data analytics.
+
+5. 🔴 **Violation** — Patient vitals and complaints are PHI. An AI chatbot on a work computer is not necessarily HIPAA-compliant. Without a BAA covering that specific tool, this is a violation regardless of the device.
+
+</CodeLab>
+
+<Pitfall title="The Photo Problem">
+
+Mobile AI features create a new HIPAA vulnerability that many EMS providers haven't considered: **photographs and audio recordings made by AI-connected devices**.
+
+Modern smartphones have AI features that automatically analyze and index photos, transcribe conversations, and upload content to cloud accounts. When you use your personal phone near a patient — even just to check a reference — there's a risk that AI features are capturing PHI without your awareness.
+
+This isn't hypothetical. Apple's on-device AI, Google Photos, and various AI assistant features can and do process environmental audio and visual data.
+
+**The practical rule for EMS:** Personal devices should not be used in patient care contexts for any purpose that involves capturing, storing, or transmitting patient-identifiable information. Department-issued or MDM-enrolled devices with AI features disabled or controlled are the appropriate alternative.
+
+</Pitfall>
+
+<Quiz question="A paramedic's agency wants to implement an AI tool that will listen to patient assessments in the field and automatically draft the narrative section of the PCR. What must the agency have in place before deploying this tool?">
+
+<div>
+
+**Before deployment, the agency needs all of the following:**
+
+1. **Business Associate Agreement (BAA)** — A signed, current BAA with the AI vendor establishing HIPAA compliance obligations.
+
+2. **Technical safeguards audit** — Confirmation that the tool meets HIPAA's required technical safeguards: access controls, audit logging, integrity controls, and transmission security.
+
+3. **Data flow documentation** — A clear map of where patient data goes: from the field device, to the vendor's servers (or not), and to the final PCR system. PHI cannot touch any non-compliant system in that chain.
+
+4. **Minimum necessary standard compliance** — The tool should only collect and process the PHI necessary for its function. An AI that stores complete call audio indefinitely likely fails this standard.
+
+5. **Staff training** — Every person using the tool must understand what it is, how it handles PHI, and what they should and shouldn't do with the output.
+
+6. **Incident response plan** — If the vendor has a breach, what happens? The BAA should specify breach notification obligations.
+
+An agency that skips the BAA and deploys the tool anyway has created a HIPAA violation at the institutional level — one that regulators take more seriously than individual employee violations.
+
+</div>
+</Quiz>
+
+---
+
+## Up Next
+
+CJIS and HIPAA are federal frameworks that apply nationally. But first responders in Washington State also face a specific state-level mandate with a real deadline. Lesson 3 covers what's coming in July 2026.

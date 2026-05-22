@@ -1,0 +1,119 @@
+---
+title: "Hallucinations — When AI Invents Facts"
+description: "A deep dive into how and why AI fabricates information — and the specific patterns that show up in public safety tools."
+module: 3
+moduleTitle: "The Risks You Can't Ignore"
+lesson: 1
+duration: "15 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Why AI Makes Things Up
+
+You've heard the word "hallucination" — now let's understand what's actually happening under the hood. Not in technical jargon. In plain terms that explain why this problem isn't going away.
+
+AI language models are pattern-completion engines. They are trained on enormous amounts of text and audio, and they learn to predict what word, phrase, or sentence is most likely to come next — based on everything they've seen before.
+
+They are extraordinarily good at this. And that's exactly the problem.
+
+**When an AI produces a hallucination, it isn't malfunctioning. It's doing exactly what it was built to do — completing a pattern — with insufficient or ambiguous input.**
+
+---
+
+## The Three Types of Hallucinations in Public Safety AI
+
+### Type 1: Background Noise Hallucinations
+
+**What happens:** The AI processes audio that isn't related to the incident — TV dialogue, radio transmissions, bystanders on the phone — and incorporates it into the narrative as if it were incident content.
+
+**Example:** The Heber City frog incident. Background audio from *The Princess and the Frog* became part of the incident report.
+
+**Where it happens most:** Report writing tools that rely primarily on audio input. Busier scenes with more ambient noise carry higher risk.
+
+### Type 2: Statement Misattribution
+
+**What happens:** In scenes with multiple voices, the AI confuses who said what. A statement made by a suspect gets attributed to the officer. A witness's account gets merged with another witness's account.
+
+**Example:** In a domestic call with two parties both speaking rapidly, the AI may blend their statements. The officer's report says the victim "admitted to provoking the confrontation" — when the victim said no such thing.
+
+**Where it happens most:** Any multi-party scene. Domestics, assaults, crowd incidents.
+
+### Type 3: Confident Gap-Filling
+
+**What happens:** When the audio is unclear, clipped, or technical, the AI doesn't say "unclear" — it fills the gap with what seems most plausible based on its training data. It does this confidently, with no uncertainty flag.
+
+**Example:** An officer's radio call gets partially dropped during the incident recording. The AI infers the missing phrase and generates a plausible-but-wrong sentence. The incident report now contains a fact that was never spoken.
+
+**Where it happens most:** Poor audio quality, radio interference, fast speech, heavy accents, or specialized terminology the model wasn't well-trained on.
+
+---
+
+## What Hallucinations Look Like in Practice
+
+They rarely look like a frog. Most hallucinations are subtle:
+
+- A street address is slightly wrong (4812 instead of 4182)
+- A suspect is described as "wearing a red jacket" when BWC shows blue
+- A witness statement is paraphrased in a way that changes its meaning
+- A disposition says "no weapons recovered" when a knife was documented separately
+
+These don't fail an obvious smell test. They require active cross-referencing against the actual evidence to catch.
+
+<CodeLab title="Hallucination Hunt">
+
+Read this AI-generated incident narrative. There are **three hallucinations** embedded. Find them.
+
+---
+
+> *At 19:22 hours, Officer M. Reyes responded to a report of a theft at FoodMart, 2847 Aurora Ave N. Upon arrival, Officer Reyes contacted the store manager, David K., who stated that a male suspect had concealed merchandise valued at approximately $340 and exited without paying.*
+>
+> *Officer Reyes reviewed surveillance footage on scene. The footage showed a heavyset male in a gray hoodie exiting the store at 19:04. The suspect turned north on Aurora. Officer Reyes apprehended the suspect two blocks away at Aurora and N 61st.*
+>
+> *The suspect, identified as James D., DOB 04/15/1988, refused to provide a statement. A search incident to arrest revealed $340 in cash, a folding knife, and two unopened bottles of wine. The suspect was transported to the North Precinct without incident.*
+>
+> *The store manager confirmed the total value of stolen merchandise as $680.*
+
+---
+
+**Hint:** Check the numbers, the timeline, and the evidence list carefully.
+
+**The three hallucinations:**
+1. **The merchandise value changed** — $340 is stated at the start, $680 at the end. One of these is wrong (or the AI generated both from partial audio)
+2. **The folding knife** — if no mention of a weapons charge appears in the disposition and the knife was not listed in the original theft report, this item may have been hallucinated from another case or inferred from context
+3. **The cash amount matches the original theft value** — the coincidence of $340 cash recovered equaling the exact theft value is suspicious; the AI may have pattern-completed this figure rather than drawing it from actual evidence documentation
+
+</CodeLab>
+
+<Pitfall title="Hallucinations Get More Dangerous Over Time">
+
+A hallucination in a report doesn't just affect that one case.
+
+Incident reports feed into databases, case management systems, and criminal history records. A hallucinated detail — a wrong address, a fabricated weapon, a misattributed statement — can propagate forward into subsequent cases, warrants, and court proceedings.
+
+**One unflagged hallucination today can become a precedent-setting error in a case 18 months from now** — in a report you've long forgotten about.
+
+</Pitfall>
+
+<Quiz question="An AI report-writing tool produces a narrative that contains a confident, detailed description of a suspect's vehicle — but the officer's body-cam footage shows no vehicle was present. What type of hallucination is this, and what likely caused it?">
+
+<div>
+
+**This is a Type 3 — Confident Gap-Filling hallucination**, likely caused by the AI pattern-completing a common narrative element.
+
+Vehicle descriptions are extremely common in incident reports. An AI trained on thousands of police reports has learned that vehicle descriptions frequently follow certain scene types (thefts, assaults, pursuits). When the audio provided insufficient information, the AI filled the expected narrative gap with a plausible-but-fabricated vehicle detail.
+
+**The danger:** This hallucination is particularly serious because it invents material evidence — a vehicle — that doesn't exist. If this report triggers a BOLO or is used in a subsequent investigation, responding units may look for a vehicle that was never there, potentially targeting innocent individuals.
+
+**The fix:** Any specific, verifiable claim (vehicle descriptions, weapon descriptions, exact quotes) must be cross-checked against BWC footage before signing.
+
+</div>
+</Quiz>
+
+---
+
+## Up Next
+
+Hallucinations are a technical risk. The Ghost Officer is a legal one. In Lesson 2, we look at exactly what the King County Prosecuting Attorney's Office said — and what it means for your career.

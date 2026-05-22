@@ -1,0 +1,150 @@
+---
+title: "The 'Turning Blue' Problem"
+description: "One dropped Spanish phrase reclassified a cardiac arrest as a minor fall. Language gaps in AI dispatch tools are a life-safety issue — here's what you need to know."
+module: 3
+moduleTitle: "The Risks You Can't Ignore"
+lesson: 4
+duration: "15 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## The Call
+
+A woman calls 911. She's panicked, speaking Spanish. Her husband has collapsed. She is describing what she sees.
+
+**"¡Se está poniendo azul!"**
+
+*He is turning blue.*
+
+Cyanosis — blue or gray discoloration of the skin, lips, or fingernails caused by oxygen deprivation — is a cardinal sign of cardiac arrest. It means tissues aren't getting oxygen. It means the window to save this person is closing fast.
+
+This phrase should have triggered an immediate ALS response: advanced life support, cardiac-capable unit, priority dispatch.
+
+**The AI dropped it.**
+
+The translation missed the phrase. Without "turning blue," the call's clinical picture changed entirely. The system categorized the incident as a **minor fall**.
+
+A basic life support unit was sent instead of an advanced cardiac team.
+
+---
+
+## Why This Happens
+
+Understanding the mechanism helps you know where to watch for it.
+
+### AI Dispatch Tools Are Only as Good as Their Training Data
+
+Dispatch AI tools are trained on enormous datasets of 911 calls — the vast majority of which are in English. When a caller uses a non-English phrase, the AI must rely on translation models that were trained separately, often with less robust data for specific languages, dialects, and regional expressions.
+
+### Medical Language Doesn't Always Translate Directly
+
+Clinical symptoms are often described in culturally specific ways. Consider how differently people describe chest pain:
+
+- "Pressure" (clinical English)
+- "Like an elephant sitting on it" (common idiom)
+- "Se me aprieta el pecho" (Spanish: "my chest is squeezing")
+- "Tim chim mạnh" (Vietnamese: "my heart is beating hard")
+
+An AI trained primarily on English clinical vocabulary may process these idioms as vague complaints rather than cardiac indicators.
+
+### "Turning Blue" Has Multiple Meanings
+
+The phrase "turning blue" (or its equivalents in other languages) doesn't have a single clinical meaning in all contexts:
+
+- Medically: cyanosis — a life-threatening emergency
+- Colloquially: feeling very cold ("turning blue from the cold")
+- Emotionally: feeling sad or shocked
+- Military: a training context
+
+An AI must resolve this ambiguity correctly, in real time, under conditions of stress and background noise. In the case described above, it didn't.
+
+---
+
+## The Dispatcher's Role Hasn't Changed
+
+AI tools for dispatch are decision support — they are not the dispatcher.
+
+When an AI fails to correctly translate or classify a symptom, the human dispatcher is the last line of defense. That means:
+
+- **Listen to the caller** — even when you don't speak their language, panic, urgency, and specific words can communicate severity
+- **Ask follow-up questions** — even through translation delays, asking "Is he breathing? What color is his face?" can surface critical information the AI missed
+- **When in doubt, dispatch up** — it is always better to send an ALS unit and stand them down than to send a BLS unit to a cardiac arrest
+
+The AI gives you more information. Your training and judgment determine what to do with it — especially when the AI has given you incomplete information.
+
+<CodeLab title="The Symptom Translation Exercise">
+
+For each caller statement below, identify:
+1. The likely clinical emergency
+2. The translation or interpretation risk for an AI tool
+3. What follow-up question a dispatcher should ask
+
+---
+
+**Statement 1:** *"Mi madre se cayó y no puedo despertarla."*
+(Spanish: "My mother fell and I can't wake her up.")
+
+**Statement 2:** *"He's just laying there making a weird sound with his throat."*
+(Non-clinical description of agonal breathing)
+
+**Statement 3:** *"She took all her pills. She said she wanted to sleep."*
+(Potential overdose with suicidal intent, described euphemistically)
+
+**Statement 4:** *"Bệnh tim của ông ấy."*
+(Vietnamese: "His heart condition." — Caller may be trying to report a cardiac event but the phrase is incomplete)
+
+---
+
+**Answers:**
+
+1. **Possible:** Unconsciousness, head injury, stroke, cardiac. **AI risk:** "Can't wake her up" may be classified as welfare check. **Follow-up:** "Is she breathing? Can you see her chest moving?"
+
+2. **Likely:** Agonal breathing — a sign of cardiac arrest. **AI risk:** "Weird sound with his throat" won't trigger cardiac flagging in most models. **Follow-up:** "What does the sound sound like — gasping? Gurgling? Is he responding to you at all?"
+
+3. **Likely:** Overdose, possibly intentional. **AI risk:** "Wanted to sleep" masks suicidal intent; "all her pills" may not register as overdose language. **Follow-up:** "What pills did she take? How many? Is she breathing normally?"
+
+4. **Uncertain:** Possibly cardiac event. **AI risk:** Incomplete phrase — the caller may not know the English words for what's happening. **Follow-up:** "What is happening to him right now? Is he awake? Is he breathing?"
+
+</CodeLab>
+
+<Pitfall title="Assuming the AI Translation Is Complete">
+
+AI translation tools do not always flag when they've dropped content. The transcript you see may look complete while missing critical phrases.
+
+**Never treat an AI-generated transcript as the verbatim record of what a caller said.** It is a processed interpretation. In high-stakes medical calls especially, the dispatcher's ears — and their follow-up questions — are the real safety net.
+
+</Pitfall>
+
+<Quiz question="A non-English speaking caller is describing a medical emergency. The AI translation tool provides a partial transcript that doesn't indicate severity. What is the dispatcher's most important immediate action?">
+
+<div>
+
+**Ask direct, yes/no follow-up questions that can be answered even across a language barrier — and if severity is uncertain, dispatch at the higher tier.**
+
+When language is a barrier and the AI translation is incomplete:
+
+1. **Use simple, direct questions:** "Is he breathing?" A caller who understands some English can usually respond to this. "Yes/no" crosses most language barriers.
+2. **Listen to what you can hear:** Labored breathing, crying, physical sounds in the background often communicate urgency without words
+3. **Default to ALS when uncertain:** The cost of sending an advanced unit to a non-critical call is resource waste — recoverable. The cost of sending a basic unit to an undetected cardiac arrest is a life — not recoverable.
+4. **Request Language Line** if time permits and the situation isn't immediately critical — but don't wait for a live interpreter before dispatching
+
+The AI failed on the "turning blue" call. The dispatcher is the safety net that catches that failure.
+
+</div>
+</Quiz>
+
+---
+
+## Module 3 Complete
+
+You now understand the risk landscape:
+
+- **Hallucinations:** Three types, all requiring active cross-referencing to catch
+- **The Ghost Officer:** Legal accountability stays with the officer, not the AI
+- **The Risk Matrix:** Every efficiency gain has a corresponding risk — know both sides
+- **The Turning Blue Problem:** Language gaps in AI dispatch tools are a life-safety issue
+
+**Module 4** gives you a practical tool for navigating all of this: the Traffic Light Framework.

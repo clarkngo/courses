@@ -1,0 +1,131 @@
+---
+title: "AI for Dispatch & EMS — Corti & Prepared"
+description: "95% accuracy detecting cardiac arrest from a 911 call. And one Spanish phrase that nearly cost a life. The double-edged reality of AI in dispatch."
+module: 2
+moduleTitle: "The Tools in the Field"
+lesson: 3
+duration: "18 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## The Dispatch Challenge
+
+A 911 dispatcher handles a new call every few minutes. Each one is a puzzle: What is actually happening? How urgent is it? What resources are needed? Who should respond?
+
+They do this under extreme stress, with incomplete information, while simultaneously managing active field units.
+
+AI in dispatch doesn't replace that judgment. It tries to give dispatchers better information, faster — so the calls that need an ambulance get one before the caller can even ask.
+
+Two platforms are leading this space.
+
+---
+
+## Corti — Clinical Detection for EMS
+
+**What Corti does:** Analyzes 911 call audio in real time to detect medical emergencies — particularly cardiac arrest — and guides dispatchers through protocol-driven questioning.
+
+**The headline number:** Corti detects cardiac arrest signatures at **95% accuracy** — and it can flag them faster than a human dispatcher who's still trying to understand what the caller is describing.
+
+**How it works beyond transcription:** Most AI tools just convert speech to text. Corti goes further — it listens to **non-verbal sounds** in the call:
+
+- Agonal breathing (the gasping sound of cardiac arrest)
+- Specific breathing patterns indicating respiratory distress
+- Background sounds that change the triage picture
+
+When Corti detects these signatures, it alerts the dispatcher immediately with a priority flag and begins prompting with the next questions from the local medical protocol.
+
+**Call diversion:** Corti also helps major dispatch centers — including Seattle Fire Department pilots — identify calls that can safely be rerouted. Not every 911 call needs an ambulance. Some callers need a nurse triage line or a behavioral health responder. Corti's classification helps dispatchers make that call faster and more accurately.
+
+---
+
+## Prepared — Multimedia Dispatch Intelligence
+
+**What Prepared does:** Combines real-time transcription, live translation, and assistive dispatch tools in one platform, originally built as an independent tool and now partnered with Axon.
+
+**Key capabilities:**
+
+- **Live translation:** A caller speaking Spanish, Somali, or Mandarin gets translated in real time — no hold time waiting for a Language Line interpreter
+- **Video and photo intake:** Callers can send live video streams, photos, or texts directly to dispatch, giving the dispatcher eyes on the scene before any unit arrives
+- **Keyword extraction:** As the call unfolds, Prepared pulls out critical details (suspect descriptions, vehicle makes, addresses) and formats them for direct copy-paste into the CAD system
+- **Quality assurance:** Post-call review to flag missed information or protocol deviations
+
+---
+
+## The Moment That Changes How You Think About This
+
+Here is a real scenario that illustrates both the power and the risk of dispatch AI.
+
+A caller dials 911. She's speaking Spanish. She's panicked. She says:
+
+**"¡Se está poniendo azul!"**
+
+Translation: **"He's turning blue."**
+
+"Turning blue" — cyanosis — is a **critical cardiac arrest indicator**. Blue skin or lips means oxygen isn't reaching the tissue. This is a life-threatening emergency that demands an immediate ALS response.
+
+The AI dispatch tool processing this call **dropped the phrase**. It didn't translate it. It didn't flag it.
+
+Without that symptom, the call was categorized as a **minor fall**.
+
+A basic life support unit was dispatched instead of an advanced cardiac team. Response time and capability were both reduced. The outcome of that patient depended entirely on whether the responders on scene recognized what they were looking at upon arrival — without the advance warning that should have come from dispatch.
+
+**One dropped phrase. A life in the balance.**
+
+<CodeLab title="The Translation Gap Test">
+
+Read each 911 caller statement below. Identify which ones contain critical medical or safety information that a dispatch AI might miss or mistranslate — and why.
+
+1. *"Él no está respirando bien"* (Spanish: "He is not breathing well")
+2. *"My husband, he has the chest pain, like elephant"* (non-native English speaker)
+3. *"She took her meds but too many"* (overdose phrasing using casual language)
+4. *"Something's wrong with grandpa, he's making a sound"* (agonal breathing described indirectly)
+5. *"Se cayó y no se mueve"* (Spanish: "He fell and isn't moving")
+
+---
+
+**Analysis:**
+1. **High risk** — "not breathing well" could be classified as respiratory, not cardiac; the phrase needs clinical weight added
+2. **High risk** — "elephant" is a culturally common metaphor for chest pressure; an AI trained primarily on clinical language may not recognize this as a cardiac symptom descriptor
+3. **High risk** — "too many meds" requires the AI to infer overdose from casual phrasing; misclassified calls delay Narcan deployment
+4. **High risk** — "making a sound" could be agonal breathing; dispatchers need to be prompted to ask the right follow-up questions immediately
+5. **Moderate risk** — clear fall, but "isn't moving" combined with the fall could indicate spinal injury or loss of consciousness, requiring higher-tier response
+
+**Lesson:** AI dispatch tools are only as good as their training data. Gaps in multilingual data, clinical vocabulary, and cultural idiom create exactly these translation and classification risks.
+
+</CodeLab>
+
+<Pitfall title="Assuming the AI Caught Everything the Caller Said">
+
+Dispatch AI tools work in real time under imperfect conditions: call quality varies, callers are panicked, background noise is constant.
+
+**Never assume** the AI's transcription is complete or that its classification is final.
+
+Listen to the caller. Trust your training. The AI is a tool that gives you more information — it is not the decision-maker. If something sounds wrong on the call but the AI hasn't flagged it, **your instinct takes priority.**
+
+The "turning blue" case happened precisely because the dispatcher trusted the AI's categorization over what the caller's words — had they been translated — would have told a trained responder.
+
+</Pitfall>
+
+<Quiz question="Corti flagged a 911 call as a probable cardiac arrest based on audio. The dispatcher disagrees — the caller's description sounds more like a seizure. What should the dispatcher do?">
+
+<div>
+
+**Trust their training and dispatch accordingly — while documenting the discrepancy.**
+
+AI tools like Corti are decision *support* — not decision *authority*. A trained dispatcher who believes the clinical picture is different from the AI's classification should act on their assessment.
+
+That said, when in doubt between cardiac arrest and seizure, both require high-priority ALS response — so the practical answer is to dispatch at the higher tier and let the responding team assess on scene.
+
+The dispatcher should also note the discrepancy in the call record. This kind of documentation builds the feedback data that helps vendors improve their models — and creates a record if the AI's classification is later reviewed.
+
+</div>
+</Quiz>
+
+---
+
+## Up Next
+
+We've covered tools for police, investigators, dispatch, and EMS. In Lesson 4, we turn to the tool that's giving firefighters something they've never had before: a warning that a wildfire has ignited — up to 25 minutes before the first 911 call comes in.

@@ -1,0 +1,139 @@
+---
+title: "AI for Investigations — Longeye"
+description: "Redmond PD processed 60 hours of jail calls in minutes and cracked a cold case. Here's exactly how it works — and what it can and can't do."
+module: 2
+moduleTitle: "The Tools in the Field"
+lesson: 2
+duration: "15 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## The Evidence Backlog Problem
+
+Digital evidence has exploded. A single homicide investigation today can generate:
+
+- Dozens of hours of surveillance footage
+- Hundreds of hours of jail phone recordings
+- Thousands of text messages and emails
+- Body-cam footage from multiple officers
+- Photos, documents, social media records
+
+A detective reviewing this manually — at 1x speed — would need weeks just to get through the audio. Meanwhile the case is moving. Witnesses' memories fade. Suspects talk to lawyers. Evidence gets stale.
+
+This is the problem Longeye is built to solve.
+
+---
+
+## What Is Longeye?
+
+**Longeye** is an AI-powered digital investigative workspace deployed by the Redmond Police Department in Washington State.
+
+It doesn't replace detectives. It handles the information overload so detectives can focus on what only humans can do: **judgment, context, and courtroom accountability.**
+
+Here's what it processes:
+- Jail phone calls (transcribed, translated, searchable)
+- Surveillance video (indexed by time, location, person)
+- Body-cam footage
+- Crime scene photos
+- Written records and reports
+
+---
+
+## The Redmond Case: 60 Hours → Minutes
+
+Longeye's first major public success story came from Redmond PD.
+
+Detectives had **60 hours of jail phone calls** from a suspect in a serious case. Processing that manually would take weeks — longer than most case timelines allow.
+
+Longeye processed all 60 hours in **minutes**.
+
+Hidden inside those calls: **a suspect confession**. The subject had described how many bullets were fired and where a shell casing was hidden — details only someone at the scene could know.
+
+That case was cleared.
+
+---
+
+## How Longeye Stays Legally Defensible
+
+This is the detail that matters most for evidence admissibility:
+
+**Every insight Longeye surfaces links directly back to the original source file — with timestamp.**
+
+If Longeye flags a phone call at 34:12 of recording #7 as containing a potential confession, the detective clicks through to hear the original audio at exactly that moment. The AI is a **search accelerant**, not a fact certifier.
+
+**What this means for court:** Defense attorneys can challenge the AI's interpretation. But they can't challenge the original recording — because the original is right there, unaltered, timestamped, and the chain of custody is intact.
+
+This is why Longeye's design philosophy works: it never replaces the source. It just helps you find what matters in the source, faster.
+
+**CJIS compliance:** Longeye does not use case data to train its AI models. Your evidence stays your evidence — it doesn't feed the vendor's next algorithm update. This is a hard requirement under FBI CJIS policy. (We'll cover CJIS in Module 5.)
+
+<CodeLab title="Think Like a Detective Using Longeye">
+
+**Scenario:** You're investigating a robbery. You have the following digital evidence:
+
+- 22 hours of jail calls from the primary suspect (in English and Spanish)
+- 8 hours of surveillance footage from 3 cameras
+- 400 text messages from the suspect's phone
+- 3 hours of BWC from the responding officers
+
+Without AI: Estimate how long this evidence review would take a single detective working full-time.
+
+With Longeye: The platform processes everything overnight. Next morning, you have:
+- Transcripts of all calls, searchable by keyword
+- Translations of all Spanish content
+- Flagged segments where the suspect discusses the robbery
+- A timeline built from timestamps across all sources
+
+**Your questions to answer:**
+1. What keywords would you search first in the transcripts?
+2. What's the first thing you verify in the original source after Longeye flags something?
+3. What would make a Longeye-found piece of evidence *inadmissible* in court?
+
+---
+
+**Answers:**
+1. The victim's name, the location, the date/time of the robbery, any mention of money, weapons, or accomplices
+2. You listen to or watch the original, unaltered source file at the exact timestamp — then document that you did so
+3. Admissibility would be challenged if: the chain of custody of the original file was broken, the original source was altered before processing, or if the platform used the data for AI training purposes (CJIS violation)
+
+</CodeLab>
+
+<Pitfall title="Using Longeye's Summary as the Evidence">
+
+Longeye's transcripts and summaries are investigative tools. They are **not the evidence.**
+
+Never cite a Longeye-generated summary in a charging document or court filing as if it were a direct quote from the original source. Always cite the original recording with the timestamp.
+
+Failure to do this creates a chain-of-custody vulnerability and gives defense attorneys grounds to challenge the entire evidence package — not just the summary.
+
+**Rule:** AI finds it. You verify it. The original source goes to court.
+
+</Pitfall>
+
+<Quiz question="Why is it significant that Longeye links every finding back to the original timestamped source file?">
+
+<div>
+
+**Because it preserves the chain of custody and keeps humans in control of the evidence.**
+
+Chain of custody is the documented history of who has handled evidence and how. If an AI tool processed your evidence and returned conclusions without linking to the source, you'd have a gap: "The AI said so" is not legally sufficient.
+
+By linking directly to the original, timestamped source:
+- Detectives can verify the AI's interpretation themselves
+- Defense attorneys can review the same source material
+- The AI's role is transparent: it searched, it flagged, a human verified
+- The officer/detective is the accountable human-in-the-loop, not the software
+
+This design is what makes Longeye CJIS-compliant and court-defensible.
+
+</div>
+</Quiz>
+
+---
+
+## Up Next
+
+Report writing and evidence processing cover law enforcement. In Lesson 3, we move to the tools reshaping the front lines of emergency dispatch and EMS — including an AI that can detect a cardiac arrest from the sound of a 911 call.

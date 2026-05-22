@@ -1,0 +1,166 @@
+---
+title: "CJIS — Why Case Data Can't Go to ChatGPT"
+description: "The FBI's Criminal Justice Information Services policy is the legal wall between your case files and consumer AI tools. Here's what it covers and what violating it costs."
+module: 5
+moduleTitle: "Compliance — The Rules Behind the Red Lights"
+lesson: 1
+duration: "14 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## The Rule You're Already Bound By
+
+Most first responders have heard of CJIS. Fewer can explain exactly what it covers — and almost none were trained on how AI changes the compliance picture.
+
+CJIS stands for **Criminal Justice Information Services**. It's the FBI division that manages the largest criminal justice database infrastructure in the world: fingerprints, criminal histories, wanted persons, stolen vehicles, incident reports, and more. The **CJIS Security Policy** is the document that governs how all of that information must be handled.
+
+If your job involves accessing, creating, or transmitting criminal justice information — and it does — you are bound by the CJIS Security Policy.
+
+AI tools don't change that obligation. They create new ways to violate it.
+
+---
+
+## What Counts as Criminal Justice Information (CJI)
+
+CJI is broader than most officers assume. It includes:
+
+- **Biometric data:** Fingerprints, palm prints, iris scans, facial recognition data
+- **Criminal history records:** Arrests, convictions, incarcerations, supervision status
+- **Identity data:** Social Security numbers, driver's license numbers, immigration identifiers linked to a criminal record
+- **Incident and case data:** Police reports, investigation files, evidence logs tied to an active case
+- **Wanted and missing person records:** NCIC entries, local warrants
+- **Protection order data:** Domestic violence restraining orders
+- **Threat assessment and gang data:** Files compiled under CJIS-compliant systems
+- **Body-worn camera footage:** When tied to an identifiable individual or active investigation
+
+If you can look it up in NCIC or your CAD system and it pertains to a specific person, incident, or investigation — it's almost certainly CJI.
+
+---
+
+## The CJIS Security Policy — Key Requirements
+
+The CJIS Security Policy sets specific technical and procedural controls:
+
+### Encryption in Transit
+All CJI transmitted across networks must be encrypted using FIPS 140-2 validated encryption. This means CJI cannot travel over unencrypted channels — including standard email and public messaging apps.
+
+### Access Controls
+Personnel must be authenticated and authorized before accessing CJI systems. Two-factor authentication is required for remote access.
+
+### Audit Logging
+Every access to CJI systems must be logged. Who accessed it, when, and what they did. Logs must be retained and reviewable.
+
+### Physical Security
+Workstations accessing CJI must be in physically secure locations. This is why you can't log into NCIC from your personal device at a coffee shop.
+
+### Data Retention and Destruction
+CJI that is no longer needed must be destroyed in a documented way — not just deleted from a folder.
+
+---
+
+## How Consumer AI Breaks Every One of These Requirements
+
+When you paste criminal justice information into ChatGPT, Google Bard, or any similar consumer AI tool, here is what happens:
+
+| CJIS Requirement | What Consumer AI Does |
+|---|---|
+| Encrypted transmission | Data sent to commercial servers over standard HTTPS — not FIPS 140-2 validated |
+| Access control and authentication | No authentication — anyone can use ChatGPT |
+| Audit logging | No audit log accessible to your department or the FBI |
+| Physical security | Data stored on commercial servers with no law enforcement oversight |
+| Data retention/destruction | Data may be retained and used for model training; you cannot guarantee destruction |
+
+The CJIS Security Policy doesn't have a carve-out for "it was just for a quick summary." It doesn't distinguish between intentional violations and convenient shortcuts. The moment CJI leaves your compliant environment and enters a non-compliant one, the violation has occurred.
+
+---
+
+## What a CJIS Violation Costs
+
+CJIS violations are investigated by the FBI. The consequences cascade:
+
+**For the individual:**
+- Criminal exposure under 18 U.S.C. § 1030 (Computer Fraud and Abuse Act)
+- Termination and loss of law enforcement certification
+- Loss of access to CJI systems — effectively ending a career in public safety
+
+**For the department:**
+- Loss of access to NCIC and state criminal history repositories
+- A department that loses NCIC access cannot run warrants, check criminal histories, or enter stolen vehicle reports. It is effectively unable to do its job.
+- Mandatory FBI audit and remediation process
+- Civil liability if the breach exposed a protected individual (e.g., a domestic violence victim in a protection order file)
+
+**For prosecutions:**
+- Evidence derived from improperly handled CJI can be suppressed
+- Defense attorneys will seek sanctions against departments with documented CJIS violations
+
+<CodeLab title="CJIS Scenario Check">
+
+For each scenario, identify whether it's a CJIS violation and what specific control was breached.
+
+**Scenario 1:** An officer uses an AI drafting tool approved by their department's IT division, running on a department-controlled server, to help write an incident report. The tool logs all usage.
+
+**Scenario 2:** A detective copies a NCIC criminal history record for a suspect and pastes it into ChatGPT to ask for a "pattern analysis."
+
+**Scenario 3:** An officer emails a PDF of a police report to their personal Gmail account so they can finish writing on their laptop at home.
+
+**Scenario 4:** A supervisor uses a department-approved AI tool to analyze BWC footage from an incident for use in an after-action training — on a CJIS-compliant server, with audit logging enabled.
+
+**Scenario 5:** A records clerk uses a public AI summarization website to speed up processing of case files.
+
+---
+
+**Answers:**
+
+1. ✅ **Not a violation** — Department-approved tool, controlled environment, audit logging. This is compliant AI use.
+
+2. 🔴 **Violation** — Criminal history is CJI. ChatGPT is not a CJIS-compliant environment. No audit log. No encryption standard met.
+
+3. 🔴 **Violation** — CJI transmitted to a personal, non-secure environment. Personal Gmail has no CJIS controls. This is a common violation officers don't think about.
+
+4. ✅ **Not a violation** — Approved tool, compliant server, logging enabled, training use. This is compliant AI use.
+
+5. 🔴 **Violation** — A public website is not a CJIS-compliant environment. No audit log, no access control, no encryption standard, no data destruction guarantee.
+
+</CodeLab>
+
+<Pitfall title="'It's Just One Time' Is How Audits Start">
+
+FBI CJIS audits are triggered by complaints, anomalous access patterns, and data breach reports — not just by deliberate misconduct.
+
+If a department's data shows up in a commercial AI training dataset, if a user's account is flagged for unusual access patterns, or if a department member reports a suspected violation, an audit follows. By that point, "I only did it once" does not help.
+
+**The audit will look at logs.** It will look at what was accessed, when, and from where. If you sent case data to a non-compliant system, there is a record — on the compliant system's side even if not on the consumer tool's side.
+
+</Pitfall>
+
+<Quiz question="An officer's department is piloting an AI report drafting tool provided by a vendor. The vendor assures the department that their system is 'secure.' What does the department need to verify before authorizing officers to input case data?">
+
+<div>
+
+**The vendor's self-assurance is not sufficient. The department needs documented, specific compliance verification:**
+
+1. **CJIS Security Policy compliance certification** — Is the vendor an authorized CJIS-compliant cloud provider? This is a specific designation, not a general "secure" claim.
+
+2. **FIPS 140-2 validated encryption** — Is data encrypted at rest and in transit using validated encryption? Ask for the specific FIPS certificate.
+
+3. **Access control documentation** — How is access to the system controlled? What authentication is required? Who at the vendor can see the data?
+
+4. **Audit logging** — Does the system maintain logs accessible to the department? How long are logs retained? Are they FBI-audit-ready?
+
+5. **Data retention policy** — Where is data stored? How long? Can the department request deletion? Is data used to train any AI models?
+
+6. **Criminal Justice Agency agreement** — Has the vendor signed a CJIS-compliant information security agreement with the department?
+
+A vendor who cannot answer all six questions with specific, documented answers should not receive case data.
+
+</div>
+</Quiz>
+
+---
+
+## Up Next
+
+CJIS governs criminal justice information. But first responders also work with another category of protected data: patient medical information. Lesson 2 covers HIPAA and what it means for paramedics using AI tools on calls.

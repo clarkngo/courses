@@ -1,0 +1,144 @@
+---
+title: "AI for Fire — Pano AI & Early Detection"
+description: "Pano AI detects wildfires up to 25 minutes before the first 911 call. What that lead time means for crews — and what it doesn't replace."
+module: 2
+moduleTitle: "The Tools in the Field"
+lesson: 4
+duration: "12 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## The 25-Minute Window
+
+In wildfire response, time is measured differently than in other emergencies.
+
+A cardiac arrest response window is minutes. A structure fire escalates in minutes to hours. A wildfire — in the right conditions — can go from ignition to catastrophic in under an hour.
+
+The difference between catching a wildfire at 2 acres and at 200 acres is often **25 minutes or less.**
+
+That's the number Pano AI delivers.
+
+---
+
+## What Is Pano AI?
+
+**Pano AI** is a wildfire detection system that combines:
+
+- **High-definition 360° cameras** mounted on towers and elevated terrain across fire-prone regions
+- **Satellite imagery** integrated in real-time
+- **AI image recognition** trained to detect the visual signature of early smoke plumes
+
+The AI constantly scans all camera feeds simultaneously — something no human operator could do. When it detects a pattern consistent with wildfire smoke, it alerts fire agencies within seconds.
+
+**The result:** Detection up to **25 minutes earlier than the first 911 call** for the same fire.
+
+---
+
+## Why 25 Minutes Changes Everything
+
+In traditional wildfire response, the sequence looks like this:
+
+1. Fire ignites
+2. Someone sees smoke and calls 911
+3. Dispatch logs the call and notifies fire agencies
+4. Units respond and assess
+
+That sequence has a built-in delay: someone has to *see* it, decide it's serious, find their phone, and call. In remote or lightly populated areas, that gap can be substantial.
+
+With Pano AI, the sequence changes:
+
+1. Fire ignites
+2. Pano AI cameras detect smoke within seconds
+3. Alert goes to fire agencies immediately
+4. Units respond while the fire is still small
+
+**Twenty-five minutes of earlier detection** means crews arriving at a fire that might still be suppressed with a small team — instead of a fire that requires mutual aid, evacuations, and aerial support.
+
+---
+
+## How the AI Works — and Where It Has Limits
+
+Pano AI's image recognition is trained on thousands of hours of camera footage of both actual fires and false positives — controlled burns, industrial smoke, dust plumes, morning fog.
+
+**What it does well:**
+- Detecting the specific visual signature of early wildfire smoke
+- Distinguishing smoke from common false-positive sources
+- Monitoring multiple camera angles simultaneously, 24/7
+
+**What it still requires human judgment for:**
+- Final confirmation that a detection is a genuine fire (trained operators review flags)
+- Tactical decisions about which units respond and how
+- Ongoing assessment as the fire evolves
+
+Every Pano AI alert goes to a human operator for confirmation before it triggers a full agency notification. The AI doesn't dispatch units — it flags a potential event for human review.
+
+<CodeLab title="Map the Detection Advantage">
+
+Use this simple math to understand the operational impact of early detection:
+
+**Scenario:** A wildfire ignites in a forested area at 2:00 PM.
+
+- **Traditional detection:** First 911 call comes in at 2:22 PM (22 minutes after ignition)
+- **Pano AI detection:** System alerts at 1:58 PM (2 minutes after ignition)
+- **Response time after alert:** 18 minutes for first units to arrive
+
+**Calculate:**
+1. When do first units arrive under the traditional model?
+2. When do they arrive with Pano AI?
+3. A wildfire in dry conditions can spread at 14 acres per minute in wind. How many acres have burned in the gap between those two arrival times?
+
+---
+
+**Answers:**
+1. Traditional: 2:22 PM call + 18 min response = **2:40 PM** arrival
+2. Pano AI: 1:58 PM alert + 18 min response = **2:16 PM** arrival
+3. The gap is 24 minutes. At 14 acres/minute: **336 additional acres** burned before crews arrive under the traditional model
+
+That's the operational reality of a 24-minute detection advantage in fire conditions.
+
+</CodeLab>
+
+<Pitfall title="Treating an AI Alert as a Confirmed Fire">
+
+Pano AI alerts are flags, not facts. The system has false positive rates — industrial smoke, prescribed burns, dust, morning fog have all triggered alerts.
+
+Responding to an AI wildfire alert requires the same staged confirmation you'd apply to any report of a fire: **assess en route, confirm on arrival, and don't commit resources to a position until you have eyes on the actual fire behavior.**
+
+Pano AI gives you earlier movement. It doesn't replace size-up.
+
+</Pitfall>
+
+<Quiz question="A Pano AI alert fires at 3:15 AM for a remote mountain location. The duty officer reviews the camera feed — the smoke plume looks like morning fog, but the AI is flagging it at high confidence. What's the right call?">
+
+<div>
+
+**Dispatch a reconnaissance unit while keeping additional resources on standby — and continue monitoring the camera feed.**
+
+This is a textbook ambiguous detection scenario. The AI's high-confidence flag means the visual signature has characteristics it associates with fire smoke — but the time of day and location create a plausible alternative explanation (fog, mist).
+
+The right call balances two risks:
+- **Under-responding** to a real fire that's still small and suppressible
+- **Over-committing resources** to a false positive at 3 AM
+
+Sending one unit to make visual confirmation is the standard protocol. If they confirm fire, you have units already moving. If they confirm fog, you've lost one unit for 30 minutes — a reasonable cost for certainty.
+
+Never cancel a high-confidence AI fire alert without visual confirmation from a human on the ground or in the air.
+
+</div>
+</Quiz>
+
+---
+
+## Module 2 Complete
+
+You now have a working knowledge of the primary AI tools across your field:
+
+- **Code Four / Draft One** — report writing (with the 80% accuracy caveat)
+- **Longeye** — digital evidence processing (search accelerant, not fact certifier)
+- **Corti / Prepared** — dispatch and EMS (life-saving detection with real language gaps)
+- **Pano AI** — wildfire early detection (25-minute lead time, human confirmation required)
+
+In **Module 3**, we go deeper on the risks — the ones vendors don't put in their pitch decks.

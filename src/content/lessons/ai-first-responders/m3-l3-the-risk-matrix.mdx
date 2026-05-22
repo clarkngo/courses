@@ -1,0 +1,131 @@
+---
+title: "The Risk Matrix — Every Gain Has a Shadow"
+description: "For every efficiency AI delivers, there's a corresponding risk. This lesson gives you the complete picture — the table vendors don't show you."
+module: 3
+moduleTitle: "The Risks You Can't Ignore"
+lesson: 3
+duration: "12 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## The Pitch vs. The Full Picture
+
+When a vendor presents their AI tool to your department, you'll hear the upside numbers:
+
+- Sub-minute report drafting
+- 95% cardiac arrest detection accuracy
+- 25-minute early wildfire warning
+- 60 hours of evidence processed in minutes
+
+These numbers are real. They represent genuine value.
+
+What the pitch deck rarely includes is the corresponding risk column — what each gain puts at risk if not properly managed.
+
+This lesson gives you the complete picture.
+
+---
+
+## The Risk Matrix
+
+| Area | What AI Gains | What AI Risks |
+|---|---|---|
+| **Report writing** | 1–2 hours of paperwork → under 60 seconds | AI hallucinations in legal documents; Brady violations if unverified |
+| **Report accuracy** | Consistent formatting and structure | Ghost Officer errors; defense impeachment if draft isn't reviewed |
+| **Cardiac arrest dispatch** | Near-instant detection at 95% accuracy | The 5% miss rate on cardiac arrests is fatal; language gaps change triage |
+| **Evidence processing** | Weeks of work → hours | AI summaries cited as evidence instead of source files; CJIS violations |
+| **Wildfire detection** | Up to 25-min earlier warning | False positives cause unnecessary resource deployment; over-reliance delays human size-up |
+| **Predictive tools** | Faster resource allocation | Historical bias in training data amplifies racial and geographic enforcement disparities |
+
+---
+
+## The Risk That Requires Its Own Conversation: Predictive Tools
+
+Every other risk in this matrix is about a tool making a factual error. Predictive tools carry a different kind of risk: **they can make systematically biased decisions that look like data.**
+
+Predictive patrol tools analyze historical crime data to recommend where officers should focus patrol presence.
+
+The problem: historical crime data reflects historical enforcement patterns — which were not neutral. Areas that were over-policed in the past have more documented incidents, which means the AI recommends more policing there, which generates more incidents, which reinforces the recommendation.
+
+This feedback loop is called **algorithmic amplification of historical bias.** It's not the AI doing something wrong — it's the AI doing exactly what it was trained to do with data that contains human biases baked in.
+
+**Why this matters for you:** If you're assigned patrol areas partly determined by an AI recommendation, you should know how that recommendation was generated and what its limitations are. "The algorithm said so" is not a satisfying answer to a community asking why enforcement looks the way it does.
+
+---
+
+## How to Read the Risk Matrix for Any New Tool
+
+When your department evaluates a new AI tool, use these five questions to build your own risk row:
+
+1. **What specific task does it automate?**
+2. **What is its documented accuracy rate — and in what conditions?**
+3. **What happens in the failure case? Who is accountable?**
+4. **Does it comply with CJIS, HIPAA, and Seattle IT data standards?**
+5. **What does the human-in-the-loop review look like — and is it built into the workflow?**
+
+A vendor who can't answer questions 3 and 5 clearly is selling you efficiency without accountability.
+
+<CodeLab title="Build a Risk Row">
+
+A vendor is pitching your department on **Truleo** — an AI platform that analyzes 100% of body-worn camera footage to flag officer language and behavior patterns for compliance review.
+
+Using the five questions above, build your risk row:
+
+| Area | What Truleo Gains | What Truleo Risks |
+|---|---|---|
+| BWC compliance | | |
+
+Fill in the risk column yourself before reading the analysis.
+
+---
+
+**Analysis:**
+
+| Area | What Truleo Gains | What Truleo Risks |
+|---|---|---|
+| BWC compliance | Analyzes 100% of footage vs. the 2–5% supervisors can manually review | AI flagging behavior as non-compliant based on pattern-matching, not context; officers disciplined for interactions the AI misread; union grievances over AI-driven performance review |
+
+**Additional risks to consider:**
+- What is the AI's false positive rate for non-compliant behavior flags?
+- Is the officer notified when they're flagged, and do they have a review process?
+- Does Truleo's training data reflect diverse patrol contexts, or is it skewed toward specific environments?
+- Who has access to the flagging data — supervisors only, or external parties?
+
+</CodeLab>
+
+<Pitfall title="Accepting Efficiency Numbers Without Asking About Failure Rates">
+
+"95% accuracy" sounds excellent. But in public safety contexts, you need to ask about the 5%.
+
+- A 5% cardiac arrest miss rate, at scale, is lives lost
+- A 5% hallucination rate across all report drafts is hundreds of legal errors per year per department
+- A 5% false positive rate in predictive patrol tools means thousands of unnecessary enforcement contacts per year
+
+**Always ask the vendor:** *What happens in your failure cases? How frequent are they? Who is accountable?*
+
+If the vendor's answer focuses on their accuracy rate and not their failure mode, that's a red flag.
+
+</Pitfall>
+
+<Quiz question="A predictive patrol AI recommends increased presence in a specific neighborhood based on historical incident data. An officer who knows the neighborhood well believes the recommendation reflects old enforcement patterns rather than current actual crime. What should they do?">
+
+<div>
+
+**Raise the concern through their chain of command and document their reasoning.**
+
+Officers have professional judgment that AI tools don't have. Historical data reflects historical conditions — neighborhoods change, enforcement patterns shift, and an officer with current community knowledge may have better situational awareness than a model trained on years-old data.
+
+This is a legitimate use of human-in-the-loop authority: the officer isn't dismissing the tool, they're providing the local context that the tool can't access.
+
+**Practically:** Document that the recommendation was reviewed, that the officer noted a potential data currency issue, and what decision was made. This creates accountability for the process — which protects the officer, the department, and the community.
+
+</div>
+</Quiz>
+
+---
+
+## Up Next
+
+The risk matrix shows you the full picture. But one risk deserves its own lesson because it's killed people: the gap between what AI hears and what a caller actually means. That's the subject of Lesson 4 — the "Turning Blue" problem.

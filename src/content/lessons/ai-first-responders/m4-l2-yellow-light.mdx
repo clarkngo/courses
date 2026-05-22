@@ -1,0 +1,127 @@
+---
+title: "Yellow Light — What Needs Your Review"
+description: "Yellow light tools have real value — but they require a mandatory human review step before their output can be acted on, signed, or submitted."
+module: 4
+moduleTitle: "The Traffic Light Framework"
+lesson: 2
+duration: "15 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Most of Your AI Tools Live Here
+
+Yellow light is the most important category in the Traffic Light Framework — because it's where most of the AI tools in public safety actually belong.
+
+Yellow doesn't mean dangerous. It means: **valuable with guardrails.**
+
+The mandatory review step isn't bureaucratic friction. It's the mechanism that makes these tools legally defensible. Without human review built into the workflow, a yellow-light tool becomes a red-light situation.
+
+---
+
+## Yellow Light Use Cases
+
+### BWC Summarization — For Training Only
+
+Body-worn camera footage can be processed by AI to generate summaries for after-action review, training purposes, and quality assurance. This is yellow — not red — when the summary is clearly labeled as an AI draft, reviewed by a supervisor, and never used as a substitute for the actual footage in an investigation.
+
+**The mandatory review:** A supervisor or trainer must review the AI summary against the actual footage before it's used in any training context or performance review.
+
+**Why not green:** BWC footage is CJIS-protected evidence. AI processing of this footage requires specific compliance controls. The summary could contain errors that affect how an officer's conduct is evaluated.
+
+### AI-Suggested (Not AI-Decided) EMS Triage
+
+AI tools like Corti that suggest triage priority — "this call has indicators consistent with cardiac arrest" — are yellow when the dispatcher uses the suggestion as input to their own clinical judgment, not as a final decision.
+
+**The mandatory review:** The human dispatcher evaluates the AI's flag against everything else they're hearing and makes the triage decision.
+
+**Why not green:** The stakes are life-and-death. A missed cardiac arrest or a misclassified medical emergency can be fatal. The AI's role is to assist the dispatcher, never to replace their judgment.
+
+### Preliminary Thermal Drone Analysis
+
+AI-assisted analysis of thermal drone footage for fire mapping, search and rescue, or scene assessment is yellow. The AI can rapidly identify heat signatures and flag areas of interest — but the interpretation of what those signatures mean requires human assessment.
+
+**The mandatory review:** An incident commander or qualified operator reviews the AI analysis before tactical decisions are made based on it.
+
+**Why not green:** Tactical decisions based on incorrect heat signature interpretation can put crews in danger.
+
+### Draft Reports — With Mandatory Redline
+
+This is the big one. AI-drafted incident reports are yellow — they're valuable, they save time, and they're going to become standard. But every draft requires a documented line-by-line review before an officer signs it.
+
+**The mandatory review:** Officer cross-checks the draft against BWC footage and personal recollection. Any unverifiable claim is removed or corrected. Officer signs only what they can personally attest to.
+
+**Why not green:** The output is a legal document with criminal case implications. An error that slips through without correction becomes the officer's legal attestation.
+
+---
+
+## What "Mandatory Redline" Actually Looks Like
+
+A redline review isn't skimming for obvious errors. It's a structured process:
+
+1. **Read the draft aloud** — your brain catches things your eyes miss when reading silently
+2. **Flag every direct quote** — verify each one against BWC audio
+3. **Flag every specific claim** — addresses, times, vehicle descriptions, physical descriptions
+4. **Flag every action attributed to you** — anything you allegedly said, did, or observed
+5. **Check the disposition** — make sure the final status, charges, and evidence notes are accurate
+6. **Cross-reference with CAD** — confirm times and incident numbers match
+
+This process takes 5–15 minutes depending on incident complexity. It replaces 60–90 minutes of writing from scratch. The math still works overwhelmingly in your favor — as long as you actually do it.
+
+<CodeLab title="Build Your Redline Checklist">
+
+Every department will eventually have its own AI report review protocol. Before that's handed to you, build your own working version.
+
+Using the five-step process above as a starting point, create a checklist specific to the types of calls you handle most. For each item, note:
+- What you're checking for
+- Where you verify it (BWC footage, CAD log, personal notes)
+- What you do if it doesn't match
+
+**Example for a domestic disturbance call:**
+
+| Check | What I'm Looking For | Where I Verify |
+|---|---|---|
+| Party names and DOBs | Correct spelling, correct person | CAD lookup, ID documentation |
+| Direct quotes | Exactly what was said | BWC audio, timestamp |
+| Physical actions | Who did what, in what order | BWC video |
+| Weapons mentioned | Any reference to weapon present or absent | BWC + my own notes |
+| Disposition | Charges, transport, notifications | Supervisor confirmation |
+
+Build your version for your most common call types. This is your personal AI review protocol.
+
+</CodeLab>
+
+<Pitfall title="Treating Yellow Like Green Because You're Busy">
+
+The most dangerous moment for a yellow-light tool is a high-volume shift.
+
+When you're on your seventh call of the night, the AI draft looks fine, you're already mentally on the next scene, and the review step feels like friction — that's exactly when you're most likely to sign something you shouldn't.
+
+**Yellow means yellow regardless of how your shift is going.** The review step is not optional when you're tired. If anything, fatigue is when you need it most — because your memory and attention are at their lowest exactly when the AI is most likely to slip something past you.
+
+</Pitfall>
+
+<Quiz question="An officer's department has just implemented an AI report drafting tool. There is no formal policy yet on review requirements. The officer drafts reports with AI and does a quick read-through before signing. Is this sufficient?">
+
+<div>
+
+**No — a quick read-through is not a redline review.**
+
+Reading for general coherence misses most AI hallucinations. The human brain fills in expected information when reading quickly — especially when tired and when the general narrative matches what you remember from the scene.
+
+Regardless of whether a formal policy exists, the legal standard doesn't change: an officer who signs an incident report is attesting to its accuracy. That standard requires more than a quick scan.
+
+**Until a formal policy is in place, officers should apply the most rigorous review standard available — treating every AI draft as a yellow-light document requiring structured redline review.** This protects the officer legally and demonstrates the professional standard the department should eventually codify.
+
+</div>
+</Quiz>
+
+---
+
+## Up Next
+
+Yellow light tools are where the work happens — and where training makes the difference. Red light is where the line is drawn completely.
+
+**Lesson 3: Red Light — what's strictly off-limits, no exceptions.**

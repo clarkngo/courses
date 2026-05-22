@@ -1,0 +1,119 @@
+---
+title: "AI Report Writing — Code Four & Axon Draft One"
+description: "The two most-deployed AI report tools in law enforcement — how they work, what they cost, and what the Heber City case teaches us."
+module: 2
+moduleTitle: "The Tools in the Field"
+lesson: 1
+duration: "18 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## The Paperwork Problem
+
+Every officer knows the drill. Scene clears. You're back in the car. The report won't write itself — but you're already getting dispatched to the next call.
+
+For decades, the only solution was staying late or skipping details. Now there are two tools actively changing this equation for law enforcement agencies across the country.
+
+---
+
+## Code Four
+
+**What it is:** An AI platform that ingests body-worn camera audio and video and generates a full incident report narrative in under 60 seconds.
+
+**How it works:**
+1. Officer activates BWC at scene
+2. After the call, footage is uploaded to Code Four
+3. AI processes both audio and video frames simultaneously
+4. Draft narrative is returned for officer review
+5. Officer reviews, corrects, and signs
+
+**Cost:** Approximately **$30 per officer per month** — one of the lowest price points in the market. Competing platforms can cost $30,000+ annually per department.
+
+**Where it's deployed:** Heber City, UT was one of the earliest adopters. Departments across the Pacific Northwest are now in procurement or pilot phases.
+
+**The key differentiator:** Code Four processes *both* audio and video — not just audio. This reduces (but does not eliminate) hallucinations caused by background noise, because the AI can visually verify what's happening on screen alongside what it hears.
+
+---
+
+## Axon Draft One
+
+**What it is:** Axon's AI narrative tool, built into the broader Axon ecosystem (which most of you know through TASER and body cameras).
+
+**How it works:** Similar to Code Four — processes BWC audio to generate a draft incident report. Axon is leaning into audio-primary processing with ongoing development toward multi-modal input.
+
+**Where it's deployed:** Widely — Axon already has deep relationships with law enforcement agencies nationwide through its hardware. Draft One is their AI layer on top of that existing infrastructure.
+
+**The complication:** Because Draft One relies more heavily on audio, it carries a higher risk of the background-noise hallucination problem. King County Prosecuting Attorney's Office issued a formal memo stating they **will not accept** narratives produced with Draft One, specifically citing the "Ghost Officer" phenomenon (more on that in Module 3).
+
+---
+
+## What Heber City Actually Learned
+
+The Heber City, UT Police Department case is the most documented early adoption story in law enforcement AI.
+
+**What they gained:**
+- Hours of weekly report writing time returned to officers
+- Very low cost per officer
+- A formal AI policy that other departments are now borrowing
+
+**What they learned the hard way:**
+- Background audio hallucinations are real — the frog incident is the famous one, but there were subtler errors too
+- Every single draft requires a structured human review before signing — not a skim, a review
+- Officers needed specific training on *what to look for*, not just how to use the tool
+
+**Their policy:** Heber City now requires officers to cross-check their AI draft against their BWC footage for any incident involving more than one voice or any unusual background noise. This is the model we recommend.
+
+<CodeLab title="Compare the Two Tools for Your Scenario">
+
+Read this patrol scenario and answer the questions below:
+
+**Scenario:** You respond to a domestic disturbance. Two adults arguing loudly. A television is on in the background. Kids are present. Your BWC captures 18 minutes of audio including multiple overlapping voices, the TV, and a brief radio transmission from dispatch.
+
+**Questions:**
+1. Which hallucination risks are highest in this scene? (name at least two)
+2. Which tool — Code Four or Draft One — would likely produce a more accurate draft, and why?
+3. What specific sections of the AI draft would you prioritize for manual review?
+
+---
+
+**Answers:**
+
+1. **Highest risks:** Misattributed statements (multiple voices overlapping), TV audio being processed as incident dialogue, radio transmission being included in the narrative
+2. **Code Four** would likely be more accurate because it processes video frames alongside audio — it can visually distinguish which person is speaking and ignore background sources it can identify on screen
+3. **Priority review sections:** Direct quotes from any party, description of physical actions, any reference to weapons or threats, the disposition/outcome paragraph
+
+</CodeLab>
+
+<Pitfall title="Trusting the Tool Because It's From a Brand You Know">
+
+Axon makes your body camera. Axon makes your TASER. You trust Axon hardware because it works.
+
+Draft One is a different product category. Software AI carries different risk profiles than hardware. The fact that a vendor's hardware is reliable does not mean their AI drafts are legally safe to sign without careful review.
+
+**Evaluate every AI tool on its own merits** — regardless of who makes it.
+
+</Pitfall>
+
+<Quiz question="The King County Prosecuting Attorney's Office issued a memo refusing to accept AI-generated narratives. What specific risk did they cite?">
+
+<div>
+
+**The "Ghost Officer" phenomenon** — the risk of an AI generating observations, statements, or narrative actions that the officer on scene never actually witnessed or performed.
+
+This is the legal core of the AI report problem. A report that contains things an officer didn't actually do or see creates false documentation of an officer's conduct. That document enters the court record. Defense attorneys can use it to impeach the officer's credibility — not just on this case, but on every future case they testify in.
+
+The KCPAO memo is a significant signal: the legal system is already reacting to AI report risks, and their standard is higher than "mostly accurate."
+
+</div>
+</Quiz>
+
+---
+
+## Up Next
+
+Report writing is just one use case. In Lesson 2, we look at what happens when AI gets applied to the mountains of digital evidence that investigations generate.
+
+**Sixty hours of phone calls. Processed in minutes. One confession found.** That's Redmond, WA — and it's Lesson 2.

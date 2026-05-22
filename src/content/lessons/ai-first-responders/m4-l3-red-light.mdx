@@ -1,0 +1,139 @@
+---
+title: "Red Light — What's Strictly Off-Limits"
+description: "Some AI uses are banned outright — regardless of how convenient they seem. Know the hard limits before a vendor or a shortcut puts you at risk."
+module: 4
+moduleTitle: "The Traffic Light Framework"
+lesson: 3
+duration: "12 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Some Lines Don't Move
+
+Green light: use it. Yellow light: use it carefully. Red light: don't use it — not because the technology isn't impressive, but because the legal, ethical, or safety stakes are too high regardless of efficiency.
+
+Red lights aren't judgment calls. They're hard stops.
+
+Here are the four red-light categories that apply specifically to first responders.
+
+---
+
+## Red Light #1: AI-Written Charging Documents
+
+**What it means:** Using AI to generate, draft, or substantially write charging language, criminal complaints, arrest warrants, or any document that determines whether a person faces criminal prosecution.
+
+**Why it's red:** Charging decisions are legal judgments with constitutional weight. They affect liberty. An AI hallucination in a charging document — a misattributed statement, a fabricated fact — can result in a wrongful arrest, an unconstitutional detention, or a civil rights lawsuit.
+
+The human making a charging decision must be a trained, accountable legal professional applying judgment to verified facts. AI cannot make that judgment. It can assist with formatting, research, and drafting — but the substantive charging decision must be 100% human.
+
+**In practice:** AI-drafted incident reports can inform charging decisions. AI should never *make* them.
+
+---
+
+## Red Light #2: Anything Signed Under Penalty of Perjury Without Personal Verification
+
+**What it means:** Any legal document — incident reports, sworn affidavits, search warrant applications, court filings — that the signer attests to under oath must contain only facts the signer has personally verified.
+
+**Why it's red:** "I let the AI draft it and it looked right" is not a legal defense. Signing a document under penalty of perjury means you are personally accountable for every fact it contains. If the AI hallucinated a detail and you signed it, you committed perjury — regardless of your intent.
+
+**In practice:** This is why AI report drafting is yellow, not red — because with proper verification, the officer can attest to the content. It becomes red the moment an officer signs without verification.
+
+---
+
+## Red Light #3: Public ChatGPT or Consumer AI on CJIS or PHI Data
+
+**What it means:** Inputting any criminal justice information (case files, suspect data, investigation details, BWC descriptions) or protected health information (patient records, EMS run reports) into general consumer AI tools like ChatGPT, Google Bard, or similar public platforms.
+
+**Why it's red:** Consumer AI tools send your inputs to commercial servers. That data may be used to train future models. It is not encrypted to CJIS standards. It is not protected under HIPAA. The moment you paste a suspect's name, a case number, or a patient's medical details into a public AI tool, you have potentially committed a CJIS violation, a HIPAA violation, or both.
+
+We cover CJIS and HIPAA in detail in Module 5 — but the rule is simple enough to state here: **if it's case data or patient data, it goes in approved, compliant tools only.**
+
+**In practice:** Using ChatGPT to write a generic email? Green. Using ChatGPT to summarize a case file? Red.
+
+---
+
+## Red Light #4: Unvetted Consumer AI on Personal Devices
+
+**What it means:** Using AI apps or tools downloaded to a personal phone or device to perform any work-related task involving department information, case data, suspect information, or operational details.
+
+**Why it's red:** Personal devices are not subject to department data controls, audit logs, or CJIS security requirements. A consumer AI app on your personal phone has no data handling accountability to your department, the FBI, or your department's IT security policy.
+
+Beyond the compliance risk: if an AI app on your personal phone processes any case-related information and that information later becomes relevant in court, the chain of custody for that data is broken. Defense attorneys will find it.
+
+**In practice:** Use department-approved platforms on department-issued or MDM-enrolled devices.
+
+<CodeLab title="Red Light Scenario Review">
+
+For each scenario, identify whether it's a Red Light situation and what the specific violation is.
+
+**Scenario 1:** A detective copies a suspect's criminal history summary from the department database and pastes it into ChatGPT to ask for a "pattern analysis."
+
+**Scenario 2:** A paramedic uses an approved department AI tool running on a HIPAA-compliant server to auto-complete a patient care report after a call.
+
+**Scenario 3:** An officer downloads a popular AI writing app on their personal iPhone and uses it to draft a use-of-force report during their commute home.
+
+**Scenario 4:** A fire captain uses an AI scheduling tool (approved, department-issued device) to build next month's shift schedule.
+
+**Scenario 5:** A prosecutor's office asks a detective to use AI to draft the felony charging language for an assault case.
+
+---
+
+**Answers:**
+
+1. 🔴 **Red** — CJIS violation. Criminal history is protected CJI. Pasting it into ChatGPT sends it to a non-compliant server.
+
+2. ✅ **Yellow** — Not red. Approved tool, compliant server, HIPAA-protected. Requires review before submission.
+
+3. 🔴 **Red** — Two violations: personal device (no MDM enrollment, no audit trail) and potentially CJIS data leaving a secure environment.
+
+4. ✅ **Green** — Scheduling is administrative. Approved device, no CJIS/PHI data involved.
+
+5. 🔴 **Red** — AI should never write charging documents. Charging is a legal judgment that must be made by an accountable human professional.
+
+</CodeLab>
+
+<Pitfall title="'It's Just Faster This Way'">
+
+Most red-light violations don't happen because someone is trying to do something wrong. They happen because someone is trying to work efficiently under time pressure and the shortcut seems harmless.
+
+Pasting case details into ChatGPT to get a quick summary "just this once" is how CJIS violations happen. Using a personal AI app to draft a report on the way home is how chain-of-custody breaks happen.
+
+**The fact that it's convenient doesn't change what it is.** Red light means the risk is too high — not the risk of getting caught, but the risk of actual harm: to a prosecution, to a patient's privacy, to your career.
+
+</Pitfall>
+
+<Quiz question="An officer used a non-approved AI tool to help draft a search warrant affidavit. The affidavit was reviewed and filed. Six months later, defense counsel discovers the AI tool was used. What are the potential consequences?">
+
+<div>
+
+**Multiple serious consequences are possible:**
+
+1. **The warrant may be challenged.** Defense will argue the affidavit doesn't represent the officer's personal knowledge and judgment — it represents an AI's output. If the court agrees, evidence seized under that warrant could be suppressed.
+
+2. **Brady implications.** If the AI-generated content contained inaccuracies that the officer didn't catch, prosecutors may be required to disclose this as potentially exculpatory information.
+
+3. **Officer credibility.** The officer's attestation under penalty of perjury is now in question. Defense will use this in cross-examination — in this case and potentially in future cases.
+
+4. **Department liability.** If no policy existed prohibiting this, the department faces exposure for failing to establish AI use guardrails.
+
+5. **CJIS violation review.** If case-sensitive data was processed by a non-compliant tool, an FBI CJIS audit may result.
+
+The search warrant is the most consequential place for AI to introduce errors — which is exactly why it's a hard red light.
+
+</div>
+</Quiz>
+
+---
+
+## Module 4 Complete
+
+You now have the Traffic Light Framework in your kit:
+
+- **Green:** Administrative tasks, training, routing, approved bulk processing with human verification
+- **Yellow:** Report drafting, AI-suggested triage, BWC summarization — all with mandatory review before action
+- **Red:** Charging documents, unverified legal attestations, consumer AI on case data, personal device use with department information
+
+**Module 5** covers the compliance rules behind the red lights — CJIS, HIPAA, and what Washington State will require by July 2026.

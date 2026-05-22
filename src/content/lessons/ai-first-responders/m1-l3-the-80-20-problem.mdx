@@ -1,0 +1,134 @@
+---
+title: "The 80/20 Problem"
+description: "AI report tools are roughly 80% accurate. That remaining 20% is a legal landmine — and it's your job to find it."
+module: 1
+moduleTitle: "The Shift Is Already Here"
+lesson: 3
+duration: "15 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## The Number Everyone Quotes
+
+Talk to any vendor selling AI report-writing tools and you'll hear about the time savings. They're real:
+
+- Officers currently spend **1–2 hours** writing a single incident report narrative
+- AI tools like Code Four draft it in **under 60 seconds**
+- That's hours of administrative time back on patrol, per officer, per shift
+
+These numbers get departments to sign contracts. And they should — the efficiency gain is genuine.
+
+But there's a second number vendors mention more quietly.
+
+**The drafts are approximately 80% accurate.**
+
+---
+
+## What 20% Actually Means
+
+Eighty percent sounds like an A-minus. In a performance review, it's fine.
+
+In a legal document that goes into a case file, gets handed to prosecutors, and may be read aloud in court — **20% inaccuracy is a minefield.**
+
+Here's the math on a typical shift:
+
+| Scenario | Numbers |
+|---|---|
+| Reports drafted per shift | 8 |
+| AI accuracy rate | 80% |
+| Reports with at least one error | ~2 per shift |
+| Reports per year (250 shifts) | 2,000 |
+| Reports with potential hallucinations | ~400 per year |
+
+Four hundred reports per year with errors bearing your signature — if you don't catch them.
+
+---
+
+## The Central Tension
+
+This is the honest tradeoff:
+
+**The old way:** Officers spend 2 hours writing the report. They're exhausted. They miss urgent calls. The paperwork backlog builds. But the narrative, in their own words, is accurate.
+
+**The new way:** AI drafts the report in under a minute. Officers get back on patrol faster. But the draft requires careful human review — and the 20% that's wrong can cause serious legal damage if it slips through.
+
+Neither extreme works:
+- Blocking AI entirely keeps officers buried in paperwork while colleagues at other departments move faster
+- Using AI without verification introduces legal liability at scale
+
+The solution is a trained, disciplined **human-in-the-loop** — which is exactly what this course builds.
+
+---
+
+## Where the 20% Comes From
+
+Understanding *why* AI makes errors helps you know *where* to look when reviewing a draft.
+
+**Background noise confusion** — The AI processes all audio, not just the officer's voice. TV dialogue, radio chatter, bystanders on the phone — all of it can get transcribed and interpreted as part of the incident. This is how the frog got into the Utah report.
+
+**Misattributed statements** — AI can confuse who said what, especially in chaotic scenes with multiple voices. A suspect's statement can end up attributed to the officer, or vice versa.
+
+**Missing context** — AI reads audio linearly. It doesn't know the physical layout of the scene, what the officer saw but didn't say aloud, or the significance of a pause.
+
+**Technical jargon gaps** — Dispatch codes, street names, drug terminology, medical terminology — these trip up general AI models not specifically trained on public safety language.
+
+<CodeLab title="The Redline Review">
+
+This is the core skill this course teaches. Practice it now with this simulated AI draft.
+
+**Scenario:** Officer responds to a noise complaint at a residential address. Two occupants present. No weapons. Verbal warning issued.
+
+**AI-generated draft:**
+> *"At 23:40 hours, Officer K. Webb responded to 819 Maple Ave regarding a noise disturbance. Upon arrival, Officer Webb contacted two individuals, Marcus T. and an unidentified female. Marcus T. stated the music was coming from a neighbor. Officer Webb subsequently discharged their firearm as a warning. The individuals agreed to lower the volume. No further action required."*
+
+**Your job:** Find the hallucination. Read every sentence.
+
+---
+
+**The hallucination:** "Officer Webb subsequently discharged their firearm as a warning" — this event never happened. The AI likely misprocessed a loud sound in the audio (a door slam, a car backfire, the music itself) as a firearm discharge.
+
+**Why it's critical:** Filing this report means attesting that an officer discharged a weapon. That triggers use-of-force reporting, potential IA review, and prosecutorial questions in any future case involving this officer.
+
+**The fix:** Delete the sentence. Note in the report that no force was used. Done — but only if you caught it.
+
+</CodeLab>
+
+<Pitfall title="Reading the Draft Instead of Reviewing It">
+
+There's a difference between *reading* a document and *reviewing* it.
+
+Reading is passive — your eyes move across the text and you absorb the general meaning.
+
+Reviewing is active — you interrogate every specific claim: *Did this happen? Can I verify this from my BWC? Is this exactly what was said?*
+
+Most AI report errors survive because officers read their drafts rather than review them. After a long shift, your brain fills in what it expects to see — not what's actually there.
+
+**Technique:** Review your AI draft against your body-cam footage for any scene with significant action, multiple voices, or unusual events. Don't rely on memory alone.
+
+</Pitfall>
+
+<Quiz question="An AI draft contains a subtle error — a witness's name is slightly misspelled and their statement is paraphrased inaccurately. The overall report reads correctly. What should the officer do?">
+
+<div>
+
+**Correct and file the accurate version — even for small errors.**
+
+Every detail in an incident report is potentially discoverable. Defense attorneys look for inconsistencies between the AI draft and other records (CAD logs, BWC footage, witness statements). A minor inaccuracy that goes uncorrected becomes an impeachment opportunity.
+
+The officer's legal standard isn't "mostly accurate." It's **attesting to the truth of the document**. Small errors matter because they signal that the document wasn't carefully reviewed — which raises questions about what else wasn't caught.
+
+</div>
+</Quiz>
+
+---
+
+## The Bottom Line
+
+AI report writing is a genuine leap forward in efficiency. It's going to become standard practice. Fighting that reality wastes energy.
+
+What you control is the quality of your review. A disciplined 5-minute redline of an AI draft protects you legally, serves the case, and still saves you 90 minutes over writing from scratch.
+
+**Module 2 starts now.** Time to meet the tools in detail.
