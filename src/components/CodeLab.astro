@@ -1,0 +1,12 @@
+---
+export interface Props {
+  title: string;
+}
+const { title } = Astro.props;
+---
+<div class="learning-block lab">
+  <div class="learning-block-title">💻 Code Lab: {title}</div>
+  <div class="text-gray-700 text-sm leading-relaxed space-y-3">
+    <slot />
+  </div>
+</div>

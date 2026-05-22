@@ -1,0 +1,170 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import Sidebar from '../components/Sidebar.astro';
+import YouTubeEmbed from '../components/YouTubeEmbed.astro';
+import { getCollection } from 'astro:content';
+
+export interface Props {
+  title: string;
+  description?: string;
+  module: number;
+  moduleTitle: string;
+  lesson: number;
+  duration?: string;
+  youtubeId?: string;
+  slug: string;
+}
+
+const {
+  title,
+  description,
+  module: moduleNum,
+  moduleTitle,
+  lesson: lessonNum,
+  duration,
+  youtubeId,
+  slug,
+} = Astro.props;
+
+const allLessons = await getCollection('lessons');
+const base = import.meta.env.BASE_URL;
+---
+
+<BaseLayout title={`${title} | Course`} description={description}>
+  <div class="flex h-screen overflow-hidden bg-gray-50">
+
+    <!-- ── Sidebar ─────────────────────────────────── -->
+    <Sidebar allLessons={allLessons} currentSlug={slug} />
+
+    <!-- ── Main content ───────────────────────────── -->
+    <main class="flex-1 overflow-y-auto">
+
+      <!-- Top bar -->
+      <header class="sticky top-0 z-10 bg-white border-b border-gray-200 px-8 py-3 flex items-center justify-between">
+        <div class="flex items-center gap-3 text-sm text-gray-500">
+          <a href={base} class="hover:text-brand-600 font-medium">Home</a>
+          <span>›</span>
+          <span class="text-gray-400">Module {moduleNum}</span>
+          <span>›</span>
+          <span class="text-gray-800 font-semibold truncate max-w-xs">{title}</span>
+        </div>
+        {duration && (
+          <span class="text-xs font-medium text-gray-400 bg-gray-100 px-2.5 py-1 rounded-full">
+            ⏱ {duration}
+          </span>
+        )}
+      </header>
+
+      <!-- Lesson body -->
+      <article class="max-w-3xl mx-auto px-8 py-12">
+        <!-- Module badge -->
+        <div class="mb-4">
+          <span class="inline-block text-xs font-bold uppercase tracking-widest text-brand-600 bg-brand-50 px-3 py-1 rounded-full">
+            Module {moduleNum} · {moduleTitle}
+          </span>
+        </div>
+
+        <!-- Title -->
+        <h1 class="text-4xl font-bold text-gray-900 mb-3 leading-tight">{title}</h1>
+        {description && (
+          <p class="text-lg text-gray-500 mb-8 leading-relaxed">{description}</p>
+        )}
+
+        <!-- YouTube embed (if provided) -->
+        {youtubeId && (
+          <div class="mb-10">
+            <YouTubeEmbed id={youtubeId} />
+          </div>
+        )}
+
+        <!-- MDX content -->
+        <div class="lesson-prose">
+          <slot />
+        </div>
+
+        <!-- Lesson navigation footer -->
+        <div class="mt-16 pt-8 border-t border-gray-200 flex items-center justify-between">
+          <div id="prev-lesson-nav"></div>
+          <button
+            id="complete-btn"
+            data-slug={slug}
+            class="btn-primary"
+          >
+            ✅ Mark as Complete
+          </button>
+          <div id="next-lesson-nav"></div>
+        </div>
+      </article>
+    </main>
+  </div>
+</BaseLayout>
+
+<script>
+  // ── Progress tracking via localStorage ──────────────
+  const STORAGE_KEY = 'course-progress';
+
+  function getProgress(): Record<string, 'complete' | 'visited'> {
+    try {
+      return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+    } catch {
+      return {};
+    }
+  }
+
+  function setProgress(progress: Record<string, 'complete' | 'visited'>) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+  }
+
+  // Mark current lesson as visited
+  const completeBtn = document.getElementById('complete-btn') as HTMLButtonElement | null;
+  const slug = completeBtn?.dataset.slug;
+
+  if (slug) {
+    const progress = getProgress();
+    if (!progress[slug]) {
+      progress[slug] = 'visited';
+      setProgress(progress);
+    }
+
+    // Update sidebar indicators
+    document.querySelectorAll(`[data-lesson-slug="${slug}"]`).forEach(el => {
+      el.setAttribute('data-status', progress[slug]);
+    });
+
+    // Complete button handler
+    completeBtn?.addEventListener('click', () => {
+      const p = getProgress();
+      p[slug] = 'complete';
+      setProgress(p);
+
+      // Update all sidebar indicators for this lesson
+      document.querySelectorAll(`[data-lesson-slug="${slug}"]`).forEach(el => {
+        el.setAttribute('data-status', 'complete');
+        const icon = el.querySelector('.status-icon');
+        if (icon) icon.textContent = '✅';
+      });
+
+      completeBtn.textContent = '✅ Completed!';
+      completeBtn.disabled = true;
+      completeBtn.classList.add('opacity-60');
+    });
+
+    // Restore complete state on load
+    if (progress[slug] === 'complete') {
+      completeBtn.textContent = '✅ Completed!';
+      completeBtn.disabled = true;
+      completeBtn.classList.add('opacity-60');
+    }
+  }
+
+  // ── Restore all sidebar states from localStorage ──
+  const allProgress = getProgress();
+  document.querySelectorAll('[data-lesson-slug]').forEach(el => {
+    const s = el.getAttribute('data-lesson-slug');
+    if (s && allProgress[s]) {
+      el.setAttribute('data-status', allProgress[s]);
+      const icon = el.querySelector('.status-icon');
+      if (icon) icon.textContent = allProgress[s] === 'complete' ? '✅' : '📖';
+    }
+  });
+</script>

@@ -1,0 +1,121 @@
+@import '@fontsource/plus-jakarta-sans/400.css';
+@import '@fontsource/plus-jakarta-sans/500.css';
+@import '@fontsource/plus-jakarta-sans/600.css';
+@import '@fontsource/plus-jakarta-sans/700.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+    font-size: 17px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body {
+    @apply bg-gray-50 text-gray-800;
+  }
+
+  /* Scrollbar styling */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { @apply bg-gray-100; }
+  ::-webkit-scrollbar-thumb { @apply bg-gray-300 rounded-full; }
+  ::-webkit-scrollbar-thumb:hover { @apply bg-gray-400; }
+}
+
+@layer components {
+  /* ── Learning Blocks ─────────────────────────────── */
+  .learning-block {
+    @apply rounded-xl border-l-4 p-5 my-8 shadow-sm;
+  }
+
+  .learning-block-title {
+    @apply font-bold text-sm uppercase tracking-wide mb-3;
+  }
+
+  /* Code Lab */
+  .learning-block.lab {
+    @apply bg-lab-bg border-lab-border;
+  }
+  .learning-block.lab .learning-block-title {
+    @apply text-lab-title;
+  }
+
+  /* Common Pitfall */
+  .learning-block.pitfall {
+    @apply bg-pitfall-bg border-pitfall-border;
+  }
+  .learning-block.pitfall .learning-block-title {
+    @apply text-pitfall-title;
+  }
+
+  /* Knowledge Check */
+  .learning-block.quiz {
+    @apply bg-quiz-bg border-quiz-border;
+  }
+  .learning-block.quiz .learning-block-title {
+    @apply text-quiz-title;
+  }
+
+  /* Quiz details/summary */
+  .learning-block.quiz details {
+    @apply mt-3;
+  }
+  .learning-block.quiz summary {
+    @apply cursor-pointer text-sm font-semibold text-quiz-title hover:underline select-none;
+  }
+  .learning-block.quiz details > div {
+    @apply mt-3 pl-4 border-l-2 border-quiz-border text-gray-700 text-sm leading-relaxed;
+  }
+
+  /* ── Sidebar nav items ───────────────────────────── */
+  .nav-lesson {
+    @apply flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-600
+           hover:bg-brand-50 hover:text-brand-700 transition-colors duration-150 cursor-pointer;
+  }
+  .nav-lesson.active {
+    @apply bg-brand-100 text-brand-800 font-semibold;
+  }
+  .nav-lesson.completed {
+    @apply text-gray-400;
+  }
+
+  /* ── Buttons ─────────────────────────────────────── */
+  .btn-primary {
+    @apply inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-brand-600 text-white
+           font-semibold text-sm shadow hover:bg-brand-700 active:scale-95
+           transition-all duration-150;
+  }
+  .btn-ghost {
+    @apply inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300
+           text-gray-700 font-medium text-sm hover:bg-gray-100 transition-colors duration-150;
+  }
+
+  /* ── Module cards (dashboard) ────────────────────── */
+  .module-card {
+    @apply bg-white rounded-2xl border border-gray-200 shadow-sm p-6
+           hover:shadow-md hover:-translate-y-0.5 transition-all duration-200;
+  }
+
+  /* ── Lesson content prose overrides ─────────────── */
+  .lesson-prose {
+    @apply prose prose-gray max-w-none;
+  }
+  .lesson-prose h1 { @apply text-3xl font-bold text-gray-900 mb-2; }
+  .lesson-prose h2 { @apply text-xl font-bold text-gray-900 mt-10 mb-3; }
+  .lesson-prose h3 { @apply text-lg font-semibold text-gray-800 mt-8 mb-2; }
+  .lesson-prose p  { @apply text-gray-700 leading-relaxed mb-4; }
+  .lesson-prose a  { @apply text-brand-600 underline underline-offset-2 hover:text-brand-800; }
+  .lesson-prose code { @apply bg-gray-100 text-gray-800 rounded px-1.5 py-0.5 text-sm font-mono; }
+  .lesson-prose pre { @apply bg-gray-900 text-gray-100 rounded-xl p-4 overflow-x-auto text-sm; }
+  .lesson-prose pre code { @apply bg-transparent text-gray-100 p-0; }
+  .lesson-prose ul { @apply list-disc list-inside space-y-1 text-gray-700; }
+  .lesson-prose ol { @apply list-decimal list-inside space-y-1 text-gray-700; }
+  .lesson-prose blockquote { @apply border-l-4 border-brand-300 pl-4 italic text-gray-500; }
+  .lesson-prose table { @apply w-full text-sm border-collapse; }
+  .lesson-prose th { @apply bg-gray-100 px-4 py-2 text-left font-semibold border border-gray-200; }
+  .lesson-prose td { @apply px-4 py-2 border border-gray-200; }
+  .lesson-prose img { @apply rounded-xl shadow-md my-6 w-full; }
+}

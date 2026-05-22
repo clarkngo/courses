@@ -1,0 +1,152 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const allLessons = await getCollection('lessons');
+const base = import.meta.env.BASE_URL;
+
+// Group by module
+const modules = allLessons
+  .sort((a, b) => a.data.module - b.data.module || a.data.lesson - b.data.lesson)
+  .reduce<Record<number, { title: string; lessons: typeof allLessons }>>(
+    (acc, entry) => {
+      const m = entry.data.module;
+      if (!acc[m]) acc[m] = { title: entry.data.moduleTitle, lessons: [] };
+      acc[m].lessons.push(entry);
+      return acc;
+    },
+    {}
+  );
+
+const totalLessons = allLessons.length;
+---
+
+<BaseLayout title="Course Dashboard" description="Your learning journey starts here.">
+  <div class="min-h-screen bg-gray-50">
+
+    <!-- ── Nav ──────────────────────────────────────── -->
+    <nav class="bg-white border-b border-gray-200 px-6 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 rounded-lg bg-brand-600 flex items-center justify-center text-white font-bold text-sm">C</div>
+        <span class="font-bold text-gray-900">Course Platform</span>
+      </div>
+      <div class="flex items-center gap-4">
+        <span id="nav-progress" class="text-sm text-gray-500 hidden sm:block">Loading progress…</span>
+      </div>
+    </nav>
+
+    <!-- ── Hero ─────────────────────────────────────── -->
+    <section class="bg-gradient-to-br from-brand-700 via-brand-600 to-brand-500 text-white px-6 py-20">
+      <div class="max-w-4xl mx-auto text-center">
+        <p class="text-brand-200 text-sm font-semibold uppercase tracking-widest mb-4">Welcome back 👋</p>
+        <h1 class="text-4xl sm:text-5xl font-bold mb-5 leading-tight">
+          Master the Skills That<br class="hidden sm:block"/> Move Your Career Forward
+        </h1>
+        <p class="text-brand-100 text-lg max-w-2xl mx-auto mb-8 leading-relaxed">
+          Hands-on lessons, real-world projects, and interactive exercises — all in one place.
+          Learn at your own pace. Build things that matter.
+        </p>
+
+        <!-- Progress hero bar -->
+        <div class="bg-white/10 rounded-2xl p-6 max-w-lg mx-auto mb-8">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-sm font-semibold text-white">Your Progress</span>
+            <span id="hero-progress-pct" class="text-sm font-bold text-brand-200">0 / {totalLessons} lessons</span>
+          </div>
+          <div class="h-2 bg-white/20 rounded-full overflow-hidden">
+            <div id="hero-progress-bar" class="h-full bg-white rounded-full transition-all duration-700" style="width: 0%"></div>
+          </div>
+        </div>
+
+        <a
+          id="cta-btn"
+          href={allLessons.length > 0 ? `${base}lessons/${allLessons.sort((a,b) => a.data.module - b.data.module || a.data.lesson - b.data.lesson)[0].slug}` : '#'}
+          class="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl bg-white text-brand-700 font-bold shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-150 text-base"
+        >
+          🚀 Start Learning
+        </a>
+      </div>
+    </section>
+
+    <!-- ── Module cards ──────────────────────────────── -->
+    <section class="max-w-5xl mx-auto px-6 py-16">
+      <h2 class="text-2xl font-bold text-gray-900 mb-2">Course Curriculum</h2>
+      <p class="text-gray-500 mb-10">{totalLessons} lessons across {Object.keys(modules).length} modules</p>
+
+      <div class="grid gap-6 sm:grid-cols-2">
+        {Object.entries(modules).map(([modNum, mod], idx) => (
+          <div class="module-card group">
+
+            <!-- Module header -->
+            <div class="flex items-start justify-between mb-4">
+              <div>
+                <span class="text-xs font-bold uppercase tracking-widest text-brand-500 mb-1 block">
+                  Module {modNum}
+                </span>
+                <h3 class="text-lg font-bold text-gray-900 group-hover:text-brand-700 transition-colors">
+                  {mod.title}
+                </h3>
+              </div>
+              <span class="text-2xl flex-shrink-0 ml-2">
+                {['🎯','🛠️','⚡','🚀','🔥','💡'][idx % 6]}
+              </span>
+            </div>
+
+            <!-- Lesson list -->
+            <ul class="space-y-2 mb-5">
+              {mod.lessons.map(lesson => (
+                <li class="flex items-center gap-2 text-sm text-gray-600">
+                  <span class="w-4 h-4 rounded-full border-2 border-gray-200 flex-shrink-0 inline-block"></span>
+                  {lesson.data.title}
+                  {lesson.data.duration && (
+                    <span class="ml-auto text-xs text-gray-400">{lesson.data.duration}</span>
+                  )}
+                </li>
+              ))}
+            </ul>
+
+            <!-- CTA -->
+            <a
+              href={`${base}lessons/${mod.lessons[0].slug}`}
+              class="btn-primary text-xs w-full justify-center"
+            >
+              Start Module {modNum} →
+            </a>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- ── Footer ────────────────────────────────────── -->
+    <footer class="border-t border-gray-200 py-8 text-center text-sm text-gray-400">
+      Built with Astro · Deployed on GitHub Pages
+    </footer>
+  </div>
+</BaseLayout>
+
+<script define:vars={{ totalLessons }}>
+  // Update hero progress from localStorage
+  const STORAGE_KEY = 'course-progress';
+  let progress = {};
+  try { progress = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch {}
+
+  const done = Object.values(progress).filter(v => v === 'complete').length;
+  const pct = totalLessons > 0 ? Math.round((done / totalLessons) * 100) : 0;
+
+  const bar = document.getElementById('hero-progress-bar');
+  const pctEl = document.getElementById('hero-progress-pct');
+  const navEl = document.getElementById('nav-progress');
+
+  if (bar) bar.style.width = `${pct}%`;
+  if (pctEl) pctEl.textContent = `${done} / ${totalLessons} lessons`;
+  if (navEl) {
+    navEl.textContent = `${pct}% complete`;
+    navEl.classList.remove('hidden');
+  }
+
+  // Update CTA button to resume if already started
+  if (done > 0) {
+    const cta = document.getElementById('cta-btn');
+    if (cta) cta.textContent = '▶ Resume Learning';
+  }
+</script>

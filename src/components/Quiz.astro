@@ -1,0 +1,16 @@
+---
+export interface Props {
+  question: string;
+}
+const { question } = Astro.props;
+---
+<div class="learning-block quiz">
+  <div class="learning-block-title">🧠 Knowledge Check</div>
+  <p class="text-gray-800 font-medium text-sm mb-3">{question}</p>
+  <details>
+    <summary>Reveal Answer &amp; Explanation</summary>
+    <div>
+      <slot />
+    </div>
+  </details>
+</div>

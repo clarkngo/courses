@@ -1,0 +1,146 @@
+---
+title: "Understanding State Management"
+description: "Learn why state is the heartbeat of every interactive app, and how to manage it without losing your mind."
+module: 2
+moduleTitle: "Building Real Features"
+lesson: 1
+duration: "25 min"
+---
+
+import CodeLab from '../../components/CodeLab.astro';
+import Pitfall from '../../components/Pitfall.astro';
+import Quiz from '../../components/Quiz.astro';
+
+## State Is Everything
+
+Every interactive UI is just state made visible.
+
+A button that changes color on hover? That's hover state. A form that shows an error? That's validation state. A sidebar that remembers which lesson you completed? That's progress state.
+
+Understanding state — what it is, where it lives, and how it flows — is the skill that separates developers who struggle with UI from those who build it confidently.
+
+---
+
+## The Three Questions of State
+
+Before you write any state management code, answer these three questions:
+
+| Question | Answer determines... |
+|---|---|
+| **What** data needs to be tracked? | What goes in state |
+| **Where** does it need to be accessed? | Where state lives |
+| **When** does it need to update? | How state changes |
+
+Getting clear on these three things will save you from 80% of state-related bugs before you write a single line of code.
+
+---
+
+## Local vs. Shared State
+
+Not all state is equal.
+
+**Local state** — lives in a single component. A dropdown's open/closed status, a form field's current value. Keep this local. Don't hoist it unless something else needs it.
+
+**Shared state** — needs to be accessed by multiple components. User authentication, a shopping cart, course progress. This needs to live higher up — in a parent component, a context, or a dedicated store.
+
+<CodeLab title="Build a Progress Tracker">
+
+We'll build a simple progress tracker that persists across page reloads using `localStorage`.
+
+**Step 1** — Define your state shape:
+
+```js
+// What we track: which lessons are complete
+const initialState = {
+  completedLessons: [], // array of lesson IDs
+  lastVisited: null,    // slug of last-opened lesson
+};
+```
+
+**Step 2** — Create a state manager:
+
+```js
+const STORAGE_KEY = 'course-progress';
+
+function loadState() {
+  try {
+    return JSON.parse(localStorage.getItem(STORAGE_KEY)) ?? initialState;
+  } catch {
+    return initialState;
+  }
+}
+
+function saveState(state) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+
+function completeLesson(lessonId) {
+  const state = loadState();
+  if (!state.completedLessons.includes(lessonId)) {
+    state.completedLessons.push(lessonId);
+    saveState(state);
+  }
+  return state;
+}
+```
+
+**Step 3** — Hook it up to a button:
+
+```js
+document.getElementById('complete-btn').addEventListener('click', () => {
+  const state = completeLesson('m2-l1-state-management');
+  console.log(`${state.completedLessons.length} lessons complete!`);
+});
+```
+
+Try clicking the button, refreshing the page, and checking the console. State persists! ✅
+
+</CodeLab>
+
+<Pitfall title="Mutating State Directly">
+
+This is the most common state bug in any framework:
+
+```js
+// ❌ Wrong — mutates the array in place
+state.completedLessons.push(lessonId);
+
+// ✅ Correct — creates a new array
+const newState = {
+  ...state,
+  completedLessons: [...state.completedLessons, lessonId],
+};
+```
+
+Direct mutation breaks reactivity in React, Vue, and Svelte because they track changes by reference equality. If the reference doesn't change, the UI doesn't update — even though your data did.
+
+Always treat state as immutable. Create a new object or array, don't modify the existing one.
+
+</Pitfall>
+
+<Quiz question="You have a dropdown component and a header component that both need to know if a user is logged in. Where should the auth state live?">
+
+<div>
+
+**In a shared location above both components** — not in either one individually.
+
+Since both the dropdown and the header need access, the auth state can't live in just one of them. Options include:
+
+- **A shared parent component** that passes it down as props
+- **A context / store** (React Context, Pinia, Zustand, etc.) that any component can subscribe to
+- **localStorage** for persistence across page loads (with a context layer on top for reactivity)
+
+The general rule: state should live in the **lowest common ancestor** of all the components that need it.
+
+</div>
+</Quiz>
+
+---
+
+## Coming Up in Module 3
+
+With state management under your belt, you're ready to build features that feel truly dynamic.
+
+In Module 3, we'll connect everything — API data, state management, and UI — into a complete, shippable feature.
+
+**Excellent work! You're halfway through the course.** 🎉
