@@ -12,6 +12,9 @@ export interface Props {
   lesson: number;
   duration?: string;
   youtubeId?: string;
+  courseSlug: string;
+  courseTitle: string;
+  courseColor?: string;
   slug: string;
 }
 
@@ -23,33 +26,46 @@ const {
   lesson: lessonNum,
   duration,
   youtubeId,
+  courseSlug,
+  courseTitle,
+  courseColor = '#3b63f5',
   slug,
 } = Astro.props;
 
 const allLessons = await getCollection('lessons');
+const courseLessons = allLessons
+  .filter(l => l.slug.startsWith(courseSlug + '/'))
+  .sort((a, b) => a.data.module - b.data.module || a.data.lesson - b.data.lesson);
+
 const base = import.meta.env.BASE_URL;
 ---
 
-<BaseLayout title={`${title} | Course`} description={description}>
+<BaseLayout title={`${title} | ${courseTitle}`} description={description}>
   <div class="flex h-screen overflow-hidden bg-gray-50">
 
     <!-- ── Sidebar ─────────────────────────────────── -->
-    <Sidebar allLessons={allLessons} currentSlug={slug} />
+    <Sidebar
+      courseLessons={courseLessons}
+      currentSlug={slug}
+      courseSlug={courseSlug}
+      courseTitle={courseTitle}
+      courseColor={courseColor}
+    />
 
     <!-- ── Main content ───────────────────────────── -->
     <main class="flex-1 overflow-y-auto">
 
       <!-- Top bar -->
       <header class="sticky top-0 z-10 bg-white border-b border-gray-200 px-8 py-3 flex items-center justify-between">
-        <div class="flex items-center gap-3 text-sm text-gray-500">
-          <a href={base} class="hover:text-brand-600 font-medium">Home</a>
+        <div class="flex items-center gap-2 text-sm text-gray-500 min-w-0">
+          <a href={base} class="hover:text-brand-600 font-medium flex-shrink-0">Home</a>
           <span>›</span>
-          <span class="text-gray-400">Module {moduleNum}</span>
+          <a href={`${base}courses/${courseSlug}/`} class="hover:text-brand-600 flex-shrink-0 truncate max-w-[120px]">{courseTitle}</a>
           <span>›</span>
-          <span class="text-gray-800 font-semibold truncate max-w-xs">{title}</span>
+          <span class="text-gray-800 font-semibold truncate">{title}</span>
         </div>
         {duration && (
-          <span class="text-xs font-medium text-gray-400 bg-gray-100 px-2.5 py-1 rounded-full">
+          <span class="text-xs font-medium text-gray-400 bg-gray-100 px-2.5 py-1 rounded-full flex-shrink-0 ml-4">
             ⏱ {duration}
           </span>
         )}
@@ -59,7 +75,10 @@ const base = import.meta.env.BASE_URL;
       <article class="max-w-3xl mx-auto px-8 py-12">
         <!-- Module badge -->
         <div class="mb-4">
-          <span class="inline-block text-xs font-bold uppercase tracking-widest text-brand-600 bg-brand-50 px-3 py-1 rounded-full">
+          <span
+            class="inline-block text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full"
+            style={`background-color: ${courseColor}18; color: ${courseColor}`}
+          >
             Module {moduleNum} · {moduleTitle}
           </span>
         </div>
@@ -70,7 +89,7 @@ const base = import.meta.env.BASE_URL;
           <p class="text-lg text-gray-500 mb-8 leading-relaxed">{description}</p>
         )}
 
-        <!-- YouTube embed (if provided) -->
+        <!-- YouTube embed -->
         {youtubeId && (
           <div class="mb-10">
             <YouTubeEmbed id={youtubeId} />
@@ -82,82 +101,75 @@ const base = import.meta.env.BASE_URL;
           <slot />
         </div>
 
-        <!-- Lesson navigation footer -->
-        <div class="mt-16 pt-8 border-t border-gray-200 flex items-center justify-between">
-          <div id="prev-lesson-nav"></div>
+        <!-- Prev / Next navigation -->
+        <div class="mt-16 pt-8 border-t border-gray-200 flex items-center justify-between gap-4">
+          <div id="prev-lesson-nav" class="flex-1"></div>
           <button
             id="complete-btn"
             data-slug={slug}
-            class="btn-primary"
+            class="btn-primary flex-shrink-0"
           >
             ✅ Mark as Complete
           </button>
-          <div id="next-lesson-nav"></div>
+          <div id="next-lesson-nav" class="flex-1 flex justify-end"></div>
         </div>
       </article>
     </main>
   </div>
 </BaseLayout>
 
-<script>
-  // ── Progress tracking via localStorage ──────────────
+<script define:vars={{ courseLessons: courseLessons.map(l => ({ slug: l.slug, title: l.data.title })), courseSlug, slug, base: import.meta.env.BASE_URL }}>
   const STORAGE_KEY = 'course-progress';
 
-  function getProgress(): Record<string, 'complete' | 'visited'> {
-    try {
-      return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
-    } catch {
-      return {};
-    }
+  function getProgress() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch { return {}; }
   }
+  function setProgress(p) { localStorage.setItem(STORAGE_KEY, JSON.stringify(p)); }
 
-  function setProgress(progress: Record<string, 'complete' | 'visited'>) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
-  }
-
-  // Mark current lesson as visited
-  const completeBtn = document.getElementById('complete-btn') as HTMLButtonElement | null;
-  const slug = completeBtn?.dataset.slug;
-
+  // Mark visited
+  const completeBtn = document.getElementById('complete-btn');
   if (slug) {
     const progress = getProgress();
-    if (!progress[slug]) {
-      progress[slug] = 'visited';
-      setProgress(progress);
-    }
+    if (!progress[slug]) { progress[slug] = 'visited'; setProgress(progress); }
 
-    // Update sidebar indicators
-    document.querySelectorAll(`[data-lesson-slug="${slug}"]`).forEach(el => {
-      el.setAttribute('data-status', progress[slug]);
-    });
-
-    // Complete button handler
-    completeBtn?.addEventListener('click', () => {
-      const p = getProgress();
-      p[slug] = 'complete';
-      setProgress(p);
-
-      // Update all sidebar indicators for this lesson
-      document.querySelectorAll(`[data-lesson-slug="${slug}"]`).forEach(el => {
-        el.setAttribute('data-status', 'complete');
-        const icon = el.querySelector('.status-icon');
-        if (icon) icon.textContent = '✅';
-      });
-
-      completeBtn.textContent = '✅ Completed!';
-      completeBtn.disabled = true;
-      completeBtn.classList.add('opacity-60');
-    });
-
-    // Restore complete state on load
+    // Restore complete state
     if (progress[slug] === 'complete') {
       completeBtn.textContent = '✅ Completed!';
       completeBtn.disabled = true;
       completeBtn.classList.add('opacity-60');
     }
+
+    completeBtn?.addEventListener('click', () => {
+      const p = getProgress();
+      p[slug] = 'complete';
+      setProgress(p);
+      document.querySelectorAll(`[data-lesson-slug="${slug}"] .status-icon`).forEach(el => el.textContent = '✅');
+      completeBtn.textContent = '✅ Completed!';
+      completeBtn.disabled = true;
+      completeBtn.classList.add('opacity-60');
+    });
   }
 
-  // ── Restore all sidebar states from localStorage ──
+  // Build prev/next links
+  const currentIdx = courseLessons.findIndex(l => l.slug === slug);
+  const prev = courseLessons[currentIdx - 1];
+  const next = courseLessons[currentIdx + 1];
+
+  function lessonHref(fullSlug) {
+    const lessonSlug = fullSlug.replace(courseSlug + '/', '');
+    return `${base}courses/${courseSlug}/lessons/${lessonSlug}`;
+  }
+
+  if (prev) {
+    document.getElementById('prev-lesson-nav').innerHTML =
+      `<a href="${lessonHref(prev.slug)}" class="btn-ghost text-sm">← ${prev.title}</a>`;
+  }
+  if (next) {
+    document.getElementById('next-lesson-nav').innerHTML =
+      `<a href="${lessonHref(next.slug)}" class="btn-primary text-sm">${next.title} →</a>`;
+  }
+
+  // Restore all sidebar states
   const allProgress = getProgress();
   document.querySelectorAll('[data-lesson-slug]').forEach(el => {
     const s = el.getAttribute('data-lesson-slug');

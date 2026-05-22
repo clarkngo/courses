@@ -1,0 +1,140 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const courses = await getCollection('courses');
+  return courses
+    .filter(c => c.data.status === 'available')
+    .map(course => ({
+      params: { courseSlug: course.slug },
+      props: { course },
+    }));
+}
+
+const { course } = Astro.props;
+const { courseSlug } = Astro.params;
+const base = import.meta.env.BASE_URL;
+
+const allLessons = await getCollection('lessons');
+const courseLessons = allLessons
+  .filter(l => l.slug.startsWith(courseSlug + '/'))
+  .sort((a, b) => a.data.module - b.data.module || a.data.lesson - b.data.lesson);
+
+// Group by module
+const modules = courseLessons.reduce<Record<number, { title: string; lessons: typeof courseLessons }>>(
+  (acc, entry) => {
+    const m = entry.data.module;
+    if (!acc[m]) acc[m] = { title: entry.data.moduleTitle, lessons: [] };
+    acc[m].lessons.push(entry);
+    return acc;
+  },
+  {}
+);
+
+const firstLesson = courseLessons[0];
+const lessonSlug = firstLesson?.slug.replace(courseSlug + '/', '');
+---
+
+<BaseLayout title={`${course.data.title} | Courses`} description={course.data.description}>
+  <div class="min-h-screen bg-gray-50">
+
+    <!-- Nav -->
+    <nav class="bg-white border-b border-gray-200 px-6 py-3 flex items-center gap-3 sticky top-0 z-10">
+      <a href={base} class="text-sm text-gray-500 hover:text-brand-600 transition-colors">← All Courses</a>
+      <span class="text-gray-300">›</span>
+      <span class="text-sm font-semibold text-gray-800">{course.data.title}</span>
+    </nav>
+
+    <!-- Hero -->
+    <section class="text-white px-6 py-16" style={`background: linear-gradient(135deg, ${course.data.color}dd, ${course.data.color}99)`}>
+      <div class="max-w-4xl mx-auto">
+        <span class="text-6xl block mb-4">{course.data.icon}</span>
+        <div class="inline-block bg-white/20 text-white text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full mb-4">
+          For {course.data.audience}
+        </div>
+        <h1 class="text-4xl font-bold mb-4">{course.data.title}</h1>
+        <p class="text-white/80 text-lg max-w-2xl leading-relaxed mb-8">{course.data.description}</p>
+
+        <div class="flex flex-wrap items-center gap-4">
+          {firstLesson && (
+            <a
+              href={`${base}courses/${courseSlug}/lessons/${lessonSlug}`}
+              class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-white font-bold shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-150 text-sm"
+              style={`color: ${course.data.color}`}
+            >
+              🚀 Start Course
+            </a>
+          )}
+          <div class="text-white/70 text-sm">
+            {courseLessons.length} lesson{courseLessons.length !== 1 ? 's' : ''} ·
+            {Object.keys(modules).length} module{Object.keys(modules).length !== 1 ? 's' : ''}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Curriculum -->
+    <section class="max-w-3xl mx-auto px-6 py-12">
+      <h2 class="text-xl font-bold text-gray-900 mb-8">Course Curriculum</h2>
+
+      <div class="space-y-6">
+        {Object.entries(modules).map(([modNum, mod]) => (
+          <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+            <!-- Module header -->
+            <div class="px-6 py-4 border-b border-gray-100 flex items-center gap-3">
+              <div
+                class="w-8 h-8 rounded-lg flex items-center justify-center text-white text-sm font-bold flex-shrink-0"
+                style={`background-color: ${course.data.color}`}
+              >
+                {modNum}
+              </div>
+              <div>
+                <p class="text-xs font-bold uppercase tracking-widest text-gray-400">Module {modNum}</p>
+                <p class="font-semibold text-gray-900">{mod.title}</p>
+              </div>
+            </div>
+
+            <!-- Lesson list -->
+            <ul class="divide-y divide-gray-50">
+              {mod.lessons.map(lesson => {
+                const slug = lesson.slug.replace(courseSlug + '/', '');
+                return (
+                  <li>
+                    <a
+                      href={`${base}courses/${courseSlug}/lessons/${slug}`}
+                      class="flex items-center gap-4 px-6 py-3.5 hover:bg-gray-50 transition-colors group"
+                    >
+                      <span class="text-gray-300 group-hover:text-gray-400 text-sm w-5 flex-shrink-0">
+                        {lesson.data.lesson}
+                      </span>
+                      <span class="flex-1 text-sm text-gray-700 group-hover:text-gray-900 font-medium transition-colors">
+                        {lesson.data.title}
+                      </span>
+                      {lesson.data.duration && (
+                        <span class="text-xs text-gray-400 flex-shrink-0">{lesson.data.duration}</span>
+                      )}
+                      <span class="text-gray-300 group-hover:text-brand-500 transition-colors">→</span>
+                    </a>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        ))}
+      </div>
+
+      {courseLessons.length === 0 && (
+        <div class="text-center py-16 text-gray-400">
+          <p class="text-4xl mb-4">🚧</p>
+          <p class="font-semibold">Lessons coming soon</p>
+          <p class="text-sm mt-1">Check back shortly.</p>
+        </div>
+      )}
+    </section>
+
+    <footer class="border-t border-gray-200 py-8 text-center text-sm text-gray-400">
+      Built with Astro · Deployed on GitHub Pages
+    </footer>
+  </div>
+</BaseLayout>

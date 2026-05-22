@@ -22,7 +22,7 @@ import * as path from 'path';
 import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const LESSONS_DIR = path.join(__dirname, '..', 'src', 'content', 'lessons');
+const LESSONS_BASE_DIR = path.join(__dirname, '..', 'src', 'content', 'lessons');
 
 // ── Prompt template (from init-prototype.md) ──────────────────────────────────
 const SYSTEM_PROMPT = `You are an expert Educational UX Designer and Technical Curriculum Developer.
@@ -91,9 +91,9 @@ function buildFrontmatter({ title, description, module, moduleTitle, lesson, dur
     youtubeId ? `youtubeId: "${youtubeId}"` : null,
     '---',
     '',
-    `import CodeLab from '../../components/CodeLab.astro';`,
-    `import Pitfall from '../../components/Pitfall.astro';`,
-    `import Quiz from '../../components/Quiz.astro';`,
+    `import CodeLab from '@components/CodeLab.astro';`,
+    `import Pitfall from '@components/Pitfall.astro';`,
+    `import Quiz from '@components/Quiz.astro';`,
     '',
   ]
     .filter(l => l !== null)
@@ -114,6 +114,11 @@ async function main() {
   console.log('\n🎓 Course Lesson Generator — powered by Claude\n');
   console.log('─'.repeat(50));
 
+  console.log('Available courses: physical-ai, digital-twins, ai-first-responders,');
+  console.log('                   secure-agentic-ai, ai-llm-skills, web-development,');
+  console.log('                   data-python, soft-skills\n');
+
+  const courseSlug  = await rl.question('Course slug (e.g. ai-first-responders): ');
   const moduleNum   = await rl.question('Module number (e.g. 1): ');
   const moduleTitle = await rl.question('Module title (e.g. "Getting Started"): ');
   const lessonNum   = await rl.question('Lesson number (e.g. 3): ');
@@ -131,6 +136,7 @@ async function main() {
 
   const userMessage = `Generate the complete MDX body content for this lesson:
 
+Course: ${courseSlug}
 Title: ${lessonTitle}
 Topic / Learning Goal: ${topic}
 Module: ${moduleNum} — ${moduleTitle}
@@ -178,18 +184,21 @@ Start with the first section heading or opening paragraph.`;
 
   const fullContent = frontmatter + body.trim() + '\n';
 
-  // Write the file
+  // Write the file into the course subfolder
+  const courseDir = path.join(LESSONS_BASE_DIR, slugify(courseSlug));
+  fs.mkdirSync(courseDir, { recursive: true });
+
   const filename = `m${moduleNum}-l${lessonNum}-${slugify(lessonTitle)}.mdx`;
-  const filepath = path.join(LESSONS_DIR, filename);
+  const filepath = path.join(courseDir, filename);
 
   fs.writeFileSync(filepath, fullContent, 'utf8');
 
   console.log('─'.repeat(50));
-  console.log(`✅ Lesson written to:\n   src/content/lessons/${filename}`);
+  console.log(`✅ Lesson written to:\n   src/content/lessons/${courseSlug}/${filename}`);
   console.log('\nNext steps:');
   console.log('  1. Review the file and adjust any details');
   console.log('  2. Run: npm run dev');
-  console.log(`  3. Visit: http://localhost:4321/courses/lessons/m${moduleNum}-l${lessonNum}-${slugify(lessonTitle)}`);
+  console.log(`  3. Visit: http://localhost:4321/courses/${courseSlug}/lessons/m${moduleNum}-l${lessonNum}-${slugify(lessonTitle)}`);
   console.log('');
 }
 

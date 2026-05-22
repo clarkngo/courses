@@ -2,118 +2,130 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
 
+const allCourses = await getCollection('courses');
 const allLessons = await getCollection('lessons');
 const base = import.meta.env.BASE_URL;
 
-// Group by module
-const modules = allLessons
-  .sort((a, b) => a.data.module - b.data.module || a.data.lesson - b.data.lesson)
-  .reduce<Record<number, { title: string; lessons: typeof allLessons }>>(
-    (acc, entry) => {
-      const m = entry.data.module;
-      if (!acc[m]) acc[m] = { title: entry.data.moduleTitle, lessons: [] };
-      acc[m].lessons.push(entry);
-      return acc;
-    },
-    {}
-  );
+const courses = allCourses.sort((a, b) => a.data.order - b.data.order);
 
-const totalLessons = allLessons.length;
+// Count lessons per course (slug starts with courseSlug/)
+function lessonCount(courseSlug: string) {
+  return allLessons.filter(l => l.slug.startsWith(courseSlug + '/')).length;
+}
+
+const availableCount = courses.filter(c => c.data.status === 'available').length;
+const totalCount = courses.length;
 ---
 
-<BaseLayout title="Course Dashboard" description="Your learning journey starts here.">
+<BaseLayout title="Course Catalog" description="Master AI, web development, data science, and more — all built for complete beginners.">
   <div class="min-h-screen bg-gray-50">
 
     <!-- ── Nav ──────────────────────────────────────── -->
-    <nav class="bg-white border-b border-gray-200 px-6 py-3 flex items-center justify-between">
+    <nav class="bg-white border-b border-gray-200 px-6 py-3 flex items-center justify-between sticky top-0 z-10">
       <div class="flex items-center gap-2">
         <div class="w-8 h-8 rounded-lg bg-brand-600 flex items-center justify-center text-white font-bold text-sm">C</div>
-        <span class="font-bold text-gray-900">Course Platform</span>
+        <span class="font-bold text-gray-900">Clark's Courses</span>
       </div>
-      <div class="flex items-center gap-4">
-        <span id="nav-progress" class="text-sm text-gray-500 hidden sm:block">Loading progress…</span>
+      <div class="text-sm text-gray-500">
+        {availableCount} of {totalCount} courses available
       </div>
     </nav>
 
     <!-- ── Hero ─────────────────────────────────────── -->
     <section class="bg-gradient-to-br from-brand-700 via-brand-600 to-brand-500 text-white px-6 py-20">
       <div class="max-w-4xl mx-auto text-center">
-        <p class="text-brand-200 text-sm font-semibold uppercase tracking-widest mb-4">Welcome back 👋</p>
+        <p class="text-brand-200 text-sm font-semibold uppercase tracking-widest mb-4">
+          Learn at your own pace
+        </p>
         <h1 class="text-4xl sm:text-5xl font-bold mb-5 leading-tight">
-          Master the Skills That<br class="hidden sm:block"/> Move Your Career Forward
+          Skills That Move the World Forward
         </h1>
         <p class="text-brand-100 text-lg max-w-2xl mx-auto mb-8 leading-relaxed">
-          Hands-on lessons, real-world projects, and interactive exercises — all in one place.
-          Learn at your own pace. Build things that matter.
+          Practical short courses on AI, technology, and the skills that matter —
+          built for complete beginners, taught with real-world examples.
         </p>
-
-        <!-- Progress hero bar -->
-        <div class="bg-white/10 rounded-2xl p-6 max-w-lg mx-auto mb-8">
-          <div class="flex items-center justify-between mb-3">
-            <span class="text-sm font-semibold text-white">Your Progress</span>
-            <span id="hero-progress-pct" class="text-sm font-bold text-brand-200">0 / {totalLessons} lessons</span>
-          </div>
-          <div class="h-2 bg-white/20 rounded-full overflow-hidden">
-            <div id="hero-progress-bar" class="h-full bg-white rounded-full transition-all duration-700" style="width: 0%"></div>
-          </div>
+        <div class="flex flex-wrap justify-center gap-3">
+          <span class="bg-white/20 text-white text-sm font-medium px-4 py-1.5 rounded-full">🤖 Physical AI</span>
+          <span class="bg-white/20 text-white text-sm font-medium px-4 py-1.5 rounded-full">🚨 First Responders</span>
+          <span class="bg-white/20 text-white text-sm font-medium px-4 py-1.5 rounded-full">🛡️ Secure AI</span>
+          <span class="bg-white/20 text-white text-sm font-medium px-4 py-1.5 rounded-full">💻 Web Dev</span>
+          <span class="bg-white/20 text-white text-sm font-medium px-4 py-1.5 rounded-full">🧠 LLMs</span>
         </div>
-
-        <a
-          id="cta-btn"
-          href={allLessons.length > 0 ? `${base}lessons/${allLessons.sort((a,b) => a.data.module - b.data.module || a.data.lesson - b.data.lesson)[0].slug}` : '#'}
-          class="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl bg-white text-brand-700 font-bold shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-150 text-base"
-        >
-          🚀 Start Learning
-        </a>
       </div>
     </section>
 
-    <!-- ── Module cards ──────────────────────────────── -->
-    <section class="max-w-5xl mx-auto px-6 py-16">
-      <h2 class="text-2xl font-bold text-gray-900 mb-2">Course Curriculum</h2>
-      <p class="text-gray-500 mb-10">{totalLessons} lessons across {Object.keys(modules).length} modules</p>
+    <!-- ── Course Catalog ────────────────────────────── -->
+    <section class="max-w-6xl mx-auto px-6 py-16">
+      <div class="flex items-end justify-between mb-10">
+        <div>
+          <h2 class="text-2xl font-bold text-gray-900">All Courses</h2>
+          <p class="text-gray-500 mt-1">{totalCount} courses · built for complete beginners</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="w-3 h-3 rounded-full bg-brand-500 inline-block"></span>
+          <span class="text-sm text-gray-500">Available</span>
+          <span class="w-3 h-3 rounded-full bg-gray-300 inline-block ml-3"></span>
+          <span class="text-sm text-gray-500">Coming soon</span>
+        </div>
+      </div>
 
-      <div class="grid gap-6 sm:grid-cols-2">
-        {Object.entries(modules).map(([modNum, mod], idx) => (
-          <div class="module-card group">
+      <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {courses.map(course => {
+          const count = lessonCount(course.slug);
+          const isAvailable = course.data.status === 'available';
+          const href = isAvailable ? `${base}courses/${course.slug}/` : undefined;
 
-            <!-- Module header -->
-            <div class="flex items-start justify-between mb-4">
-              <div>
-                <span class="text-xs font-bold uppercase tracking-widest text-brand-500 mb-1 block">
-                  Module {modNum}
-                </span>
-                <h3 class="text-lg font-bold text-gray-900 group-hover:text-brand-700 transition-colors">
-                  {mod.title}
-                </h3>
-              </div>
-              <span class="text-2xl flex-shrink-0 ml-2">
-                {['🎯','🛠️','⚡','🚀','🔥','💡'][idx % 6]}
-              </span>
-            </div>
-
-            <!-- Lesson list -->
-            <ul class="space-y-2 mb-5">
-              {mod.lessons.map(lesson => (
-                <li class="flex items-center gap-2 text-sm text-gray-600">
-                  <span class="w-4 h-4 rounded-full border-2 border-gray-200 flex-shrink-0 inline-block"></span>
-                  {lesson.data.title}
-                  {lesson.data.duration && (
-                    <span class="ml-auto text-xs text-gray-400">{lesson.data.duration}</span>
-                  )}
-                </li>
-              ))}
-            </ul>
-
-            <!-- CTA -->
-            <a
-              href={`${base}lessons/${mod.lessons[0].slug}`}
-              class="btn-primary text-xs w-full justify-center"
+          return (
+            <div
+              class={`module-card flex flex-col group ${isAvailable ? 'cursor-pointer' : 'opacity-75'}`}
+              style={isAvailable ? `--card-color: ${course.data.color}` : ''}
             >
-              Start Module {modNum} →
-            </a>
-          </div>
-        ))}
+              <!-- Card top accent bar -->
+              {isAvailable && (
+                <div
+                  class="h-1 rounded-t-2xl -mt-6 -mx-6 mb-5"
+                  style={`background-color: ${course.data.color}`}
+                ></div>
+              )}
+
+              <!-- Icon + status -->
+              <div class="flex items-start justify-between mb-3">
+                <span class="text-4xl">{course.data.icon}</span>
+                {isAvailable ? (
+                  <span class="text-xs font-bold px-2.5 py-1 rounded-full bg-green-100 text-green-700">
+                    ✓ Available
+                  </span>
+                ) : (
+                  <span class="text-xs font-medium px-2.5 py-1 rounded-full bg-gray-100 text-gray-500">
+                    Coming Soon
+                  </span>
+                )}
+              </div>
+
+              <!-- Title + description -->
+              <h3 class={`text-lg font-bold mb-2 ${isAvailable ? 'text-gray-900 group-hover:text-brand-700 transition-colors' : 'text-gray-600'}`}>
+                {course.data.title}
+              </h3>
+              <p class="text-sm text-gray-500 leading-relaxed flex-1 mb-5">
+                {course.data.description}
+              </p>
+
+              <!-- Meta + CTA -->
+              <div class="flex items-center justify-between mt-auto pt-4 border-t border-gray-100">
+                <span class="text-xs text-gray-400">
+                  {isAvailable && count > 0 ? `${count} lesson${count !== 1 ? 's' : ''}` : '🔒 In development'}
+                </span>
+                {isAvailable ? (
+                  <a href={href} class="btn-primary text-xs py-1.5 px-4">
+                    Start Course →
+                  </a>
+                ) : (
+                  <span class="text-xs text-gray-400 font-medium">Notify me</span>
+                )}
+              </div>
+            </div>
+          );
+        })}
       </div>
     </section>
 
@@ -123,30 +135,3 @@ const totalLessons = allLessons.length;
     </footer>
   </div>
 </BaseLayout>
-
-<script define:vars={{ totalLessons }}>
-  // Update hero progress from localStorage
-  const STORAGE_KEY = 'course-progress';
-  let progress = {};
-  try { progress = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch {}
-
-  const done = Object.values(progress).filter(v => v === 'complete').length;
-  const pct = totalLessons > 0 ? Math.round((done / totalLessons) * 100) : 0;
-
-  const bar = document.getElementById('hero-progress-bar');
-  const pctEl = document.getElementById('hero-progress-pct');
-  const navEl = document.getElementById('nav-progress');
-
-  if (bar) bar.style.width = `${pct}%`;
-  if (pctEl) pctEl.textContent = `${done} / ${totalLessons} lessons`;
-  if (navEl) {
-    navEl.textContent = `${pct}% complete`;
-    navEl.classList.remove('hidden');
-  }
-
-  // Update CTA button to resume if already started
-  if (done > 0) {
-    const cta = document.getElementById('cta-btn');
-    if (cta) cta.textContent = '▶ Resume Learning';
-  }
-</script>
