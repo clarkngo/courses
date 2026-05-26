@@ -6,7 +6,10 @@ const allCourses = await getCollection('courses');
 const allLessons = await getCollection('lessons');
 const base = import.meta.env.BASE_URL;
 
-const courses = allCourses.sort((a, b) => a.data.order - b.data.order);
+const courses = allCourses.sort((a, b) => {
+  const statusOrder = (s: string) => s === 'available' ? 0 : 1;
+  return statusOrder(a.data.status) - statusOrder(b.data.status) || a.data.order - b.data.order;
+});
 
 // Count lessons per course (slug starts with courseSlug/)
 function lessonCount(courseSlug: string) {
