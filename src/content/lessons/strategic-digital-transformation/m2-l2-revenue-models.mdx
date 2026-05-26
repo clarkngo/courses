@@ -1,0 +1,140 @@
+---
+title: "Revenue Models & Data-Driven Decision Making"
+description: "From Moneyball to the boardroom — six ways businesses make money, how analytics creates competitive advantage, and tonight's baseball game as a revenue case study."
+module: 2
+moduleTitle: "Digital Strategy & Market Intelligence"
+lesson: 2
+duration: "90 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## 00–30 min | Core Business Theory
+
+### Soccer Match Debrief (5 min)
+
+Each team shares one brand observation from last night's match: Which sponsor category dominated? What was the most creative activation you saw? Who in the crowd was *not* the target demographic — and why does that matter?
+
+---
+
+### The Six Revenue Models
+
+**How does a business actually make money?** There are six fundamental structures:
+
+| Model | Description | Example |
+|---|---|---|
+| **Per-unit (Transactional)** | Revenue from each individual sale | Toyota — each car sold |
+| **Subscription** | Recurring payments for ongoing access | Netflix, Spotify |
+| **Freemium** | Free tier acquires users; paid tier converts the most valuable | Spotify Free vs. Premium |
+| **Marketplace / Commission** | A percentage of every transaction between two other parties | Airbnb, Uber |
+| **Licensing** | Others pay to use your IP or model | ARM Holdings chips inside every iPhone |
+| **Advertising** | Reach an audience; charge others to access them | Google, Meta — the user is the product |
+
+**The strategic question is never "which model makes money?" — it is "which model creates the most durable relationship with the right customer?"**
+
+Subscription revenue is predictable and scales well. Marketplace revenue scales without owning assets. Advertising revenue can grow to enormous scale but is vulnerable to privacy regulation and platform competition. Per-unit revenue is simple but grows only as fast as unit volume.
+
+### The Moneyball Bridge
+
+In 2002, the Oakland Athletics had the third-lowest payroll in Major League Baseball. Their general manager, Billy Beane, used statistical analysis to identify systematically undervalued players — specifically, players the market mispriced because conventional scouts valued the wrong metrics. Oakland won 20 consecutive games with a payroll 40% of the New York Yankees.
+
+**The lesson is not about baseball.** It is about this: **data creates competitive advantage when it reveals value that competitors are not measuring.**
+
+Amazon built its recommendation engine on purchase data competitors assumed was noise. Netflix kept people watching by measuring *completion rates and rewatch rates* — not just views. Uber discovered surge pricing worked as a supply mechanism by measuring driver behavior, not customer complaints.
+
+**The Moneyball insight applied to business:** What does your industry currently measure? What does nobody measure? The unmeasured variable is often where the advantage lives.
+
+<Pitfall title="Data Is Not the Same as Insight">
+
+Having a lot of data is not a competitive advantage. Amazon has more data than almost any company on earth — but so do their competitors who also operate on the Amazon marketplace. The advantage comes from asking better questions of the data and acting on the answers faster. A small company that asks one sharp question of a small dataset can beat a large company drowning in dashboards it does not know how to read.
+
+</Pitfall>
+
+### Tonight's Observation Assignment — Baseball Match
+
+You are observing a **revenue model in a stadium.** Count: the number of visible ticket price tiers. Note: concession prices and compare them to grocery store baseline (a hot dog, a beer, a bottle of water). Observe: merchandise presence and placement. Identify: any digital monetization you see — in-seat ordering, fantasy sports integrations, app-based loyalty points. This is a multi-revenue-stream business operating in front of you in real time.
+
+---
+
+## 30–50 min | Executive AI Prompting
+
+### The Scenario
+
+A CFO asks a junior analyst to compare revenue model options for their company's new product line and recommend which KPIs leadership should track weekly.
+
+<CodeLab title="Live Prompt: Revenue Model Comparison & KPIs">
+
+```
+I am a business analyst at a company that makes smart home security
+cameras. We are deciding between three revenue models for our new
+product line: (1) one-time hardware sale at $199, (2) hardware at $99
+plus a $9.99/month cloud storage subscription, and (3) hardware free
+with a mandatory $19.99/month subscription. For each model, estimate
+the customer's 3-year total cost, our company's 3-year revenue per
+customer, and the key financial risk. Then recommend which model
+maximizes long-term revenue while minimizing churn risk. Finally, list
+the five KPIs the CEO should review every Monday morning.
+```
+
+**After reviewing, pressure-test the recommendation:**
+
+```
+Recalculate Model 2's 3-year revenue per customer assuming 8% monthly
+churn instead of the figure you used. At what monthly churn rate does
+Model 3 become more profitable than Model 2?
+```
+
+**The teaching moment:** Claude made assumptions about churn rates in its first answer. Pressing on those assumptions is where the human analyst adds value. Always ask: *"What assumptions is this recommendation making, and what happens if those assumptions are wrong?"*
+
+</CodeLab>
+
+---
+
+## 50–80 min | Team Portal Deployment
+
+### Build Module 5: Revenue Model & Data Strategy
+
+**Module 5 must contain:**
+
+1. **Revenue Model Declaration** — which of the six models your company uses (or should use), with a one-paragraph justification. If your company uses more than one, identify the primary and explain why the combination makes strategic sense.
+
+2. **3-Year Revenue Narrative** — a paragraph-form financial story (not a spreadsheet) describing how the company grows from Year 1 to Year 3. What happens in Year 1 that makes Year 2 possible? What milestone unlocks Year 3 growth?
+
+3. **Key Metrics Dashboard** — the five most important KPIs for your company, each with one sentence explaining why *that specific metric* matters more than the obvious alternatives. (Do not list "revenue" as a KPI — that is too obvious. What drives revenue?)
+
+4. **One Data Advantage** — one specific type of data your company could collect that competitors are not yet systematically using, and one strategic decision it would improve.
+
+**Standard reminder:** Every claim must be followed by *"because..."*
+
+---
+
+## 80–90 min | Live Push & Review
+
+Two portals displayed. Review focus: the KPIs.
+
+Are they specific to this company — or could they be copied unchanged into any company's portal? Generic KPIs (revenue, customer count, profit margin) signal surface-level thinking. Specific KPIs (customer activation rate within first 48 hours, geographic revenue concentration ratio, net revenue retention) signal analytical depth.
+
+<Quiz question="Spotify uses a freemium revenue model. What is the strategic logic of giving the product away for free — and what is the primary financial risk of this approach?">
+
+<div>
+
+**Strategic logic:** The freemium tier eliminates the primary barrier to trial — cost. Spotify acquires users at near-zero marginal cost, builds listening habit and library data, then converts the users who have demonstrated the highest engagement (power users, playlist builders, podcast consumers) into paying subscribers. The free tier is not a charity offering; it is the top of the acquisition funnel.
+
+**Primary financial risk:** Conversion rates and churn rates. If too few free users convert to paid, the advertising revenue from the free tier must subsidize an enormous cost base (music licensing, infrastructure, personnel). Spotify's streaming royalty obligations are largely fixed costs — they do not decrease when fewer users upgrade to premium. This is why Spotify ran at a loss for years while growing aggressively: the bet was that scale eventually produces a conversion rate that covers the fixed costs. By 2023 it was working. It was not guaranteed.
+
+</div>
+</Quiz>
+
+---
+
+> ## ⚾ Tonight: Professional Baseball Match
+>
+> Attend as a revenue analyst. Observe every monetization touchpoint. Your findings feed into the class discussion at the top of Session 6.
+
+---
+
+## Up Next
+
+Session 6 maps the customer journey from first impression to brand advocate — and connects it to the digital marketing channels that make the journey possible.

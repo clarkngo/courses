@@ -1,0 +1,139 @@
+---
+title: "Competitive Strategy & Dynamic Pricing"
+description: "Porter's Five Forces, three generic strategies, and the pricing decisions that separate market leaders from followers. Build your company's competitive position."
+module: 3
+moduleTitle: "Operations & Financial Literacy"
+lesson: 3
+duration: "90 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## 00–30 min | Core Business Theory
+
+### Strategy Is About Choosing What NOT to Do
+
+Michael Porter's insight: a company that tries to be everything to everyone ends up being nothing to anyone. Sustainable competitive advantage requires deliberate choices — including choosing which customers to ignore and which advantages to sacrifice.
+
+### Porter's Five Forces
+
+A framework for analyzing the competitive intensity of an industry — and therefore its long-term profit potential:
+
+| Force | The Question |
+|---|---|
+| **Threat of New Entrants** | How easy is it for a new competitor to enter this market? |
+| **Bargaining Power of Suppliers** | How much control do our suppliers have over prices and availability? |
+| **Bargaining Power of Buyers** | How much control do our customers have over our prices? |
+| **Threat of Substitutes** | Could customers solve their problem another way — without us? |
+| **Rivalry Among Existing Competitors** | How intensely do current competitors fight for the same customers? |
+
+When most forces are high, the industry is hard to profit in. When most forces are low, the industry is attractive. The goal of strategy is to position yourself where the forces work *in your favor* — or to reshape the industry so they do.
+
+### Three Generic Strategies
+
+**Cost Leadership** — Be the lowest-cost producer in the industry and use that advantage to offer lower prices, capture volume, or generate higher margins. Examples: Walmart (retail), Ryanair (aviation), SHEIN (fast fashion). Requires relentless operational efficiency. Risk: a competitor finds a way to be even cheaper.
+
+**Differentiation** — Offer something genuinely unique that customers value enough to pay a premium for. Examples: Apple (design + ecosystem), Tesla (EV technology + software), LVMH brands (heritage + exclusivity). Requires deep understanding of what customers truly value, not just what they say they value. Risk: the differentiation stops being valued as the market matures.
+
+**Focus** — Concentrate resources on a specific market segment, geography, or customer type and dominate it — either through cost focus or differentiation focus. Examples: Rolls-Royce (ultra-luxury vehicles), Lush Cosmetics (ethical beauty for a specific lifestyle), Sweetgreen (healthy fast food in dense urban markets). Risk: the segment shrinks, or a larger competitor decides to enter it.
+
+> You must choose one as your dominant strategy. Trying to compete on all three simultaneously is called "stuck in the middle" — and it is where companies go to die.
+
+### Dynamic Pricing: Pricing as a Competitive Weapon
+
+**Airlines** — The same seat has a different price every hour based on remaining inventory, booking window, and demand signals. Airlines invented revenue management as a discipline specifically to maximize yield per seat across complex demand curves.
+
+**Uber Surge Pricing** — Price signals supply shortage to drivers (incentive to work) and suppresses low-priority demand from riders (conservation of supply for urgent needs). Economically rational. Emotionally enraging. The business tradeoff: short-term efficiency at the cost of long-term customer trust in moments of vulnerability.
+
+**Amazon's Algorithmic Pricing** — Changes prices on individual products up to 2.5 million times per day. Tracks competitor pricing in real time and adjusts automatically. The consumer never sees a stable reference price — which is deliberately designed to prevent price anchoring.
+
+<Pitfall title="The Underpricing Trap">
+
+Most first-time entrepreneurs underprice their products. The instinct is sympathetic: they do not want to seem greedy, they are not confident in the value, or they assume low price = more customers. The reality: underpricing signals low quality, attracts price-sensitive customers who leave the moment a cheaper option appears, and destroys the margin needed to invest in product quality and marketing.
+
+**Price is a signal, not just a number.** A $200 bottle of wine signals something a $20 bottle cannot, regardless of what is inside. Raise your price and watch what happens to your perceived quality.
+
+</Pitfall>
+
+---
+
+## 30–50 min | Executive AI Prompting
+
+### The Scenario
+
+A product director must prepare a competitive landscape analysis and pricing strategy recommendation for next quarter's leadership review.
+
+<CodeLab title="Live Prompt: Five Forces + Pricing Strategy">
+
+```
+I am a product director at a mid-size hotel chain competing against
+both luxury hotels and Airbnb in a major tourist city. Conduct a
+Porter's Five Forces analysis of the hotel industry in the leisure
+travel segment. For each of the five forces, rate the threat level as
+High, Medium, or Low and explain why in two sentences. Then recommend
+our competitive positioning — cost leadership, differentiation, or
+focus — and explain which pricing strategy best supports that
+positioning.
+```
+
+**After reviewing the output, refine the pricing section:**
+
+```
+Given this analysis, write three pricing principles our hotel should
+follow year-round. Not specific prices — but rules that govern when
+and how we adjust prices, and what we will never do even if
+competitors do it.
+```
+
+**The teaching moment:** The first prompt gives analysis. The second prompt gives *operating principles* — the kind of strategic guardrails that live in a brand's pricing policy for years. This is how Claude moves from advisor to strategic partner.
+
+</CodeLab>
+
+---
+
+## 50–80 min | Team Portal Deployment
+
+### Build Module 9: Competitive Strategy & Pricing
+
+**Module 9 must contain:**
+
+1. **Porter's Five Forces Analysis** — formatted as a table with five rows: force name, threat rating (High / Medium / Low), and a two-sentence explanation specific to your company's industry. Generic ratings with no justification will be sent back for revision.
+
+2. **Competitive Positioning Declaration** — cost leadership, differentiation, or focus — with one paragraph of justification. Why is this the right strategy for your company in your target market? What would you have to give up to pursue a different one?
+
+3. **Top Three Competitors** — for each: company name, their apparent positioning, their key strength, and one sentence on their most exploitable weakness.
+
+4. **Pricing Strategy** — your chosen approach (premium, value, dynamic, freemium, etc.), one paragraph explaining the strategic logic, and one explicit pricing principle your company will follow. Example format: *"We will never be the lowest-priced option in any market we enter, because our target customer interprets low price as low quality — and our differentiation depends on that customer segment."*
+
+**Cross-module check:** Does your pricing strategy align with your competitive positioning? A differentiation strategy paired with a race-to-the-bottom price approach is a strategic contradiction.
+
+---
+
+## 80–90 min | Live Push & Review
+
+Two portals displayed. Key challenge: Does the pricing strategy follow from the competitive positioning?
+
+If a team declared differentiation in Part 2 but chose cost-leadership pricing in Part 4, name the contradiction directly. Strategy is internally consistent or it is not strategy — it is a list of preferences.
+
+<Quiz question="Ryanair is Europe's largest airline by passenger volume. It competes on cost leadership — but it charges separately for seat selection, checked bags, priority boarding, and even printing a boarding pass. Is this consistent with cost leadership? Why?">
+
+<div>
+
+**Yes — and it is a masterclass in cost leadership economics.**
+
+Ryanair's strategy is not "charge the lowest total price." It is "offer the lowest *base* price as a customer acquisition mechanism, then charge for everything the cost-sensitive customer is willing to pay for separately."
+
+This serves the strategy in two ways: (1) the headline price remains the lowest in the market, capturing the attention of price-sensitive search behavior; (2) customers self-select their total spend based on their own preferences — the customer who desperately needs a checked bag pays for it; the customer who travels with only a backpack does not.
+
+The result: Ryanair's revenue per passenger is not dramatically lower than full-service carriers in many routes, but their cost structure is dramatically lower because they do not bundle services that only some customers use. Cost leadership in this model means cost leadership in *operations,* not necessarily in total customer billing.
+
+</div>
+</Quiz>
+
+---
+
+## Up Next
+
+The next two sessions shift to digital transformation — what it actually means for a business to transform itself digitally, and how the world's largest enterprises are using AI, robotics, and data at a scale you will see in person during our Fortune 500 site visit.

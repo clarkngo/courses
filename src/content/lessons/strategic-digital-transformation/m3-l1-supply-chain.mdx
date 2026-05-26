@@ -1,0 +1,127 @@
+---
+title: "Supply Chain & Global Operations Management"
+description: "How stuff gets made and delivered across 40 countries — and what happens when the system breaks. Map your company's operations and identify its vulnerabilities."
+module: 3
+moduleTitle: "Operations & Financial Literacy"
+lesson: 1
+duration: "90 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## 00–30 min | Core Business Theory
+
+### What Is a Supply Chain?
+
+A supply chain is the complete sequence of activities required to turn raw materials into a product in a customer's hands — including sourcing, manufacturing, logistics, warehousing, and last-mile delivery. Every physical product in the world has one.
+
+The central tension in supply chain design: **cost vs. resilience.** The most efficient supply chain is the most fragile. The most resilient supply chain is the most expensive.
+
+### Three Companies, Three Supply Chain Philosophies
+
+**Apple — The Orchestrator Model**
+Apple does not own a single factory. Components come from South Korea (Samsung memory chips), Japan (Sony camera sensors), Germany (Bosch accelerometers), Taiwan (TSMC processors), and over 40 other countries. Assembly happens at Foxconn facilities in China. Apple's competitive advantage is not manufacturing — it is the ability to *coordinate* a global manufacturing ecosystem with extreme precision while controlling design and software entirely.
+
+This means Apple's supply chain is vulnerable in ways its product quality is not. When one Foxconn facility was disrupted during COVID-19, iPhone production fell by an estimated 6 million units in a single quarter.
+
+**Toyota — Just-In-Time and Its Limits**
+Toyota's famous Just-In-Time (JIT) system means parts arrive at the assembly line exactly when needed — no warehouse full of idle inventory, no capital tied up in storage. Extremely efficient under normal conditions. In the 2011 Tōhoku earthquake, 500 Toyota suppliers were disrupted and global production halted for weeks. JIT assumes the supply of inputs is reliable. When it is not, there is no buffer.
+
+**Patagonia — Supply Chain as Brand Strategy**
+Deliberately maps and publicly discloses every factory in its supply chain. Runs a "Worn Wear" program that repairs and resells used Patagonia products — deliberately reducing new product sales to extend product life. This is not just ethics; it is marketing. The target customer values transparency and sustainability, and Patagonia turns supply chain disclosure into a competitive advantage with that segment. The cost of compliance is more than offset by the brand loyalty premium.
+
+### Post-COVID: The Strategic Shift
+
+The pandemic triggered a global rethinking of supply chain strategy:
+
+- **Just-in-Time → Just-in-Case:** Holding inventory buffers for critical inputs became standard practice for the first time in decades.
+- **Offshore → Nearshore:** US companies shifted from China to Mexico; German companies shifted from Asia to Eastern Europe, to reduce geopolitical risk and shipping time.
+- **Single-source → Multi-source:** Companies that sourced critical components from one supplier in one country discovered their entire production line was one disruption away from stopping.
+
+**Political risk is now a supply chain variable** in the same way that cost and quality have always been.
+
+<Pitfall title="Confusing Efficiency With Competitive Advantage">
+
+A highly efficient supply chain is not automatically a competitive advantage — it is table stakes in most industries. Efficiency reduces cost; it does not differentiate your product. Supply chain *becomes* a competitive advantage when it enables something customers value that competitors cannot replicate: faster delivery than anyone else (Amazon), transparency that customers trust (Patagonia), or product variety that physical infrastructure cannot support (Zara's 20-day design-to-shelf cycle).
+
+</Pitfall>
+
+---
+
+## 30–50 min | Executive AI Prompting
+
+### The Scenario
+
+A VP of Operations must brief the board after a geopolitical disruption raises tariffs 35% and extends shipping times by four to six weeks on their primary sourcing region.
+
+<CodeLab title="Live Prompt: Supply Chain Risk Briefing">
+
+```
+I am the VP of Operations at a consumer electronics company that
+sources 70% of our components from a single region in East Asia. A
+geopolitical event has increased tariffs by 35% and extended shipping
+times by 4–6 weeks. Write an executive briefing for the board covering:
+(1) the immediate operational impact on our business, (2) three supply
+chain resilience strategies we could implement over the next 6–18
+months, and (3) the trade-offs of each strategy in terms of cost,
+speed of implementation, and risk reduction. Write at board-presentation
+level — clear, direct, no operational jargon.
+```
+
+**After reviewing, expand one strategy:**
+
+```
+Strategy 2 mentions nearshoring. Expand that section to include:
+two specific countries to evaluate for our industry, one critical
+success factor for nearshoring a consumer electronics supply chain,
+and a realistic 12-month implementation timeline.
+```
+
+**The teaching moment:** The first prompt gets the framework. The follow-up gets the operational specificity that makes the framework actionable. This two-step approach — framework first, detail second — is how experienced managers use AI for complex strategic problems.
+
+</CodeLab>
+
+---
+
+## 50–80 min | Team Portal Deployment
+
+### Build Module 7: Operations & Supply Chain Strategy
+
+**Module 7 must contain:**
+
+1. **Supply Chain Map** — a written description of your company's supply chain from raw materials to end customer, identifying at least three specific nodes: where something is sourced, where it is made or assembled, and where it is stored or distributed before reaching the customer. Name real regions or countries — not generic labels.
+
+2. **Sourcing Strategy** — where your company sources its key inputs, and whether the strategy is primarily cost-focused, quality-focused, or resilience-focused. One paragraph justifying the choice.
+
+3. **Top Two Operational Risks** — specific to your company and industry. Each risk gets one sentence describing the scenario and one sentence describing the mitigation plan. Generic risks ("natural disasters could disrupt production") are not acceptable — make them specific ("a monsoon disruption to our Vietnamese assembly partner would halt production of our core SKU for an estimated 6–10 weeks, affecting Q3 delivery commitments to our three largest retail clients").
+
+4. **Sustainability Commitment** — one supply chain practice your company will adopt to reduce environmental or social harm, with a one-sentence business case. Not just an ethical argument — a strategic one. *Why does this practice make business sense?*
+
+---
+
+## 80–90 min | Live Push & Review
+
+Two portals displayed. Review focus: Is the Supply Chain Map specific to the actual company and product?
+
+"Supplier → Manufacturer → Distributor → Customer" is a flow diagram, not a supply chain map. The map should name real regions, identify real constraints, and reveal real vulnerabilities that are specific to this company's product and business model.
+
+<Quiz question="Apple has repeatedly been criticized for its dependence on Foxconn's Chinese facilities for iPhone assembly. Why has Apple not moved more production to other countries, despite years of pressure to do so?">
+
+<div>
+
+**Because the switching cost is enormous — and the alternative does not yet exist at scale.**
+
+China's manufacturing ecosystem for consumer electronics is not just Foxconn. It is decades of accumulated supplier infrastructure, skilled workforce specialization, and logistics networks built specifically for electronics assembly at global scale. Vietnam, India, and Mexico are growing as alternatives, but none yet has the full ecosystem depth to absorb iPhone-scale production without quality or volume trade-offs.
+
+Apple has been gradually diversifying — India now assembles a growing percentage of iPhones — but "gradually" is the operative word. Moving 90% of assembly volume requires building or developing an alternative ecosystem that does not exist overnight. The geopolitical pressure to move is real; the operational capability to move at the required scale is still being developed.
+
+</div>
+</Quiz>
+
+---
+
+## Up Next
+
+Session 8 introduces the financial statements every manager must be able to read — not to be an accountant, but to be a credible strategic decision-maker.
