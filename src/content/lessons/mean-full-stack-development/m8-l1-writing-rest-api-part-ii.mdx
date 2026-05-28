@@ -1,0 +1,238 @@
+---
+title: "Writing REST API Part II"
+description: "Complete your Express REST API with file uploads, rate limiting, role-based authorization, pagination patterns, and testing with Jest and Supertest."
+module: 8
+moduleTitle: "Writing REST API Part II"
+lesson: 1
+youtubeId: "OhMBi6Qwu0U"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Role-Based Authorization
+
+JWT authentication identifies *who* the user is. Authorization determines *what they can do*.
+
+```javascript
+// server/middleware/authorize.js
+module.exports = (...roles) => (req, res, next) => {
+    if (!roles.includes(req.user.role)) {
+        return res.status(403).json({
+            message: "You do not have permission to perform this action"
+        });
+    }
+    next();
+};
+```
+
+```javascript
+// Usage in routes — auth first, then authorize
+const auth = require("../middleware/auth");
+const authorize = require("../middleware/authorize");
+
+router.delete("/:id", auth, authorize("admin"), ProductController.remove);
+router.post("/",      auth, authorize("admin", "seller"), ProductController.create);
+router.get("/",       ProductController.getAll);     // public
+```
+
+---
+
+## File Uploads with Multer
+
+```bash
+npm install multer
+```
+
+```javascript
+// server/middleware/upload.js
+const multer = require("multer");
+const path = require("path");
+
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => cb(null, "uploads/"),
+    filename: (req, file, cb) => {
+        const unique = Date.now() + "-" + Math.round(Math.random() * 1e9);
+        cb(null, unique + path.extname(file.originalname));
+    }
+});
+
+const fileFilter = (req, file, cb) => {
+    const allowed = ["image/jpeg", "image/png", "image/webp"];
+    allowed.includes(file.mimetype) ? cb(null, true) : cb(new Error("Invalid file type"));
+};
+
+module.exports = multer({
+    storage,
+    fileFilter,
+    limits: { fileSize: 5 * 1024 * 1024 }  // 5MB
+});
+```
+
+```javascript
+// Route: upload product image
+router.post("/:id/image", auth, upload.single("image"), async (req, res, next) => {
+    try {
+        const product = await Product.findByIdAndUpdate(
+            req.params.id,
+            { imageUrl: `/uploads/${req.file.filename}` },
+            { new: true }
+        );
+        res.json(product);
+    } catch (err) { next(err); }
+});
+```
+
+---
+
+## Rate Limiting
+
+```bash
+npm install express-rate-limit
+```
+
+```javascript
+const rateLimit = require("express-rate-limit");
+
+// Apply globally
+const globalLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,  // 15 minutes
+    max: 100,                   // 100 requests per window
+    message: { message: "Too many requests, please try again later." }
+});
+
+// Stricter limiter for auth routes
+const authLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 10,
+    message: { message: "Too many login attempts." }
+});
+
+app.use("/api/", globalLimiter);
+app.use("/api/auth/login", authLimiter);
+```
+
+---
+
+## Pagination Pattern
+
+Consistent pagination across all list endpoints:
+
+```javascript
+// server/utils/paginate.js
+const paginate = async (Model, filter = {}, options = {}) => {
+    const {
+        page = 1,
+        limit = 20,
+        sort = { createdAt: -1 },
+        populate = "",
+        select = ""
+    } = options;
+
+    const skip = (page - 1) * limit;
+    const [docs, total] = await Promise.all([
+        Model.find(filter).sort(sort).skip(skip).limit(limit)
+             .populate(populate).select(select).lean(),
+        Model.countDocuments(filter)
+    ]);
+
+    return {
+        data: docs,
+        pagination: {
+            total,
+            page,
+            limit,
+            pages: Math.ceil(total / limit),
+            hasNext: page * limit < total,
+            hasPrev: page > 1
+        }
+    };
+};
+
+module.exports = paginate;
+```
+
+---
+
+## Testing with Jest and Supertest
+
+```bash
+npm install --save-dev jest supertest
+```
+
+```javascript
+// server/tests/products.test.js
+const request = require("supertest");
+const mongoose = require("mongoose");
+const app = require("../app");
+
+let token;
+
+beforeAll(async () => {
+    await mongoose.connect(process.env.MONGODB_TEST_URI);
+    // Create test user and get token
+    const res = await request(app).post("/api/auth/register").send({
+        name: "Test User", email: "test@test.com", password: "password123"
+    });
+    token = res.body.token;
+});
+
+afterAll(async () => {
+    await mongoose.connection.dropDatabase();
+    await mongoose.connection.close();
+});
+
+describe("GET /api/products", () => {
+    it("returns 200 and an array", async () => {
+        const res = await request(app).get("/api/products");
+        expect(res.status).toBe(200);
+        expect(Array.isArray(res.body.products)).toBe(true);
+    });
+});
+
+describe("POST /api/products", () => {
+    it("requires auth", async () => {
+        const res = await request(app).post("/api/products").send({ name: "Test" });
+        expect(res.status).toBe(401);
+    });
+
+    it("creates a product with valid data and auth", async () => {
+        const res = await request(app)
+            .post("/api/products")
+            .set("Authorization", `Bearer ${token}`)
+            .send({ name: "Widget", price: 9.99, category: "other" });
+        expect(res.status).toBe(201);
+        expect(res.body.name).toBe("Widget");
+    });
+});
+```
+
+```json
+// package.json
+{
+  "scripts": {
+    "test": "jest --runInBand"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "setupFiles": ["dotenv/config"]
+  }
+}
+```
+
+<Pitfall title="Using Your Production Database in Tests">
+
+Tests that create and delete data must never touch the production or development database. Always use a dedicated test database (set via `MONGODB_TEST_URI` in a `.env.test` file). Drop the test database in `afterAll` so each test run starts clean. Running `jest --runInBand` prevents parallel test suites from interfering with each other when sharing a test database.
+
+</Pitfall>
+
+---
+
+<Quiz question="Your API is returning 500 errors in production but you can't reproduce them in development. What error handling infrastructure would you add to the Express app to capture, log, and diagnose these errors?">
+
+<div>
+
+Three layers of improvement: (1) **Structured error logging** — add a logging library like `winston` or `pino`. Log every error in the global error handler with structured JSON including `timestamp`, `method`, `url`, `statusCode`, `stack`, and `userId` from the JWT if available. Send logs to a log aggregator (Datadog, Logtail, CloudWatch) for searchability. (2) **Error monitoring** — integrate Sentry (`npm install @sentry/node`): `Sentry.captureException(err)` in the global error handler. Sentry groups similar errors, tracks frequency, and alerts on new error types. (3) **Async error boundaries** — ensure every async route handler is wrapped in try/catch and calls `next(err)`, or use a wrapper like `express-async-errors` (`require("express-async-errors")`) which automatically forwards unhandled promise rejections to Express's error handler, preventing silent 500s from uncaught promises. Also add a `process.on("unhandledRejection")` and `process.on("uncaughtException")` handler to log and gracefully shut down rather than crashing silently.
+
+</div>
+</Quiz>

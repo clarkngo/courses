@@ -1,0 +1,201 @@
+---
+title: "NoSQL Data Model"
+description: "Design effective MongoDB schemas with Mongoose — understanding document modeling, embedding vs. referencing, indexing, and aggregation for real-world MEAN applications."
+module: 6
+moduleTitle: "NoSQL Data Model"
+lesson: 1
+youtubeId: "EHWeW0wRsjs"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## MongoDB: Document-Oriented Database
+
+MongoDB stores data as **documents** — JSON-like objects grouped into **collections** (analogous to SQL tables, but schema-flexible).
+
+```json
+// A document in the "products" collection
+{
+  "_id": "ObjectId('64a1f2c...')",
+  "name": "Wireless Headphones",
+  "price": 89.99,
+  "tags": ["audio", "wireless", "bluetooth"],
+  "specs": {
+    "batteryLife": "30h",
+    "weight": "250g",
+    "colors": ["black", "white", "navy"]
+  },
+  "reviews": [
+    { "user": "alice", "rating": 5, "comment": "Excellent!" },
+    { "user": "bob", "rating": 4, "comment": "Good value" }
+  ],
+  "createdAt": "2026-05-28T10:00:00Z"
+}
+```
+
+Notice: arrays, nested objects, and arrays of objects are all first-class citizens — no joins needed for data that belongs together.
+
+---
+
+## Mongoose Schemas
+
+Mongoose adds schema validation and a rich API on top of MongoDB's flexible documents:
+
+```javascript
+const mongoose = require("mongoose");
+const { Schema } = mongoose;
+
+const reviewSchema = new Schema({
+  user:    { type: Schema.Types.ObjectId, ref: "User", required: true },
+  rating:  { type: Number, required: true, min: 1, max: 5 },
+  comment: { type: String, trim: true, maxlength: 1000 },
+}, { timestamps: true });
+
+const productSchema = new Schema({
+  name:        { type: String, required: true, trim: true, index: true },
+  price:       { type: Number, required: true, min: 0 },
+  category:    { type: String, required: true },
+  tags:        [String],
+  specs:       { type: Map, of: String },
+  reviews:     [reviewSchema],                  // embedded sub-documents
+  seller:      { type: Schema.Types.ObjectId, ref: "User" },   // reference
+  isPublished: { type: Boolean, default: false },
+}, { timestamps: true });
+
+// Virtual field (not stored in DB)
+productSchema.virtual("averageRating").get(function () {
+  if (!this.reviews.length) return 0;
+  return this.reviews.reduce((sum, r) => sum + r.rating, 0) / this.reviews.length;
+});
+
+// Index for common queries
+productSchema.index({ category: 1, price: 1 });
+productSchema.index({ name: "text", tags: "text" });  // text search
+
+module.exports = mongoose.model("Product", productSchema);
+```
+
+---
+
+## Embedding vs. Referencing
+
+The central modeling decision in MongoDB:
+
+| Approach | When to Use |
+|---|---|
+| **Embed** | Data is always accessed together; child data belongs exclusively to the parent; array size is bounded |
+| **Reference** | Data is shared across multiple documents; the sub-document has its own lifecycle; arrays could grow unbounded |
+
+```javascript
+// EMBED: reviews inside product (bounded, always displayed with product)
+product.reviews.push({ user: userId, rating: 5, comment: "Great!" });
+await product.save();
+
+// REFERENCE: user stored separately, referenced by ID
+product.seller = userId;   // only stores the ID, not the full user document
+await product.save();
+
+// Populate reference when reading
+const product = await Product.findById(id).populate("seller", "name email");
+```
+
+---
+
+## Common Mongoose Queries
+
+```javascript
+// Find
+Product.find({ category: "electronics", price: { $lte: 500 } })
+Product.findById(id)
+Product.findOne({ name: /laptop/i })
+
+// Update
+Product.findByIdAndUpdate(id, { $set: { price: 799 } }, { new: true, runValidators: true })
+Product.updateMany({ category: "old" }, { $set: { category: "archive" } })
+
+// Delete
+Product.findByIdAndDelete(id)
+
+// Aggregation pipeline
+Product.aggregate([
+  { $match: { isPublished: true } },
+  { $group: { _id: "$category", avgPrice: { $avg: "$price" }, count: { $sum: 1 } } },
+  { $sort: { avgPrice: -1 } }
+])
+```
+
+---
+
+## Indexes
+
+Indexes dramatically speed up queries but slow down writes and consume memory:
+
+```javascript
+// Single-field index
+productSchema.index({ price: 1 });          // ascending
+
+// Compound index — order matters for multi-field queries
+productSchema.index({ category: 1, price: -1 });
+
+// Unique index
+userSchema.index({ email: 1 }, { unique: true });
+
+// Text index for full-text search
+productSchema.index({ name: "text", description: "text" });
+
+// TTL index — auto-delete documents after N seconds
+sessionSchema.index({ createdAt: 1 }, { expireAfterSeconds: 86400 });
+```
+
+<Pitfall title="Growing Unbounded Arrays in Embedded Documents">
+
+Embedding an array that grows over time (e.g., all orders ever placed by a user, all log entries for a product) will eventually cause document bloat. MongoDB documents have a 16MB limit, and large documents are slower to read even when you only need a few fields. If an array can grow without bound, use a separate collection with a reference instead of embedding.
+
+</Pitfall>
+
+---
+
+<Quiz question="Design a MongoDB schema for a blog platform where users write posts, posts have comments, and users can like both posts and comments. Justify your embedding vs. referencing decisions.">
+
+<div>
+
+```javascript
+// User — standalone entity, referenced everywhere
+const userSchema = new Schema({
+  username: { type: String, required: true, unique: true },
+  email:    { type: String, required: true, unique: true },
+  avatar:   String,
+}, { timestamps: true });
+
+// Post — core entity; comments and likes modeled by decision below
+const postSchema = new Schema({
+  author:    { type: Schema.Types.ObjectId, ref: "User", required: true },
+  title:     { type: String, required: true },
+  body:      { type: String, required: true },
+  tags:      [String],
+  likeCount: { type: Number, default: 0 },
+  // likedBy: DON'T embed full list — use separate Like collection
+}, { timestamps: true });
+
+// Comment — separate collection (can grow unbounded per post)
+const commentSchema = new Schema({
+  post:      { type: Schema.Types.ObjectId, ref: "Post", required: true },
+  author:    { type: Schema.Types.ObjectId, ref: "User", required: true },
+  body:      { type: String, required: true },
+  likeCount: { type: Number, default: 0 },
+}, { timestamps: true });
+
+// Like — separate collection (tracks who liked what)
+const likeSchema = new Schema({
+  user:       { type: Schema.Types.ObjectId, ref: "User", required: true },
+  targetId:   { type: Schema.Types.ObjectId, required: true },
+  targetType: { type: String, enum: ["Post", "Comment"], required: true },
+});
+likeSchema.index({ user: 1, targetId: 1, targetType: 1 }, { unique: true });
+```
+
+Comments are separate (unbounded growth); likes are separate (unbounded + need to prevent duplicates); likeCount is a denormalized counter on Post/Comment for fast display without aggregating the Like collection on every read.
+
+</div>
+</Quiz>

@@ -1,0 +1,274 @@
+---
+title: "Static Website Part II"
+description: "Complete the static Angular front end with routing, forms, services, pipes, and Angular Material — building a polished, navigable UI ready for back-end integration."
+module: 5
+moduleTitle: "Static Website Part II"
+lesson: 1
+youtubeId: "JWNtjHPjlUI"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Angular Router
+
+The Angular Router manages navigation between views without full page reloads.
+
+```typescript
+// app-routing.module.ts
+import { NgModule } from "@angular/core";
+import { RouterModule, Routes } from "@angular/router";
+
+const routes: Routes = [
+  { path: "", component: HomeComponent },
+  { path: "products", component: ProductListComponent },
+  { path: "products/:id", component: ProductDetailComponent },
+  { path: "cart", component: CartComponent },
+  { path: "**", component: NotFoundComponent }   // catch-all 404
+];
+
+@NgModule({
+  imports: [RouterModule.forRoot(routes)],
+  exports: [RouterModule]
+})
+export class AppRoutingModule {}
+```
+
+```html
+<!-- Navigation links -->
+<nav>
+  <a routerLink="/">Home</a>
+  <a routerLink="/products" routerLinkActive="active">Products</a>
+  <a routerLink="/cart">Cart</a>
+</nav>
+
+<!-- Where routed components render -->
+<router-outlet></router-outlet>
+```
+
+### Reading Route Parameters
+
+```typescript
+import { ActivatedRoute } from "@angular/router";
+
+@Component({ ... })
+export class ProductDetailComponent implements OnInit {
+  productId!: string;
+
+  constructor(private route: ActivatedRoute) {}
+
+  ngOnInit(): void {
+    this.productId = this.route.snapshot.paramMap.get("id")!;
+  }
+}
+```
+
+---
+
+## Angular Forms
+
+### Template-Driven Forms (simple, less boilerplate)
+
+```html
+<form #productForm="ngForm" (ngSubmit)="onSubmit(productForm)">
+  <input name="name" ngModel required #name="ngModel">
+  <div *ngIf="name.invalid && name.touched">Name is required</div>
+
+  <input name="price" ngModel type="number" min="0" required>
+  <button type="submit" [disabled]="productForm.invalid">Save</button>
+</form>
+```
+
+### Reactive Forms (better for complex validation and dynamic forms)
+
+```typescript
+import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+
+@Component({ ... })
+export class ProductFormComponent {
+  form: FormGroup;
+
+  constructor(private fb: FormBuilder) {
+    this.form = this.fb.group({
+      name:        ["", [Validators.required, Validators.maxLength(100)]],
+      price:       [0,  [Validators.required, Validators.min(0)]],
+      description: [""],
+      inStock:     [true]
+    });
+  }
+
+  onSubmit(): void {
+    if (this.form.valid) {
+      console.log(this.form.value);
+    }
+  }
+}
+```
+
+```html
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <input formControlName="name">
+  <div *ngIf="form.get('name')?.errors?.['required'] && form.get('name')?.touched">
+    Name is required
+  </div>
+  <input formControlName="price" type="number">
+  <button type="submit" [disabled]="form.invalid">Save</button>
+</form>
+```
+
+---
+
+## Angular Services for Mock Data
+
+Services centralize data access and business logic. During static development, they return mock data; later, they'll call the API.
+
+```typescript
+// product.service.ts
+import { Injectable } from "@angular/core";
+import { Observable, of } from "rxjs";
+import { delay } from "rxjs/operators";
+
+@Injectable({ providedIn: "root" })
+export class ProductService {
+  private mockProducts = [
+    { _id: "1", name: "Laptop", price: 999, inStock: true },
+    { _id: "2", name: "Mouse", price: 29, inStock: true }
+  ];
+
+  getAll(): Observable<Product[]> {
+    return of(this.mockProducts).pipe(delay(300));  // simulates network latency
+  }
+
+  getById(id: string): Observable<Product | undefined> {
+    return of(this.mockProducts.find(p => p._id === id)).pipe(delay(200));
+  }
+}
+```
+
+Using `Observable` even for mock data means the component code doesn't change when you swap in real HTTP calls.
+
+---
+
+## Angular Pipes
+
+Pipes transform displayed values without changing the underlying data:
+
+```html
+{{ product.price | currency:"USD" }}    <!-- $999.00 -->
+{{ product.name | uppercase }}          <!-- LAPTOP -->
+{{ createdAt | date:"mediumDate" }}     <!-- May 28, 2026 -->
+{{ description | slice:0:100 }}         <!-- truncate to 100 chars -->
+```
+
+### Custom Pipe
+
+```typescript
+@Pipe({ name: "truncate" })
+export class TruncatePipe implements PipeTransform {
+  transform(value: string, limit = 50, trail = "..."): string {
+    return value.length > limit ? value.slice(0, limit) + trail : value;
+  }
+}
+```
+
+---
+
+## Angular Material
+
+Angular Material provides pre-built, accessible UI components:
+
+```bash
+ng add @angular/material
+```
+
+```typescript
+// app.module.ts — import needed modules
+import { MatTableModule } from "@angular/material/table";
+import { MatButtonModule } from "@angular/material/button";
+import { MatInputModule } from "@angular/material/input";
+import { MatCardModule } from "@angular/material/card";
+```
+
+```html
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>{{ product.name }}</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <p>{{ product.price | currency }}</p>
+  </mat-card-content>
+  <mat-card-actions>
+    <button mat-raised-button color="primary" (click)="addToCart()">Add to Cart</button>
+  </mat-card-actions>
+</mat-card>
+```
+
+<Pitfall title="Subscribing Without Unsubscribing">
+
+Subscribing to an Observable in a component and never unsubscribing causes memory leaks — the subscription keeps the component alive after it is destroyed:
+
+```typescript
+// WRONG
+ngOnInit() {
+  this.service.getAll().subscribe(data => this.data = data);
+}
+
+// CORRECT — use async pipe in template (auto-unsubscribes)
+// Or unsubscribe in ngOnDestroy
+private destroy$ = new Subject<void>();
+
+ngOnInit() {
+  this.service.getAll()
+    .pipe(takeUntil(this.destroy$))
+    .subscribe(data => this.data = data);
+}
+
+ngOnDestroy() { this.destroy$.next(); this.destroy$.complete(); }
+```
+
+The **async pipe** in templates (`*ngIf="products$ | async as products"`) is the simplest correct pattern.
+
+</Pitfall>
+
+---
+
+<Quiz question="Your product list component needs to support filtering by category, sorting by price, and pagination — all on the client side with static data. How would you structure this in the component and template?">
+
+<div>
+
+Keep derived state computed, not stored:
+
+```typescript
+@Component({ ... })
+export class ProductListComponent {
+  allProducts: Product[] = MOCK_PRODUCTS;
+  categoryFilter = "";
+  sortField: "name" | "price" = "price";
+  sortDir: "asc" | "desc" = "asc";
+  pageSize = 10;
+  currentPage = 0;
+
+  get filteredProducts(): Product[] {
+    let result = this.categoryFilter
+      ? this.allProducts.filter(p => p.category === this.categoryFilter)
+      : [...this.allProducts];
+
+    result.sort((a, b) => {
+      const cmp = a[this.sortField] < b[this.sortField] ? -1 : 1;
+      return this.sortDir === "asc" ? cmp : -cmp;
+    });
+
+    const start = this.currentPage * this.pageSize;
+    return result.slice(start, start + this.pageSize);
+  }
+
+  get totalPages(): number {
+    return Math.ceil(this.allProducts.length / this.pageSize);
+  }
+}
+```
+
+The template binds to `filteredProducts` and the filter/sort/page controls two-way bind to the component properties. No separate "filtered list" state to keep in sync — the getter recomputes on every change detection cycle. For large datasets, use `ngOnChanges` or `memoize` to avoid redundant recomputation.
+
+</div>
+</Quiz>

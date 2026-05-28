@@ -1,0 +1,154 @@
+---
+title: "MEAN Full Stack Architecture"
+description: "Understand the architectural patterns that underpin MEAN applications — client-server separation, RESTful API design, SPA behavior, CORS, and the data flow decisions that shape every feature you build."
+module: 2
+moduleTitle: "MEAN Full Stack Architecture"
+lesson: 1
+youtubeId: "VOjBoedX7v8"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Separation of Concerns
+
+A well-architected MEAN application separates responsibilities cleanly:
+
+| Layer | Technology | Responsibility |
+|---|---|---|
+| **Presentation** | Angular | Render UI, handle user interaction, display data |
+| **API** | Express / Node | Expose endpoints, validate input, enforce business rules |
+| **Data** | MongoDB + Mongoose | Persist, query, and relate data |
+
+The Angular front end and the Express back end communicate exclusively through HTTP — they know nothing about each other's internals. This means you can replace Angular with React, or MongoDB with PostgreSQL, without rewriting the other layers.
+
+---
+
+## Single-Page Application (SPA) Model
+
+Angular produces a **Single-Page Application**. After the initial HTML/JS bundle loads:
+
+1. The browser never fully reloads the page
+2. Angular Router intercepts navigation and renders components
+3. Angular makes API calls to fetch or mutate data
+4. The DOM updates without a server round-trip
+
+This results in app-like responsiveness but introduces complexity: the server must serve the Angular bundle correctly, all routes must be handled by Angular's router or fall back to `index.html`, and authentication state lives client-side.
+
+---
+
+## RESTful API Design
+
+The Express backend exposes a **REST API** — a set of HTTP endpoints following conventions:
+
+| HTTP Method | Endpoint | Action |
+|---|---|---|
+| `GET` | `/api/products` | Fetch all products |
+| `GET` | `/api/products/:id` | Fetch one product |
+| `POST` | `/api/products` | Create a product |
+| `PUT` | `/api/products/:id` | Replace a product |
+| `PATCH` | `/api/products/:id` | Partially update a product |
+| `DELETE` | `/api/products/:id` | Delete a product |
+
+Status codes communicate outcome: `200 OK`, `201 Created`, `400 Bad Request`, `401 Unauthorized`, `403 Forbidden`, `404 Not Found`, `500 Internal Server Error`.
+
+---
+
+## CORS — Cross-Origin Resource Sharing
+
+When Angular (running on `localhost:4200`) calls Express (running on `localhost:3000`), the browser blocks the request by default — different ports means different origins. **CORS** headers tell the browser which cross-origin requests are allowed.
+
+```javascript
+// Express: install and configure cors
+npm install cors
+
+const cors = require("cors");
+app.use(cors({
+    origin: process.env.ALLOWED_ORIGIN || "http://localhost:4200",
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"]
+}));
+```
+
+In production, set `ALLOWED_ORIGIN` to your actual domain. Never use `origin: "*"` in an authenticated app — it allows any site to make authenticated requests to your API.
+
+---
+
+## Environment Configuration
+
+Angular has built-in environment files; Express uses dotenv:
+
+```
+# server/.env
+PORT=3000
+MONGODB_URI=mongodb://localhost:27017/myapp
+JWT_SECRET=your-secret-key
+ALLOWED_ORIGIN=http://localhost:4200
+```
+
+```javascript
+// server/app.js
+require("dotenv").config();
+const PORT = process.env.PORT || 3000;
+const MONGODB_URI = process.env.MONGODB_URI;
+```
+
+```typescript
+// client/src/environments/environment.ts
+export const environment = {
+  production: false,
+  apiUrl: "http://localhost:3000/api"
+};
+```
+
+Never hardcode secrets or URLs. Environment variables make the same codebase work in development, staging, and production without changes.
+
+---
+
+## Data Flow: End to End
+
+```typescript
+// Angular Service
+@Injectable({ providedIn: "root" })
+export class ProductService {
+  private apiUrl = `${environment.apiUrl}/products`;
+
+  constructor(private http: HttpClient) {}
+
+  getAll(): Observable<Product[]> {
+    return this.http.get<Product[]>(this.apiUrl);
+  }
+}
+
+// Angular Component
+products$ = this.productService.getAll();
+```
+
+```javascript
+// Express Route
+router.get("/products", async (req, res, next) => {
+  try {
+    const products = await Product.find().lean();
+    res.json(products);
+  } catch (err) {
+    next(err);
+  }
+});
+```
+
+<Pitfall title="Putting Business Logic in Angular Components">
+
+Angular components should only handle presentation — binding data to the template and responding to user events. Business logic (price calculations, eligibility rules, data transformations) belongs in the Express API, not in the Angular component or even the Angular service. If logic lives only in the front end, it can be bypassed by anyone who calls the API directly.
+
+</Pitfall>
+
+---
+
+<Quiz question="Your MEAN app needs to support both a web client (Angular) and a mobile app (React Native) consuming the same data. How does the MEAN architecture accommodate this, and what changes (if any) are needed in the Express backend?">
+
+<div>
+
+MEAN's separation of concerns makes this straightforward. The Express REST API is already a standalone service that communicates via HTTP and JSON — it has no knowledge of which client is consuming it. To support a mobile client: (1) **No structural changes** to the API are needed if the same endpoints and data shapes work for mobile. (2) **CORS**: add the mobile app's origin (or use a domain-agnostic auth header approach); mobile apps using native HTTP clients bypass browser CORS, so this mainly affects web clients. (3) **Authentication**: if using cookies for the web app, switch to **JWT Bearer tokens** — cookies are browser-specific. JWTs work identically for browser and mobile clients. (4) **Versioning**: if mobile and web clients diverge in their data requirements, consider API versioning (`/api/v1/`, `/api/v2/`) to avoid breaking existing clients. The architecture's strength is exactly this: decouple presentation from data, and adding a new client is a front-end problem, not a back-end rewrite.
+
+</div>
+</Quiz>

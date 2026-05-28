@@ -1,0 +1,159 @@
+---
+title: "Computer Vision — Convolutional Neural Network"
+description: "Learn how CNNs extract spatial features from images, build and train a convolutional network for image classification, and apply transfer learning to solve real-world vision tasks with limited data."
+module: 9
+moduleTitle: "Computer Vision — Convolutional Neural Network"
+lesson: 1
+youtubeId: "ZyWeH1s1Rbo"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Why CNNs for Images?
+
+A fully connected (dense) network treats every pixel as an independent input — for a 224×224 RGB image, that's 150,528 inputs. It also ignores spatial structure: a cat in the top-left corner looks identical to a cat in the bottom-right corner, but a dense network sees them as completely different inputs.
+
+**Convolutional Neural Networks (CNNs)** solve both problems:
+- **Local connectivity** — each neuron connects to a small patch of the image (kernel), not every pixel
+- **Weight sharing** — the same kernel slides across the entire image, detecting the same feature anywhere it appears
+- **Hierarchical features** — early layers detect edges; deeper layers detect shapes, textures, and objects
+
+---
+
+## CNN Building Blocks
+
+### Convolutional Layer
+Applies a set of learnable filters (kernels) that slide across the image, computing dot products to produce **feature maps**.
+
+```python
+keras.layers.Conv2D(32, (3, 3), activation="relu", padding="same")
+# 32 filters, 3×3 kernel, same padding preserves spatial dimensions
+```
+
+### Pooling Layer
+Reduces spatial dimensions, retaining the most important activations and making the network translation-invariant.
+
+```python
+keras.layers.MaxPooling2D((2, 2))  # halves width and height
+```
+
+### Flatten + Dense
+After convolutional layers, flatten the feature maps and connect to dense layers for classification.
+
+---
+
+## Building a CNN from Scratch
+
+```python
+import tensorflow as tf
+from tensorflow import keras
+
+model = keras.Sequential([
+    # Block 1
+    keras.layers.Conv2D(32, (3, 3), activation="relu",
+                        padding="same", input_shape=(32, 32, 3)),
+    keras.layers.BatchNormalization(),
+    keras.layers.MaxPooling2D((2, 2)),
+
+    # Block 2
+    keras.layers.Conv2D(64, (3, 3), activation="relu", padding="same"),
+    keras.layers.BatchNormalization(),
+    keras.layers.MaxPooling2D((2, 2)),
+
+    # Block 3
+    keras.layers.Conv2D(128, (3, 3), activation="relu", padding="same"),
+    keras.layers.BatchNormalization(),
+    keras.layers.GlobalAveragePooling2D(),
+
+    # Classifier
+    keras.layers.Dense(256, activation="relu"),
+    keras.layers.Dropout(0.5),
+    keras.layers.Dense(10, activation="softmax")
+])
+
+model.compile(optimizer="adam",
+              loss="sparse_categorical_crossentropy",
+              metrics=["accuracy"])
+```
+
+---
+
+## Data Augmentation
+
+CNNs need large datasets. Data augmentation artificially expands training data by applying random transformations:
+
+```python
+data_augmentation = keras.Sequential([
+    keras.layers.RandomFlip("horizontal"),
+    keras.layers.RandomRotation(0.1),
+    keras.layers.RandomZoom(0.1),
+    keras.layers.RandomTranslation(0.1, 0.1),
+])
+
+# Insert at the top of your model
+model = keras.Sequential([
+    data_augmentation,
+    keras.layers.Conv2D(32, (3, 3), activation="relu", ...),
+    ...
+])
+```
+
+---
+
+## Transfer Learning
+
+Training a deep CNN from scratch requires millions of images and days of GPU time. **Transfer learning** reuses a network pretrained on a large dataset (ImageNet, 14M images, 1,000 classes) as a starting point.
+
+```python
+# Load pretrained base (frozen)
+base_model = keras.applications.MobileNetV2(
+    input_shape=(224, 224, 3),
+    include_top=False,
+    weights="imagenet"
+)
+base_model.trainable = False
+
+# Add custom classifier head
+inputs = keras.Input(shape=(224, 224, 3))
+x = keras.applications.mobilenet_v2.preprocess_input(inputs)
+x = base_model(x, training=False)
+x = keras.layers.GlobalAveragePooling2D()(x)
+x = keras.layers.Dropout(0.3)(x)
+outputs = keras.layers.Dense(num_classes, activation="softmax")(x)
+
+model = keras.Model(inputs, outputs)
+model.compile(optimizer=keras.optimizers.Adam(1e-3),
+              loss="sparse_categorical_crossentropy",
+              metrics=["accuracy"])
+
+# Train classifier head first
+model.fit(train_ds, epochs=10, validation_data=val_ds)
+
+# Then fine-tune: unfreeze top layers of base
+base_model.trainable = True
+for layer in base_model.layers[:-20]:
+    layer.trainable = False
+
+model.compile(optimizer=keras.optimizers.Adam(1e-5),  # lower LR
+              loss="sparse_categorical_crossentropy",
+              metrics=["accuracy"])
+model.fit(train_ds, epochs=5, validation_data=val_ds)
+```
+
+<Pitfall title="Using Too High a Learning Rate During Fine-Tuning">
+
+When unfreezing and fine-tuning pretrained layers, always reduce the learning rate by 10–100x compared to your initial training. The pretrained weights encode valuable features — a high learning rate will destroy them in the first few update steps, eliminating the benefit of transfer learning entirely.
+
+</Pitfall>
+
+---
+
+<Quiz question="You have 500 labeled images across 5 categories and need to build a classifier. Should you train a CNN from scratch or use transfer learning? What architecture would you choose, and why?">
+
+<div>
+
+Use **transfer learning** — 500 images (100 per class) is far too few to train a CNN from scratch. A scratch-trained CNN at this scale will massively overfit regardless of regularization. Transfer learning approach: (1) Choose a lightweight pretrained model like **MobileNetV2** or **EfficientNetB0** — both are accurate and fast, designed for edge deployment. (2) Freeze the pretrained base, train only the classifier head for 10–20 epochs. (3) If validation accuracy plateaus, unfreeze the last 20–30 layers and fine-tune with a very low learning rate (1e-5). (4) Apply aggressive data augmentation (flips, rotations, color jitter, random crops) to artificially expand your training set. With these steps, 500 images can yield a surprisingly capable classifier because the pretrained backbone already knows how to detect edges, textures, and shapes — you are just teaching it what your 5 categories look like.
+
+</div>
+</Quiz>

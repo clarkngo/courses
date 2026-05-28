@@ -1,0 +1,190 @@
+---
+title: "Static Development Part I"
+description: "Build the front-end foundation with Angular — components, templates, data binding, and the Angular CLI — before connecting to a live back end."
+module: 4
+moduleTitle: "Static Development Part I"
+lesson: 1
+youtubeId: "FWs7R4ei64s"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## What Is Static Development?
+
+**Static development** means building and styling the front-end UI with hardcoded (mock) data, before the back end is ready. This approach lets front-end and back-end development proceed in parallel and makes it easy to design layouts without API dependencies.
+
+Once the UI looks and behaves correctly with mock data, swapping in real API calls becomes a contained change.
+
+---
+
+## Angular CLI Essentials
+
+```bash
+# Create a new Angular project
+ng new my-app --routing --style=scss
+
+# Generate components, services, and more
+ng generate component components/product-list
+ng generate service services/product
+ng generate interface models/product
+ng generate pipe pipes/currency-format
+ng generate guard guards/auth
+
+# Serve with live reload
+ng serve
+
+# Build for production
+ng build --configuration production
+```
+
+Generated files follow consistent naming: `product-list.component.ts`, `.html`, `.scss`, `.spec.ts`.
+
+---
+
+## Angular Components
+
+A component is the fundamental building block of an Angular app — it controls a patch of the screen.
+
+```typescript
+// product-list.component.ts
+import { Component, OnInit } from "@angular/core";
+
+interface Product {
+  id: number;
+  name: string;
+  price: number;
+  inStock: boolean;
+}
+
+@Component({
+  selector: "app-product-list",
+  templateUrl: "./product-list.component.html",
+  styleUrls: ["./product-list.component.scss"]
+})
+export class ProductListComponent implements OnInit {
+  products: Product[] = [
+    { id: 1, name: "Laptop", price: 999, inStock: true },
+    { id: 2, name: "Mouse", price: 29, inStock: true },
+    { id: 3, name: "Monitor", price: 349, inStock: false }
+  ];
+
+  selectedProduct: Product | null = null;
+
+  ngOnInit(): void {
+    // lifecycle hook — runs after component initializes
+  }
+
+  selectProduct(product: Product): void {
+    this.selectedProduct = product;
+  }
+}
+```
+
+---
+
+## Templates and Data Binding
+
+Angular's template syntax connects the component class to the HTML:
+
+```html
+<!-- product-list.component.html -->
+
+<!-- Interpolation: display a value -->
+<h1>{{ products.length }} Products</h1>
+
+<!-- Property binding: set an HTML attribute -->
+<img [src]="product.imageUrl" [alt]="product.name">
+
+<!-- Event binding: respond to user actions -->
+<button (click)="selectProduct(product)">Select</button>
+
+<!-- Two-way binding: sync input and component property -->
+<input [(ngModel)]="searchQuery" placeholder="Search...">
+
+<!-- *ngFor: repeat for each item -->
+<div *ngFor="let product of products; let i = index">
+  <span>{{ i + 1 }}. {{ product.name }} — ${{ product.price }}</span>
+  <span *ngIf="!product.inStock" class="badge">Out of Stock</span>
+</div>
+
+<!-- *ngIf: conditional rendering -->
+<div *ngIf="selectedProduct">
+  <h2>{{ selectedProduct.name }}</h2>
+  <p>Price: ${{ selectedProduct.price }}</p>
+</div>
+
+<!-- [ngClass]: apply CSS classes conditionally -->
+<div [ngClass]="{ 'out-of-stock': !product.inStock, 'featured': product.featured }">
+```
+
+---
+
+## Component Inputs and Outputs
+
+Components communicate through `@Input()` (parent → child) and `@Output()` (child → parent):
+
+```typescript
+// product-card.component.ts
+import { Component, Input, Output, EventEmitter } from "@angular/core";
+
+@Component({
+  selector: "app-product-card",
+  template: `
+    <div class="card">
+      <h3>{{ product.name }}</h3>
+      <p>\${{ product.price }}</p>
+      <button (click)="add()">Add to Cart</button>
+    </div>
+  `
+})
+export class ProductCardComponent {
+  @Input() product!: Product;
+  @Output() addToCart = new EventEmitter<Product>();
+
+  add(): void {
+    this.addToCart.emit(this.product);
+  }
+}
+```
+
+```html
+<!-- Parent template -->
+<app-product-card
+  *ngFor="let p of products"
+  [product]="p"
+  (addToCart)="onAddToCart($event)">
+</app-product-card>
+```
+
+<Pitfall title="Putting Logic in Templates">
+
+Angular templates should be dumb — they display data and emit events. Business logic (filtering, calculations, sorting) belongs in the component class or a service. Template expressions run on every change detection cycle; complex logic there slows down the app and makes testing impossible.
+
+```html
+<!-- WRONG — logic in template -->
+<span>{{ items.filter(i => i.active).length }} active items</span>
+
+<!-- CORRECT — computed property in component class -->
+<span>{{ activeItemCount }} active items</span>
+```
+
+</Pitfall>
+
+---
+
+<Quiz question="You're building a shopping cart UI statically. What components would you create, how would they communicate with each other using @Input and @Output, and where would you store the cart state?">
+
+<div>
+
+Component tree:
+- `AppComponent` — root, holds cart state
+- `ProductListComponent` — displays product grid, receives `products` via `@Input`, emits `addToCart` via `@Output`
+- `ProductCardComponent` — single product tile, receives `product` via `@Input`, emits `addToCart`
+- `CartComponent` — displays cart sidebar, receives `cartItems` via `@Input`, emits `removeItem` and `updateQuantity` via `@Output`
+- `CartItemComponent` — single cart row, receives `item` via `@Input`, emits `remove` and `quantityChange`
+
+Cart state belongs in `AppComponent` (or a dedicated `CartService` with a `BehaviorSubject`) — not in any individual child. If the state is local to `ProductListComponent`, the `CartComponent` can't access it without prop-drilling through every ancestor. A `CartService` with `addItem()`, `removeItem()`, and `items$` observable is the cleaner long-term solution.
+
+</div>
+</Quiz>

@@ -1,0 +1,86 @@
+---
+title: "Telecommunications"
+description: "Understand the telecommunications infrastructure that keeps your organization connected — from LANs and WANs to VoIP, mobile networks, and the decisions managers make around connectivity."
+module: 3
+moduleTitle: "Telecommunications"
+lesson: 1
+youtubeId: "I2o8PTJPmtY"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## What Is Telecommunications?
+
+**Telecommunications** is the transmission of information — voice, data, video — over a distance using electronic or optical signals. For most organizations, telecommunications infrastructure is the backbone that connects employees, offices, customers, and cloud systems.
+
+When telecom works well, it's invisible. When it fails, everything stops.
+
+---
+
+## Key Network Types
+
+| Network Type | Scope | Typical Use |
+|---|---|---|
+| **LAN** (Local Area Network) | Single building or campus | Office connectivity, printers, internal servers |
+| **WAN** (Wide Area Network) | Across cities or countries | Connecting branch offices |
+| **MAN** (Metropolitan Area Network) | City-wide | Campus or district-level networks |
+| **VPN** (Virtual Private Network) | Internet-based, encrypted | Secure remote access for employees |
+| **SD-WAN** | Software-defined WAN | Modern, flexible branch connectivity |
+
+---
+
+## Voice Communications: PBX vs. VoIP
+
+Traditional organizations used a **PBX** (Private Branch Exchange) — a physical phone system that routed calls internally. Most organizations are now migrating to **VoIP (Voice over Internet Protocol)**, which transmits voice calls as data over the internet.
+
+**Benefits of VoIP for managers:**
+- Lower cost per call, especially for long-distance and international
+- Easier to scale (add users without new hardware)
+- Integrates with collaboration tools (Teams, Zoom, Slack)
+- Supports remote and mobile workers natively
+
+The tradeoff: VoIP quality depends entirely on internet bandwidth and stability. A poor network connection means poor call quality.
+
+---
+
+## Bandwidth and Capacity Planning
+
+**Bandwidth** is the maximum amount of data that can be transmitted over a connection per second (measured in Mbps or Gbps). Managers often underestimate how much bandwidth modern business applications consume:
+
+| Application | Bandwidth per User |
+|---|---|
+| Web browsing | 1–5 Mbps |
+| HD video call | 3–8 Mbps |
+| 4K video streaming | 15–25 Mbps |
+| Cloud file sync (Dropbox, OneDrive) | Variable, can spike |
+| VoIP call | 0.1–1 Mbps |
+
+With 50 employees on simultaneous video calls, a 100 Mbps connection may be saturated. Capacity planning — budgeting for current and projected usage — is a key IT management function.
+
+<Pitfall title="Treating Internet as a Single Point of Failure">
+
+Many organizations have one internet provider. If that connection goes down, all cloud services, VoIP, email, and remote access fail simultaneously. A secondary connection (from a different provider and ideally a different physical path) is a low-cost insurance policy for business-critical operations.
+
+</Pitfall>
+
+---
+
+## Mobile and Wireless Considerations
+
+As workforces become more mobile, managers need to consider:
+
+- **Wi-Fi coverage** — Dead zones in offices reduce productivity. Enterprise-grade access points (not consumer routers) are needed at scale.
+- **Mobile device management (MDM)** — Tools to manage, secure, and wipe company-owned or BYOD phones.
+- **Cellular backup** — 4G/5G failover can keep critical systems online when wired internet fails.
+
+---
+
+<Quiz question="Your company is opening a second office 200 miles from headquarters. Employees at both sites need to access the same internal applications and file servers. What telecommunications options should you evaluate, and what factors would guide your decision?">
+
+<div>
+
+The main options are: (1) **Site-to-site VPN** — both offices connect to the internet separately, and a VPN creates an encrypted tunnel between them. Low cost, but performance depends on internet quality at both ends. (2) **MPLS leased line** — a dedicated private connection between sites managed by a telecom carrier. More reliable and predictable latency, but expensive and slow to provision. (3) **SD-WAN** — software-defined approach that can use multiple internet connections intelligently, balancing cost and reliability. Key factors: how latency-sensitive are the applications (video calls vs. email vs. file access), what is the budget, and what uptime SLA is required? For most small branch offices today, SD-WAN over dual ISP connections is the cost-effective balance.
+
+</div>
+</Quiz>

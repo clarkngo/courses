@@ -1,0 +1,174 @@
+---
+title: "Data Visualization"
+description: "Turn raw data into insight with Python's visualization ecosystem — covering Matplotlib for foundational plots, Seaborn for statistical graphics, and Plotly for interactive charts."
+module: 6
+moduleTitle: "Data Visualization"
+lesson: 1
+youtubeId: "5uhl8N0Fh04"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Why Visualization Matters
+
+Numbers in a table are rarely self-explanatory. The right chart can reveal patterns, outliers, and trends that would take hours to find in raw data. Python's visualization ecosystem is the richest in any programming language.
+
+---
+
+## The Visualization Stack
+
+| Library | Best For | Interactive? |
+|---|---|---|
+| **Matplotlib** | Full control, publication-quality static plots | No |
+| **Seaborn** | Statistical charts, beautiful defaults on top of Matplotlib | No |
+| **Plotly** | Interactive charts for notebooks and web apps | Yes |
+| **Pandas** | Quick `.plot()` for DataFrames | No (uses Matplotlib) |
+| **Bokeh** | Interactive dashboards | Yes |
+
+---
+
+## Matplotlib Fundamentals
+
+```python
+import matplotlib.pyplot as plt
+import numpy as np
+
+x = np.linspace(0, 2 * np.pi, 100)
+y = np.sin(x)
+
+fig, ax = plt.subplots(figsize=(8, 4))
+ax.plot(x, y, color="steelblue", linewidth=2, label="sin(x)")
+ax.set_title("Sine Wave")
+ax.set_xlabel("x")
+ax.set_ylabel("sin(x)")
+ax.legend()
+ax.grid(True, linestyle="--", alpha=0.5)
+plt.tight_layout()
+plt.savefig("sine.png", dpi=150)
+plt.show()
+```
+
+### Common Plot Types
+
+```python
+# Bar chart
+ax.bar(categories, values, color="coral")
+
+# Histogram
+ax.hist(data, bins=20, edgecolor="black")
+
+# Scatter plot
+ax.scatter(x, y, c=colors, s=sizes, alpha=0.7)
+
+# Subplots
+fig, axes = plt.subplots(2, 2, figsize=(10, 8))
+axes[0, 0].plot(x, y)
+axes[0, 1].hist(data)
+```
+
+---
+
+## Seaborn for Statistical Graphics
+
+```python
+import seaborn as sns
+import pandas as pd
+
+df = sns.load_dataset("tips")   # built-in sample dataset
+
+# Distribution
+sns.histplot(df["total_bill"], kde=True)
+
+# Relationship
+sns.scatterplot(data=df, x="total_bill", y="tip", hue="sex", size="size")
+
+# Categorical
+sns.boxplot(data=df, x="day", y="total_bill", hue="smoker")
+sns.violinplot(data=df, x="day", y="tip")
+
+# Heatmap (correlations)
+corr = df.select_dtypes("number").corr()
+sns.heatmap(corr, annot=True, cmap="coolwarm", fmt=".2f")
+
+plt.show()
+```
+
+Seaborn's `hue`, `size`, and `style` parameters let you encode additional dimensions into a single chart without clutter.
+
+---
+
+## Plotly for Interactive Charts
+
+```python
+import plotly.express as px
+
+df = px.data.gapminder().query("year == 2007")
+
+fig = px.scatter(
+    df,
+    x="gdpPercap",
+    y="lifeExp",
+    size="pop",
+    color="continent",
+    hover_name="country",
+    log_x=True,
+    title="Life Expectancy vs GDP per Capita (2007)"
+)
+fig.show()                       # opens in browser
+fig.write_html("chart.html")    # save as interactive HTML
+```
+
+Plotly Express handles most common charts with one function call. Use `plotly.graph_objects` for full control.
+
+---
+
+## Choosing the Right Chart
+
+| Data Relationship | Best Chart |
+|---|---|
+| Part-of-whole | Pie chart (≤5 slices), stacked bar |
+| Comparison | Bar chart, grouped bar |
+| Distribution | Histogram, box plot, violin plot |
+| Trend over time | Line chart |
+| Correlation | Scatter plot, heatmap |
+| Geographic | Choropleth map |
+
+<Pitfall title="Using Pie Charts for More Than 5 Categories">
+
+Humans are poor at comparing angles and areas. A pie chart with 10 slices is nearly unreadable. Use a horizontal bar chart instead — length comparison is far more accurate than angle comparison, and bar charts scale to any number of categories cleanly.
+
+</Pitfall>
+
+---
+
+<Quiz question="You have a DataFrame with monthly sales data for 5 product categories over 3 years. Design a visualization strategy that shows both the trend over time and the relative contribution of each category.">
+
+<div>
+
+Two complementary charts work best together:
+
+1. **Line chart** (Matplotlib or Plotly) with one line per category, time on the x-axis — this clearly shows trends and seasonal patterns for each category and lets the viewer compare growth rates.
+
+2. **Stacked area chart** or **100% stacked bar chart** — this shows the relative contribution (market share) of each category over time, revealing whether a growing category is gaining or losing share.
+
+```python
+import matplotlib.pyplot as plt
+
+fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(12, 8), sharex=True)
+
+for category in df.columns:
+    ax1.plot(df.index, df[category], label=category)
+ax1.set_title("Sales by Category (Absolute)")
+ax1.legend()
+
+df_pct = df.div(df.sum(axis=1), axis=0) * 100
+ax2.stackplot(df.index, df_pct.T, labels=df.columns)
+ax2.set_title("Category Share (%)")
+ax2.legend(loc="upper left")
+
+plt.tight_layout()
+```
+
+</div>
+</Quiz>

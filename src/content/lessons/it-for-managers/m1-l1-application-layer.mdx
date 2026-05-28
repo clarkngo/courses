@@ -1,0 +1,69 @@
+---
+title: "Application Layer"
+description: "Understand how the application layer connects software to networks, and why managers need to know what happens when a user clicks 'send' or opens a web page."
+module: 1
+moduleTitle: "Application Layer"
+lesson: 1
+youtubeId: "zEqWhM90K54"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## What Is the Application Layer?
+
+The **application layer** is the topmost layer of the network model — it is the layer your users interact with every day. When someone opens a browser, sends an email, or connects to a cloud file, they are using application-layer protocols without knowing it.
+
+As a manager, you don't need to understand every technical detail, but you do need to understand *what the application layer does* and *why it matters for your organization's IT decisions*.
+
+---
+
+## Common Application Layer Protocols
+
+| Protocol | Full Name | What It Does |
+|---|---|---|
+| **HTTP/HTTPS** | HyperText Transfer Protocol (Secure) | Powers all web browsing |
+| **SMTP** | Simple Mail Transfer Protocol | Sends email |
+| **IMAP/POP3** | Internet Message Access / Post Office Protocol | Retrieves email |
+| **FTP/SFTP** | File Transfer Protocol (Secure) | Transfers files |
+| **DNS** | Domain Name System | Translates domain names to IP addresses |
+
+Most enterprise software your team uses daily — email clients, ERPs, CRMs, web apps — communicates through one or more of these protocols.
+
+---
+
+## Why This Matters for Managers
+
+Understanding the application layer helps you ask the right questions when evaluating software:
+
+- **Is traffic encrypted?** HTTPS encrypts data in transit; HTTP does not. Any app handling customer or employee data should use HTTPS.
+- **How does the app communicate?** A SaaS tool that calls an external API is using application-layer protocols — outages there affect your team.
+- **What happens when DNS fails?** If your DNS provider has an outage, users cannot reach any internal or external systems by name. This is why DNS redundancy matters.
+
+<Pitfall title="Assuming Cloud Means Reliable">
+
+Many managers assume that because a tool is cloud-based, availability is guaranteed. In reality, cloud applications depend on the same application-layer infrastructure — DNS, HTTP servers, load balancers — that can and do fail. Always ask vendors about their SLA and uptime history.
+
+</Pitfall>
+
+---
+
+## Client-Server vs. Peer-to-Peer
+
+Application-layer communication typically follows one of two models:
+
+- **Client-server** — A central server handles requests from many clients. Most enterprise software works this way (your laptop is the client; the SaaS vendor's infrastructure is the server).
+- **Peer-to-peer (P2P)** — Devices communicate directly without a central server. Used in some file-sharing tools and video-conferencing backbones.
+
+For business applications, the client-server model is dominant because it is easier to secure, monitor, and manage centrally.
+
+---
+
+<Quiz question="Your company's web-based HR portal suddenly becomes unreachable, but users can still access other websites. What application-layer component is most likely the first place to investigate?">
+
+<div>
+
+DNS is the most likely culprit. If the HR portal's domain name cannot be resolved to an IP address, browsers will fail to connect even if the server itself is running fine. The fix is usually on the DNS configuration side — either the DNS record expired, the provider had an outage, or an internal DNS server is misconfigured. Check DNS resolution first before escalating to the application vendor.
+
+</div>
+</Quiz>

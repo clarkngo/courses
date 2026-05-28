@@ -1,0 +1,184 @@
+---
+title: "Dictionary, Set & String"
+description: "Master Python's three most versatile data structures — dictionaries for key-value mapping, sets for membership testing and deduplication, and strings for text processing."
+module: 2
+moduleTitle: "Dictionary, Set & String"
+lesson: 1
+youtubeId: "g3U2xZfP8z8"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Dictionaries
+
+A **dictionary** (`dict`) maps unique keys to values. It is Python's built-in hash map.
+
+```python
+student = {
+    "name": "Alice",
+    "age": 22,
+    "gpa": 3.9
+}
+
+# Access
+print(student["name"])           # Alice
+print(student.get("major", "Undeclared"))  # Undeclared (safe access)
+
+# Modify
+student["age"] = 23
+student["major"] = "CS"
+
+# Delete
+del student["gpa"]
+
+# Iterate
+for key, value in student.items():
+    print(f"{key}: {value}")
+```
+
+### Useful Dictionary Methods
+
+| Method | What It Does |
+|---|---|
+| `.get(key, default)` | Returns value or default if key missing |
+| `.keys()` | Returns all keys |
+| `.values()` | Returns all values |
+| `.items()` | Returns key-value pairs as tuples |
+| `.update(other_dict)` | Merges another dict in |
+| `.pop(key)` | Removes and returns a value |
+| `.setdefault(key, default)` | Sets key if missing, returns value |
+
+### Dictionary Comprehension
+
+```python
+squares = {n: n**2 for n in range(1, 6)}
+# {1: 1, 2: 4, 3: 9, 4: 16, 5: 25}
+```
+
+---
+
+## Sets
+
+A **set** stores unique, unordered elements. It is ideal for membership testing and deduplication.
+
+```python
+fruits = {"apple", "banana", "cherry"}
+fruits.add("mango")
+fruits.discard("banana")    # safe remove — no error if missing
+print("apple" in fruits)    # True (O(1) lookup)
+
+# Deduplication
+names = ["Alice", "Bob", "Alice", "Carol", "Bob"]
+unique_names = set(names)   # {"Alice", "Bob", "Carol"}
+```
+
+### Set Operations
+
+```python
+a = {1, 2, 3, 4}
+b = {3, 4, 5, 6}
+
+a | b   # Union:        {1, 2, 3, 4, 5, 6}
+a & b   # Intersection: {3, 4}
+a - b   # Difference:   {1, 2}
+a ^ b   # Symmetric diff: {1, 2, 5, 6}
+```
+
+---
+
+## Strings
+
+Strings are **immutable sequences of characters**. Python has no separate `char` type.
+
+```python
+s = "Hello, World!"
+
+# Indexing and slicing
+s[0]        # "H"
+s[-1]       # "!"
+s[0:5]      # "Hello"
+s[::2]      # Every other character
+
+# Common methods
+s.lower()           # "hello, world!"
+s.upper()           # "HELLO, WORLD!"
+s.strip()           # Remove leading/trailing whitespace
+s.split(", ")       # ["Hello", "World!"]
+s.replace("World", "Python")  # "Hello, Python!"
+s.startswith("Hello")  # True
+s.count("l")        # 3
+```
+
+### String Formatting
+
+```python
+name = "Bob"
+score = 95.7
+
+# f-strings (preferred, Python 3.6+)
+print(f"{name} scored {score:.1f}%")    # Bob scored 95.7%
+
+# .format()
+print("{} scored {:.1f}%".format(name, score))
+
+# Multiline strings
+text = """Line one
+Line two
+Line three"""
+```
+
+### String Processing Patterns
+
+```python
+# Join a list of strings
+words = ["the", "quick", "brown", "fox"]
+sentence = " ".join(words)     # "the quick brown fox"
+
+# Check content
+"123".isdigit()     # True
+"abc".isalpha()     # True
+"  ".isspace()      # True
+
+# Find and replace
+"abcabc".find("b")          # 1 (first occurrence index)
+"abcabc".rfind("b")         # 4 (last occurrence index)
+```
+
+<Pitfall title="String Concatenation in Loops">
+
+Building a string with `+` in a loop is O(n²) — each concatenation creates a new string object:
+
+```python
+# SLOW for large n
+result = ""
+for word in words:
+    result += word + " "
+
+# FAST — join builds the string once
+result = " ".join(words)
+```
+
+For large text processing tasks, always use `join()` or `io.StringIO`.
+
+</Pitfall>
+
+---
+
+<Quiz question="You have a list of 10,000 log entries and need to find all unique IP addresses that appear more than once. How would you use a dict and/or set to solve this efficiently?">
+
+<div>
+
+Use a dictionary to count occurrences, then filter:
+
+```python
+from collections import Counter
+
+ip_counts = Counter(log_entry.split()[0] for log_entry in logs)
+duplicates = {ip for ip, count in ip_counts.items() if count > 1}
+```
+
+`Counter` is a dict subclass optimized for counting. Alternatively, build the count dict manually with `.get()` or `setdefault()`. The final filter into a set gives O(1) membership testing if you need to check later. A pure-set approach (add to a `seen` set, add to a `duplicates` set when already in `seen`) also works and avoids storing counts if you only need the boolean "appeared more than once."
+
+</div>
+</Quiz>

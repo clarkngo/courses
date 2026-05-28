@@ -1,0 +1,183 @@
+---
+title: "Deep Learning for Text Data"
+description: "Process and classify text with deep learning — covering tokenization, embeddings, recurrent networks, and modern transformer-based models for sentiment analysis, text generation, and NLP tasks."
+module: 10
+moduleTitle: "Deep Learning for Text Data"
+lesson: 1
+youtubeId: "1ww-ocRSU5w"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## From Text to Numbers
+
+Neural networks operate on numbers, not words. Transforming text into numerical representations is the first challenge in NLP.
+
+### Tokenization
+Split text into tokens (words, subwords, or characters):
+
+```python
+text = "Deep learning is powerful."
+tokens = text.lower().split()   # basic word tokenization
+# ["deep", "learning", "is", "powerful."]
+
+# Better: Keras tokenizer
+from tensorflow.keras.preprocessing.text import Tokenizer
+
+tokenizer = Tokenizer(num_words=10000, oov_token="<OOV>")
+tokenizer.fit_on_texts(train_texts)
+sequences = tokenizer.texts_to_sequences(train_texts)
+```
+
+### Padding
+Sequences must be equal length for batching:
+
+```python
+from tensorflow.keras.preprocessing.sequence import pad_sequences
+
+padded = pad_sequences(sequences, maxlen=200,
+                       padding="post", truncating="post")
+```
+
+---
+
+## Word Embeddings
+
+An **embedding** maps each token to a dense vector in a continuous space where semantically similar words are geometrically close.
+
+```python
+keras.layers.Embedding(
+    input_dim=vocab_size,     # number of unique tokens
+    output_dim=128,           # embedding dimension
+    input_length=max_length
+)
+```
+
+Pretrained embeddings (Word2Vec, GloVe, FastText) encode relationships learned from billions of words:
+- `king - man + woman ≈ queen`
+- `Paris - France + Germany ≈ Berlin`
+
+---
+
+## Text Classification with Keras
+
+```python
+import tensorflow as tf
+from tensorflow import keras
+
+vocab_size = 10000
+embedding_dim = 128
+max_length = 200
+
+model = keras.Sequential([
+    keras.layers.Embedding(vocab_size, embedding_dim, input_length=max_length),
+    keras.layers.GlobalAveragePooling1D(),   # average token embeddings
+    keras.layers.Dense(64, activation="relu"),
+    keras.layers.Dropout(0.5),
+    keras.layers.Dense(1, activation="sigmoid")  # binary classification
+])
+
+model.compile(optimizer="adam",
+              loss="binary_crossentropy",
+              metrics=["accuracy"])
+
+history = model.fit(
+    padded_train, y_train,
+    epochs=10,
+    validation_data=(padded_val, y_val),
+    batch_size=32
+)
+```
+
+---
+
+## Recurrent Networks (LSTM / GRU)
+
+For tasks where word **order** matters (sentiment, translation, generation), recurrent networks process sequences step by step.
+
+```python
+model = keras.Sequential([
+    keras.layers.Embedding(vocab_size, 128, input_length=max_length),
+    keras.layers.Bidirectional(keras.layers.LSTM(64, return_sequences=True)),
+    keras.layers.Bidirectional(keras.layers.LSTM(32)),
+    keras.layers.Dense(64, activation="relu"),
+    keras.layers.Dropout(0.5),
+    keras.layers.Dense(1, activation="sigmoid")
+])
+```
+
+`Bidirectional` wraps the LSTM to process the sequence both forward and backward, capturing context from both directions.
+
+---
+
+## Using Pretrained Transformers (HuggingFace)
+
+For state-of-the-art results, use pretrained transformer models via the `transformers` library:
+
+```bash
+pip install transformers
+```
+
+```python
+from transformers import pipeline
+
+# Sentiment analysis — zero setup
+classifier = pipeline("sentiment-analysis")
+results = classifier(["I love this product!", "Terrible experience."])
+# [{'label': 'POSITIVE', 'score': 0.9998}, {'label': 'NEGATIVE', 'score': 0.9991}]
+
+# Text generation
+generator = pipeline("text-generation", model="gpt2")
+output = generator("The future of AI is", max_length=50, num_return_sequences=2)
+
+# Named Entity Recognition
+ner = pipeline("ner", grouped_entities=True)
+ner("Apple Inc. was founded by Steve Jobs in Cupertino, California.")
+```
+
+### Fine-Tuning BERT for Classification
+
+```python
+from transformers import AutoTokenizer, AutoModelForSequenceClassification, Trainer, TrainingArguments
+
+model_name = "distilbert-base-uncased"
+tokenizer = AutoTokenizer.from_pretrained(model_name)
+model = AutoModelForSequenceClassification.from_pretrained(model_name, num_labels=2)
+
+# Tokenize dataset
+def tokenize(batch):
+    return tokenizer(batch["text"], padding=True, truncation=True, max_length=512)
+
+tokenized = dataset.map(tokenize, batched=True)
+
+training_args = TrainingArguments(
+    output_dir="./results",
+    num_train_epochs=3,
+    per_device_train_batch_size=16,
+    evaluation_strategy="epoch",
+    learning_rate=2e-5
+)
+
+trainer = Trainer(model=model, args=training_args,
+                  train_dataset=tokenized["train"],
+                  eval_dataset=tokenized["test"])
+trainer.train()
+```
+
+<Pitfall title="Training NLP Models Without Checking for Data Leakage">
+
+Text datasets frequently contain signals that are not actually language — author style, HTML artifacts, metadata, or time-correlated topics. A sentiment classifier trained on reviews that include star ratings in the text will achieve near-perfect accuracy on a meaningless task. Always inspect your features and verify that the model learns the linguistic signal you intend, not shortcuts in the data.
+
+</Pitfall>
+
+---
+
+<Quiz question="You need to classify customer support tickets into 8 categories to route them to the right team. You have 3,000 labeled tickets. Should you train an LSTM from scratch, fine-tune BERT, or use a zero-shot classifier? Justify your choice.">
+
+<div>
+
+**Fine-tune a small pretrained model** (DistilBERT or BERT-base). Here's why each option stacks up: (1) **LSTM from scratch** — 3,000 samples across 8 classes (~375 per class) is insufficient to learn good word embeddings and sequence dynamics simultaneously. You'd need 10–50x more data for scratch training to generalize. (2) **Fine-tuning DistilBERT** — best choice. Pretrained transformer weights already encode rich language understanding; you're just teaching the final classifier head your 8 categories. 3,000 examples is enough for fine-tuning. Training takes minutes on a GPU. Expect 85–95% accuracy depending on category overlap. (3) **Zero-shot classifier** — reasonable baseline requiring no training data, but 8 specific support categories (vs. general sentiment) will likely be misclassified frequently. Use it to establish a baseline before committing to labeling effort. Start with DistilBERT fine-tuning, evaluate on a held-out test set, and use the zero-shot pipeline as a fallback for tickets with low confidence scores.
+
+</div>
+</Quiz>

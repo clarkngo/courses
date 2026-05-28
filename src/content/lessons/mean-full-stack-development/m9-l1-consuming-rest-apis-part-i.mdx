@@ -1,0 +1,258 @@
+---
+title: "Consuming REST APIs Part I"
+description: "Connect your Angular front end to the Express REST API — using HttpClient, RxJS operators, interceptors for JWT, and loading/error state management in components."
+module: 9
+moduleTitle: "Consuming REST APIs Part I"
+lesson: 1
+youtubeId: "184Sxvb0ugc"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Angular HttpClient
+
+`HttpClient` is Angular's built-in HTTP service. It returns `Observable` streams, integrating naturally with RxJS.
+
+```typescript
+// app.module.ts
+import { HttpClientModule } from "@angular/common/http";
+
+@NgModule({
+  imports: [HttpClientModule, ...]
+})
+export class AppModule {}
+```
+
+```typescript
+// product.service.ts
+import { Injectable } from "@angular/core";
+import { HttpClient, HttpParams } from "@angular/common/http";
+import { Observable } from "rxjs";
+import { environment } from "../../environments/environment";
+
+export interface Product {
+  _id: string;
+  name: string;
+  price: number;
+  category: string;
+  inStock: boolean;
+}
+
+export interface PaginatedResponse<T> {
+  data: T[];
+  pagination: { total: number; page: number; pages: number; hasNext: boolean };
+}
+
+@Injectable({ providedIn: "root" })
+export class ProductService {
+  private url = `${environment.apiUrl}/products`;
+
+  constructor(private http: HttpClient) {}
+
+  getAll(filters?: { category?: string; page?: number; limit?: number }): Observable<PaginatedResponse<Product>> {
+    let params = new HttpParams();
+    if (filters?.category) params = params.set("category", filters.category);
+    if (filters?.page)     params = params.set("page", filters.page.toString());
+    if (filters?.limit)    params = params.set("limit", filters.limit.toString());
+    return this.http.get<PaginatedResponse<Product>>(this.url, { params });
+  }
+
+  getById(id: string): Observable<Product> {
+    return this.http.get<Product>(`${this.url}/${id}`);
+  }
+
+  create(product: Partial<Product>): Observable<Product> {
+    return this.http.post<Product>(this.url, product);
+  }
+
+  update(id: string, changes: Partial<Product>): Observable<Product> {
+    return this.http.put<Product>(`${this.url}/${id}`, changes);
+  }
+
+  delete(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.url}/${id}`);
+  }
+}
+```
+
+---
+
+## HTTP Interceptors
+
+Interceptors intercept every request or response — perfect for attaching JWT tokens and handling errors globally.
+
+```typescript
+// auth.interceptor.ts
+import { Injectable } from "@angular/core";
+import { HttpInterceptor, HttpRequest, HttpHandler } from "@angular/common/http";
+import { AuthService } from "./auth.service";
+
+@Injectable()
+export class AuthInterceptor implements HttpInterceptor {
+  constructor(private auth: AuthService) {}
+
+  intercept(req: HttpRequest<any>, next: HttpHandler) {
+    const token = this.auth.getToken();
+    if (token) {
+      req = req.clone({
+        setHeaders: { Authorization: `Bearer ${token}` }
+      });
+    }
+    return next.handle(req);
+  }
+}
+```
+
+```typescript
+// Register in app.module.ts
+import { HTTP_INTERCEPTORS } from "@angular/common/http";
+import { AuthInterceptor } from "./interceptors/auth.interceptor";
+
+providers: [
+  { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
+]
+```
+
+---
+
+## Error Interceptor
+
+```typescript
+// error.interceptor.ts
+import { Injectable } from "@angular/core";
+import { HttpInterceptor, HttpRequest, HttpHandler, HttpErrorResponse } from "@angular/common/http";
+import { catchError, throwError } from "rxjs";
+import { Router } from "@angular/router";
+
+@Injectable()
+export class ErrorInterceptor implements HttpInterceptor {
+  constructor(private router: Router) {}
+
+  intercept(req: HttpRequest<any>, next: HttpHandler) {
+    return next.handle(req).pipe(
+      catchError((err: HttpErrorResponse) => {
+        if (err.status === 401) {
+          localStorage.removeItem("token");
+          this.router.navigate(["/login"]);
+        }
+        const message = err.error?.message || "An unexpected error occurred";
+        return throwError(() => new Error(message));
+      })
+    );
+  }
+}
+```
+
+---
+
+## Loading and Error State in Components
+
+```typescript
+// product-list.component.ts
+import { Component, OnInit } from "@angular/core";
+import { ProductService, Product, PaginatedResponse } from "../services/product.service";
+
+@Component({
+  selector: "app-product-list",
+  templateUrl: "./product-list.component.html"
+})
+export class ProductListComponent implements OnInit {
+  products: Product[] = [];
+  loading = false;
+  error: string | null = null;
+  currentPage = 1;
+  totalPages = 1;
+
+  constructor(private productService: ProductService) {}
+
+  ngOnInit(): void { this.loadProducts(); }
+
+  loadProducts(): void {
+    this.loading = true;
+    this.error = null;
+    this.productService.getAll({ page: this.currentPage }).subscribe({
+      next: (res) => {
+        this.products = res.data;
+        this.totalPages = res.pagination.pages;
+        this.loading = false;
+      },
+      error: (err) => {
+        this.error = err.message;
+        this.loading = false;
+      }
+    });
+  }
+
+  nextPage(): void { if (this.currentPage < this.totalPages) { this.currentPage++; this.loadProducts(); } }
+  prevPage(): void { if (this.currentPage > 1) { this.currentPage--; this.loadProducts(); } }
+}
+```
+
+```html
+<!-- product-list.component.html -->
+<div *ngIf="loading" class="spinner">Loading...</div>
+<div *ngIf="error" class="error-banner">{{ error }}</div>
+
+<div *ngIf="!loading && !error">
+  <app-product-card *ngFor="let p of products" [product]="p"></app-product-card>
+  <div class="pagination">
+    <button [disabled]="currentPage === 1" (click)="prevPage()">Prev</button>
+    <span>Page {{ currentPage }} of {{ totalPages }}</span>
+    <button [disabled]="currentPage === totalPages" (click)="nextPage()">Next</button>
+  </div>
+</div>
+```
+
+<Pitfall title="Making HTTP Calls Directly in Components">
+
+HTTP calls belong in services, not components. A component that calls `HttpClient` directly cannot be tested without a real HTTP connection, cannot share data with other components, and mixes concerns that should be separate. Always inject a service; the component subscribes to the service's `Observable` and handles UI state based on the result.
+
+</Pitfall>
+
+---
+
+<Quiz question="Your product list makes a new API call every time the user switches tabs back to it. How would you cache the response so repeat visits don't hit the server unnecessarily, while still allowing manual refresh?">
+
+<div>
+
+Use `shareReplay` in the service to cache the last emitted value:
+
+```typescript
+import { shareReplay } from "rxjs/operators";
+
+@Injectable({ providedIn: "root" })
+export class ProductService {
+  private cache$: Observable<Product[]> | null = null;
+
+  getAll(): Observable<Product[]> {
+    if (!this.cache$) {
+      this.cache$ = this.http.get<Product[]>(this.url).pipe(
+        shareReplay(1)   // cache last value, share with all subscribers
+      );
+    }
+    return this.cache$;
+  }
+
+  // Call this to force a fresh fetch
+  invalidateCache(): void {
+    this.cache$ = null;
+  }
+}
+```
+
+Alternatively, use Angular's `transferState` for SSR-compatible caching, or a library like `@ngrx/store` if you need global, reactive state management. For short-lived caches (5 minutes), add a TTL:
+
+```typescript
+private cacheExpiry: number = 0;
+getAll(): Observable<Product[]> {
+  if (!this.cache$ || Date.now() > this.cacheExpiry) {
+    this.cacheExpiry = Date.now() + 5 * 60 * 1000;
+    this.cache$ = this.http.get<Product[]>(this.url).pipe(shareReplay(1));
+  }
+  return this.cache$;
+}
+```
+
+</div>
+</Quiz>

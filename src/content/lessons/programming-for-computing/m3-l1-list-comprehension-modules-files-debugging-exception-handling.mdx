@@ -1,0 +1,205 @@
+---
+title: "List Comprehension, Modules, Files, Debugging, and Exception Handling"
+description: "Level up your Python with concise list comprehensions, reusable modules, file I/O, systematic debugging techniques, and robust exception handling."
+module: 3
+moduleTitle: "List Comprehension, Modules, Files, Debugging, and Exception Handling"
+lesson: 1
+youtubeId: "T67pM1Rxzzg"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## List Comprehensions
+
+A **list comprehension** creates a new list by applying an expression to each item in an iterable — in a single, readable line.
+
+```python
+# Basic form: [expression for item in iterable]
+squares = [x**2 for x in range(10)]
+# [0, 1, 4, 9, 16, 25, 36, 49, 64, 81]
+
+# With condition: [expression for item in iterable if condition]
+evens = [x for x in range(20) if x % 2 == 0]
+# [0, 2, 4, 6, 8, 10, 12, 14, 16, 18]
+
+# Nested
+matrix = [[row * col for col in range(1, 4)] for row in range(1, 4)]
+# [[1, 2, 3], [2, 4, 6], [3, 6, 9]]
+```
+
+Dict and set comprehensions follow the same pattern:
+```python
+word_lengths = {word: len(word) for word in ["cat", "elephant", "ox"]}
+unique_lengths = {len(word) for word in ["cat", "elephant", "ox"]}
+```
+
+---
+
+## Modules and Imports
+
+A **module** is any `.py` file. Python's standard library and PyPI provide thousands of ready-made modules.
+
+```python
+import math
+import os
+import random
+from datetime import datetime, timedelta
+from collections import defaultdict, Counter
+
+# Standard library highlights
+math.sqrt(16)                   # 4.0
+os.getcwd()                     # current working directory
+random.choice(["a", "b", "c"]) # random element
+datetime.now()                  # current datetime
+```
+
+### Creating Your Own Module
+
+Any `.py` file is importable as a module. If `utils.py` contains `def clean(text): ...`, then:
+```python
+from utils import clean
+```
+
+Use `if __name__ == "__main__":` to write code that runs only when the file is executed directly, not when imported.
+
+---
+
+## File I/O
+
+```python
+# Reading a file
+with open("data.txt", "r") as f:
+    content = f.read()          # entire file as string
+    # or
+    lines = f.readlines()       # list of lines
+
+# Writing a file
+with open("output.txt", "w") as f:
+    f.write("Hello\n")
+    f.writelines(["line1\n", "line2\n"])
+
+# Appending
+with open("log.txt", "a") as f:
+    f.write("New entry\n")
+
+# CSV (use the csv module)
+import csv
+with open("data.csv", "r") as f:
+    reader = csv.DictReader(f)
+    for row in reader:
+        print(row["name"], row["score"])
+```
+
+Always use `with` — it guarantees the file is closed even if an exception occurs.
+
+---
+
+## Debugging
+
+### Print Debugging
+The simplest approach: add `print()` statements to inspect values at runtime. Remove them before committing.
+
+### `pdb` — Python Debugger
+```python
+import pdb; pdb.set_trace()   # execution pauses here
+# or in Python 3.7+:
+breakpoint()
+```
+In the debugger: `n` (next line), `s` (step into), `p variable` (print), `c` (continue), `q` (quit).
+
+### Common Bugs to Look For
+| Symptom | Likely Cause |
+|---|---|
+| `TypeError: 'int' + 'str'` | Type mismatch — convert explicitly |
+| `KeyError` | Dictionary key does not exist — use `.get()` |
+| `IndexError` | List index out of range |
+| `AttributeError` | Called method on wrong type or `None` |
+| Off-by-one errors | `range(n)` goes 0 to n-1, not 1 to n |
+
+---
+
+## Exception Handling
+
+```python
+try:
+    result = int(input("Enter a number: "))
+    answer = 100 / result
+except ValueError:
+    print("That's not a valid integer.")
+except ZeroDivisionError:
+    print("Cannot divide by zero.")
+except (TypeError, AttributeError) as e:
+    print(f"Unexpected error: {e}")
+else:
+    print(f"Result: {answer}")   # runs only if no exception
+finally:
+    print("Done.")               # always runs
+```
+
+### Raising Exceptions
+```python
+def set_age(age):
+    if age < 0:
+        raise ValueError(f"Age cannot be negative: {age}")
+    return age
+```
+
+### Custom Exceptions
+```python
+class InsufficientFundsError(Exception):
+    def __init__(self, balance, amount):
+        super().__init__(f"Balance {balance} < withdrawal {amount}")
+```
+
+<Pitfall title="Bare except Clauses">
+
+Never use a bare `except:` — it silently catches `SystemExit`, `KeyboardInterrupt`, and every other exception, making programs impossible to interrupt and hiding bugs:
+
+```python
+# WRONG
+try:
+    risky_operation()
+except:
+    pass
+
+# CORRECT — catch only what you expect
+try:
+    risky_operation()
+except (ValueError, IOError) as e:
+    log_error(e)
+```
+
+</Pitfall>
+
+---
+
+<Quiz question="Write a function that reads a CSV file of student names and scores, returns the average score, and handles the case where the file doesn't exist or a score entry is not a valid number.">
+
+<div>
+
+```python
+import csv
+
+def average_score(filepath):
+    try:
+        scores = []
+        with open(filepath, "r") as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                try:
+                    scores.append(float(row["score"]))
+                except (ValueError, KeyError):
+                    print(f"Skipping invalid row: {row}")
+        if not scores:
+            return None
+        return sum(scores) / len(scores)
+    except FileNotFoundError:
+        print(f"File not found: {filepath}")
+        return None
+```
+
+Key decisions: the outer `try/except` handles the missing file; the inner one handles bad rows without aborting the entire file. Returning `None` (not 0) for the empty/missing case lets the caller distinguish "no data" from "average is zero."
+
+</div>
+</Quiz>

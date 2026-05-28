@@ -1,0 +1,246 @@
+---
+title: "Writing REST API Part I"
+description: "Build a production-ready REST API with Express — covering route organization, middleware, input validation, authentication with JWT, and error handling patterns."
+module: 7
+moduleTitle: "Writing REST API Part I"
+lesson: 1
+youtubeId: "FOImfN8iyN8"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Express Routing Structure
+
+Organizing routes into separate files keeps the codebase maintainable as the API grows:
+
+```javascript
+// server/app.js
+app.use("/api/auth",     require("./routes/auth"));
+app.use("/api/products", require("./routes/products"));
+app.use("/api/orders",   require("./routes/orders"));
+app.use("/api/users",    require("./routes/users"));
+```
+
+```javascript
+// server/routes/products.js
+const express = require("express");
+const router = express.Router();
+const ProductController = require("../controllers/productController");
+const auth = require("../middleware/auth");
+const validate = require("../middleware/validate");
+const { createProductSchema } = require("../validators/product");
+
+router.get("/",          ProductController.getAll);
+router.get("/:id",       ProductController.getOne);
+router.post("/",         auth, validate(createProductSchema), ProductController.create);
+router.put("/:id",       auth, ProductController.update);
+router.delete("/:id",    auth, ProductController.remove);
+
+module.exports = router;
+```
+
+Separating controllers, middleware, and routes means each file has a single reason to change.
+
+---
+
+## Controller Pattern
+
+```javascript
+// server/controllers/productController.js
+const Product = require("../models/Product");
+
+exports.getAll = async (req, res, next) => {
+    try {
+        const { category, minPrice, maxPrice, sort = "createdAt", limit = 20, page = 1 } = req.query;
+        const filter = {};
+        if (category) filter.category = category;
+        if (minPrice || maxPrice) filter.price = {};
+        if (minPrice) filter.price.$gte = Number(minPrice);
+        if (maxPrice) filter.price.$lte = Number(maxPrice);
+
+        const [products, total] = await Promise.all([
+            Product.find(filter)
+                .sort(sort)
+                .limit(Number(limit))
+                .skip((Number(page) - 1) * Number(limit))
+                .lean(),
+            Product.countDocuments(filter)
+        ]);
+
+        res.json({ products, total, page: Number(page), limit: Number(limit) });
+    } catch (err) { next(err); }
+};
+
+exports.getOne = async (req, res, next) => {
+    try {
+        const product = await Product.findById(req.params.id).populate("seller", "name");
+        if (!product) return res.status(404).json({ message: "Product not found" });
+        res.json(product);
+    } catch (err) { next(err); }
+};
+
+exports.create = async (req, res, next) => {
+    try {
+        const product = new Product({ ...req.body, seller: req.user.id });
+        await product.save();
+        res.status(201).json(product);
+    } catch (err) { next(err); }
+};
+```
+
+---
+
+## Authentication with JWT
+
+```bash
+npm install jsonwebtoken bcryptjs
+```
+
+```javascript
+// server/controllers/authController.js
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
+const User = require("../models/User");
+
+exports.register = async (req, res, next) => {
+    try {
+        const { name, email, password } = req.body;
+        const existing = await User.findOne({ email });
+        if (existing) return res.status(409).json({ message: "Email already registered" });
+
+        const hashed = await bcrypt.hash(password, 12);
+        const user = await User.create({ name, email, password: hashed });
+
+        const token = jwt.sign({ id: user._id, role: user.role },
+                                process.env.JWT_SECRET,
+                                { expiresIn: "7d" });
+        res.status(201).json({ token, user: { id: user._id, name, email } });
+    } catch (err) { next(err); }
+};
+
+exports.login = async (req, res, next) => {
+    try {
+        const { email, password } = req.body;
+        const user = await User.findOne({ email }).select("+password");
+        if (!user || !(await bcrypt.compare(password, user.password))) {
+            return res.status(401).json({ message: "Invalid credentials" });
+        }
+        const token = jwt.sign({ id: user._id, role: user.role },
+                                process.env.JWT_SECRET, { expiresIn: "7d" });
+        res.json({ token, user: { id: user._id, name: user.name, email } });
+    } catch (err) { next(err); }
+};
+```
+
+---
+
+## Auth Middleware
+
+```javascript
+// server/middleware/auth.js
+const jwt = require("jsonwebtoken");
+
+module.exports = (req, res, next) => {
+    const header = req.headers.authorization;
+    if (!header?.startsWith("Bearer ")) {
+        return res.status(401).json({ message: "No token provided" });
+    }
+    try {
+        const token = header.split(" ")[1];
+        req.user = jwt.verify(token, process.env.JWT_SECRET);
+        next();
+    } catch {
+        res.status(401).json({ message: "Invalid or expired token" });
+    }
+};
+```
+
+---
+
+## Input Validation with Joi
+
+```bash
+npm install joi
+```
+
+```javascript
+// server/validators/product.js
+const Joi = require("joi");
+
+exports.createProductSchema = Joi.object({
+    name:        Joi.string().trim().max(100).required(),
+    price:       Joi.number().min(0).required(),
+    category:    Joi.string().valid("electronics", "clothing", "food").required(),
+    description: Joi.string().max(2000),
+    tags:        Joi.array().items(Joi.string()).max(10),
+});
+
+// server/middleware/validate.js
+module.exports = (schema) => (req, res, next) => {
+    const { error } = schema.validate(req.body, { abortEarly: false });
+    if (error) {
+        return res.status(400).json({
+            message: "Validation error",
+            details: error.details.map(d => d.message)
+        });
+    }
+    next();
+};
+```
+
+<Pitfall title="Trusting req.params.id Directly in MongoDB Queries">
+
+`req.params.id` is user-supplied input. If it is not a valid MongoDB ObjectId, `findById()` will throw a `CastError`. Validate or sanitize first:
+
+```javascript
+const mongoose = require("mongoose");
+
+if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+    return res.status(400).json({ message: "Invalid ID format" });
+}
+```
+
+Never let a CastError bubble up to a 500 — it reveals implementation details and is confusing to callers.
+
+</Pitfall>
+
+---
+
+<Quiz question="Your API endpoint `GET /api/orders` should return only the requesting user's own orders. How would you implement this using the JWT auth middleware, and how would you prevent a user from accessing another user's order by guessing an ID?">
+
+<div>
+
+`GET /api/orders` — filter by `req.user.id` (set by the auth middleware):
+
+```javascript
+exports.getMyOrders = async (req, res, next) => {
+    try {
+        const orders = await Order.find({ customer: req.user.id }).lean();
+        res.json(orders);
+    } catch (err) { next(err); }
+};
+```
+
+`GET /api/orders/:id` — fetch by ID AND owner:
+
+```javascript
+exports.getOne = async (req, res, next) => {
+    try {
+        if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+            return res.status(400).json({ message: "Invalid ID" });
+        }
+        const order = await Order.findOne({
+            _id: req.params.id,
+            customer: req.user.id      // ownership check in the query itself
+        });
+        if (!order) return res.status(404).json({ message: "Order not found" });
+        res.json(order);
+    } catch (err) { next(err); }
+};
+```
+
+The ownership check is in the database query — if the order exists but belongs to a different user, `findOne` returns `null` and the API returns 404 (not 403). Returning 404 rather than 403 avoids confirming that the resource exists, which is a subtle but real security improvement.
+
+</div>
+</Quiz>

@@ -1,0 +1,108 @@
+---
+title: "eCommerce — WordPress & WooCommerce Advanced"
+description: "Go deeper into WooCommerce — covering order management, customer accounts, reporting, multi-channel selling, and the operational decisions managers face as an online store scales."
+module: 9
+moduleTitle: "eCommerce — WordPress & WooCommerce Advanced"
+lesson: 1
+youtubeId: "3Gj13rdEZ_M"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Managing Orders at Scale
+
+As your WooCommerce store grows, order management moves from a manual process to an operational discipline. WooCommerce provides a built-in order management system, but managers need to understand its limitations and when to extend it.
+
+### Order Statuses
+WooCommerce tracks orders through a lifecycle:
+
+| Status | Meaning |
+|---|---|
+| **Pending payment** | Order placed but payment not confirmed |
+| **Processing** | Payment received; awaiting fulfillment |
+| **On hold** | Awaiting payment confirmation (e.g., bank transfer) |
+| **Completed** | Order fulfilled and shipped |
+| **Refunded** | Order refunded |
+| **Cancelled** | Order cancelled by customer or admin |
+| **Failed** | Payment attempt failed |
+
+Custom statuses (e.g., "In Production," "Awaiting Pickup") can be added with plugins for businesses with complex fulfillment workflows.
+
+---
+
+## Customer Accounts and Retention
+
+WooCommerce supports both guest checkout and registered customer accounts. Customer accounts enable:
+
+- **Order history** — Customers can review past purchases without contacting support
+- **Saved addresses** — Faster repeat checkout
+- **Wishlists** — With a plugin
+- **Loyalty programs** — Points, rewards, and referral tracking via extensions
+
+For B2B stores, customer accounts are essential — they enable account-specific pricing, credit terms, and order history tied to a company rather than an individual.
+
+---
+
+## WooCommerce Reporting and Analytics
+
+The built-in WooCommerce Analytics dashboard provides:
+
+- **Revenue reports** — Total sales, net revenue, average order value
+- **Product reports** — Best-sellers, low-stock, and revenue by product
+- **Customer reports** — New vs. returning customers, customer lifetime value
+- **Order reports** — Volume trends, fulfillment time
+- **Category and coupon performance**
+
+For deeper analysis, most growing stores integrate with:
+- **Google Analytics 4** — Full funnel tracking from ad click to purchase
+- **Looker Studio** — Custom dashboards combining WooCommerce and marketing data
+- **Klaviyo / Mailchimp** — Email performance tied to order data
+
+---
+
+## Multi-Channel Selling
+
+WooCommerce can serve as the hub of a multi-channel strategy — syncing inventory and orders across:
+
+| Channel | Integration |
+|---|---|
+| **Amazon** | WooCommerce Amazon Fulfillment plugin |
+| **eBay** | Codisto or similar marketplace connector |
+| **Google Shopping** | WooCommerce Google Listings & Ads plugin |
+| **Facebook/Instagram** | WooCommerce Facebook plugin (Meta pixel + catalog) |
+| **TikTok Shop** | TikTok for WooCommerce extension |
+| **Physical POS** | Square for WooCommerce (syncs inventory with retail) |
+
+Multi-channel selling expands reach but adds complexity — inventory overselling is the most common risk when channels are not properly synced.
+
+<Pitfall title="Ignoring Site Performance as the Store Grows">
+
+A WooCommerce store with 100 products and 10 orders per day performs very differently from the same store with 10,000 products and 500 daily orders. As catalogs and traffic grow, performance must be proactively managed: caching (WP Rocket, LiteSpeed Cache), a CDN (Cloudflare), database optimization, and potentially upgrading to managed hosting with more server resources. Performance problems in eCommerce directly reduce revenue — a 1-second delay in page load can reduce conversions by 7%.
+
+</Pitfall>
+
+---
+
+## Scaling Operations: When to Add Infrastructure
+
+Signs your WooCommerce store has outgrown its current setup:
+
+- Page load times are increasing despite caching
+- Orders are taking longer to process during peak traffic
+- The database is slowing down reports and admin screens
+- You are managing inventory across multiple warehouses or fulfillment centers
+- International orders require multi-currency or multi-language support
+
+At this stage, evaluate: upgraded managed hosting, a dedicated database server, an ERP integration (NetSuite, QuickBooks), or a 3PL (third-party logistics) integration.
+
+---
+
+<Quiz question="Your WooCommerce store is growing — revenue is up 40% year-over-year, but customer complaints about order status are also increasing. Customers don't know where their order is, and your support team is overwhelmed with 'where is my order?' emails. What operational changes would you prioritize?">
+
+<div>
+
+This is a fulfillment communication problem, not a technology problem — but technology enables the fix. Prioritize: (1) **Automated order status emails** — WooCommerce sends default emails at key status changes, but ensure they are configured, branded, and include tracking information. If fulfillment is handled by a 3PL, ensure tracking numbers are pushed back into WooCommerce automatically. (2) **Shipment tracking plugin** — tools like ShipStation, Aftership, or Shippo integrate with carriers and send proactive tracking updates to customers. (3) **Customer account order tracking** — ensure the customer-facing order status page is linked clearly in your emails and site navigation. (4) **Fulfillment SLA review** — if "where is my order" volume is high, the underlying issue may be slow fulfillment, not just communication. Measure average time from "processing" to "completed" status and set a target. Fix the root cause, then add communication layers on top.
+
+</div>
+</Quiz>
