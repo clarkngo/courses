@@ -118,6 +118,38 @@ const base = import.meta.env.BASE_URL;
   </div>
 </BaseLayout>
 
+<!-- Lightbox overlay -->
+<div id="lightbox" role="dialog" aria-modal="true" aria-label="Image preview">
+  <button id="lightbox-close" aria-label="Close">&times;</button>
+  <img id="lightbox-img" src="" alt="" />
+</div>
+
+<script>
+  // Lightbox
+  const lightbox = document.getElementById('lightbox');
+  const lightboxImg = document.getElementById('lightbox-img');
+  const lightboxClose = document.getElementById('lightbox-close');
+
+  function openLightbox(src, alt) {
+    lightboxImg.src = src;
+    lightboxImg.alt = alt || '';
+    lightbox.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeLightbox() {
+    lightbox.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  document.querySelectorAll('.lesson-prose img').forEach(img => {
+    img.addEventListener('click', () => openLightbox(img.src, img.alt));
+  });
+
+  lightboxClose.addEventListener('click', closeLightbox);
+  lightbox.addEventListener('click', e => { if (e.target === lightbox) closeLightbox(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+</script>
+
 <script define:vars={{ courseLessons: courseLessons.map(l => ({ slug: l.slug, title: l.data.title })), courseSlug, slug, base: import.meta.env.BASE_URL }}>
   const STORAGE_KEY = 'course-progress';
 
