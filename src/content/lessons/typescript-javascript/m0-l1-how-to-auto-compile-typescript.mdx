@@ -1,0 +1,188 @@
+---
+title: "How to Auto Compile TypeScript"
+description: "Set up your editor and TypeScript compiler to automatically recompile on every file save so you can focus on learning, not tooling."
+module: 0
+moduleTitle: "Getting Started"
+lesson: 1
+duration: "10 min"
+youtubeId: "-NOoStej9g8"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Why Auto-Compilation Matters
+
+TypeScript is a compiled language — your `.ts` files must be transformed into `.js` before a browser or Node.js can run them. Without auto-compilation, you'd need to run `tsc` manually after every single change. That friction kills momentum, especially when you're learning.
+
+Auto-compilation watches your files and recompiles instantly on save. You edit → you save → you see the result. No extra step.
+
+---
+
+## Prerequisites
+
+Before following this lesson, make sure you have:
+
+- **Node.js** installed (v18 or higher) — [nodejs.org](https://nodejs.org)
+- **npm** (comes with Node.js)
+- **VS Code** (recommended) or any editor you're comfortable with
+
+Verify your setup:
+
+```bash
+node --version
+# v18.x.x or higher
+
+npm --version
+# 9.x.x or higher
+```
+
+---
+
+## Step 1: Install TypeScript Globally
+
+```bash
+npm install -g typescript
+```
+
+Verify the installation:
+
+```bash
+tsc --version
+# Version 5.x.x
+```
+
+The `tsc` command is the TypeScript compiler. Right now you'd have to run it manually every time. We're going to fix that.
+
+---
+
+## Step 2: Initialize a TypeScript Project
+
+Create a project folder and initialize TypeScript configuration:
+
+```bash
+mkdir my-ts-project
+cd my-ts-project
+tsc --init
+```
+
+`tsc --init` generates a `tsconfig.json` file — the configuration file that tells the TypeScript compiler how to behave.
+
+<CodeLab title="Key tsconfig.json Settings">
+
+Open the generated `tsconfig.json`. The most important settings for getting started:
+
+```json
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "commonjs",
+    "strict": true,
+    "outDir": "./dist",
+    "rootDir": "./src"
+  }
+}
+```
+
+| Setting | What It Does |
+|---|---|
+| `target` | Which version of JavaScript to compile to |
+| `strict` | Enables all strict type-checking rules — leave this `true` |
+| `outDir` | Where compiled `.js` files go |
+| `rootDir` | Where your `.ts` source files live |
+
+</CodeLab>
+
+Create the source folder:
+
+```bash
+mkdir src
+```
+
+---
+
+## Step 3: Enable Watch Mode
+
+Watch mode is the key feature. Add `--watch` (or `-w`) to the `tsc` command:
+
+```bash
+tsc --watch
+```
+
+You'll see output like:
+
+```
+[12:00:00] Starting compilation in watch mode...
+[12:00:01] Found 0 errors. Watching for file changes.
+```
+
+Now create a test file to verify it works:
+
+```bash
+# In a second terminal tab
+echo 'const greeting: string = "Hello, TypeScript!"; console.log(greeting);' > src/index.ts
+```
+
+Back in the watch terminal, you'll immediately see TypeScript recompile and report any errors. The compiled JavaScript appears in `dist/index.js`.
+
+---
+
+## Step 4: Run Your Compiled Code
+
+```bash
+node dist/index.js
+# Hello, TypeScript!
+```
+
+From now on, your workflow is:
+1. Edit `src/*.ts`
+2. Save the file
+3. TypeScript recompiles automatically
+4. Run `node dist/yourfile.js` to test
+
+---
+
+## Using ts-node for Even Faster Feedback
+
+For quick experiments during this course, `ts-node` lets you run TypeScript directly without a separate compile step:
+
+```bash
+npm install -g ts-node
+ts-node src/index.ts
+# Hello, TypeScript!
+```
+
+`ts-node` compiles and runs in one step — great for short scripts and exercises. Use `tsc --watch` when you're building a larger project with an `outDir`.
+
+<Pitfall title="Don't Commit the dist/ Folder">
+
+The `dist/` folder contains generated files — never commit it to version control. Add it to `.gitignore`:
+
+```bash
+echo "dist/" >> .gitignore
+echo "node_modules/" >> .gitignore
+```
+
+Only source files in `src/` belong in your repository. Anyone who clones it can regenerate `dist/` by running `tsc`.
+
+</Pitfall>
+
+---
+
+<Quiz question="What does the --watch flag do when you run tsc --watch?">
+
+<div>
+
+`tsc --watch` keeps the TypeScript compiler running in the background. It watches your source files for changes and recompiles automatically every time you save — you don't need to run `tsc` manually after each edit.
+
+This is essential for productive TypeScript development. The alternative — running `tsc` manually after every save — is tedious and easy to forget, leading to stale compiled output that doesn't reflect your latest changes.
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+Your TypeScript environment is ready. In the next lesson, we'll explore why JavaScript and TypeScript exist, what problems they solve, and why learning both together is one of the highest-leverage skills in software development.

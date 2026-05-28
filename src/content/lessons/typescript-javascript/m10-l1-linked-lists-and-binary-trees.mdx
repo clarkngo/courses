@@ -1,0 +1,348 @@
+---
+title: "Linked Lists and Binary Trees"
+description: "Build linked lists and binary search trees from scratch using nodes and pointers — understanding traversal, insertion, and the tradeoffs compared to arrays."
+module: 10
+moduleTitle: "Linked Lists and Binary Trees"
+lesson: 1
+duration: "90 min"
+youtubeId: "Qstsfy3odmc"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Pointer-Based Data Structures
+
+Arrays store elements in contiguous memory — each element is right next to the next. That gives O(1) random access (`arr[5]`) but makes inserting at the front O(n) because everything must shift.
+
+**Pointer-based structures** connect nodes through references. Inserting at the front of a linked list is O(1) — just update a pointer. But random access requires traversal from the head: O(n).
+
+Neither is strictly better. The right choice depends on your access patterns.
+
+---
+
+## Singly Linked Lists
+
+A **singly linked list** is a sequence of nodes where each node stores a value and a reference to the next node.
+
+```
+head → [1 | next] → [2 | next] → [3 | null]
+```
+
+```typescript
+class ListNode<T> {
+  constructor(
+    public value: T,
+    public next: ListNode<T> | null = null,
+  ) {}
+}
+
+class LinkedList<T> {
+  private head: ListNode<T> | null = null;
+  private length: number = 0;
+
+  prepend(value: T): void {
+    this.head = new ListNode(value, this.head);
+    this.length++;
+  }
+
+  append(value: T): void {
+    const node = new ListNode(value);
+    if (!this.head) {
+      this.head = node;
+    } else {
+      let current = this.head;
+      while (current.next) current = current.next;
+      current.next = node;
+    }
+    this.length++;
+  }
+
+  delete(value: T): boolean {
+    if (!this.head) return false;
+
+    if (this.head.value === value) {
+      this.head = this.head.next;
+      this.length--;
+      return true;
+    }
+
+    let current = this.head;
+    while (current.next) {
+      if (current.next.value === value) {
+        current.next = current.next.next;
+        this.length--;
+        return true;
+      }
+      current = current.next;
+    }
+    return false;
+  }
+
+  toArray(): T[] {
+    const result: T[] = [];
+    let current = this.head;
+    while (current) {
+      result.push(current.value);
+      current = current.next;
+    }
+    return result;
+  }
+
+  get size(): number {
+    return this.length;
+  }
+}
+
+const list = new LinkedList<number>();
+list.append(1);
+list.append(2);
+list.append(3);
+list.prepend(0);
+list.toArray()  // [0, 1, 2, 3]
+list.delete(2);
+list.toArray()  // [0, 1, 3]
+```
+
+### Linked List vs. Array
+
+| Operation | Array | Linked List |
+|---|---|---|
+| Access by index | O(1) | O(n) |
+| Insert at front | O(n) — shift all | O(1) |
+| Insert at end | O(1) amortized | O(n) without tail pointer |
+| Delete by value | O(n) | O(n) search + O(1) remove |
+| Memory | Contiguous block | Scattered, extra pointer per node |
+
+<CodeLab title="Reversing a Linked List">
+
+Reversing a linked list in place is a classic interview problem. The key is to keep track of three pointers as you walk the list:
+
+```typescript
+function reverseList<T>(head: ListNode<T> | null): ListNode<T> | null {
+  let prev: ListNode<T> | null = null;
+  let current = head;
+
+  while (current) {
+    const next = current.next;  // save the next node
+    current.next = prev;        // reverse the pointer
+    prev = current;             // advance prev
+    current = next;             // advance current
+  }
+
+  return prev;  // prev is now the new head
+}
+
+// Before: 1 → 2 → 3 → null
+// After:  3 → 2 → 1 → null
+```
+
+Walk through this step by step with a small list on paper to understand how the three-pointer technique works. This pattern appears in many linked list problems.
+
+</CodeLab>
+
+---
+
+## Doubly Linked Lists
+
+A **doubly linked list** adds a `prev` pointer to each node, allowing traversal in both directions:
+
+```typescript
+class DoublyListNode<T> {
+  constructor(
+    public value: T,
+    public next: DoublyListNode<T> | null = null,
+    public prev: DoublyListNode<T> | null = null,
+  ) {}
+}
+```
+
+The extra pointer makes removing a node by reference O(1) instead of O(n) (no need to find the previous node). This makes doubly linked lists the basis for the **LRU cache** — a common interview problem and real-world pattern.
+
+---
+
+## Binary Trees
+
+A **binary tree** is a hierarchical structure where each node has at most two children: **left** and **right**.
+
+```
+         4
+        / \
+       2   6
+      / \ / \
+     1  3 5  7
+```
+
+```typescript
+class TreeNode<T> {
+  constructor(
+    public value: T,
+    public left: TreeNode<T> | null = null,
+    public right: TreeNode<T> | null = null,
+  ) {}
+}
+```
+
+### Tree Traversal
+
+Three common ways to visit all nodes:
+
+```typescript
+// In-order: left → root → right (produces sorted output for BSTs)
+function inOrder<T>(node: TreeNode<T> | null, result: T[] = []): T[] {
+  if (!node) return result;
+  inOrder(node.left, result);
+  result.push(node.value);
+  inOrder(node.right, result);
+  return result;
+}
+
+// Pre-order: root → left → right (useful for copying a tree)
+function preOrder<T>(node: TreeNode<T> | null, result: T[] = []): T[] {
+  if (!node) return result;
+  result.push(node.value);
+  preOrder(node.left, result);
+  preOrder(node.right, result);
+  return result;
+}
+
+// Post-order: left → right → root (useful for deleting a tree)
+function postOrder<T>(node: TreeNode<T> | null, result: T[] = []): T[] {
+  if (!node) return result;
+  postOrder(node.left, result);
+  postOrder(node.right, result);
+  result.push(node.value);
+  return result;
+}
+```
+
+---
+
+## Binary Search Tree
+
+A **binary search tree (BST)** enforces an ordering invariant:
+- Every node in the left subtree has a value **less than** the current node
+- Every node in the right subtree has a value **greater than** the current node
+
+This invariant makes search, insertion, and deletion O(log n) on a balanced tree.
+
+```typescript
+class BinarySearchTree {
+  root: TreeNode<number> | null = null;
+
+  insert(value: number): void {
+    const node = new TreeNode(value);
+    if (!this.root) {
+      this.root = node;
+      return;
+    }
+
+    let current = this.root;
+    while (true) {
+      if (value < current.value) {
+        if (!current.left) { current.left = node; return; }
+        current = current.left;
+      } else {
+        if (!current.right) { current.right = node; return; }
+        current = current.right;
+      }
+    }
+  }
+
+  contains(value: number): boolean {
+    let current = this.root;
+    while (current) {
+      if (value === current.value) return true;
+      current = value < current.value ? current.left : current.right;
+    }
+    return false;
+  }
+
+  toSortedArray(): number[] {
+    return inOrder(this.root);
+  }
+}
+
+const bst = new BinarySearchTree();
+[5, 3, 7, 1, 4, 6, 8].forEach(n => bst.insert(n));
+bst.contains(4)           // true
+bst.contains(9)           // false
+bst.toSortedArray()       // [1, 3, 4, 5, 6, 7, 8] — sorted!
+```
+
+<Pitfall title="Unbalanced BSTs Degrade to O(n)">
+
+If you insert values in sorted order into a BST, every node goes to the right — the tree becomes a linked list and all operations degrade to O(n):
+
+```
+Insert: 1, 2, 3, 4, 5
+
+1
+ \
+  2
+   \
+    3
+     \
+      4
+       \
+        5
+```
+
+Searching for 5 requires 5 comparisons — linear. Production trees use **self-balancing** algorithms (AVL trees, Red-Black trees) that automatically restructure on insert to maintain O(log n) height. JavaScript's built-in `Map` and `Set` use hash tables rather than trees, but many databases and sorted containers are backed by balanced BSTs internally.
+
+</Pitfall>
+
+---
+
+## Breadth-First Search (BFS)
+
+**Breadth-first search** visits all nodes level by level, using a queue:
+
+```typescript
+function bfs(root: TreeNode<number> | null): number[] {
+  if (!root) return [];
+  const result: number[] = [];
+  const queue: TreeNode<number>[] = [root];
+
+  while (queue.length > 0) {
+    const node = queue.shift()!;
+    result.push(node.value);
+    if (node.left) queue.push(node.left);
+    if (node.right) queue.push(node.right);
+  }
+
+  return result;
+}
+
+// For the BST above: [5, 3, 7, 1, 4, 6, 8] — level by level
+```
+
+BFS is the right approach when you need the shortest path or want to process nodes in level order.
+
+---
+
+<Quiz question="What is the time complexity of search, insertion, and deletion in a balanced binary search tree?">
+
+<div>
+
+All three operations are **O(log n)** on a balanced BST.
+
+At each node, you compare the target value to the current node and go left or right — eliminating half the remaining tree with each step. On a tree with n nodes, the height is log₂(n), so you make at most log₂(n) comparisons before reaching a leaf or finding the target.
+
+This is the same reasoning as binary search on a sorted array — a BST makes it dynamic: you can insert and delete while maintaining the sorted structure, whereas inserting into a sorted array requires shifting elements (O(n)).
+
+The key qualifier is **balanced** — an unbalanced tree can degrade to O(n). Self-balancing trees (AVL, Red-Black) maintain the balance invariant automatically.
+
+</div>
+</Quiz>
+
+---
+
+## Course Complete
+
+You've now covered the full arc of this course — from the foundational values and types of JavaScript, through functions and programming paradigms, to the computer science foundations of algorithms and data structures.
+
+The next step is applying everything you've learned: work through the **FreeCodeCamp JavaScript Algorithms and Data Structures Certification**, complete your team project (converting a JavaScript project to strictly typed TypeScript), and build the habit of analyzing your code's complexity before shipping it.
+
+The fundamentals you've built here are the same ones used at every level of professional software development. Keep practicing, and the patterns will become second nature.

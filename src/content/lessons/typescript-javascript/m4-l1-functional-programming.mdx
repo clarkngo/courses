@@ -1,0 +1,275 @@
+---
+title: "Functional Programming"
+description: "Learn to write programs as compositions of pure functions — using immutability, higher-order functions, and declarative style to build predictable, testable code."
+module: 4
+moduleTitle: "Functional Programming"
+lesson: 1
+duration: "60 min"
+youtubeId: "85BAPmniN6Y"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## What Is Functional Programming?
+
+**Functional programming (FP)** is a coding paradigm that treats computation as the evaluation of mathematical functions. Instead of giving the computer a sequence of instructions that change state, you describe *what* the output should be in terms of the input.
+
+The two key ideas:
+
+1. **Pure functions** — a function that always returns the same output for the same input, and produces no side effects
+2. **Immutability** — data is never modified in place; transformations always produce new values
+
+FP doesn't mean you never write loops or use variables — it means you prefer certain patterns because they produce code that's easier to reason about, test, and compose.
+
+---
+
+## Pure Functions
+
+A **pure function**:
+- Given the same inputs, always returns the same output
+- Produces no observable side effects (no mutations, no network calls, no console.log, no DOM changes)
+
+```javascript
+// Pure — always returns the same result, no side effects:
+function add(a, b) {
+  return a + b;
+}
+
+// Impure — depends on external state (Math.random):
+function randomAdd(a) {
+  return a + Math.random();
+}
+
+// Impure — modifies an external variable (side effect):
+let total = 0;
+function addToTotal(n) {
+  total += n;  // mutation of external state
+}
+
+// Impure — same inputs, different outputs over time:
+function getTimestamp() {
+  return Date.now();
+}
+```
+
+Pure functions are easy to test because you don't need to set up external state:
+
+```typescript
+// Testing a pure function is trivial:
+expect(add(2, 3)).toBe(5);
+expect(add(2, 3)).toBe(5); // identical — always true
+```
+
+---
+
+## Immutability
+
+Immutability means you never change existing data. Instead, you create new data with the changes applied:
+
+```javascript
+// Mutable approach — modifies the original:
+const scores = [85, 92, 78];
+scores.push(95);  // original array changed
+
+// Immutable approach — creates a new array:
+const scores = [85, 92, 78];
+const newScores = [...scores, 95];  // original unchanged
+
+// Mutable object update:
+const user = { name: "Alice", score: 85 };
+user.score = 95;  // mutates original
+
+// Immutable object update (spread):
+const updatedUser = { ...user, score: 95 };  // new object
+```
+
+TypeScript's `readonly` modifier enforces immutability at compile time:
+
+```typescript
+interface Point {
+  readonly x: number;
+  readonly y: number;
+}
+
+const p: Point = { x: 1, y: 2 };
+p.x = 3;  // Error: Cannot assign to 'x' because it is a read-only property
+```
+
+---
+
+## Map, Filter, and Reduce — The FP Toolkit
+
+These three array methods are the workhorses of functional programming in JavaScript.
+
+### map
+
+Transform every element in an array:
+
+```typescript
+const prices = [10, 25, 8, 50];
+
+// Apply 10% discount to every price:
+const discounted = prices.map(price => price * 0.9);
+// [9, 22.5, 7.2, 45]
+```
+
+### filter
+
+Keep only elements that meet a condition:
+
+```typescript
+const products = [
+  { name: "Laptop",  price: 999, inStock: true  },
+  { name: "Mouse",   price: 29,  inStock: false },
+  { name: "Monitor", price: 399, inStock: true  },
+];
+
+const available = products.filter(p => p.inStock);
+// [{ name: "Laptop", ... }, { name: "Monitor", ... }]
+```
+
+### reduce
+
+Accumulate all elements into a single value:
+
+```typescript
+const cart = [
+  { item: "Coffee",  price: 4.50, qty: 2 },
+  { item: "Muffin",  price: 3.25, qty: 1 },
+  { item: "Bagel",   price: 2.75, qty: 3 },
+];
+
+const total = cart.reduce((sum, line) => sum + line.price * line.qty, 0);
+// 4.50*2 + 3.25 + 2.75*3 = 9.00 + 3.25 + 8.25 = 20.50
+```
+
+<CodeLab title="Composing Map, Filter, and Reduce">
+
+Real power comes from chaining these together:
+
+```typescript
+interface Employee {
+  name: string;
+  department: string;
+  salary: number;
+}
+
+const employees: Employee[] = [
+  { name: "Alice",  department: "Engineering", salary: 120000 },
+  { name: "Bob",    department: "Marketing",   salary: 85000  },
+  { name: "Carol",  department: "Engineering", salary: 135000 },
+  { name: "Dave",   department: "Engineering", salary: 110000 },
+  { name: "Eve",    department: "Marketing",   salary: 92000  },
+];
+
+// Average salary of Engineering department:
+const engineeringSalaries = employees
+  .filter(e => e.department === "Engineering")
+  .map(e => e.salary);
+
+const average = engineeringSalaries.reduce((sum, s) => sum + s, 0)
+  / engineeringSalaries.length;
+
+// 121,666.67
+```
+
+Each step is a pure transformation. The intermediate results are clear, and each step is independently testable.
+
+</CodeLab>
+
+---
+
+## Function Composition
+
+**Composition** means combining simple functions to build more complex ones. Instead of one big function that does everything, you build a pipeline of small, focused functions:
+
+```typescript
+const trim = (s: string): string => s.trim();
+const lowercase = (s: string): string => s.toLowerCase();
+const removeSpaces = (s: string): string => s.replace(/\s+/g, "-");
+
+// Manual composition:
+const toSlug = (s: string) => removeSpaces(lowercase(trim(s)));
+toSlug("  Hello World  ")  // "hello-world"
+
+// A compose helper (right-to-left):
+function compose<T>(...fns: Array<(x: T) => T>): (x: T) => T {
+  return (x: T) => fns.reduceRight((acc, fn) => fn(acc), x);
+}
+
+const toSlug2 = compose(removeSpaces, lowercase, trim);
+toSlug2("  Hello World  ")  // "hello-world"
+```
+
+---
+
+## Currying
+
+**Currying** transforms a function that takes multiple arguments into a series of functions that each take one argument:
+
+```typescript
+// Regular function:
+function multiply(a: number, b: number): number {
+  return a * b;
+}
+
+// Curried version:
+function curriedMultiply(a: number) {
+  return (b: number): number => a * b;
+}
+
+const double = curriedMultiply(2);
+const triple = curriedMultiply(3);
+
+double(5)   // 10
+triple(5)   // 15
+
+// Apply to an array:
+[1, 2, 3, 4].map(double)  // [2, 4, 6, 8]
+```
+
+Currying enables partial application — fixing some arguments of a function to create specialized versions.
+
+<Pitfall title="Don't Mutate Arrays with sort() Without a Copy">
+
+`Array.prototype.sort()` mutates the original array, which violates immutability:
+
+```javascript
+const scores = [85, 92, 78, 95];
+scores.sort((a, b) => a - b);  // modifies scores in place!
+
+// Immutable version — sort a copy:
+const sorted = [...scores].sort((a, b) => a - b);
+// scores is unchanged, sorted has the sorted result
+```
+
+Similarly, `splice`, `push`, `pop`, `shift`, and `unshift` all mutate the original array. In FP code, prefer `slice`, `filter`, `map`, and spread operator instead.
+
+</Pitfall>
+
+---
+
+<Quiz question="What makes a function 'pure' in functional programming?">
+
+<div>
+
+A pure function has two properties:
+
+1. **Deterministic** — given the same inputs, it always returns the same output. It doesn't read from external state (global variables, the current time, random numbers, database values).
+
+2. **No side effects** — it doesn't change anything observable outside itself. It doesn't mutate arguments, write to the DOM, make network calls, or update shared state.
+
+Pure functions are valuable because they're **predictable** (you can reason about them in isolation), **testable** (no mocking or setup needed), and **composable** (you can chain them safely knowing each one is independent).
+
+Impure functions are sometimes necessary (you need to read from a database, write to the screen, etc.), but the FP strategy is to push impure operations to the edges of your program and keep the core logic pure.
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+Functional programming teaches you to think in transformations and compositions. In Module 5, we'll explore the other major paradigm: **Object-Oriented Programming** — which organizes code around objects that bundle state and behavior together.

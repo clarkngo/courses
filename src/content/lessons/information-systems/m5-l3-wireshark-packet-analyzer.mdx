@@ -1,0 +1,88 @@
+---
+title: "Wireshark Packet Analyzer"
+description: "Introduction to Wireshark — the industry-standard network protocol analyzer used to capture, inspect, and troubleshoot network traffic."
+module: 5
+moduleTitle: "IT Infrastructure & Networking"
+lesson: 3
+youtubeId: "MI5bRvYkUpE"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## What Is Wireshark?
+
+**Wireshark** is an open-source network protocol analyzer — commonly called a **packet sniffer**. It captures network traffic in real time and presents each packet in a human-readable format, showing you exactly what data is flowing across a network interface.
+
+Wireshark is used by network engineers, security analysts, and IS professionals to:
+- Troubleshoot network performance issues
+- Analyze protocol behavior
+- Detect suspicious or unexpected network activity
+- Verify that applications are communicating as expected
+
+---
+
+## How Wireshark Works
+
+Wireshark puts a network interface into **promiscuous mode**, allowing it to capture all packets that arrive at the interface — not just those addressed to the local machine. Captured packets are stored in memory and can be saved to a `.pcap` (packet capture) file for later analysis.
+
+Each captured packet is dissected into its layers:
+
+| Layer | What You See |
+|---|---|
+| **Frame** | Raw data including timing and interface info |
+| **Ethernet** | Source and destination MAC addresses |
+| **IP** | Source and destination IP addresses |
+| **TCP/UDP** | Port numbers, sequence numbers, flags |
+| **Application** | HTTP headers, DNS queries, etc. |
+
+---
+
+## The Wireshark Interface
+
+Three main panels:
+
+1. **Packet List** (top) — one row per captured packet with summary info
+2. **Packet Details** (middle) — expandable tree showing each protocol layer
+3. **Packet Bytes** (bottom) — raw hexadecimal and ASCII representation
+
+### Capture Filters vs. Display Filters
+
+- **Capture filters** — applied before capture; limit what Wireshark records (reduces file size)
+- **Display filters** — applied after capture; limit what Wireshark shows (the data is still there)
+
+Common display filters:
+
+```
+http                  — show only HTTP traffic
+ip.addr == 192.168.1.1  — show traffic to/from a specific IP
+tcp.port == 443       — show only HTTPS traffic
+dns                   — show only DNS queries and responses
+```
+
+---
+
+## Common IS Use Cases
+
+**Troubleshooting a slow application** — capture traffic while reproducing the slowness; look for retransmissions, high latency between request and response, or large unexpected payloads.
+
+**Verifying encryption** — confirm that an application uses HTTPS rather than HTTP by checking whether payload data is readable. If you can see form data in plain text, it is not encrypted.
+
+**DNS debugging** — capture DNS traffic to see exactly what queries your machine is sending and what responses it receives — directly relevant to the DNS troubleshooting scenario from the ping lesson.
+
+<Pitfall title="Only Capture on Networks You Own or Have Permission to Monitor">
+
+Capturing packets on a network you do not own or administer is illegal in most jurisdictions without explicit authorization. Wireshark is a legitimate tool in your own environment — a powerful diagnostic instrument. Used on someone else's network without permission, it is a wiretapping tool. Always verify authorization before capturing on any network.
+
+</Pitfall>
+
+---
+
+<Quiz question="A web application developer claims their app encrypts all login credentials before sending them. How would you use Wireshark to verify this claim?">
+
+<div>
+
+Capture traffic while submitting a login with a test account. In Wireshark, filter for traffic to the application's IP address or domain. Look at the protocol layer — if the connection uses HTTPS (TCP port 443), the payload in the Packet Bytes pane will be unreadable ciphertext. If it uses HTTP (TCP port 80), you can read the form data directly in plaintext, which would disprove the claim. The test is conclusive: unreadable bytes = encrypted; readable credentials = not encrypted.
+
+</div>
+</Quiz>

@@ -1,0 +1,75 @@
+---
+title: "CRM Email Plugins"
+description: "Learn how CRM email plugins connect your inbox to your customer relationship management system, automating data capture and enabling more informed customer interactions."
+module: 6
+moduleTitle: "Business Applications"
+lesson: 1
+youtubeId: "yowgW03g__U"
+---
+
+import Quiz from '@components/Quiz.astro';
+
+## What Is a CRM?
+
+A **Customer Relationship Management (CRM)** system is a platform for managing an organization's interactions and relationships with customers and prospects. CRMs centralize contact information, communication history, deal pipelines, and customer activity — enabling sales, marketing, and support teams to work from a single source of truth.
+
+Common CRM platforms: Salesforce, HubSpot, Zoho CRM, Microsoft Dynamics 365.
+
+---
+
+## The Problem CRM Email Plugins Solve
+
+Email is still the primary channel for business communication — but email data lives in inboxes, not in the CRM. Without integration:
+
+- Sales reps manually copy email threads into the CRM (time-consuming, error-prone)
+- Customer history is fragmented across individual inboxes
+- Managers have no visibility into email activity without asking
+- Handoffs between team members lose context
+
+A **CRM email plugin** bridges this gap by integrating directly into an email client (Gmail, Outlook) and automatically syncing communication data to the CRM.
+
+---
+
+## What CRM Email Plugins Do
+
+| Capability | Business Value |
+|---|---|
+| **Log emails to CRM records** | Full communication history visible to the whole team |
+| **Contact and company lookup** | See CRM data about a contact without leaving your inbox |
+| **Create CRM records from email** | One click to create a contact, lead, or deal |
+| **Email tracking** | Know when a prospect opens your email or clicks a link |
+| **Templates and sequences** | Send standardized, tracked outreach at scale |
+| **Calendar sync** | Log meetings to CRM automatically |
+
+---
+
+## How It Works Technically
+
+CRM email plugins are typically browser extensions (for webmail) or desktop add-ins (for Outlook). They:
+
+1. Authenticate with both the email provider (via OAuth) and the CRM (via API key or OAuth)
+2. Read email metadata (sender, recipients, subject, timestamp) and optionally content
+3. POST this data to the CRM's API, linking it to the appropriate contact or deal record
+4. Pull CRM data back into a sidebar visible within the email interface
+
+---
+
+## IS Considerations for CRM Email Integration
+
+- **Data privacy** — the plugin reads email content; review vendor privacy policies and ensure compliance with organizational data handling policies
+- **Selective logging** — not all emails should be logged (personal communications, confidential HR matters); most plugins allow per-email opt-out
+- **Adoption** — the plugin is only valuable if sales reps use it consistently; deployment should include training and a clear policy on what gets logged
+- **Data quality** — automated logging increases volume; without governance, CRM records become cluttered with irrelevant data
+
+---
+
+<Quiz question="A sales manager notices that her team's CRM contact records are often missing recent email history, even though the company uses a CRM email plugin. What are two likely causes?">
+
+<div>
+
+1. **The plugin is not installed or active** for some team members — adoption is incomplete. Not every rep may have set up the plugin correctly, or they may be logging emails selectively (or not at all).
+
+2. **Manual opt-out** — most plugins let users choose not to log individual emails. Reps may be opting out of logging because they are not sure which emails to include, or because they want to keep certain conversations private. The fix is clearer policy guidance on what should and should not be logged, combined with a default-log setting if the CRM platform supports it.
+
+</div>
+</Quiz>

@@ -1,0 +1,71 @@
+---
+title: "Data and Information"
+description: "Understand the foundational distinction between raw data and meaningful information, and why that difference shapes every decision organizations make with technology."
+module: 1
+moduleTitle: "Information Systems Fundamentals"
+lesson: 1
+youtubeId: "2CG2vEegal4"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## The Core Distinction
+
+The entire field of Information Systems rests on a single foundational idea: **data and information are not the same thing.**
+
+| Term | Definition | Example |
+|---|---|---|
+| **Data** | Raw, unprocessed facts and figures | `92, 78, 85, 61, 99` |
+| **Information** | Data processed into meaningful context | "The average exam score is 83, with one student at risk" |
+| **Knowledge** | Information applied to make decisions | "Students scoring below 70 should receive tutoring before the final" |
+
+Data has no inherent meaning. A number like `37` could be a temperature, an age, a ZIP code suffix, or an inventory count. Context transforms data into information.
+
+---
+
+## The DIKW Pyramid
+
+A common framework for understanding the relationship between data and information is the **DIKW hierarchy**:
+
+- **Data** — raw symbols and signals
+- **Information** — data with context and meaning
+- **Knowledge** — information internalized and applied
+- **Wisdom** — knowledge used to make sound judgments over time
+
+Information Systems are primarily concerned with the first three levels: capturing data, processing it into information, and making that information available for decisions.
+
+---
+
+## Why Organizations Struggle with This
+
+Most organizations have vastly more data than information. A large retailer might collect millions of transaction records daily — but if those records are siloed in different systems, inconsistently formatted, or never analyzed, they remain data. Turning data into actionable information is the core purpose of IS infrastructure.
+
+<Pitfall title="More Data Is Not Always Better">
+
+A common executive instinct is to collect as much data as possible. But unstructured, low-quality, or irrelevant data creates noise, not signal. The question is not "how much data do we have?" but "can we reliably extract information from it when we need it?"
+
+</Pitfall>
+
+---
+
+## Attributes of Good Information
+
+For information to be useful in organizational decision-making, it should be:
+
+- **Accurate** — free of errors
+- **Complete** — contains all relevant data points
+- **Timely** — available when needed
+- **Relevant** — applicable to the decision at hand
+- **Consistent** — the same result across systems and reports
+
+---
+
+<Quiz question="A hospital records 10,000 patient temperatures per day. Is this data or information? What would need to happen to turn it into information?">
+
+<div>
+
+Raw temperature readings are **data**. To become information, they need context: Which patients? At what times? Compared to what baseline? Processed through analytics, those 10,000 readings might yield information like: "37 patients showed fever spikes between 2–4 AM, concentrated in Ward C — investigate for environmental cause." The processing step — aggregation, comparison, contextualization — is what transforms data into information.
+
+</div>
+</Quiz>

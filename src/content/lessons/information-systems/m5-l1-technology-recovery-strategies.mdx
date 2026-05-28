@@ -1,0 +1,89 @@
+---
+title: "Technology Recovery Strategies"
+description: "Learn the key strategies organizations use to recover from technology failures — including backup approaches, recovery time objectives, and disaster recovery planning."
+module: 5
+moduleTitle: "IT Infrastructure & Networking"
+lesson: 1
+youtubeId: "eAFFLMeFY6o"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Why Recovery Planning Is an IS Priority
+
+Technology failures are not a question of "if" — they are a question of "when." Hardware fails, software crashes, ransomware strikes, and natural disasters disrupt data centers. Organizations that have not planned for recovery face extended outages that cost far more than the planning would have.
+
+---
+
+## Key Recovery Concepts
+
+Before diving into strategies, two metrics define the parameters of any recovery plan:
+
+| Metric | Definition | Example |
+|---|---|---|
+| **RTO** (Recovery Time Objective) | Maximum acceptable downtime after a failure | "We must be operational within 4 hours" |
+| **RPO** (Recovery Point Objective) | Maximum acceptable data loss measured in time | "We cannot lose more than 1 hour of transaction data" |
+
+A tighter RTO and RPO requires more investment in recovery infrastructure. Finding the right balance between cost and tolerance is a core IS management decision.
+
+---
+
+## Backup Strategies
+
+### Full Backup
+- Copies all data every time
+- **Pro:** Simple restoration
+- **Con:** Time-consuming and storage-intensive
+- **Frequency:** Weekly (typically)
+
+### Incremental Backup
+- Copies only data changed since the last backup of any kind
+- **Pro:** Fast and storage-efficient
+- **Con:** Restoration requires the last full backup + every incremental since
+- **Frequency:** Daily
+
+### Differential Backup
+- Copies data changed since the last full backup
+- **Pro:** Restoration requires only the last full backup + the latest differential
+- **Con:** Grows larger each day until the next full backup
+
+---
+
+## Disaster Recovery Strategies
+
+| Strategy | Description | Cost | RTO |
+|---|---|---|---|
+| **Backup and Restore** | Restore from backup to new hardware | Low | Hours to days |
+| **Cold Site** | Facility with infrastructure but no active systems | Low-medium | Days |
+| **Warm Site** | Partially configured systems, need data loaded | Medium | Hours |
+| **Hot Site** | Fully operational mirror of production | High | Minutes |
+| **Active-Active** | Multiple live sites share the load; failover is instant | Highest | Seconds |
+
+Cloud computing has made hot site and active-active configurations accessible to organizations that previously could not afford them.
+
+<Pitfall title="An Untested Recovery Plan Is Not a Recovery Plan">
+
+Many organizations have documented disaster recovery plans that have never been tested. Testing reveals gaps — backup restoration processes that take longer than the RTO, recovery procedures that depend on staff who are unavailable, or backups that are corrupted. A DR plan should be tested at least annually under realistic conditions. An untested plan provides false confidence, which is worse than no plan at all.
+
+</Pitfall>
+
+---
+
+## Business Continuity vs. Disaster Recovery
+
+- **Disaster Recovery (DR)** — getting IT systems back online after a failure
+- **Business Continuity Planning (BCP)** — ensuring the organization can continue critical operations during and after a disaster, even before IT is restored
+
+BCP is broader: it includes manual fallback procedures, communication plans, alternate facilities, and staff assignments. DR is a component of BCP.
+
+---
+
+<Quiz question="A financial trading firm has an RPO of zero. What does that mean, and what technology approach would be required to meet it?">
+
+<div>
+
+An RPO of zero means **no data loss is acceptable** — every transaction must be preserved even if a failure occurs mid-transaction. This requires **synchronous replication**: every write to the primary system is simultaneously written to a secondary system before the transaction is confirmed. If the primary fails, the secondary has an exact copy up to the moment of failure. This is technically demanding and expensive, but for a trading firm where even one lost transaction has significant financial and regulatory consequences, the cost is justified.
+
+</div>
+</Quiz>
