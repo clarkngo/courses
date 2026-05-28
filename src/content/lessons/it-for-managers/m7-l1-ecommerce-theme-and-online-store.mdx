@@ -1,0 +1,93 @@
+---
+title: "eCommerce — Theme and Online Store"
+description: "Learn how to set up and configure an online store using a theme-based approach — covering storefront design, product setup, navigation, and the key decisions that drive conversion."
+module: 7
+moduleTitle: "eCommerce — Theme and Online Store"
+lesson: 1
+youtubeId: "09lcbmp730Q"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## What Is an eCommerce Theme?
+
+An eCommerce **theme** (also called a template) is a pre-designed layout that controls how your online store looks and functions. Themes handle the visual structure — header, product grid, product page, cart, and checkout — so you can focus on your products and content rather than building a storefront from scratch.
+
+Most major eCommerce platforms (Shopify, WooCommerce, BigCommerce) have theme marketplaces with hundreds of options, ranging from free to several hundred dollars.
+
+---
+
+## Choosing the Right Theme
+
+When evaluating themes, prioritize these factors over pure aesthetics:
+
+| Factor | What to Look For |
+|---|---|
+| **Mobile responsiveness** | Over 60% of eCommerce traffic is mobile — the theme must look and work correctly on phones |
+| **Page load speed** | Slow themes hurt both conversion rates and SEO rankings |
+| **Customization options** | Can non-developers adjust colors, fonts, layouts, and sections? |
+| **Support and updates** | Is the theme actively maintained? Abandoned themes accumulate security vulnerabilities |
+| **Compatibility** | Does it work with the apps and integrations your store requires? |
+| **Reviews and install count** | High-volume, well-reviewed themes are lower risk than niche or new themes |
+
+---
+
+## Setting Up Your Store: Key Steps
+
+### 1. Configure Store Settings
+- Business name, logo, and favicon
+- Currency, tax settings, and shipping zones
+- Payment gateways (Stripe, PayPal, buy-now-pay-later options)
+- Domain name connected to the store
+
+### 2. Build Your Product Catalog
+- **Product title** — Clear, searchable, keyword-rich
+- **Description** — Address customer questions and objections; highlight benefits, not just features
+- **Images** — High quality, multiple angles, consistent background
+- **Variants** — Sizes, colors, configurations
+- **Inventory tracking** — Stock levels, low-stock alerts
+- **SEO fields** — Meta title and description for each product
+
+### 3. Configure Navigation
+- Main menu (collections/categories)
+- Footer links (policies, contact, about)
+- Search functionality
+- Breadcrumbs for deeper catalog structures
+
+### 4. Set Up Policies
+- Return and refund policy
+- Shipping policy
+- Privacy policy
+- Terms of service
+
+These build trust and reduce customer service inquiries.
+
+<Pitfall title="Choosing a Theme Based on the Demo Products">
+
+Theme demos use professional photography and carefully written copy to look impressive. When you replace demo content with your own products, a theme can look very different. Always evaluate themes with *your own content* in mind, not the demo. Request a trial or look for stores using the theme in the wild before purchasing.
+
+</Pitfall>
+
+---
+
+## The Checkout Experience
+
+The checkout flow is the highest-stakes part of your online store. Every unnecessary step or point of confusion increases cart abandonment. Best practices:
+
+- **Guest checkout** — Do not force account creation before purchase
+- **Minimal form fields** — Only collect what is needed to complete the transaction
+- **Multiple payment options** — Credit card, PayPal, Apple Pay, and BNPL (Klarna, Afterpay) all reduce friction
+- **Order summary visible** — Customers want to see what they're buying throughout checkout
+- **Trust signals** — Security badges, money-back guarantee, and clear return policy near the checkout button
+
+---
+
+<Quiz question="Your store's conversion rate is 0.8%, well below the industry average of 2–3%. You've been told traffic is healthy. What aspects of your theme and store setup would you audit first?">
+
+<div>
+
+A low conversion rate with healthy traffic usually points to friction in the buying experience. Audit in order of impact: (1) **Mobile experience** — check the store on multiple real phones, not just browser emulators. Mobile checkout is where most abandonment happens. (2) **Page load speed** — use Google PageSpeed Insights. Themes with heavy images or too many apps load slowly, and each second of delay reduces conversions by ~7%. (3) **Checkout flow** — walk through the purchase yourself. Is guest checkout available? Are there unexpected costs (shipping, taxes) revealed late? (4) **Product pages** — do descriptions answer buyer questions? Are there enough images? Is the add-to-cart button prominent? (5) **Trust signals** — are your return policy, shipping timeframes, and security badges clearly visible? Low-trust signals particularly affect first-time visitors.
+
+</div>
+</Quiz>

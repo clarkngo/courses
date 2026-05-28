@@ -1,0 +1,136 @@
+---
+title: "Introduction to Python"
+description: "Get started with Python — understand why it dominates data science and automation, and learn the core building blocks: variables, data types, control flow, and functions."
+module: 1
+moduleTitle: "Introduction to Python"
+lesson: 1
+youtubeId: "3WRDOeeY4OM"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Why Python?
+
+Python has become the dominant language for data science, machine learning, automation, and scientific computing — and for good reason:
+
+- **Readable syntax** — Python reads almost like English, reducing the time between idea and working code
+- **Massive ecosystem** — Libraries like NumPy, Pandas, Matplotlib, and TensorFlow are all Python-first
+- **Interpreted** — No compile step; run code immediately and see results
+- **Cross-platform** — Runs identically on Windows, macOS, and Linux
+- **Community** — The largest programming community in the world, with answers to nearly every question already on Stack Overflow
+
+---
+
+## Python Basics: Variables and Data Types
+
+Variables in Python are dynamically typed — you do not declare a type, Python infers it at runtime.
+
+```python
+name = "Alice"          # str
+age = 30                # int
+gpa = 3.85              # float
+is_enrolled = True      # bool
+score = None            # NoneType
+```
+
+### Core Data Types
+
+| Type | Example | Notes |
+|---|---|---|
+| `int` | `42` | Arbitrary precision — no overflow |
+| `float` | `3.14` | IEEE 754 double precision |
+| `str` | `"hello"` | Immutable; single or double quotes |
+| `bool` | `True / False` | Subclass of `int` (True == 1) |
+| `NoneType` | `None` | Python's null value |
+
+---
+
+## Control Flow
+
+```python
+# if / elif / else
+score = 85
+if score >= 90:
+    grade = "A"
+elif score >= 80:
+    grade = "B"
+else:
+    grade = "C"
+
+# for loop
+for i in range(5):
+    print(i)         # 0 1 2 3 4
+
+# while loop
+count = 0
+while count < 3:
+    print(count)
+    count += 1
+```
+
+Python uses **indentation** (4 spaces) to define code blocks — there are no curly braces. Incorrect indentation is the most common beginner error.
+
+---
+
+## Functions
+
+```python
+def greet(name, greeting="Hello"):
+    return f"{greeting}, {name}!"
+
+print(greet("Bob"))              # Hello, Bob!
+print(greet("Alice", "Hi"))      # Hi, Alice!
+```
+
+Key function concepts:
+- **Parameters** — inputs defined in the function signature
+- **Default parameters** — provide fallback values (must come after non-default parameters)
+- **Return value** — functions return `None` if no `return` statement is used
+- **Docstrings** — `"""description"""` immediately after `def` documents the function
+
+---
+
+## Python Collections: First Look
+
+| Collection | Example | Mutable | Ordered | Duplicates |
+|---|---|---|---|---|
+| `list` | `[1, 2, 3]` | Yes | Yes | Yes |
+| `tuple` | `(1, 2, 3)` | No | Yes | Yes |
+| `dict` | `{"a": 1}` | Yes | Yes (3.7+) | Keys: No |
+| `set` | `{1, 2, 3}` | Yes | No | No |
+
+Lists are the workhorse of Python programming — you will use them constantly.
+
+<Pitfall title="Mutable Default Arguments">
+
+Never use a mutable object (list, dict) as a default parameter:
+
+```python
+# WRONG — the list is shared across all calls
+def add_item(item, items=[]):
+    items.append(item)
+    return items
+
+# CORRECT
+def add_item(item, items=None):
+    if items is None:
+        items = []
+    items.append(item)
+    return items
+```
+
+This is one of Python's most surprising gotchas. The default value is created once when the function is defined, not each time it is called.
+
+</Pitfall>
+
+---
+
+<Quiz question="What will this code print, and why? `x = [1, 2, 3]; y = x; y.append(4); print(x)`">
+
+<div>
+
+It prints `[1, 2, 3, 4]`. In Python, `y = x` does not copy the list — it creates a second reference to the **same list object** in memory. Mutating `y` (via `append`) mutates the object both `x` and `y` point to. To create an independent copy, use `y = x.copy()` or `y = x[:]`. This distinction between assignment (binding a name to an object) and copying is fundamental to understanding Python's memory model.
+
+</div>
+</Quiz>

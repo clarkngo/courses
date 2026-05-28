@@ -1,0 +1,98 @@
+---
+title: "eCommerce — WordPress & WooCommerce"
+description: "Learn how WordPress and WooCommerce work together to create a fully featured online store — covering setup, product management, payment configuration, and the trade-offs managers should understand."
+module: 7
+moduleTitle: "eCommerce — Theme and Online Store"
+lesson: 2
+youtubeId: "Z8CBIQ2u_f4"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Why WordPress + WooCommerce?
+
+**WordPress** is the world's most widely used CMS. **WooCommerce** is a free, open-source eCommerce plugin that transforms a WordPress site into a fully functional online store. Together, they power approximately 28% of all online stores globally.
+
+For managers, this combination offers:
+- **No platform licensing fee** (both are free; you pay for hosting, themes, and extensions)
+- **Complete ownership** of your store and data
+- **Massive ecosystem** of plugins, themes, and developers
+- **Flexibility** to build nearly anything — from a simple product catalog to a complex multi-vendor marketplace
+
+---
+
+## WordPress + WooCommerce vs. Shopify
+
+| Factor | WordPress + WooCommerce | Shopify |
+|---|---|---|
+| **Cost** | Hosting + extensions (variable) | Monthly subscription + transaction fees |
+| **Control** | Full — you own everything | Limited to platform capabilities |
+| **Ease of setup** | Moderate — requires configuration | High — guided setup |
+| **Maintenance** | You manage updates, security, backups | Platform manages infrastructure |
+| **Customization** | Unlimited | Limited by plan and app ecosystem |
+| **Developer availability** | Very large talent pool | Large but specialized |
+
+WooCommerce is best for organizations that want control and have IT resources. Shopify is better for teams that prioritize speed and simplicity.
+
+---
+
+## Setting Up WooCommerce: Manager's Overview
+
+### Step 1 — Hosting
+WooCommerce requires a WordPress-capable web host. Managed WordPress hosts (WP Engine, Kinsta, SiteGround) handle server optimization and security updates. This is strongly recommended over generic shared hosting for any serious store.
+
+### Step 2 — WooCommerce Installation
+WooCommerce installs like any WordPress plugin. The setup wizard walks through:
+- Store location and currency
+- Industry and product type
+- Payment and shipping configuration
+- Choosing a theme
+
+### Step 3 — Products
+WooCommerce supports:
+- **Simple products** — Single item, one price
+- **Variable products** — Multiple variants (size, color) with separate SKUs and prices
+- **Grouped products** — Related products sold together
+- **Virtual/downloadable products** — Software, ebooks, courses
+- **Subscriptions** — Recurring billing (requires a paid extension)
+
+### Step 4 — Payments
+WooCommerce supports dozens of payment gateways. The most common:
+- **WooPayments** — WooCommerce's native gateway (powered by Stripe)
+- **Stripe** — Direct integration, widely recommended
+- **PayPal** — Broad consumer familiarity
+- **Square** — Good if you also have a physical point-of-sale
+
+### Step 5 — Shipping
+Configure shipping zones, rates (flat rate, free, calculated), and carrier integrations (USPS, UPS, FedEx) via plugins.
+
+<Pitfall title="Underestimating Plugin Conflicts">
+
+WooCommerce's power comes from its plugin ecosystem — but every plugin added increases complexity and the risk of conflicts. A plugin update can break checkout or product pages unexpectedly. Best practice: use staging environments to test updates before applying to production, and limit plugins to those that are actively maintained and well-reviewed.
+
+</Pitfall>
+
+---
+
+## Extensions That Matter for Managers
+
+| Extension | Purpose |
+|---|---|
+| **WooCommerce Subscriptions** | Recurring billing and subscription management |
+| **WooCommerce Bookings** | Appointment and reservation scheduling |
+| **WPML / TranslatePress** | Multi-language stores |
+| **Yoast SEO** | Search engine optimization for products and pages |
+| **Mailchimp for WooCommerce** | Email marketing integration |
+| **WooCommerce PDF Invoices** | Automatic invoice generation |
+
+---
+
+<Quiz question="Your organization currently runs a WordPress website and wants to add eCommerce. Leadership is debating between adding WooCommerce to the existing site versus migrating everything to Shopify. What factors would you weigh in this decision?">
+
+<div>
+
+Keep WooCommerce on the existing WordPress site if: (1) the site has significant SEO equity and content that would be complex to migrate; (2) your team has WordPress/WooCommerce experience or budget for a developer; (3) you need deep customization (B2B pricing, complex product types, custom workflows); (4) data ownership is a priority. Migrate to Shopify if: (1) your team has no technical resources and needs a managed solution; (2) the existing WordPress site has performance or security problems that would compound with eCommerce; (3) you need to launch quickly and the store is your primary product (not an add-on to content). The migration cost — redirects, SEO impact, content reentry — is often underestimated. If the WordPress site is healthy and well-maintained, adding WooCommerce is almost always lower-risk and lower-cost than a full platform migration.
+
+</div>
+</Quiz>

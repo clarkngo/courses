@@ -1,0 +1,252 @@
+---
+title: "Consuming REST APIs Part II"
+description: "Complete the Angular-to-Express integration with authentication flows, route guards, reactive forms with API validation, real-time updates with WebSockets, and deploying the full MEAN application."
+module: 10
+moduleTitle: "Consuming REST APIs Part II"
+lesson: 1
+youtubeId: "Mb_ObxvkknE"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Authentication Service
+
+The Angular auth service manages token storage, login/logout, and the current user state:
+
+```typescript
+// auth.service.ts
+import { Injectable } from "@angular/core";
+import { HttpClient } from "@angular/common/http";
+import { BehaviorSubject, Observable, tap } from "rxjs";
+import { Router } from "@angular/router";
+import { environment } from "../../environments/environment";
+
+export interface User { id: string; name: string; email: string; role: string; }
+export interface AuthResponse { token: string; user: User; }
+
+@Injectable({ providedIn: "root" })
+export class AuthService {
+  private url = `${environment.apiUrl}/auth`;
+  private currentUserSubject = new BehaviorSubject<User | null>(this.loadUser());
+  currentUser$ = this.currentUserSubject.asObservable();
+
+  constructor(private http: HttpClient, private router: Router) {}
+
+  register(data: { name: string; email: string; password: string }): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${this.url}/register`, data).pipe(
+      tap(res => this.persist(res))
+    );
+  }
+
+  login(email: string, password: string): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${this.url}/login`, { email, password }).pipe(
+      tap(res => this.persist(res))
+    );
+  }
+
+  logout(): void {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    this.currentUserSubject.next(null);
+    this.router.navigate(["/login"]);
+  }
+
+  getToken(): string | null { return localStorage.getItem("token"); }
+  isLoggedIn(): boolean { return !!this.getToken(); }
+  get currentUser(): User | null { return this.currentUserSubject.value; }
+
+  private persist(res: AuthResponse): void {
+    localStorage.setItem("token", res.token);
+    localStorage.setItem("user", JSON.stringify(res.user));
+    this.currentUserSubject.next(res.user);
+  }
+
+  private loadUser(): User | null {
+    const raw = localStorage.getItem("user");
+    return raw ? JSON.parse(raw) : null;
+  }
+}
+```
+
+---
+
+## Route Guards
+
+Guards prevent unauthorized users from accessing routes:
+
+```typescript
+// auth.guard.ts
+import { Injectable } from "@angular/core";
+import { CanActivate, Router } from "@angular/router";
+import { AuthService } from "./auth.service";
+
+@Injectable({ providedIn: "root" })
+export class AuthGuard implements CanActivate {
+  constructor(private auth: AuthService, private router: Router) {}
+
+  canActivate(): boolean {
+    if (this.auth.isLoggedIn()) return true;
+    this.router.navigate(["/login"], { queryParams: { returnUrl: window.location.pathname } });
+    return false;
+  }
+}
+
+// admin.guard.ts
+@Injectable({ providedIn: "root" })
+export class AdminGuard implements CanActivate {
+  constructor(private auth: AuthService, private router: Router) {}
+
+  canActivate(): boolean {
+    if (this.auth.currentUser?.role === "admin") return true;
+    this.router.navigate(["/unauthorized"]);
+    return false;
+  }
+}
+```
+
+```typescript
+// app-routing.module.ts
+{ path: "dashboard", component: DashboardComponent, canActivate: [AuthGuard] },
+{ path: "admin",     component: AdminComponent,     canActivate: [AuthGuard, AdminGuard] },
+```
+
+---
+
+## Reactive Form with API Error Handling
+
+```typescript
+@Component({ ... })
+export class LoginComponent {
+  form = this.fb.group({
+    email:    ["", [Validators.required, Validators.email]],
+    password: ["", [Validators.required, Validators.minLength(8)]]
+  });
+  apiError: string | null = null;
+  loading = false;
+
+  constructor(
+    private fb: FormBuilder,
+    private auth: AuthService,
+    private router: Router,
+    private route: ActivatedRoute
+  ) {}
+
+  onSubmit(): void {
+    if (this.form.invalid) return;
+    this.loading = true;
+    this.apiError = null;
+    const { email, password } = this.form.value;
+    this.auth.login(email!, password!).subscribe({
+      next: () => {
+        const returnUrl = this.route.snapshot.queryParams["returnUrl"] || "/dashboard";
+        this.router.navigateByUrl(returnUrl);
+      },
+      error: (err) => {
+        this.apiError = err.message;
+        this.loading = false;
+      }
+    });
+  }
+}
+```
+
+---
+
+## Real-Time Updates with Socket.IO
+
+For features like live notifications or chat, add WebSocket support:
+
+```bash
+# Server
+npm install socket.io
+
+# Client
+npm install socket.io-client
+```
+
+```javascript
+// server/app.js
+const { createServer } = require("http");
+const { Server } = require("socket.io");
+
+const httpServer = createServer(app);
+const io = new Server(httpServer, { cors: { origin: process.env.ALLOWED_ORIGIN } });
+
+io.on("connection", (socket) => {
+    socket.on("joinRoom", (roomId) => socket.join(roomId));
+    socket.on("sendMessage", (data) => io.to(data.roomId).emit("newMessage", data));
+});
+
+httpServer.listen(process.env.PORT || 3000);
+```
+
+```typescript
+// Angular: socket.service.ts
+import { io, Socket } from "socket.io-client";
+
+@Injectable({ providedIn: "root" })
+export class SocketService {
+  private socket: Socket = io(environment.apiUrl.replace("/api", ""));
+
+  joinRoom(roomId: string): void { this.socket.emit("joinRoom", roomId); }
+  sendMessage(roomId: string, message: string): void {
+    this.socket.emit("sendMessage", { roomId, message });
+  }
+  onMessage(): Observable<any> {
+    return new Observable(obs => this.socket.on("newMessage", (data) => obs.next(data)));
+  }
+}
+```
+
+---
+
+## Production Deployment
+
+```bash
+# Build Angular for production
+cd client && ng build --configuration production
+# Output in client/dist/client/
+
+# Express serves the Angular build
+# server/app.js — after routes
+app.use(express.static(path.join(__dirname, "../client/dist/client/browser")));
+app.get(/^(?!\/api).*/, (req, res) => {
+    res.sendFile(path.join(__dirname, "../client/dist/client/browser/index.html"));
+});
+```
+
+Common deployment targets:
+- **Railway / Render** — push-to-deploy for Node apps, free tier available
+- **DigitalOcean App Platform** — managed Node hosting with MongoDB Atlas integration
+- **AWS / GCP / Azure** — full control, more configuration required
+
+<Pitfall title="Storing JWTs in localStorage on High-Security Apps">
+
+`localStorage` is accessible to any JavaScript on the page, making JWT tokens vulnerable to XSS attacks. For high-security applications, store tokens in **HttpOnly cookies** instead — the browser sends them automatically and JavaScript cannot read them. This requires server-side cookie configuration (`Set-Cookie: token=...; HttpOnly; Secure; SameSite=Strict`) and CSRF protection. For most internal tools and low-risk applications, `localStorage` is an acceptable tradeoff; for banking, healthcare, or e-commerce, use HttpOnly cookies.
+
+</Pitfall>
+
+---
+
+<Quiz question="A user submits a product creation form in Angular. Walk through the complete data flow from button click to the product appearing in the list, including every component, service, interceptor, Express middleware, and MongoDB operation involved.">
+
+<div>
+
+1. User clicks "Save" → `(ngSubmit)` fires in `ProductFormComponent`
+2. Component calls `this.productService.create(formData)`
+3. `ProductService.create()` calls `this.http.post(url, data)` — returns an Observable
+4. `AuthInterceptor` intercepts the request, reads token from `localStorage`, appends `Authorization: Bearer <token>` header
+5. Request leaves the browser → arrives at Express on `POST /api/products`
+6. Express middleware chain: `helmet()` → `cors()` → `morgan()` → `express.json()` (parses body)
+7. Router matches `POST /api/products` → runs `auth` middleware: validates JWT, sets `req.user`
+8. `validate(createProductSchema)` middleware runs Joi validation on `req.body` → returns 400 if invalid
+9. `ProductController.create` runs: `new Product({ ...req.body, seller: req.user.id })` → `product.save()` → Mongoose validates schema → MongoDB inserts document
+10. Controller responds `res.status(201).json(savedProduct)`
+11. Response travels back through Express (global error handler skipped — no error)
+12. Angular `HttpClient` receives the response → Observable emits the new `Product`
+13. Component's `subscribe({ next: ... })` handler receives the product → calls `this.loadProducts()` or optimistically pushes the product to the local `products` array
+14. Angular change detection runs → `*ngFor` in the template re-renders with the new product visible in the list
+
+</div>
+</Quiz>

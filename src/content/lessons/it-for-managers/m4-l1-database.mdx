@@ -1,0 +1,82 @@
+---
+title: "Database"
+description: "Demystify databases for non-technical managers — understand how data is stored and retrieved, the difference between database types, and how to make informed decisions about data infrastructure."
+module: 4
+moduleTitle: "Database"
+lesson: 1
+youtubeId: "A7RiikZB35E"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## What Is a Database?
+
+A **database** is an organized collection of structured data that can be accessed, managed, and updated electronically. Nearly every business system your organization uses — CRM, ERP, HR platform, e-commerce store — is powered by a database behind the scenes.
+
+As a manager, you will not write SQL queries, but you will make decisions that affect database choice, performance, backup policy, and access control. Understanding the basics makes you a better buyer, a better stakeholder, and a better decision-maker.
+
+---
+
+## Relational vs. Non-Relational Databases
+
+The two dominant database categories have different strengths:
+
+| Feature | Relational (SQL) | Non-Relational (NoSQL) |
+|---|---|---|
+| **Structure** | Tables with rows and columns | Documents, key-value pairs, graphs |
+| **Examples** | MySQL, PostgreSQL, SQL Server | MongoDB, Redis, DynamoDB |
+| **Best for** | Structured business data, transactions | Flexible, high-volume, varied data |
+| **Consistency** | Strong (ACID guarantees) | Varies (eventual consistency common) |
+| **Scale** | Scales vertically (bigger server) | Scales horizontally (more servers) |
+
+Most traditional business applications — accounting, HR, CRM — use relational databases. Web-scale applications, IoT data, and content stores often use NoSQL.
+
+---
+
+## Key Database Concepts for Managers
+
+- **Primary key** — A unique identifier for each record. Ensures no two rows are identical.
+- **Query** — A request to retrieve or modify data. SQL is the language used for relational databases.
+- **Index** — A data structure that speeds up searches. Missing indexes are a common cause of slow reports and application performance issues.
+- **Backup** — A copy of the database at a point in time. How often you back up determines how much data you can afford to lose.
+- **Replication** — Maintaining copies of a database on multiple servers for redundancy and read performance.
+
+---
+
+## Database Roles Your Team May Reference
+
+| Role | Responsibility |
+|---|---|
+| **DBA (Database Administrator)** | Manages database health, performance, backups, and access |
+| **Data Analyst** | Queries databases to extract business insights |
+| **Developer** | Writes application code that reads/writes to the database |
+| **Data Engineer** | Builds pipelines that move and transform data between systems |
+
+<Pitfall title="Treating Backup and Recovery as the Same Thing">
+
+Many managers approve a backup policy without asking the harder question: **how long does recovery take?** A database with nightly backups might take 6+ hours to restore after a failure. For business-critical systems, test your recovery time objective (RTO) — not just that backups exist.
+
+</Pitfall>
+
+---
+
+## Data Governance and Access Control
+
+Databases often contain your most sensitive organizational assets — customer records, financial data, employee information. Access control is non-negotiable:
+
+- **Principle of least privilege** — Users and applications should only access the data they need to do their job.
+- **Audit logging** — Track who accessed or changed what data, and when.
+- **Encryption at rest** — Data stored in the database should be encrypted, not stored in plain text.
+- **Data retention policies** — Define how long data is kept before it is archived or deleted, both for compliance and cost reasons.
+
+---
+
+<Quiz question="Your sales director wants a report showing all customer purchases over the last 12 months, but your IT team says it will take three days to generate. What are the most likely causes, and what longer-term fix would you advocate for?">
+
+<div>
+
+The most likely causes are: (1) **Missing indexes** on the columns being queried (e.g., customer ID, purchase date), forcing the database to scan every row. (2) **No reporting database** — running complex analytical queries against a live transactional database competes with ongoing transactions and slows everything down. (3) **Data spread across multiple systems** that must be joined manually. The longer-term fix is to implement a separate **OLAP (analytical) database or data warehouse** — a read-optimized copy of transactional data designed specifically for reporting. This separates analytical workloads from live operations and lets reports run in seconds, not days.
+
+</div>
+</Quiz>

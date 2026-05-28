@@ -1,0 +1,157 @@
+---
+title: "Introduction to Deep Learning"
+description: "Understand the fundamentals of neural networks and deep learning — from perceptrons and activation functions through training with backpropagation and building your first model with TensorFlow/Keras."
+module: 8
+moduleTitle: "Introduction to Deep Learning"
+lesson: 1
+youtubeId: "Aco6oGpyETQ"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## What Is Deep Learning?
+
+**Deep learning** is a subset of machine learning that uses artificial neural networks with many layers to learn representations from data. It has revolutionized image recognition, natural language processing, speech, and generative AI.
+
+| Term | Meaning |
+|---|---|
+| **Machine Learning** | Algorithms that learn from data |
+| **Deep Learning** | ML using deep (multi-layer) neural networks |
+| **Neural Network** | Layers of connected neurons that transform inputs to outputs |
+| **Layer** | A group of neurons; each layer extracts higher-level features |
+| **Weight** | Learnable parameters; adjusted during training |
+| **Bias** | Additional learnable parameter per neuron |
+
+---
+
+## The Neuron
+
+A single neuron computes:
+
+```
+output = activation(w₁x₁ + w₂x₂ + ... + wₙxₙ + b)
+```
+
+Where `x` are inputs, `w` are weights, `b` is bias, and the **activation function** introduces non-linearity.
+
+### Common Activation Functions
+
+| Function | Formula | Use Case |
+|---|---|---|
+| **ReLU** | `max(0, x)` | Hidden layers (default choice) |
+| **Sigmoid** | `1 / (1 + e⁻ˣ)` | Binary classification output |
+| **Softmax** | Normalizes to probability distribution | Multi-class output |
+| **Tanh** | `(eˣ - e⁻ˣ) / (eˣ + e⁻ˣ)` | Occasionally for hidden layers |
+
+---
+
+## Building a Neural Network with Keras
+
+```python
+import tensorflow as tf
+from tensorflow import keras
+import numpy as np
+
+# Load data (MNIST: handwritten digits)
+(x_train, y_train), (x_test, y_test) = keras.datasets.mnist.load_data()
+
+# Preprocess
+x_train = x_train / 255.0    # normalize to [0, 1]
+x_test  = x_test  / 255.0
+
+# Build model
+model = keras.Sequential([
+    keras.layers.Flatten(input_shape=(28, 28)),   # 784 inputs
+    keras.layers.Dense(128, activation="relu"),
+    keras.layers.Dropout(0.2),                    # regularization
+    keras.layers.Dense(64, activation="relu"),
+    keras.layers.Dense(10, activation="softmax")  # 10 digit classes
+])
+
+# Compile
+model.compile(
+    optimizer="adam",
+    loss="sparse_categorical_crossentropy",
+    metrics=["accuracy"]
+)
+
+model.summary()
+```
+
+### Training
+
+```python
+history = model.fit(
+    x_train, y_train,
+    epochs=10,
+    batch_size=32,
+    validation_split=0.1,
+    verbose=1
+)
+```
+
+### Evaluation and Prediction
+
+```python
+test_loss, test_acc = model.evaluate(x_test, y_test)
+print(f"Test accuracy: {test_acc:.4f}")
+
+predictions = model.predict(x_test[:5])
+predicted_classes = np.argmax(predictions, axis=1)
+```
+
+---
+
+## The Training Loop
+
+| Concept | What Happens |
+|---|---|
+| **Forward pass** | Input flows through layers to produce output |
+| **Loss function** | Measures error between prediction and truth |
+| **Backpropagation** | Computes gradient of loss w.r.t. each weight |
+| **Optimizer** | Updates weights to reduce loss (Adam, SGD, RMSProp) |
+| **Epoch** | One full pass through the training dataset |
+| **Batch size** | Number of samples processed before a weight update |
+
+---
+
+## Visualizing Training
+
+```python
+import matplotlib.pyplot as plt
+
+plt.figure(figsize=(12, 4))
+
+plt.subplot(1, 2, 1)
+plt.plot(history.history["accuracy"], label="Train")
+plt.plot(history.history["val_accuracy"], label="Val")
+plt.title("Accuracy")
+plt.legend()
+
+plt.subplot(1, 2, 2)
+plt.plot(history.history["loss"], label="Train")
+plt.plot(history.history["val_loss"], label="Val")
+plt.title("Loss")
+plt.legend()
+
+plt.tight_layout()
+plt.show()
+```
+
+<Pitfall title="Overfitting Without Regularization">
+
+A model that achieves 99% training accuracy but 70% validation accuracy has **overfit** — it memorized training data rather than learning generalizable patterns. Counter with: (1) **Dropout** layers (randomly zero out neurons during training); (2) **L2 regularization** (`kernel_regularizer=keras.regularizers.l2(0.01)`); (3) **Early stopping** (stop training when validation loss stops improving); (4) more training data or data augmentation.
+
+</Pitfall>
+
+---
+
+<Quiz question="Your model's training accuracy is 95% but validation accuracy plateaus at 72% after epoch 5, then starts to decline. What is happening, and what are three specific changes you would make to the model or training process?">
+
+<div>
+
+The model is overfitting — it is learning the training set too specifically. Three specific changes: (1) **Add Dropout** between dense layers (`Dropout(0.3–0.5)`) to force the network to learn redundant representations that generalize better. (2) **Early stopping** — add `keras.callbacks.EarlyStopping(monitor="val_loss", patience=3, restore_best_weights=True)` to the `fit()` call so training stops when validation loss starts rising, restoring the best weights seen. (3) **Reduce model capacity** — fewer neurons or layers reduce the model's ability to memorize; if the problem doesn't require deep capacity, smaller is often better. Also evaluate whether training data is representative and whether data augmentation could help.
+
+</div>
+</Quiz>

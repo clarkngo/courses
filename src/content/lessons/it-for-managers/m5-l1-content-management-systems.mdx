@@ -1,0 +1,82 @@
+---
+title: "Content Management Systems"
+description: "Understand what a CMS is, how to evaluate platforms for your organization, and what managers need to know about choosing, maintaining, and governing web content."
+module: 5
+moduleTitle: "Content Management Systems"
+lesson: 1
+youtubeId: "JizOXhxBh3Q"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## What Is a CMS?
+
+A **Content Management System (CMS)** is software that allows non-technical users to create, edit, organize, and publish digital content — typically web pages — without writing code.
+
+Before CMS platforms, updating a website required a developer to manually edit HTML files. A CMS separates *content* (text, images, pages) from *presentation* (design and layout), so your marketing team can publish a blog post without involving IT.
+
+---
+
+## Popular CMS Platforms
+
+| Platform | Market Share | Best For |
+|---|---|---|
+| **WordPress** | ~43% of all websites | Blogs, business sites, eCommerce (with WooCommerce) |
+| **Shopify** | Leading eCommerce CMS | Online stores |
+| **Drupal** | Enterprise/government | Complex, high-security sites |
+| **Joomla** | General use | Mid-size organizations |
+| **Squarespace / Wix** | SMB / solopreneurs | Simple sites with no IT team |
+| **Contentful / Strapi** | Headless CMS | Developers building custom apps |
+
+---
+
+## Traditional CMS vs. Headless CMS
+
+| Type | How It Works | Manager's Takeaway |
+|---|---|---|
+| **Traditional (coupled)** | CMS manages both content and how it is displayed | Easier to set up, less flexible |
+| **Headless** | CMS stores content; a separate front-end displays it | More flexible, requires developer resources |
+
+Most small and mid-size organizations start with a traditional CMS. Headless CMS is increasingly chosen by organizations that deliver content across multiple channels (website, app, digital signage, etc.).
+
+---
+
+## Key CMS Capabilities to Evaluate
+
+When selecting a CMS for your organization, evaluate:
+
+- **Ease of use** — Can non-technical staff publish content without help?
+- **Access control** — Can you limit who can publish vs. who can only draft?
+- **SEO tools** — Does it support metadata, sitemaps, and clean URLs?
+- **Plugin/extension ecosystem** — Can you add functionality (forms, analytics, eCommerce)?
+- **Security update cadence** — How quickly does the vendor release patches?
+- **Hosting options** — Managed hosting (vendor handles servers) vs. self-hosted (you manage infrastructure)
+
+<Pitfall title="Choosing a CMS Based on Popularity Alone">
+
+WordPress powers over 40% of the web, but it is also the most targeted platform for hackers — precisely because of its popularity. A misconfigured or unpatched WordPress site is a common entry point for attacks. If you choose WordPress, commit to a maintenance plan: regular plugin updates, security scanning, and managed hosting with built-in protections.
+
+</Pitfall>
+
+---
+
+## CMS Governance for Organizations
+
+A CMS without governance creates content chaos. Establish:
+
+- **Roles and permissions** — Who can create drafts? Who approves? Who publishes?
+- **Content calendar** — Scheduled publishing keeps the site fresh without ad-hoc urgency.
+- **Style guide** — Consistent tone, terminology, and formatting across all authors.
+- **Archiving policy** — When does outdated content get removed or updated?
+
+---
+
+<Quiz question="Your organization's website is built on an aging custom platform that requires a developer for every content change. You're evaluating moving to a CMS. What are the three most important criteria you would use to make your platform selection?">
+
+<div>
+
+The right answer depends on organizational context, but strong criteria include: (1) **Non-technical authoring** — the primary goal is enabling staff to publish without developer involvement, so the editing interface must be intuitive enough for your actual users to adopt it. (2) **Total cost of ownership** — compare licensing, hosting, maintenance, and developer hours needed for customization. A "free" open-source CMS may cost more in developer time than a paid managed platform. (3) **Security and update model** — who is responsible for keeping the platform patched? Managed SaaS (Squarespace, Webflow) handles this for you; self-hosted platforms (WordPress, Drupal) require internal ownership. Secondary considerations: SEO capabilities, integration with your existing tools (CRM, analytics), and migration complexity from the current platform.
+
+</div>
+</Quiz>

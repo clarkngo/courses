@@ -1,0 +1,249 @@
+---
+title: "MEAN Full Stack Project"
+description: "Scaffold and configure a complete MEAN project from scratch — setting up Node/Express with MongoDB, generating the Angular front end, and wiring the two halves together into a cohesive development workflow."
+module: 3
+moduleTitle: "MEAN Full Stack Project"
+lesson: 1
+youtubeId: "4v_qdZvtafY"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Project Scaffold
+
+A MEAN project typically lives in a monorepo with separate `server/` and `client/` directories:
+
+```bash
+mkdir mean-project && cd mean-project
+
+# Back end
+mkdir server && cd server
+npm init -y
+npm install express mongoose dotenv cors helmet morgan
+npm install --save-dev nodemon
+cd ..
+
+# Front end
+ng new client --routing --style=scss
+cd client && npm install && cd ..
+```
+
+### Server `package.json` Scripts
+
+```json
+{
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js",
+    "test": "jest"
+  }
+}
+```
+
+---
+
+## Express Entry Point
+
+```javascript
+// server/app.js
+require("dotenv").config();
+const express = require("express");
+const cors = require("cors");
+const helmet = require("helmet");
+const morgan = require("morgan");
+const mongoose = require("mongoose");
+
+const app = express();
+
+// Middleware
+app.use(helmet());
+app.use(cors({ origin: process.env.ALLOWED_ORIGIN }));
+app.use(morgan("dev"));
+app.use(express.json());
+
+// Routes
+app.use("/api/items", require("./routes/items"));
+
+// Global error handler
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(err.status || 500).json({ message: err.message || "Server error" });
+});
+
+// Database connection
+mongoose.connect(process.env.MONGODB_URI)
+    .then(() => {
+        console.log("MongoDB connected");
+        app.listen(process.env.PORT || 3000, () =>
+            console.log(`Server running on port ${process.env.PORT || 3000}`)
+        );
+    })
+    .catch(err => {
+        console.error("DB connection failed:", err);
+        process.exit(1);
+    });
+
+module.exports = app;
+```
+
+---
+
+## Mongoose Model
+
+```javascript
+// server/models/Item.js
+const mongoose = require("mongoose");
+
+const itemSchema = new mongoose.Schema({
+    name: {
+        type: String,
+        required: [true, "Name is required"],
+        trim: true,
+        maxlength: 100
+    },
+    description: String,
+    price: {
+        type: Number,
+        required: true,
+        min: [0, "Price cannot be negative"]
+    },
+    category: {
+        type: String,
+        enum: ["electronics", "clothing", "food", "other"],
+        default: "other"
+    },
+    inStock: { type: Boolean, default: true },
+    createdAt: { type: Date, default: Date.now }
+}, { timestamps: true });
+
+module.exports = mongoose.model("Item", itemSchema);
+```
+
+---
+
+## Express Router
+
+```javascript
+// server/routes/items.js
+const express = require("express");
+const router = express.Router();
+const Item = require("../models/Item");
+
+router.get("/", async (req, res, next) => {
+    try {
+        const items = await Item.find().lean();
+        res.json(items);
+    } catch (err) { next(err); }
+});
+
+router.post("/", async (req, res, next) => {
+    try {
+        const item = new Item(req.body);
+        const saved = await item.save();
+        res.status(201).json(saved);
+    } catch (err) { next(err); }
+});
+
+router.delete("/:id", async (req, res, next) => {
+    try {
+        await Item.findByIdAndDelete(req.params.id);
+        res.status(204).send();
+    } catch (err) { next(err); }
+});
+
+module.exports = router;
+```
+
+---
+
+## Angular HTTP Service
+
+```typescript
+// client/src/app/services/item.service.ts
+import { Injectable } from "@angular/core";
+import { HttpClient } from "@angular/common/http";
+import { Observable } from "rxjs";
+import { environment } from "../../environments/environment";
+
+export interface Item {
+  _id?: string;
+  name: string;
+  description?: string;
+  price: number;
+  inStock: boolean;
+}
+
+@Injectable({ providedIn: "root" })
+export class ItemService {
+  private url = `${environment.apiUrl}/items`;
+
+  constructor(private http: HttpClient) {}
+
+  getAll(): Observable<Item[]> { return this.http.get<Item[]>(this.url); }
+  create(item: Item): Observable<Item> { return this.http.post<Item>(this.url, item); }
+  delete(id: string): Observable<void> { return this.http.delete<void>(`${this.url}/${id}`); }
+}
+```
+
+Register `HttpClientModule` in `AppModule`:
+```typescript
+imports: [BrowserModule, HttpClientModule, AppRoutingModule]
+```
+
+---
+
+## Running Both Servers Concurrently
+
+```bash
+# Install concurrently at the root
+npm init -y && npm install concurrently
+
+# Root package.json
+{
+  "scripts": {
+    "dev": "concurrently \"cd server && npm run dev\" \"cd client && ng serve\""
+  }
+}
+```
+
+<Pitfall title="Forgetting to Handle the Angular 404 on Refresh">
+
+In a SPA, all routes are handled client-side by Angular's router. When a user refreshes `/items/42`, the server tries to find a file at that path, fails, and returns a 404. Fix: configure Express to serve `index.html` for all non-API routes:
+
+```javascript
+const path = require("path");
+app.use(express.static(path.join(__dirname, "../client/dist/client")));
+app.get(/^(?!\/api).*/, (req, res) => {
+    res.sendFile(path.join(__dirname, "../client/dist/client/index.html"));
+});
+```
+
+This only applies in production when Angular is served by the Express server.
+
+</Pitfall>
+
+---
+
+<Quiz question="You're starting a MEAN project for a task management app. What Mongoose schema fields would you define for a Task, and what validation rules would you apply at the schema level vs. the API route level?">
+
+<div>
+
+Schema-level validation (Mongoose enforces these before hitting the database):
+
+```javascript
+const taskSchema = new mongoose.Schema({
+    title:       { type: String, required: true, trim: true, maxlength: 200 },
+    description: { type: String, trim: true },
+    status:      { type: String, enum: ["todo", "in_progress", "done"], default: "todo" },
+    priority:    { type: String, enum: ["low", "medium", "high"], default: "medium" },
+    dueDate:     { type: Date },
+    assignedTo:  { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    createdBy:   { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+}, { timestamps: true });
+```
+
+Route-level validation (business rules that depend on context): check that `dueDate` is in the future on creation; verify the `assignedTo` user exists and belongs to the same organization; check that the requesting user has permission to create/modify tasks in this project. Mongoose validates data shape and constraints; the route validates business rules and authorization — these are different concerns.
+
+</div>
+</Quiz>

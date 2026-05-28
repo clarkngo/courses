@@ -1,0 +1,193 @@
+---
+title: "Web Scraping and Working with Excel Files"
+description: "Learn to extract data from websites using requests and BeautifulSoup, and to read, write, and manipulate Excel spreadsheets with openpyxl and pandas."
+module: 5
+moduleTitle: "Web Scraping and Working with Excel Files"
+lesson: 1
+youtubeId: "QsOeeVb_VFw"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Web Scraping
+
+**Web scraping** is the automated extraction of data from websites. Python's `requests` library fetches pages; `BeautifulSoup` parses the HTML.
+
+```bash
+pip install requests beautifulsoup4
+```
+
+### Fetching a Page
+
+```python
+import requests
+
+url = "https://example.com"
+response = requests.get(url, timeout=10)
+
+# Check status
+response.raise_for_status()    # raises exception for 4xx/5xx
+print(response.status_code)   # 200 = OK
+print(response.text)          # raw HTML string
+```
+
+### Parsing HTML with BeautifulSoup
+
+```python
+from bs4 import BeautifulSoup
+
+soup = BeautifulSoup(response.text, "html.parser")
+
+# Find elements
+title = soup.find("h1").text
+links = soup.find_all("a", href=True)
+prices = soup.select(".product-price")   # CSS selector
+
+# Extract attributes
+for link in links:
+    print(link["href"], link.text.strip())
+```
+
+### A Complete Scraper
+
+```python
+import requests
+from bs4 import BeautifulSoup
+import time
+
+def scrape_quotes(url):
+    quotes = []
+    while url:
+        resp = requests.get(url, timeout=10)
+        resp.raise_for_status()
+        soup = BeautifulSoup(resp.text, "html.parser")
+
+        for q in soup.select(".quote"):
+            quotes.append({
+                "text": q.select_one(".text").text,
+                "author": q.select_one(".author").text,
+                "tags": [t.text for t in q.select(".tag")]
+            })
+
+        next_btn = soup.select_one(".next a")
+        url = "https://quotes.toscrape.com" + next_btn["href"] if next_btn else None
+        time.sleep(1)   # be polite
+
+    return quotes
+```
+
+---
+
+## Working with Excel Files
+
+### Reading Excel with pandas
+
+```python
+import pandas as pd
+
+# Read a sheet
+df = pd.read_excel("sales.xlsx", sheet_name="Q1")
+print(df.head())
+print(df.columns.tolist())
+
+# Filter and compute
+top_sales = df[df["Revenue"] > 10000]
+monthly_total = df.groupby("Month")["Revenue"].sum()
+```
+
+### Writing Excel with pandas
+
+```python
+# Write a single sheet
+df.to_excel("output.xlsx", index=False)
+
+# Write multiple sheets
+with pd.ExcelWriter("report.xlsx") as writer:
+    df_q1.to_excel(writer, sheet_name="Q1", index=False)
+    df_q2.to_excel(writer, sheet_name="Q2", index=False)
+```
+
+### Fine-grained Control with openpyxl
+
+```python
+import openpyxl
+from openpyxl.styles import Font, PatternFill
+
+wb = openpyxl.load_workbook("template.xlsx")
+ws = wb.active
+
+# Write cells
+ws["A1"] = "Sales Report"
+ws["A1"].font = Font(bold=True, size=14)
+ws.append(["Alice", 5200, "Q1"])
+
+# Style a range
+for cell in ws["A1:C1"][0]:
+    cell.fill = PatternFill("solid", fgColor="FFFF00")
+
+wb.save("styled_report.xlsx")
+```
+
+---
+
+## Combining Scraping + Excel
+
+```python
+import requests
+from bs4 import BeautifulSoup
+import pandas as pd
+
+resp = requests.get("https://quotes.toscrape.com")
+soup = BeautifulSoup(resp.text, "html.parser")
+
+data = [
+    {
+        "Quote": q.select_one(".text").text,
+        "Author": q.select_one(".author").text,
+    }
+    for q in soup.select(".quote")
+]
+
+pd.DataFrame(data).to_excel("quotes.xlsx", index=False)
+```
+
+<Pitfall title="Scraping Without Checking robots.txt">
+
+Before scraping any site, check `https://site.com/robots.txt` to see what the site permits automated crawlers to access. Also review the site's Terms of Service — some explicitly prohibit scraping. For sites that require login or render content with JavaScript, `requests` won't work; you'll need `selenium` or `playwright` to drive a real browser.
+
+</Pitfall>
+
+---
+
+<Quiz question="You need to scrape product names and prices from a 50-page catalog site and save the results to Excel. The site loads data dynamically via JavaScript. Outline your approach.">
+
+<div>
+
+Since the content is JavaScript-rendered, `requests` + BeautifulSoup won't see the product data (only the initial HTML shell). Use `playwright` or `selenium`:
+
+```python
+from playwright.sync_api import sync_playwright
+import pandas as pd
+
+products = []
+with sync_playwright() as p:
+    browser = p.chromium.launch()
+    page = browser.new_page()
+    for page_num in range(1, 51):
+        page.goto(f"https://example.com/catalog?page={page_num}")
+        page.wait_for_selector(".product-card")
+        for card in page.query_selector_all(".product-card"):
+            products.append({
+                "name": card.query_selector(".name").inner_text(),
+                "price": card.query_selector(".price").inner_text(),
+            })
+    browser.close()
+
+pd.DataFrame(products).to_excel("catalog.xlsx", index=False)
+```
+
+Add `time.sleep()` or use `page.wait_for_timeout()` between pages to avoid rate limiting. Check whether the site has a public API first — APIs are more reliable and legally safer than scraping.
+
+</div>
+</Quiz>

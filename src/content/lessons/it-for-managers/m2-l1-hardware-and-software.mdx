@@ -1,0 +1,84 @@
+---
+title: "Hardware and Software"
+description: "Learn the essential distinctions between hardware and software, and how managers can make smarter procurement, upgrade, and vendor decisions based on these fundamentals."
+module: 2
+moduleTitle: "Hardware and Software"
+lesson: 1
+youtubeId: "rAG8cqdfKCw"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## The Fundamental Distinction
+
+Every IT system your organization uses has two inseparable components:
+
+- **Hardware** — the physical equipment: computers, servers, networking devices, storage drives, and peripherals
+- **Software** — the programs and operating systems that run on that hardware
+
+Neither is useful without the other. A powerful server with no operating system does nothing. Software with no hardware to run on is just code sitting on a disk.
+
+---
+
+## Types of Hardware Managers Should Know
+
+| Category | Examples | Manager's Concern |
+|---|---|---|
+| **End-user devices** | Laptops, desktops, tablets | Refresh cycles, standardization, security |
+| **Servers** | On-premises or cloud VMs | Capacity planning, uptime, backup |
+| **Networking hardware** | Routers, switches, firewalls | Bandwidth, reliability, access control |
+| **Storage** | HDDs, SSDs, NAS, SAN | Capacity, redundancy, backup cost |
+| **Peripherals** | Printers, scanners, cameras | Support contracts, compatibility |
+
+---
+
+## Types of Software Managers Should Know
+
+- **Operating Systems (OS)** — Windows, macOS, Linux. The OS is the foundation everything else runs on.
+- **Application Software** — The tools your teams use daily (Office, Slack, Salesforce).
+- **Middleware** — Software that connects different systems together. Often invisible until it breaks.
+- **Firmware** — Software embedded in hardware devices (e.g., router firmware). Needs updates for security patches.
+
+---
+
+## On-Premises vs. Cloud Hardware
+
+A major shift in the past decade is that many organizations no longer buy physical servers. Instead, they rent computing capacity from cloud providers (AWS, Azure, Google Cloud). This changes the manager's role:
+
+| Factor | On-Premises | Cloud |
+|---|---|---|
+| **Upfront cost** | High (buy hardware) | Low (pay-as-you-go) |
+| **Ongoing cost** | Maintenance, power, staff | Subscription fees |
+| **Control** | Full | Shared with vendor |
+| **Scalability** | Slow, expensive | Fast, elastic |
+| **Security responsibility** | Yours entirely | Shared model |
+
+<Pitfall title="Assuming Cloud Eliminates Hardware Concerns">
+
+Even with full cloud adoption, end-user devices (laptops, phones) remain hardware that your organization owns, manages, and secures. Cloud migration reduces server hardware concerns — it does not eliminate hardware management entirely.
+
+</Pitfall>
+
+---
+
+## Hardware Refresh Cycles
+
+Hardware degrades over time — not just physically, but in terms of performance and security support. Most organizations plan for:
+
+- **Laptops/desktops** — 3 to 4 year refresh cycle
+- **Servers** — 4 to 5 years (or move to cloud to avoid this)
+- **Networking equipment** — 5 to 7 years, but firmware updates are ongoing
+
+Delaying hardware refresh increases security risk (older hardware drops out of support), reduces employee productivity, and raises repair costs.
+
+---
+
+<Quiz question="Your IT team recommends replacing 60 laptops that are four years old. Finance pushes back, arguing the laptops still 'work fine.' What arguments can you make as a manager to justify the refresh?">
+
+<div>
+
+Four-year-old laptops face several compounding risks: (1) Security — older hardware may not support current OS versions or security features like TPM 2.0, leaving the fleet exposed. (2) Productivity — slower hardware increases time-on-task for every employee, multiplied across 60 people. (3) Support cost — out-of-warranty hardware repairs are expensive and unpredictable. (4) Compliance — some regulated industries require hardware that can run current, patched operating systems. The real question is not "do they work?" but "what is the total cost of keeping them vs. replacing them?"
+
+</div>
+</Quiz>

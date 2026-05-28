@@ -1,0 +1,176 @@
+---
+title: "Object Oriented Design and Programming"
+description: "Learn to model real-world problems with classes and objects — covering encapsulation, inheritance, polymorphism, and the design principles that make OOP code maintainable."
+module: 4
+moduleTitle: "Object Oriented Design and Programming"
+lesson: 1
+youtubeId: "bxKUSIdzno8"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## What Is Object-Oriented Programming?
+
+**Object-Oriented Programming (OOP)** organizes code around *objects* — bundles of data (attributes) and behavior (methods) — rather than around functions and procedures.
+
+The four pillars of OOP:
+- **Encapsulation** — bundle data and the methods that operate on it into one unit; hide internal details
+- **Inheritance** — a class can inherit attributes and methods from a parent class
+- **Polymorphism** — different classes can be used interchangeably if they share a common interface
+- **Abstraction** — expose only what the caller needs; hide the complexity
+
+---
+
+## Defining a Class
+
+```python
+class BankAccount:
+    # Class variable — shared by all instances
+    interest_rate = 0.02
+
+    def __init__(self, owner, balance=0.0):
+        # Instance variables — unique to each object
+        self.owner = owner
+        self._balance = balance      # convention: _ means "private"
+
+    def deposit(self, amount):
+        if amount <= 0:
+            raise ValueError("Deposit must be positive.")
+        self._balance += amount
+
+    def withdraw(self, amount):
+        if amount > self._balance:
+            raise ValueError("Insufficient funds.")
+        self._balance -= amount
+
+    def get_balance(self):
+        return self._balance
+
+    def __str__(self):
+        return f"Account({self.owner}, ${self._balance:.2f})"
+
+    def __repr__(self):
+        return f"BankAccount(owner={self.owner!r}, balance={self._balance})"
+```
+
+### Special (Dunder) Methods
+
+| Method | Called When |
+|---|---|
+| `__init__` | Object is created |
+| `__str__` | `str(obj)` or `print(obj)` |
+| `__repr__` | `repr(obj)`, debugging output |
+| `__len__` | `len(obj)` |
+| `__eq__` | `obj1 == obj2` |
+| `__lt__` | `obj1 < obj2` |
+| `__add__` | `obj1 + obj2` |
+
+---
+
+## Inheritance
+
+```python
+class SavingsAccount(BankAccount):
+    def __init__(self, owner, balance=0.0):
+        super().__init__(owner, balance)   # call parent __init__
+        self._transactions = 0
+
+    def withdraw(self, amount):
+        if self._transactions >= 6:
+            raise Exception("Monthly withdrawal limit reached.")
+        super().withdraw(amount)           # reuse parent logic
+        self._transactions += 1
+
+    def apply_interest(self):
+        self._balance *= (1 + self.interest_rate)
+```
+
+`super()` calls the parent class method — always use it instead of naming the parent class directly, so the method resolution order (MRO) works correctly with multiple inheritance.
+
+---
+
+## Polymorphism
+
+```python
+class Shape:
+    def area(self):
+        raise NotImplementedError
+
+class Circle(Shape):
+    def __init__(self, radius):
+        self.radius = radius
+
+    def area(self):
+        return 3.14159 * self.radius ** 2
+
+class Rectangle(Shape):
+    def __init__(self, width, height):
+        self.width = width
+        self.height = height
+
+    def area(self):
+        return self.width * self.height
+
+# Polymorphic usage — caller doesn't care which subclass
+shapes = [Circle(5), Rectangle(4, 6), Circle(3)]
+total_area = sum(s.area() for s in shapes)
+```
+
+---
+
+## Class vs. Static Methods
+
+```python
+class Temperature:
+    def __init__(self, celsius):
+        self.celsius = celsius
+
+    @classmethod
+    def from_fahrenheit(cls, f):
+        return cls((f - 32) * 5 / 9)     # factory method
+
+    @staticmethod
+    def is_freezing(celsius):
+        return celsius <= 0               # no access to instance or class
+
+t = Temperature.from_fahrenheit(212)
+print(Temperature.is_freezing(0))         # True
+```
+
+<Pitfall title="Overusing Inheritance">
+
+Inheritance is the most misused OOP feature. Prefer **composition** (an object *has a* dependency) over **inheritance** (an object *is a* parent type) unless there is a genuine is-a relationship:
+
+```python
+# Inheritance misuse: Engine is not a kind of Car
+class Car(Engine): ...
+
+# Composition (correct)
+class Car:
+    def __init__(self):
+        self.engine = Engine()
+```
+
+A good rule of thumb: if you cannot say "X is a Y" naturally in plain English, don't use inheritance.
+
+</Pitfall>
+
+---
+
+<Quiz question="Design a class hierarchy for a university system with Students, Professors, and Staff. What common attributes go in a base class? What behavior is specific to each subclass? Where would you use polymorphism?">
+
+<div>
+
+Base class `Person`: `name`, `id`, `email`, `__str__`. All three types share these.
+
+`Student(Person)`: adds `major`, `gpa`, `enrolled_courses`. Method: `enroll(course)`, `calculate_gpa()`.
+
+`Professor(Person)`: adds `department`, `courses_taught`. Method: `assign_grade(student, course, grade)`.
+
+`Staff(Person)`: adds `department`, `role`. Method: `process_request(request_type)`.
+
+Polymorphism opportunity: define `get_portal_view()` on each subclass — when the university portal loads, it calls `user.get_portal_view()` without knowing which type the user is. Each class returns a different dashboard appropriate to the role. Similarly, a `send_notification(person, message)` function works on any `Person` subclass.
+
+</div>
+</Quiz>

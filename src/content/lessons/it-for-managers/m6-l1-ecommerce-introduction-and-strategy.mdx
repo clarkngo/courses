@@ -1,0 +1,88 @@
+---
+title: "eCommerce — Introduction & Strategy"
+description: "Understand the eCommerce landscape, the key strategic decisions organizations face when selling online, and how to build a foundation for a successful digital storefront."
+module: 6
+moduleTitle: "eCommerce — Introduction & Strategy"
+lesson: 1
+youtubeId: "6ZsDcFDn230"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## What Is eCommerce?
+
+**eCommerce** (electronic commerce) is the buying and selling of goods and services over the internet. It encompasses not just the transaction itself but the entire digital customer journey: discovery, evaluation, purchase, fulfillment, and post-sale service.
+
+For managers, eCommerce is not just a technology decision — it is a business model decision with technology implications at every step.
+
+---
+
+## eCommerce Business Models
+
+| Model | Description | Examples |
+|---|---|---|
+| **B2C** (Business to Consumer) | Sell directly to individual customers | Amazon, Nike, most retail stores |
+| **B2B** (Business to Business) | Sell to other businesses | Grainger, Alibaba, SaaS subscriptions |
+| **C2C** (Consumer to Consumer) | Platform enabling consumers to sell to each other | eBay, Etsy, Facebook Marketplace |
+| **D2C** (Direct to Consumer) | Brand sells directly, bypassing retailers | Warby Parker, Dollar Shave Club |
+| **Subscription** | Recurring billing for ongoing access | Netflix, Birchbox, SaaS tools |
+
+Knowing your model shapes every platform, pricing, and logistics decision you make.
+
+---
+
+## Platform Options: Build vs. Buy vs. Rent
+
+| Approach | Description | Best For |
+|---|---|---|
+| **Custom build** | Developers build a bespoke storefront | Large enterprises with unique requirements |
+| **Open-source platform** | WordPress + WooCommerce, Magento | Organizations that want control and have developer resources |
+| **SaaS platform** | Shopify, BigCommerce, Squarespace | Fast launch, lower maintenance burden |
+| **Marketplace** | Sell on Amazon, Etsy, eBay | Reach existing audiences, lower setup cost |
+
+Most small and mid-size businesses start with a SaaS platform (especially Shopify) and add customization as they grow.
+
+---
+
+## Strategic Decisions Before Launch
+
+Before selecting any technology, answer these strategic questions:
+
+1. **Who is your customer?** — B2B and B2C customers have very different expectations for catalog size, pricing, checkout flow, and payment terms.
+2. **What is your fulfillment model?** — Ship yourself, dropship, or use a 3PL (third-party logistics provider)?
+3. **How will customers find you?** — Organic search (SEO), paid advertising, social, email, or marketplace?
+4. **What are your margin requirements?** — Marketplace fees (Amazon takes 8–15%), payment processing (Stripe/PayPal take ~2.9%), and platform fees all compress margins.
+5. **What regulations apply?** — Sales tax nexus, international customs, age-restricted products, and data privacy (GDPR, CCPA) all vary by product and market.
+
+<Pitfall title="Launching Without a Traffic Plan">
+
+Many organizations spend months perfecting their online store and launch to silence. A storefront with no traffic generates no revenue. Marketing strategy — SEO, paid search, email, social, influencer — must be planned *before* launch, not after. Budget for marketing from day one, not as an afterthought.
+
+</Pitfall>
+
+---
+
+## Metrics That Matter in eCommerce
+
+As a manager, these are the KPIs that reveal the health of your eCommerce operation:
+
+| Metric | What It Measures |
+|---|---|
+| **Conversion rate** | % of visitors who complete a purchase (industry avg: 1–3%) |
+| **Average order value (AOV)** | Revenue per transaction |
+| **Customer acquisition cost (CAC)** | Marketing spend ÷ new customers acquired |
+| **Customer lifetime value (CLV)** | Total revenue expected from one customer over time |
+| **Cart abandonment rate** | % of carts started but not purchased (industry avg: ~70%) |
+| **Return rate** | % of orders returned (high rates signal product or expectation issues) |
+
+---
+
+<Quiz question="Your company sells industrial safety equipment. Leadership wants to launch an eCommerce channel. A colleague suggests building on Shopify immediately. What strategic questions should be answered before committing to a platform?">
+
+<div>
+
+Before platform selection: (1) **B2B vs. B2C model** — industrial safety equipment is likely B2B, which means the platform needs to support purchase orders, net-30 payment terms, tiered pricing by account, and bulk ordering. Shopify can handle this but requires apps and customization. B2B-first platforms like Magento or BigCommerce B2B may be better fits. (2) **Catalog complexity** — how many SKUs, variants, and regulatory compliance documents need to be displayed? (3) **Integration requirements** — does the platform need to sync with your existing ERP or inventory system? (4) **Fulfillment model** — are orders shipped from your warehouse, or do you use a distributor? (5) **Regulatory compliance** — some safety equipment has certification requirements that must be surfaced in the product listing. Answering these before choosing a platform avoids expensive rebuilds.
+
+</div>
+</Quiz>

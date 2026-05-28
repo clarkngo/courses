@@ -1,0 +1,116 @@
+---
+title: "eCommerce — Marketing and Maintenance"
+description: "Learn how to drive traffic to your online store through proven marketing channels, and how to maintain a healthy, secure, and high-performing eCommerce site for the long term."
+module: 10
+moduleTitle: "eCommerce — Marketing and Maintenance"
+lesson: 1
+youtubeId: "uAeC2IlpeAI"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## The Two Pillars: Marketing and Maintenance
+
+A successful online store requires ongoing investment in two areas that managers often underestimate:
+
+1. **Marketing** — continuously bringing new and returning customers to the store
+2. **Maintenance** — keeping the store fast, secure, and operational
+
+Building the store is a one-time project. Running it is an ongoing operation.
+
+---
+
+## eCommerce Marketing Channels
+
+### Search Engine Optimization (SEO)
+Organic search is the highest-ROI long-term channel. For eCommerce:
+- Optimize product titles and descriptions with keywords buyers actually search
+- Create category pages and blog content that answers pre-purchase questions
+- Build backlinks through press, partnerships, and content marketing
+- Ensure technical SEO: fast load times, mobile-friendliness, clean URLs, structured data (schema markup for products)
+
+### Paid Search (Google Shopping & Search Ads)
+Google Shopping ads show product images, prices, and store names directly in search results. They are particularly effective for product-intent searches (e.g., "buy waterproof hiking boots size 10").
+
+### Email Marketing
+Email consistently delivers the highest ROI of any eCommerce marketing channel (~$36 return per $1 spent). Key automated flows:
+- **Welcome series** — introduces new subscribers to your brand
+- **Abandoned cart** — recovers customers who left without purchasing (typically 10–15% recovery rate)
+- **Post-purchase** — review requests, cross-sells, loyalty programs
+- **Win-back** — re-engages lapsed customers
+
+### Social Media and Paid Social
+- **Organic social** builds brand awareness and community but rarely drives direct revenue at scale
+- **Paid social** (Meta/Facebook Ads, Instagram, TikTok) is effective for awareness and retargeting, especially for visual products
+- **Influencer marketing** works well for consumer products with clear lifestyle fit
+
+### Retargeting
+Show ads to visitors who came to your site but did not purchase. Retargeting typically converts 3–5x better than cold traffic and is a high-efficiency use of ad budget.
+
+---
+
+## Key Marketing Metrics
+
+| Metric | Target / Benchmark |
+|---|---|
+| **Email open rate** | 20–30% (varies by industry) |
+| **Abandoned cart recovery rate** | 5–15% |
+| **ROAS (Return on Ad Spend)** | 3–5x is common target |
+| **Cost per acquisition (CPA)** | Should be below customer lifetime value |
+| **Organic traffic growth** | Month-over-month increase in non-paid sessions |
+
+<Pitfall title="Treating Marketing as a Launch Activity">
+
+Many organizations invest in marketing around the store launch and then reduce spending once the site is live. eCommerce marketing is an ongoing operation — SEO takes months to compound, email lists require consistent nurturing, and ad campaigns need continuous optimization. Treat marketing as a recurring operational budget line, not a project cost.
+
+</Pitfall>
+
+---
+
+## eCommerce Maintenance: What Managers Must Own
+
+### Security Updates
+- Update WordPress core, WooCommerce, themes, and all plugins regularly — ideally weekly
+- Use a staging environment to test updates before applying to the live store
+- Enable automatic security updates for minor releases
+- Run a security scanner (Wordfence, Sucuri) to detect vulnerabilities and malware
+
+### Backups
+- **Daily automated backups** of both the database and files
+- Store backups in a separate location from the server (offsite or cloud storage)
+- **Test restores periodically** — a backup that has never been restored is an untested assumption
+- Define your Recovery Time Objective (RTO): how long can the store be down before significant revenue loss?
+
+### Performance Monitoring
+- Monitor uptime with a tool like UptimeRobot (free) or Pingdom
+- Set alerts for downtime so you are notified immediately, not hours later
+- Review page speed monthly using Google PageSpeed Insights
+- Monitor database size and clean up post metadata, order data, and logs on a schedule
+
+### Compliance and Policy Reviews
+- Review and update shipping, return, and privacy policies annually or when regulations change
+- Ensure your store meets current accessibility standards (WCAG 2.1)
+- If selling internationally, review VAT/GST compliance for each market
+
+---
+
+## Building a Maintenance Calendar
+
+| Frequency | Tasks |
+|---|---|
+| **Weekly** | Apply plugin/theme updates in staging, push to production; review order anomalies |
+| **Monthly** | Review site speed, check broken links, audit top product pages |
+| **Quarterly** | Security audit, review marketing performance vs. KPIs, update policies if needed |
+| **Annually** | Full platform review — evaluate whether hosting, plugins, and theme still meet needs |
+
+---
+
+<Quiz question="Your eCommerce site has been running for two years without a dedicated maintenance plan. What are the three highest-risk areas you would address first, and what would 'addressed' look like for each?">
+
+<div>
+
+(1) **Security** — Two years of unmanaged updates means accumulated vulnerabilities. Addressed means: run a security scan (Wordfence or Sucuri) to identify current issues, update all plugins/themes/core in a staging environment and push to production, change all admin passwords, and establish a recurring update schedule. (2) **Backups** — Without a backup plan, any server failure or hack could result in permanent data loss. Addressed means: a daily automated backup is running to an offsite location, and a test restore has been successfully completed. (3) **Performance** — Sites degrade over time as databases grow, images accumulate, and plugins compound. Addressed means: run a PageSpeed audit, implement or verify caching is active, optimize the database, and set a monthly performance review reminder. These three form the foundation that everything else depends on — without them, marketing investment is at risk of being wiped out by a preventable outage or breach.
+
+</div>
+</Quiz>

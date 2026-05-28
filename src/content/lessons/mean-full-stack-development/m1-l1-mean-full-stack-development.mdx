@@ -1,0 +1,137 @@
+---
+title: "MEAN Full Stack Development"
+description: "Get oriented with the MEAN stack — understand what MongoDB, Express, Angular, and Node.js each do, how they fit together, and what a full-stack JavaScript developer needs to know before writing a single line of code."
+module: 1
+moduleTitle: "MEAN Full Stack Development"
+lesson: 1
+youtubeId: "1hsNyy58TcM"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## What Is the MEAN Stack?
+
+**MEAN** is an acronym for a set of JavaScript/TypeScript technologies that together cover the full web application stack:
+
+| Letter | Technology | Role |
+|---|---|---|
+| **M** | MongoDB | NoSQL database — stores and retrieves data |
+| **E** | Express.js | Web framework for Node.js — handles HTTP routing and middleware |
+| **A** | Angular | Front-end framework — builds the user interface |
+| **N** | Node.js | JavaScript runtime — runs server-side code |
+
+The defining feature of MEAN is that **JavaScript runs everywhere**: the browser (Angular), the server (Node + Express), and interacts with a document-oriented database (MongoDB). One language, one mental model, the entire stack.
+
+---
+
+## Why MEAN?
+
+| Benefit | Detail |
+|---|---|
+| **Single language** | Developers context-switch less; full-stack developers are genuinely full-stack |
+| **JSON throughout** | Data flows from MongoDB (BSON) → Express → Angular without format conversion |
+| **Non-blocking I/O** | Node.js handles thousands of concurrent connections efficiently |
+| **Large ecosystem** | npm has over 2 million packages; Angular has enterprise-grade tooling |
+| **TypeScript support** | Angular is TypeScript-first; Node/Express work well with TypeScript too |
+
+---
+
+## The Request Lifecycle in MEAN
+
+```
+User Action (Angular)
+    ↓
+HTTP Request (Angular HttpClient)
+    ↓
+Express Router (route matching)
+    ↓
+Middleware (auth, validation, logging)
+    ↓
+Controller (business logic)
+    ↓
+Mongoose Model (MongoDB query)
+    ↓
+MongoDB (data stored / retrieved)
+    ↓
+JSON Response
+    ↓
+Angular Component (updates the view)
+```
+
+Understanding this flow end-to-end is the foundation of MEAN development.
+
+---
+
+## Setting Up the Development Environment
+
+```bash
+# Install Node.js (includes npm) from nodejs.org
+node --version    # v20.x or later
+npm --version     # 10.x or later
+
+# Install Angular CLI globally
+npm install -g @angular/cli
+ng version
+
+# Install MongoDB (or use MongoDB Atlas for cloud)
+# https://www.mongodb.com/try/download/community
+
+# Create project structure
+mkdir my-mean-app
+cd my-mean-app
+mkdir server          # Express + Node backend
+ng new client         # Angular frontend
+```
+
+---
+
+## Project Structure Overview
+
+```
+my-mean-app/
+├── server/
+│   ├── models/       # Mongoose schemas
+│   ├── routes/       # Express routers
+│   ├── controllers/  # Business logic
+│   ├── middleware/   # Auth, error handling
+│   └── app.js        # Express entry point
+└── client/           # Angular project
+    ├── src/
+    │   ├── app/
+    │   │   ├── components/
+    │   │   ├── services/     # HTTP calls to backend
+    │   │   └── models/       # TypeScript interfaces
+    │   └── environments/
+    └── angular.json
+```
+
+---
+
+## MEAN vs. Other Stacks
+
+| Stack | Front End | Back End | Database |
+|---|---|---|---|
+| **MEAN** | Angular | Node/Express | MongoDB |
+| **MERN** | React | Node/Express | MongoDB |
+| **LAMP** | PHP (server-rendered) | Apache/PHP | MySQL |
+| **Django** | Jinja2 / React | Python/Django | PostgreSQL |
+
+MEAN and MERN are architecturally identical except for the front-end framework. The choice between Angular and React is primarily a team preference and project complexity decision — Angular is more opinionated and batteries-included; React is more flexible and compositional.
+
+<Pitfall title="Conflating Node.js with a Web Server">
+
+Node.js is a JavaScript runtime, not a web server. It can handle HTTP requests, but Express is the library that makes it behave like a web server. Without Express (or a similar framework), you'd write raw `http.createServer()` code for every route and middleware. Always use Express (or Fastify, Hono, etc.) on top of Node for real applications.
+
+</Pitfall>
+
+---
+
+<Quiz question="A colleague says 'since MEAN uses JavaScript everywhere, one developer can build the entire application.' What is accurate about this claim, and what does it oversimplify?">
+
+<div>
+
+**Accurate:** a single JavaScript/TypeScript developer can contribute to every layer — Angular components, Express routes, Mongoose models — without switching languages. This lowers context-switching overhead and enables genuine full-stack ownership of features. **Oversimplified:** each layer has deep domain knowledge requirements that go beyond language familiarity. Angular requires understanding component lifecycle, RxJS observables, dependency injection, and change detection. Express requires understanding middleware order, async error handling, and HTTP semantics. MongoDB requires understanding document schema design, indexing, and aggregation pipelines. A developer fluent in all three layers is rare and valuable — knowing JavaScript doesn't automatically qualify someone for all three.
+
+</div>
+</Quiz>
