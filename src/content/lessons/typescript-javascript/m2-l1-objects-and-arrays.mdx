@@ -1,0 +1,310 @@
+---
+title: "Objects and Arrays"
+description: "Learn how to group related data with objects and collections with arrays — and how JSON connects JavaScript data structures to the rest of the web."
+module: 2
+moduleTitle: "Objects and Arrays"
+lesson: 1
+duration: "60 min"
+youtubeId: "MnHUgGcdkUo"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Objects
+
+An **object** is a collection of key-value pairs. It lets you group related data under a single name. Instead of managing five separate variables for a user, you bundle them into one object:
+
+```javascript
+const user = {
+  name: "Alice",
+  age: 28,
+  email: "alice@example.com",
+  isActive: true,
+};
+```
+
+Each key-value pair is a **property**. Access properties with dot notation or bracket notation:
+
+```javascript
+user.name          // "Alice"
+user["email"]      // "alice@example.com"
+
+// Bracket notation is required when the key is dynamic:
+const key = "age";
+user[key]          // 28
+```
+
+Modify and add properties:
+
+```javascript
+user.age = 29;                     // update existing
+user.location = "San Francisco";   // add new property
+delete user.isActive;              // remove property
+```
+
+---
+
+## TypeScript Interfaces and Types
+
+In TypeScript, you define the shape of an object using an **interface** or **type alias**:
+
+```typescript
+interface User {
+  name: string;
+  age: number;
+  email: string;
+  isActive: boolean;
+}
+
+const user: User = {
+  name: "Alice",
+  age: 28,
+  email: "alice@example.com",
+  isActive: true,
+};
+
+// TypeScript will error if you assign the wrong type:
+user.age = "twenty-eight"; // Error: Type 'string' is not assignable to type 'number'
+
+// Or if you're missing a required property:
+const incomplete: User = { name: "Bob" }; // Error: Property 'age' is missing
+```
+
+Optional properties use `?`:
+
+```typescript
+interface Config {
+  host: string;
+  port: number;
+  timeout?: number;  // optional — may or may not be present
+}
+```
+
+---
+
+## Arrays
+
+An **array** is an ordered list of values. Unlike objects, arrays are indexed by position (starting at 0):
+
+```javascript
+const fruits = ["apple", "banana", "cherry"];
+
+fruits[0]           // "apple"
+fruits[2]           // "cherry"
+fruits.length       // 3
+```
+
+### Common Array Methods
+
+```javascript
+const numbers = [3, 1, 4, 1, 5, 9, 2, 6];
+
+// Adding and removing elements:
+numbers.push(7);          // add to end → [3, 1, 4, 1, 5, 9, 2, 6, 7]
+numbers.pop();            // remove from end → returns 7
+numbers.unshift(0);       // add to front
+numbers.shift();          // remove from front
+
+// Finding elements:
+numbers.indexOf(4);       // 2 (first occurrence index)
+numbers.includes(9);      // true
+
+// Slicing and splicing:
+numbers.slice(1, 4);      // [1, 4, 1] — new array, does not modify original
+numbers.splice(2, 1);     // removes 1 element at index 2, modifies original
+
+// Combining:
+const moreNumbers = [7, 8];
+numbers.concat(moreNumbers);  // new merged array
+[...numbers, ...moreNumbers]; // spread syntax — same result
+```
+
+### Array Iteration Methods
+
+These methods apply a function to every element and are the foundation of functional programming:
+
+```javascript
+const scores = [85, 92, 78, 95, 88];
+
+// map — transform every element, returns a new array
+const doubled = scores.map(score => score * 2);  // [170, 184, 156, 190, 176]
+
+// filter — keep elements that pass the test
+const passing = scores.filter(score => score >= 90);  // [92, 95]
+
+// reduce — accumulate elements into a single value
+const total = scores.reduce((sum, score) => sum + score, 0);  // 438
+const average = total / scores.length;  // 87.6
+
+// find — first element that passes the test
+const firstHigh = scores.find(score => score > 90);  // 92
+
+// some — true if at least one element passes
+scores.some(score => score > 90);   // true
+
+// every — true if all elements pass
+scores.every(score => score >= 70); // true
+```
+
+<CodeLab title="Chaining Array Methods">
+
+Array methods can be chained — the output of one becomes the input of the next:
+
+```javascript
+const students = [
+  { name: "Alice", score: 95 },
+  { name: "Bob",   score: 72 },
+  { name: "Carol", score: 88 },
+  { name: "Dave",  score: 61 },
+];
+
+// Get the names of students who scored 80 or above, sorted alphabetically:
+const honorRoll = students
+  .filter(student => student.score >= 80)
+  .map(student => student.name)
+  .sort();
+
+// honorRoll → ["Alice", "Carol"]
+```
+
+Each method returns a new array — the original `students` array is unchanged.
+
+</CodeLab>
+
+---
+
+## TypeScript Arrays
+
+TypeScript arrays specify the element type:
+
+```typescript
+const scores: number[] = [85, 92, 78];
+const names: string[] = ["Alice", "Bob", "Carol"];
+
+// Alternative syntax using generic Array<T>:
+const ids: Array<number> = [1, 2, 3];
+
+// Arrays of objects:
+interface Student {
+  name: string;
+  score: number;
+}
+
+const students: Student[] = [
+  { name: "Alice", score: 95 },
+  { name: "Bob",   score: 72 },
+];
+```
+
+---
+
+## Destructuring
+
+Destructuring lets you unpack values from objects and arrays into individual variables:
+
+```javascript
+// Object destructuring:
+const user = { name: "Alice", age: 28, city: "Seattle" };
+const { name, age } = user;
+console.log(name); // "Alice"
+console.log(age);  // 28
+
+// With renaming:
+const { name: userName } = user;
+
+// Array destructuring:
+const coordinates = [40.7128, -74.0060];
+const [latitude, longitude] = coordinates;
+
+// Swapping variables:
+let a = 1, b = 2;
+[a, b] = [b, a];  // a=2, b=1
+```
+
+---
+
+## JSON
+
+**JSON** (JavaScript Object Notation) is the standard format for exchanging data between programs — between a browser and a server, between two APIs, between a program and a file.
+
+JSON looks almost exactly like a JavaScript object literal, with two key differences: all keys must be quoted strings, and values can only be strings, numbers, booleans, `null`, arrays, or objects (no functions, no `undefined`).
+
+```json
+{
+  "name": "Alice",
+  "age": 28,
+  "scores": [95, 88, 72],
+  "address": {
+    "city": "Seattle",
+    "zip": "98101"
+  },
+  "isActive": true
+}
+```
+
+Convert between JSON and JavaScript objects:
+
+```javascript
+// JavaScript object → JSON string (for sending over network or saving to file):
+const user = { name: "Alice", age: 28 };
+const jsonString = JSON.stringify(user);
+// '{"name":"Alice","age":28}'
+
+// JSON string → JavaScript object (for reading received data):
+const parsed = JSON.parse(jsonString);
+parsed.name  // "Alice"
+
+// Pretty-printing for readability:
+JSON.stringify(user, null, 2);
+// {
+//   "name": "Alice",
+//   "age": 28
+// }
+```
+
+<Pitfall title="JSON.parse Can Throw">
+
+`JSON.parse` throws a `SyntaxError` if the input is not valid JSON. Always wrap it in a `try/catch` when parsing untrusted input:
+
+```javascript
+try {
+  const data = JSON.parse(maybeInvalidJson);
+  // use data
+} catch (error) {
+  console.error("Failed to parse JSON:", error.message);
+}
+```
+
+Forgetting this is one of the most common sources of unhandled exceptions in JavaScript applications.
+
+</Pitfall>
+
+---
+
+<Quiz question="What does the Array.prototype.map method return?">
+
+<div>
+
+`map` returns a **new array** of the same length, where each element has been transformed by the function you provided.
+
+The original array is **not modified** — `map` is a pure operation. This is a core principle of functional programming that we'll explore in depth in Module 4.
+
+```javascript
+const numbers = [1, 2, 3];
+const doubled = numbers.map(n => n * 2);
+// doubled → [2, 4, 6]
+// numbers → [1, 2, 3] — unchanged
+```
+
+`map` is one of the most commonly used array methods. Contrast it with `forEach`, which also iterates but returns `undefined` — use `forEach` only for side effects, `map` when you need a transformed array.
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+You now know how to organize data with objects and arrays, and how to communicate that data as JSON. In Module 3, we'll learn how to package reusable logic into **functions** — the primary building block for organizing behavior in a program.

@@ -76,7 +76,7 @@ const totalCount = courses.length;
         {courses.map(course => {
           const count = lessonCount(course.slug);
           const isAvailable = course.data.status === 'available';
-          const href = isAvailable ? `${base}courses/${course.slug}/` : undefined;
+          const href = isAvailable ? `${base}${course.slug}/` : undefined;
 
           return (
             <div

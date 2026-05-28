@@ -1,0 +1,81 @@
+---
+title: "Content Management Systems"
+description: "Explore what content management systems (CMS) are, how they separate content from presentation, and when organizations choose a CMS over custom-built solutions."
+module: 3
+moduleTitle: "Data Management"
+lesson: 2
+youtubeId: "3ARQXq0MtNU"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## What Is a CMS?
+
+A **Content Management System (CMS)** is software that allows users to create, manage, and publish digital content — typically web content — without requiring direct knowledge of HTML, CSS, or server configuration.
+
+A CMS separates two concerns that are otherwise intertwined:
+
+- **Content** — the text, images, and media that conveys information
+- **Presentation** — the design, layout, and formatting of that content
+
+This separation means a marketing writer can update a product page without touching code, and a developer can redesign the entire site without touching content.
+
+---
+
+## Types of CMS
+
+| Type | Description | Examples |
+|---|---|---|
+| **Traditional (Coupled)** | CMS manages both content and front-end presentation | WordPress, Drupal, Joomla |
+| **Headless** | CMS stores content; front-end is built separately and pulls content via API | Contentful, Sanity, Strapi |
+| **SaaS / Hosted** | Fully managed platform including hosting | Squarespace, Wix, Shopify |
+
+---
+
+## How a Traditional CMS Works
+
+1. **Database** — stores content (posts, pages, media) in structured tables
+2. **Admin Interface** — a web-based editor where authors create and edit content
+3. **Theme/Template Engine** — renders content using pre-designed templates
+4. **Front-end** — what the visitor sees; generated dynamically or statically
+
+When a visitor loads a page, the CMS retrieves content from the database, applies the template, and delivers the completed HTML to the browser.
+
+---
+
+## Why Organizations Use a CMS
+
+Without a CMS, every content update requires a developer. This creates a bottleneck: marketing can't publish a blog post until IT deploys it. A CMS eliminates that dependency, enabling:
+
+- **Non-technical content authoring** at scale
+- **Consistent branding** enforced by templates
+- **Version history and rollback** on content changes
+- **Multi-user collaboration** with role-based access control
+
+<Pitfall title="A CMS Is Not a Website Strategy">
+
+Selecting a CMS is a tactical decision. It should follow from a content strategy — what you publish, how often, to whom, and in what formats. Organizations that choose a CMS before defining their content needs often end up with a powerful platform they use at 10% capacity, or a simple platform that can't support what they actually need.
+
+</Pitfall>
+
+---
+
+## CMS in Enterprise IS
+
+In enterprise contexts, CMS platforms often integrate with other systems:
+
+- **CRM** — to personalize content based on customer data
+- **DAM (Digital Asset Management)** — for structured storage and retrieval of images, video, and documents
+- **Marketing Automation** — to trigger content delivery based on user behavior
+
+---
+
+<Quiz question="A company's legal team needs to approve every piece of content before it goes live. Which CMS capability is most important to look for, and why?">
+
+<div>
+
+**Workflow and approval controls.** A CMS with configurable publishing workflows can route draft content to specific reviewers before it goes live, with notifications, comments, and approval/rejection actions tracked in the system. Without this, the legal team must be notified manually for every change — a process that is slow, unreliable, and impossible to audit. The CMS capability directly maps to the business requirement.
+
+</div>
+</Quiz>

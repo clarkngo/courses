@@ -1,0 +1,283 @@
+---
+title: "Functions"
+description: "Master function declaration, arrow functions, closures, higher-order functions, and TypeScript's function type system — the primary tool for organizing reusable logic."
+module: 3
+moduleTitle: "Functions"
+lesson: 1
+duration: "60 min"
+youtubeId: "-D9fQYShFFQ"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## What Is a Function?
+
+A function is a named, reusable block of code that performs a specific task. Instead of writing the same logic in multiple places, you define it once and call it wherever you need it.
+
+```javascript
+function greet(name) {
+  return `Hello, ${name}!`;
+}
+
+greet("Alice")  // "Hello, Alice!"
+greet("Bob")    // "Hello, Bob!"
+```
+
+Functions take **parameters** (the names listed in the definition) and receive **arguments** (the values passed when called). They optionally return a value with `return`.
+
+---
+
+## Three Ways to Define Functions
+
+### Function Declaration
+
+```javascript
+function add(a, b) {
+  return a + b;
+}
+```
+
+Function declarations are **hoisted** — they can be called before they appear in the file.
+
+### Function Expression
+
+```javascript
+const multiply = function(a, b) {
+  return a * b;
+};
+```
+
+A function assigned to a variable. Not hoisted.
+
+### Arrow Function
+
+```javascript
+const square = (x) => x * 2;        // single expression, implicit return
+const cube = (x) => { return x ** 3; };  // block body requires explicit return
+const add = (a, b) => a + b;
+```
+
+Arrow functions are the most concise form and are now the dominant style in modern JavaScript and TypeScript. They also behave differently with `this` (covered in Module 5).
+
+---
+
+## TypeScript Function Types
+
+TypeScript adds type annotations to parameters and return values:
+
+```typescript
+function add(a: number, b: number): number {
+  return a + b;
+}
+
+// Arrow function with types:
+const greet = (name: string): string => {
+  return `Hello, ${name}!`;
+};
+
+// Void return type (function returns nothing meaningful):
+function logMessage(message: string): void {
+  console.log(message);
+}
+
+// Optional parameters with ?:
+function createUser(name: string, role?: string): object {
+  return { name, role: role ?? "user" };
+}
+
+// Default parameters:
+function power(base: number, exponent: number = 2): number {
+  return base ** exponent;
+}
+power(3);    // 9 (exponent defaults to 2)
+power(3, 3); // 27
+```
+
+---
+
+## Scope and Closures
+
+**Scope** determines where a variable is accessible. Variables declared inside a function are local to that function — they don't exist outside it:
+
+```javascript
+function outer() {
+  const message = "I'm in outer";
+
+  function inner() {
+    // inner can access outer's variables:
+    console.log(message);  // "I'm in outer"
+  }
+
+  inner();
+}
+
+console.log(message); // ReferenceError — message doesn't exist here
+```
+
+A **closure** is a function that remembers the variables from the scope where it was defined, even after that scope has finished executing:
+
+```javascript
+function makeCounter() {
+  let count = 0;
+
+  return function() {
+    count++;
+    return count;
+  };
+}
+
+const counter = makeCounter();
+counter()  // 1
+counter()  // 2
+counter()  // 3
+
+// Each call to makeCounter() creates its own independent count:
+const counter2 = makeCounter();
+counter2() // 1 — independent of counter
+```
+
+The returned function "closes over" the `count` variable. This is a closure.
+
+<CodeLab title="Practical Closure: Memoization">
+
+Closures enable **memoization** — caching expensive function results:
+
+```typescript
+function memoize(fn: (n: number) => number): (n: number) => number {
+  const cache: Map<number, number> = new Map();
+
+  return function(n: number): number {
+    if (cache.has(n)) {
+      return cache.get(n)!;
+    }
+    const result = fn(n);
+    cache.set(n, result);
+    return result;
+  };
+}
+
+const slowSquare = (n: number) => {
+  // Imagine this is expensive:
+  return n * n;
+};
+
+const fastSquare = memoize(slowSquare);
+fastSquare(100); // computed
+fastSquare(100); // returned from cache instantly
+```
+
+The cache lives in the closure — it persists between calls to `fastSquare` without being a global variable.
+
+</CodeLab>
+
+---
+
+## Higher-Order Functions
+
+A **higher-order function** is a function that either:
+- Takes another function as an argument, or
+- Returns a function as its result
+
+You've already seen higher-order functions: `map`, `filter`, and `reduce` all take a function as an argument.
+
+```javascript
+// map takes a function (the transform):
+[1, 2, 3].map(x => x * 2);  // [2, 4, 6]
+
+// A function that returns a function:
+function multiplyBy(factor) {
+  return (number) => number * factor;
+}
+
+const double = multiplyBy(2);
+const triple = multiplyBy(3);
+
+double(5)  // 10
+triple(5)  // 15
+```
+
+Higher-order functions are the foundation of functional programming. Instead of writing loops manually, you express transformations declaratively through functions.
+
+---
+
+## Rest Parameters and Spread
+
+**Rest parameters** collect multiple arguments into an array:
+
+```typescript
+function sum(...numbers: number[]): number {
+  return numbers.reduce((total, n) => total + n, 0);
+}
+
+sum(1, 2, 3)        // 6
+sum(1, 2, 3, 4, 5)  // 15
+```
+
+**Spread syntax** expands an array into individual arguments:
+
+```typescript
+const nums = [1, 2, 3];
+Math.max(...nums)  // 3  — same as Math.max(1, 2, 3)
+
+const a = [1, 2];
+const b = [3, 4];
+const combined = [...a, ...b];  // [1, 2, 3, 4]
+```
+
+---
+
+## Recursion
+
+A function is **recursive** when it calls itself. Every recursive function needs a **base case** that stops the recursion:
+
+```typescript
+function factorial(n: number): number {
+  if (n === 0) return 1;       // base case
+  return n * factorial(n - 1); // recursive case
+}
+
+factorial(5)  // 5 * 4 * 3 * 2 * 1 = 120
+```
+
+<Pitfall title="Infinite Recursion Crashes Your Program">
+
+Forgetting the base case (or writing one that's never reached) causes infinite recursion — the function calls itself forever until the call stack fills up and throws a `RangeError: Maximum call stack size exceeded`.
+
+```javascript
+// This will crash:
+function broken(n) {
+  return n * broken(n - 1);  // no base case!
+}
+```
+
+Always identify your base case first, before writing the recursive case.
+
+</Pitfall>
+
+---
+
+<Quiz question="What is a closure in JavaScript?">
+
+<div>
+
+A closure is a function that **remembers variables from the scope where it was defined**, even after that outer scope has finished executing.
+
+When you define a function inside another function, the inner function has access to the outer function's variables. That access persists even when you return the inner function and call it elsewhere — the variables are "closed over."
+
+Closures are used for:
+- **Private state** — variables that persist between calls but aren't accessible from outside
+- **Partial application / currying** — fixing some arguments of a function and returning a new function
+- **Callbacks and event handlers** — preserving context from where the handler was registered
+
+Understanding closures is fundamental to advanced JavaScript patterns and to understanding how `this` works in objects.
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+You now know how to create and compose functions, including higher-order functions and closures. In Module 4, we'll use these tools to explore **Functional Programming** — a paradigm that uses functions as the primary unit of composition to write cleaner, more predictable code.

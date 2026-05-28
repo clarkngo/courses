@@ -1,0 +1,72 @@
+---
+title: "Business Process Model and Notation (BPMN)"
+description: "Learn to read and create BPMN diagrams — the standard visual language for modeling business processes and the workflows that information systems are built to support."
+module: 2
+moduleTitle: "Business Strategy & Analysis"
+lesson: 2
+youtubeId: "v0-QUtySHgM"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## What Is BPMN?
+
+**Business Process Model and Notation (BPMN)** is a standardized graphical language for representing business processes as flow diagrams. It is the industry standard for process documentation, used by business analysts, IS professionals, and developers to communicate how work flows through an organization.
+
+BPMN bridges the gap between business stakeholders (who understand the process) and technical teams (who must build or automate it). A BPMN diagram is unambiguous enough for developers to implement and intuitive enough for non-technical managers to validate.
+
+---
+
+## Core BPMN Elements
+
+| Element | Symbol Shape | Purpose |
+|---|---|---|
+| **Start Event** | Circle (thin border) | Where the process begins |
+| **End Event** | Circle (thick border) | Where the process ends |
+| **Task** | Rounded rectangle | A unit of work performed |
+| **Gateway** | Diamond | Decision point or parallel split |
+| **Sequence Flow** | Solid arrow | Shows the order of activities |
+| **Pool / Lane** | Rectangle container | Represents a participant or role |
+
+---
+
+## Reading a Simple BPMN Diagram
+
+Consider an online order process:
+
+1. **Start Event** — Customer places order
+2. **Task** — System checks inventory
+3. **Exclusive Gateway** — Item in stock?
+   - Yes → **Task**: Process payment → **Task**: Ship order → **End Event**
+   - No → **Task**: Notify customer of backorder → **End Event**
+
+Each path through the diagram is called a **flow**. BPMN makes every branch in the process explicit, which is critical when automating a workflow through an IS.
+
+---
+
+## Why BPMN Matters for IS
+
+Before building or selecting an information system, you must understand the process it will support. Organizations that implement software without mapping their processes first end up automating bad processes — making them faster but no less broken.
+
+BPMN is used in:
+- **ERP implementations** — mapping current-state vs. future-state processes
+- **Workflow automation** — translating process steps into system logic
+- **Process improvement** — identifying bottlenecks and redundant steps
+
+<Pitfall title="Don't Over-Engineer the Diagram">
+
+BPMN can represent extremely complex processes with dozens of elements. Resist the urge to document every exception and edge case in a first-pass diagram. Start with the **happy path** — the normal flow when everything works. Add exception handling only once the main process is clearly modeled. Over-complex diagrams are rarely used; simple diagrams drive real conversations.
+
+</Pitfall>
+
+---
+
+<Quiz question="Why would a business analyst create a BPMN diagram before selecting or configuring an ERP system?">
+
+<div>
+
+Because ERP systems are configured to match business processes — not the other way around. A BPMN diagram of the current process reveals which steps must be supported, where decisions happen, and what roles are involved. Without this map, ERP configuration becomes guesswork, leading to mismatched workflows and expensive customizations. The diagram also gives stakeholders a shared reference point for validating requirements before implementation begins.
+
+</div>
+</Quiz>

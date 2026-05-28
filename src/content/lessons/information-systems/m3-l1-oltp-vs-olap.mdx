@@ -1,0 +1,83 @@
+---
+title: "OLTP vs. OLAP"
+description: "Understand the fundamental difference between Online Transaction Processing (OLTP) and Online Analytical Processing (OLAP) — and why organizations need both types of systems."
+module: 3
+moduleTitle: "Data Management"
+lesson: 1
+youtubeId: "pnSxSDpACcQ"
+---
+
+import Quiz from '@components/Quiz.astro';
+
+## Two Jobs, Two Systems
+
+Databases are not one-size-fits-all. Organizations run two fundamentally different types of data workloads, and they require different system designs:
+
+- **OLTP** — handles the day-to-day operations of the business
+- **OLAP** — supports analysis, reporting, and decision-making
+
+---
+
+## OLTP: Online Transaction Processing
+
+OLTP systems are optimized for **recording and retrieving individual transactions quickly and reliably**.
+
+| Characteristic | OLTP |
+|---|---|
+| **Purpose** | Record daily operations |
+| **Operations** | INSERT, UPDATE, DELETE, simple SELECT |
+| **Data scope** | Current, operational data |
+| **Query type** | Simple, predefined |
+| **Users** | Frontline staff, customers |
+| **Example systems** | POS terminals, banking apps, order management |
+
+An ATM withdrawal, a hotel reservation, or a retail purchase are OLTP transactions. The priority is speed, accuracy, and data integrity — especially concurrent transactions without conflicts.
+
+---
+
+## OLAP: Online Analytical Processing
+
+OLAP systems are optimized for **querying large volumes of historical data to find patterns and support decisions**.
+
+| Characteristic | OLAP |
+|---|---|
+| **Purpose** | Analyze historical data |
+| **Operations** | Complex SELECT with aggregations |
+| **Data scope** | Historical, aggregated data |
+| **Query type** | Complex, ad hoc |
+| **Users** | Analysts, managers, executives |
+| **Example systems** | Data warehouses, BI tools, dashboards |
+
+A sales analyst asking "What were our top 10 products by region last quarter, and how does that compare to the same quarter two years ago?" is an OLAP query. It scans millions of rows, aggregates across dimensions, and compares time periods — operations that would cripple an OLTP database.
+
+---
+
+## Why You Can't Use One for Both
+
+Running analytical queries on an OLTP database causes two problems:
+
+1. **Performance degradation** — complex analytical queries lock tables and slow down transaction processing
+2. **Data not structured for analysis** — OLTP data is normalized to minimize redundancy, which makes multidimensional analysis slow and complicated
+
+This is why organizations build **data warehouses** — separate OLAP systems that receive a copy of OLTP data, restructured and optimized for analysis.
+
+---
+
+## The Data Flow
+
+```
+OLTP Systems → ETL Process → Data Warehouse (OLAP) → BI / Reporting Tools
+```
+
+**ETL** (Extract, Transform, Load) is the pipeline that moves data from operational OLTP systems into the analytical data warehouse. This typically runs nightly or in near-real-time.
+
+---
+
+<Quiz question="A retail company runs a query asking: 'What is our total revenue by product category across all stores in Q1, segmented by customer age group?' Is this an OLTP or OLAP query? Which system should it run on?">
+
+<div>
+
+This is an **OLAP** query. It aggregates across multiple dimensions (product category, store location, time period, customer demographics) over a large historical dataset. Running it on an OLTP database would be slow and would compete with live transaction processing. It belongs in a **data warehouse**, where the data is already structured for multidimensional analysis and the query won't impact operational performance.
+
+</div>
+</Quiz>

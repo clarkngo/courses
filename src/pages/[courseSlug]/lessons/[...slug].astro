@@ -1,6 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
-import LessonLayout from '../../../../layouts/LessonLayout.astro';
+import LessonLayout from '../../../layouts/LessonLayout.astro';
 
 export async function getStaticPaths() {
   const allLessons = await getCollection('lessons');

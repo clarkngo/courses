@@ -1,0 +1,73 @@
+---
+title: "HTML vs. HTML5"
+description: "Understand what changed from HTML to HTML5, why those changes matter for modern web applications, and how HTML fits into the broader IS technology stack."
+module: 4
+moduleTitle: "Web Technologies"
+lesson: 1
+youtubeId: "92L7ayHAuTw"
+---
+
+import Quiz from '@components/Quiz.astro';
+
+## The Web's Foundation
+
+**HTML (HyperText Markup Language)** is the standard language for creating web pages. It defines the structure and content of a page using tags — descriptive labels that tell the browser how to render each element.
+
+Every website you visit is built on HTML at its core, even when sophisticated frameworks sit on top of it.
+
+---
+
+## What Changed in HTML5
+
+HTML5, finalized in 2014, was not just an incremental update — it was a significant rethinking of what the web could do natively.
+
+### Structural Improvements
+
+Older HTML used generic `<div>` tags for everything. HTML5 introduced **semantic elements** that describe meaning, not just structure:
+
+| Old HTML | HTML5 Equivalent | What It Means |
+|---|---|---|
+| `<div id="header">` | `<header>` | Page or section header |
+| `<div id="nav">` | `<nav>` | Navigation links |
+| `<div id="content">` | `<main>` | Primary content |
+| `<div id="footer">` | `<footer>` | Footer information |
+| `<div id="article">` | `<article>` | Self-contained content |
+
+Semantic tags make pages easier for search engines, screen readers, and developers to understand.
+
+### New Native Capabilities
+
+HTML5 added features that previously required browser plugins like Flash:
+
+- **`<video>` and `<audio>`** — native media playback without plugins
+- **`<canvas>`** — programmable drawing surface for graphics and animations
+- **Geolocation API** — access to device location (with user permission)
+- **Local Storage** — store data on the user's device without cookies
+- **Web Workers** — run scripts in background threads for better performance
+- **WebSockets** — persistent two-way connections for real-time apps
+
+### Form Enhancements
+
+HTML5 added new input types (`email`, `date`, `range`, `color`) with built-in validation, reducing the JavaScript code needed for basic form handling.
+
+---
+
+## Why This Matters for IS
+
+Web applications are a critical IS delivery mechanism. Understanding HTML5 helps IS professionals:
+
+- **Communicate with developers** about what is technically feasible
+- **Evaluate web-based IS** — does a vendor's portal use modern standards?
+- **Understand accessibility requirements** — semantic HTML is foundational to screen reader compatibility
+- **Assess performance** — HTML5 features like local storage and web workers enable better-performing applications
+
+---
+
+<Quiz question="A company's legacy intranet runs on HTML4. The IT team argues it should be upgraded to HTML5. What is the strongest business case for the upgrade — beyond 'it's newer'?">
+
+<div>
+
+The strongest cases are **accessibility compliance** (semantic HTML5 improves screen reader support, relevant to legal ADA/508 requirements), **elimination of plugin dependencies** (HTML4 often relied on Flash, which reached end-of-life in 2020 and is a security risk), and **mobile compatibility** (HTML5 is designed for responsive layouts, whereas HTML4 sites often break on mobile devices). Each of these has a concrete business cost to maintaining the legacy system.
+
+</div>
+</Quiz>

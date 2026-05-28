@@ -1,0 +1,225 @@
+---
+title: "Searching and Sorting"
+description: "Analyze algorithm efficiency with Big O notation, then implement and compare linear search, binary search, bubble sort, and merge sort."
+module: 8
+moduleTitle: "Searching and Sorting"
+lesson: 1
+duration: "75 min"
+youtubeId: "UFolKf0RSes"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Computational Complexity and Big O Notation
+
+Before writing a single algorithm, we need a way to compare them. **Big O notation** describes how an algorithm's runtime or memory usage grows relative to the size of its input (n).
+
+It describes the **worst case** and ignores constants — we care about the shape of the curve, not the exact numbers.
+
+| Notation | Name | Example |
+|---|---|---|
+| O(1) | Constant | Array index lookup: `arr[5]` |
+| O(log n) | Logarithmic | Binary search |
+| O(n) | Linear | Linear search, single loop |
+| O(n log n) | Log-linear | Merge sort, efficient sorts |
+| O(n²) | Quadratic | Bubble sort, nested loops |
+| O(2ⁿ) | Exponential | Naïve recursive Fibonacci |
+
+**Why it matters:** An O(n²) algorithm on 1,000 items does ~1,000,000 operations. On 1,000,000 items, it does ~1 trillion. An O(n log n) algorithm on 1,000,000 items does ~20 million. The right algorithm doesn't just make code faster — it makes previously impossible tasks possible.
+
+---
+
+## Linear Search
+
+**Linear search** checks each element one by one until it finds the target or exhausts the list.
+
+```typescript
+function linearSearch<T>(arr: T[], target: T): number {
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i] === target) return i;
+  }
+  return -1;  // not found
+}
+
+const fruits = ["apple", "banana", "cherry", "date"];
+linearSearch(fruits, "cherry")  // 2
+linearSearch(fruits, "grape")   // -1
+```
+
+- **Time complexity:** O(n) — worst case, check every element
+- **Space complexity:** O(1) — no extra memory needed
+- **Requirement:** none — works on unsorted data
+
+Linear search is simple and works on any array. It's the right choice for small arrays or unsorted data.
+
+---
+
+## Binary Search
+
+**Binary search** works on a sorted array. It eliminates half the remaining elements with each comparison:
+
+1. Look at the middle element
+2. If it's the target, done
+3. If target is less, search the left half
+4. If target is greater, search the right half
+5. Repeat until found or the search space is empty
+
+```typescript
+function binarySearch(arr: number[], target: number): number {
+  let left = 0;
+  let right = arr.length - 1;
+
+  while (left <= right) {
+    const mid = Math.floor((left + right) / 2);
+
+    if (arr[mid] === target) return mid;
+    if (arr[mid] < target) left = mid + 1;
+    else right = mid - 1;
+  }
+
+  return -1;
+}
+
+const sorted = [2, 5, 8, 12, 16, 23, 38, 56, 72, 91];
+binarySearch(sorted, 23)   // 5
+binarySearch(sorted, 50)   // -1
+```
+
+- **Time complexity:** O(log n) — each step halves the search space
+- **Space complexity:** O(1)
+- **Requirement:** array must be sorted
+
+Binary search on 1,000,000 items takes at most 20 comparisons. Linear search could take 1,000,000.
+
+<CodeLab title="Why Sorted Arrays Are So Valuable">
+
+The cost of binary search vs. linear search:
+
+| Array size | Linear (worst) | Binary (worst) |
+|---|---|---|
+| 10 | 10 | 4 |
+| 1,000 | 1,000 | 10 |
+| 1,000,000 | 1,000,000 | 20 |
+| 1,000,000,000 | 1,000,000,000 | 30 |
+
+Binary search on a billion items takes only 30 steps. This is what O(log n) means in practice: each time you double the input, you add just one more step.
+
+The tradeoff: you must sort first (O(n log n)), or keep the array sorted as you insert elements. If you search the same array many times, the sorting cost is paid once and binary search pays dividends on every query.
+
+</CodeLab>
+
+---
+
+## Bubble Sort
+
+**Bubble sort** repeatedly steps through the array, compares adjacent elements, and swaps them if they're in the wrong order. The largest values "bubble" to the end.
+
+```typescript
+function bubbleSort(arr: number[]): number[] {
+  const result = [...arr];  // don't mutate the original
+  const n = result.length;
+
+  for (let i = 0; i < n - 1; i++) {
+    for (let j = 0; j < n - 1 - i; j++) {
+      if (result[j] > result[j + 1]) {
+        // Swap:
+        [result[j], result[j + 1]] = [result[j + 1], result[j]];
+      }
+    }
+  }
+
+  return result;
+}
+
+bubbleSort([64, 34, 25, 12, 22, 11, 90]);
+// [11, 12, 22, 25, 34, 64, 90]
+```
+
+- **Time complexity:** O(n²) — two nested loops
+- **Space complexity:** O(1) (in-place) or O(n) with the copy
+- **Practical use:** almost none — it's taught to illustrate sorting concepts
+
+Bubble sort is rarely used in production. Its O(n²) behavior makes it slow for anything beyond toy-sized arrays. It's useful for learning because the logic is easy to follow.
+
+---
+
+## Merge Sort
+
+**Merge sort** uses **divide and conquer**: split the array in half recursively until you have arrays of size 1 (already sorted), then merge them back together in sorted order.
+
+```typescript
+function mergeSort(arr: number[]): number[] {
+  if (arr.length <= 1) return arr;  // base case
+
+  const mid = Math.floor(arr.length / 2);
+  const left = mergeSort(arr.slice(0, mid));   // sort left half
+  const right = mergeSort(arr.slice(mid));      // sort right half
+
+  return merge(left, right);
+}
+
+function merge(left: number[], right: number[]): number[] {
+  const result: number[] = [];
+  let l = 0, r = 0;
+
+  while (l < left.length && r < right.length) {
+    if (left[l] <= right[r]) {
+      result.push(left[l++]);
+    } else {
+      result.push(right[r++]);
+    }
+  }
+
+  // Append remaining elements:
+  return [...result, ...left.slice(l), ...right.slice(r)];
+}
+
+mergeSort([38, 27, 43, 3, 9, 82, 10]);
+// [3, 9, 10, 27, 38, 43, 82]
+```
+
+- **Time complexity:** O(n log n) — always, in all cases
+- **Space complexity:** O(n) — needs extra space for merging
+- **Practical use:** the basis of most production sorting algorithms
+
+Merge sort is one of the most important algorithms to understand. Its O(n log n) guarantee (even in worst case) and stable sort behavior make it the foundation of many real-world sorting implementations.
+
+<Pitfall title="JavaScript's Built-in sort() Is Not Guaranteed to Be Stable">
+
+In older JavaScript engines, `Array.prototype.sort()` was not guaranteed to preserve the relative order of equal elements (unstable sort). As of ECMAScript 2019, it is required to be stable — but you should be aware of this if you work in constrained environments.
+
+Also, the default `sort()` converts elements to strings before comparing — even numbers:
+
+```javascript
+[10, 9, 2, 100].sort()         // [10, 100, 2, 9] — lexicographic!
+[10, 9, 2, 100].sort((a, b) => a - b)  // [2, 9, 10, 100] — numeric
+```
+
+Always pass a comparison function when sorting numbers.
+
+</Pitfall>
+
+---
+
+<Quiz question="Why is binary search O(log n) rather than O(n)?">
+
+<div>
+
+Binary search eliminates **half** the remaining elements with each comparison. After 1 step, the search space is n/2. After 2 steps, n/4. After k steps, n/2^k.
+
+The search ends when the space reaches 1: n/2^k = 1 → k = log₂(n).
+
+This means the number of comparisons grows as the logarithm of the input size, not linearly. Doubling the array adds only one more comparison. An array of 1,000,000 elements requires at most 20 comparisons.
+
+Compare this to linear search, which has to check each element — worst case n comparisons for an array of n elements. For large datasets, the difference is enormous.
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+You can now analyze algorithm efficiency and implement fundamental searching and sorting algorithms. In Module 9, we'll explore **hash tables, stacks, and queues** — data structures that provide efficient solutions to specific access patterns and are foundational to real-world programming.

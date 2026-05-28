@@ -1,0 +1,81 @@
+---
+title: "Cloud Computing"
+description: "Understand the cloud computing models (IaaS, PaaS, SaaS), deployment options, and how cloud adoption changes the way organizations manage their IS infrastructure."
+module: 4
+moduleTitle: "Web Technologies"
+lesson: 2
+youtubeId: "nUXIEbq4hB0"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## What Is Cloud Computing?
+
+**Cloud computing** is the delivery of computing resources — servers, storage, databases, networking, software — over the internet, on demand, typically on a pay-as-you-go basis.
+
+Instead of owning and maintaining physical infrastructure, organizations access computing resources from a cloud provider (AWS, Microsoft Azure, Google Cloud) and pay only for what they use.
+
+---
+
+## Service Models
+
+Cloud computing is typically categorized into three service models:
+
+| Model | What's Managed by Provider | Example | Analogy |
+|---|---|---|---|
+| **IaaS** (Infrastructure as a Service) | Physical hardware, networking, virtualization | AWS EC2, Azure VMs | Renting an empty warehouse |
+| **PaaS** (Platform as a Service) | Infrastructure + OS + runtime + middleware | Heroku, Google App Engine | Renting a warehouse with shelving and electricity |
+| **SaaS** (Software as a Service) | Everything — hardware through application | Salesforce, Microsoft 365, Zoom | Renting a fully furnished office |
+
+**SaaS** is what most end users interact with daily. **IaaS and PaaS** are primarily used by IT teams and developers.
+
+---
+
+## Deployment Models
+
+Beyond service models, cloud deployments vary in who controls the infrastructure:
+
+- **Public Cloud** — resources shared across many organizations; managed by the provider (AWS, Azure, GCP)
+- **Private Cloud** — dedicated infrastructure for one organization; can be on-premises or hosted
+- **Hybrid Cloud** — combination of public and private; sensitive workloads stay private, scalable workloads use public cloud
+- **Multi-Cloud** — using multiple cloud providers to avoid vendor lock-in and optimize cost/performance
+
+---
+
+## Why Cloud Matters for IS Management
+
+Cloud computing changed the economics and operating model of IT:
+
+- **Capital vs. Operating Expense** — no upfront hardware purchases; costs become predictable operational expenses
+- **Scalability** — resources can be added or removed in minutes, not months
+- **Global reach** — deploy to data centers worldwide without owning physical facilities
+- **Maintenance shifts** — providers handle hardware maintenance, security patching (for managed services), and uptime SLAs
+
+<Pitfall title="Cloud Does Not Automatically Mean Cheaper">
+
+A common misconception is that moving to the cloud always reduces costs. Without proper architecture, cloud costs can exceed on-premises costs — especially when resources are over-provisioned or left running unnecessarily. Cloud cost management (FinOps) is now a dedicated discipline. The financial benefit comes from right-sizing resources and leveraging elasticity, not from simply migrating existing workloads.
+
+</Pitfall>
+
+---
+
+## Cloud and IS Strategy
+
+For IS managers, cloud adoption decisions involve:
+
+- **Security and compliance** — where does data physically reside? Who can access it?
+- **Vendor lock-in** — how hard is it to switch providers if needed?
+- **Integration** — how do cloud services connect to on-premises legacy systems?
+- **Total cost of ownership** — comparing cloud costs to on-premises over a 3–5 year horizon
+
+---
+
+<Quiz question="A healthcare company is considering moving patient records to the public cloud. What is the most important non-technical factor to evaluate before making this decision?">
+
+<div>
+
+**Regulatory compliance** — specifically HIPAA (Health Insurance Portability and Accountability Act) in the US, or equivalent regulations in other jurisdictions. Patient health data has strict legal requirements for storage, access, encryption, and breach notification. The IS team must verify that the cloud provider is HIPAA-compliant, that Business Associate Agreements (BAAs) are in place, and that the specific services and configurations used meet compliance requirements. A technically sound cloud migration that violates HIPAA creates significant legal and reputational risk.
+
+</div>
+</Quiz>

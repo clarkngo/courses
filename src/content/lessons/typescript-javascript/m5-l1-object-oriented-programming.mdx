@@ -1,0 +1,329 @@
+---
+title: "Object-Oriented Programming"
+description: "Learn to model real-world systems using classes, inheritance, and prototypes — understanding both modern ES6 class syntax and JavaScript's underlying prototype chain."
+module: 5
+moduleTitle: "Object-Oriented Programming"
+lesson: 1
+duration: "75 min"
+youtubeId: "XzGwyhkNjOw"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## What Is Object-Oriented Programming?
+
+**Object-Oriented Programming (OOP)** organizes code around **objects** — entities that bundle related **state** (data/properties) and **behavior** (methods) together.
+
+Instead of writing separate functions that operate on scattered data, OOP groups the data and the functions that operate on it into a single unit. The goal: model your problem in terms of the things involved and how they interact.
+
+The four core concepts:
+
+1. **Encapsulation** — bundle state and behavior, hide internal details
+2. **Abstraction** — expose only what's necessary, hide complexity
+3. **Inheritance** — derive new types from existing ones
+4. **Polymorphism** — different objects respond to the same interface in different ways
+
+---
+
+## Classes
+
+A **class** is a template (blueprint) for creating objects. Each object created from a class is an **instance**:
+
+```typescript
+class Animal {
+  name: string;
+  sound: string;
+
+  constructor(name: string, sound: string) {
+    this.name = name;
+    this.sound = sound;
+  }
+
+  speak(): string {
+    return `${this.name} says ${this.sound}`;
+  }
+}
+
+const dog = new Animal("Rex", "woof");
+const cat = new Animal("Whiskers", "meow");
+
+dog.speak()  // "Rex says woof"
+cat.speak()  // "Whiskers says meow"
+```
+
+The `constructor` is a special method called when you use `new`. It initializes the instance's properties. `this` refers to the current instance.
+
+---
+
+## Access Modifiers in TypeScript
+
+TypeScript adds `public`, `private`, and `protected` to control access to class members:
+
+```typescript
+class BankAccount {
+  private balance: number;    // only accessible inside the class
+  public owner: string;       // accessible from anywhere
+  protected accountNumber: string;  // accessible in subclasses
+
+  constructor(owner: string, initialBalance: number) {
+    this.owner = owner;
+    this.balance = initialBalance;
+    this.accountNumber = Math.random().toString(36).slice(2);
+  }
+
+  deposit(amount: number): void {
+    if (amount <= 0) throw new Error("Deposit must be positive");
+    this.balance += amount;
+  }
+
+  withdraw(amount: number): void {
+    if (amount > this.balance) throw new Error("Insufficient funds");
+    this.balance -= amount;
+  }
+
+  getBalance(): number {
+    return this.balance;
+  }
+}
+
+const account = new BankAccount("Alice", 1000);
+account.deposit(500);
+account.getBalance()   // 1500
+account.balance        // Error: Property 'balance' is private
+```
+
+TypeScript shorthand — declare and assign in one step using constructor parameter modifiers:
+
+```typescript
+class Point {
+  constructor(
+    public x: number,
+    public y: number,
+  ) {}
+
+  distanceTo(other: Point): number {
+    return Math.sqrt((this.x - other.x) ** 2 + (this.y - other.y) ** 2);
+  }
+}
+
+const p1 = new Point(0, 0);
+const p2 = new Point(3, 4);
+p1.distanceTo(p2)  // 5
+```
+
+---
+
+## Inheritance
+
+**Inheritance** lets a class (subclass) extend another class (superclass), inheriting its properties and methods:
+
+```typescript
+class Animal {
+  constructor(public name: string) {}
+
+  speak(): string {
+    return `${this.name} makes a sound.`;
+  }
+}
+
+class Dog extends Animal {
+  constructor(name: string, public breed: string) {
+    super(name);  // must call super() to initialize the parent
+  }
+
+  speak(): string {
+    return `${this.name} barks!`;  // overrides the parent method
+  }
+
+  fetch(): string {
+    return `${this.name} fetches the ball!`;
+  }
+}
+
+const dog = new Dog("Rex", "Labrador");
+dog.speak()   // "Rex barks!" — overridden method
+dog.fetch()   // "Rex fetches the ball!" — subclass-only method
+dog.name      // "Rex" — inherited from Animal
+dog.breed     // "Labrador"
+```
+
+<CodeLab title="Building a Shape Hierarchy">
+
+A classic OOP example — a hierarchy of shapes with a shared interface:
+
+```typescript
+abstract class Shape {
+  abstract area(): number;
+  abstract perimeter(): number;
+
+  describe(): string {
+    return `Area: ${this.area().toFixed(2)}, Perimeter: ${this.perimeter().toFixed(2)}`;
+  }
+}
+
+class Circle extends Shape {
+  constructor(private radius: number) {
+    super();
+  }
+
+  area(): number {
+    return Math.PI * this.radius ** 2;
+  }
+
+  perimeter(): number {
+    return 2 * Math.PI * this.radius;
+  }
+}
+
+class Rectangle extends Shape {
+  constructor(private width: number, private height: number) {
+    super();
+  }
+
+  area(): number {
+    return this.width * this.height;
+  }
+
+  perimeter(): number {
+    return 2 * (this.width + this.height);
+  }
+}
+
+const shapes: Shape[] = [new Circle(5), new Rectangle(4, 6)];
+shapes.forEach(s => console.log(s.describe()));
+// "Area: 78.54, Perimeter: 31.42"
+// "Area: 24.00, Perimeter: 20.00"
+```
+
+`abstract` classes can't be instantiated directly — they define a contract that subclasses must fulfill. This is **polymorphism**: `shapes` holds different types, but every element responds to the same `describe()` call.
+
+</CodeLab>
+
+---
+
+## Prototypes: JavaScript Under the Hood
+
+Before ES6 classes, JavaScript used **prototypes** for inheritance. Classes are syntactic sugar over the prototype system — understanding prototypes helps you debug class behavior and work with older codebases.
+
+Every JavaScript object has an internal `[[Prototype]]` link. When you access a property, JavaScript looks at the object first, then walks up the prototype chain:
+
+```javascript
+// The old way (pre-ES6) — still valid, still used:
+function Animal(name) {
+  this.name = name;
+}
+
+Animal.prototype.speak = function() {
+  return `${this.name} makes a sound.`;
+};
+
+const dog = new Animal("Rex");
+dog.speak()  // "Rex makes a sound." — found on Animal.prototype
+
+// Check the prototype chain:
+Object.getPrototypeOf(dog) === Animal.prototype  // true
+```
+
+ES6 classes compile to essentially the same prototype structure. They're a cleaner syntax, not a different mechanism.
+
+---
+
+## Interfaces and TypeScript's Structural Typing
+
+TypeScript uses **structural typing** — types are compatible if they have the same shape, regardless of how they were declared:
+
+```typescript
+interface Flyable {
+  fly(): string;
+}
+
+interface Swimmable {
+  swim(): string;
+}
+
+class Duck implements Flyable, Swimmable {
+  fly(): string  { return "Duck flying"; }
+  swim(): string { return "Duck swimming"; }
+}
+
+class Airplane implements Flyable {
+  fly(): string { return "Airplane flying"; }
+}
+
+function makeItFly(thing: Flyable): void {
+  console.log(thing.fly());
+}
+
+makeItFly(new Duck());      // "Duck flying"
+makeItFly(new Airplane());  // "Airplane flying"
+```
+
+`implements` forces the class to provide all methods declared in the interface. This is TypeScript's way of enforcing contracts.
+
+<Pitfall title="Be Careful with this in Callbacks">
+
+`this` in a method refers to the object — but only when the method is called through the object. Detach it and `this` becomes `undefined` (in strict mode):
+
+```javascript
+class Timer {
+  count = 0;
+
+  tick() {
+    this.count++;
+    console.log(this.count);
+  }
+}
+
+const timer = new Timer();
+timer.tick();  // 1 — correct
+
+const tick = timer.tick;
+tick();        // TypeError: Cannot read property 'count' of undefined
+
+// Fix: use an arrow function to bind this lexically:
+class Timer {
+  count = 0;
+  tick = () => {
+    this.count++;
+    console.log(this.count);
+  };
+}
+```
+
+Arrow functions don't have their own `this` — they inherit `this` from the enclosing context. This is why arrow functions are preferred for methods used as callbacks.
+
+</Pitfall>
+
+---
+
+<Quiz question="What does the super() call do inside a subclass constructor?">
+
+<div>
+
+`super()` calls the **parent class's constructor**. When a subclass extends another class, it must call `super()` before accessing `this` — otherwise the parent's initialization hasn't run and the object is in an incomplete state.
+
+```typescript
+class Animal {
+  constructor(public name: string) {}
+}
+
+class Dog extends Animal {
+  constructor(name: string, public breed: string) {
+    super(name);  // initializes this.name via Animal's constructor
+    // can now safely use this.breed
+  }
+}
+```
+
+Forgetting `super()` in a subclass constructor is a compile-time error in TypeScript. In plain JavaScript, it's a `ReferenceError` at runtime.
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+You now understand both major programming paradigms: functional programming (pure functions, immutability, composition) and object-oriented programming (classes, inheritance, polymorphism). In Module 6, we'll learn essential debugging skills — how to find and fix bugs, handle errors gracefully, and use regular expressions to work with text patterns.

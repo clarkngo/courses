@@ -1,0 +1,268 @@
+---
+title: "Values, Types, Operators, and Program Structure"
+description: "Learn the fundamental building blocks of JavaScript and TypeScript — how data is represented, how expressions are evaluated, and how programs are structured with control flow."
+module: 1
+moduleTitle: "Values, Types, Operators, and Program Structure"
+lesson: 1
+duration: "60 min"
+youtubeId: "TAUlmfF4XWg"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Values
+
+Every piece of data in a JavaScript program is a **value**. Values are the atoms of a program — numbers, text, booleans, and more. They live in memory and can be named with variables so you can refer to them later.
+
+JavaScript has several primitive value types:
+
+```javascript
+42          // Number
+3.14        // Number (no separate "float" type)
+"hello"     // String
+true        // Boolean
+false       // Boolean
+null        // Intentional absence of a value
+undefined   // Value not yet assigned
+```
+
+---
+
+## Types in JavaScript
+
+JavaScript is dynamically typed — the type of a variable is determined at runtime by the value it holds. You can check the type of any value with `typeof`:
+
+```javascript
+typeof 42           // "number"
+typeof "hello"      // "string"
+typeof true         // "boolean"
+typeof undefined    // "undefined"
+typeof null         // "object"  ← famous bug in JavaScript, kept for backwards compatibility
+typeof {}           // "object"
+typeof []           // "object"
+typeof function(){} // "function"
+```
+
+---
+
+## Types in TypeScript
+
+TypeScript makes types explicit. You annotate variables and function parameters with a type, and the compiler enforces it:
+
+```typescript
+let age: number = 25;
+let name: string = "Alice";
+let isStudent: boolean = true;
+
+// TypeScript infers types when you assign on declaration:
+let score = 100;        // TypeScript knows this is number
+let greeting = "Hi";   // TypeScript knows this is string
+
+// This will cause a compile error:
+age = "twenty-five";   // Error: Type 'string' is not assignable to type 'number'
+```
+
+TypeScript's built-in types:
+
+| Type | Description | Example |
+|---|---|---|
+| `number` | All numbers (integers and floats) | `42`, `3.14` |
+| `string` | Text | `"hello"` |
+| `boolean` | True or false | `true`, `false` |
+| `null` | Intentional absence | `null` |
+| `undefined` | Not yet assigned | `undefined` |
+| `any` | Disables type checking | Avoid it |
+| `unknown` | Type-safe alternative to `any` | Requires a check before use |
+| `void` | Function returns nothing | Used in return types |
+
+---
+
+## Operators
+
+Operators transform and combine values into new values.
+
+### Arithmetic Operators
+
+```javascript
+5 + 3      // 8
+10 - 4     // 6
+3 * 7      // 21
+15 / 4     // 3.75
+15 % 4     // 3   (remainder/modulo)
+2 ** 10    // 1024 (exponentiation)
+```
+
+### Comparison Operators
+
+```javascript
+5 > 3      // true
+5 < 3      // false
+5 >= 5     // true
+5 <= 4     // false
+5 == "5"   // true  (loose equality — converts types)
+5 === "5"  // false (strict equality — no type conversion)
+5 != "5"   // false (loose inequality)
+5 !== "5"  // true  (strict inequality)
+```
+
+<Pitfall title="Always Use === Instead of ==">
+
+`==` performs type coercion before comparing — JavaScript converts values to the same type first. This produces surprising results:
+
+```javascript
+0 == false       // true
+"" == false      // true
+null == undefined // true
+```
+
+`===` checks both value AND type with no conversions. Use `===` everywhere. Use `==` only when you have a specific reason to want type coercion (which is rare).
+
+</Pitfall>
+
+### Logical Operators
+
+```javascript
+true && false   // false (AND — both must be true)
+true || false   // true  (OR — at least one must be true)
+!true           // false (NOT — inverts the boolean)
+```
+
+### String Operators
+
+```javascript
+"Hello" + " " + "World"   // "Hello World" (concatenation)
+
+// Template literals (backticks) — preferred for string building:
+const name = "Alice";
+`Hello, ${name}!`          // "Hello, Alice!"
+`${2 + 2} is the answer`  // "4 is the answer"
+```
+
+---
+
+## Variables
+
+Variables give names to values so you can reuse them. JavaScript has three ways to declare variables:
+
+```javascript
+var x = 1;    // Old style — function-scoped, avoid in modern code
+let y = 2;    // Block-scoped, can be reassigned
+const z = 3;  // Block-scoped, cannot be reassigned
+```
+
+**Prefer `const` by default.** Use `let` only when you need to reassign. Avoid `var` entirely.
+
+```typescript
+// TypeScript with explicit types:
+const maxScore: number = 100;
+let currentScore: number = 0;
+let playerName: string = "Alice";
+```
+
+---
+
+## Program Structure
+
+A program is a sequence of statements — instructions that change the state of the program or produce side effects.
+
+### Conditional Statements
+
+```javascript
+const temperature = 72;
+
+if (temperature > 90) {
+  console.log("It's hot!");
+} else if (temperature > 70) {
+  console.log("It's comfortable.");
+} else {
+  console.log("It's cold.");
+}
+```
+
+### Loops
+
+```javascript
+// while loop — runs as long as condition is true
+let count = 0;
+while (count < 5) {
+  console.log(count);
+  count++;
+}
+
+// for loop — most common form for counted iterations
+for (let i = 0; i < 5; i++) {
+  console.log(i);
+}
+
+// for...of — iterates over values in an array
+const fruits = ["apple", "banana", "cherry"];
+for (const fruit of fruits) {
+  console.log(fruit);
+}
+```
+
+<CodeLab title="FizzBuzz — Classic Program Structure Exercise">
+
+FizzBuzz is a classic interview problem that tests basic program structure. Print numbers 1 through 100, but:
+- Replace multiples of 3 with "Fizz"
+- Replace multiples of 5 with "Buzz"
+- Replace multiples of both with "FizzBuzz"
+
+```typescript
+for (let i = 1; i <= 100; i++) {
+  if (i % 15 === 0) {
+    console.log("FizzBuzz");
+  } else if (i % 3 === 0) {
+    console.log("Fizz");
+  } else if (i % 5 === 0) {
+    console.log("Buzz");
+  } else {
+    console.log(i);
+  }
+}
+```
+
+Notice the order of checks: `% 15` first (both), then `% 3`, then `% 5`. If you check `% 3` before `% 15`, numbers like 15 will print "Fizz" instead of "FizzBuzz."
+
+</CodeLab>
+
+---
+
+## Type Coercion Traps
+
+JavaScript silently converts types in many contexts. Being aware of these saves hours of debugging:
+
+```javascript
+"5" + 3       // "53"  — 3 is coerced to string
+"5" - 3       // 2     — "5" is coerced to number
+"5" * "3"     // 15    — both coerced to numbers
+true + 1      // 2     — true is coerced to 1
+false + 1     // 1     — false is coerced to 0
+null + 1      // 1     — null is coerced to 0
+undefined + 1 // NaN   — undefined becomes NaN
+```
+
+TypeScript eliminates most of these traps by refusing to allow operations between incompatible types.
+
+---
+
+<Quiz question="What is the difference between == and === in JavaScript?">
+
+<div>
+
+`==` (loose equality) performs **type coercion** before comparing — JavaScript converts both values to a common type. This means `0 == false` is `true` and `"5" == 5` is `true`.
+
+`===` (strict equality) checks both **value and type** without any conversion. `0 === false` is `false` because a number and a boolean are different types.
+
+Always use `===` in practice. Loose equality has too many surprising edge cases, and the behavior is hard to predict. TypeScript's linter (`strict` mode) will warn you when you accidentally use `==`.
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+You now understand the atoms of JavaScript programs: values, types, operators, and control flow. In Module 2, we'll look at two compound data structures that let you group these atoms together — **objects** and **arrays**.

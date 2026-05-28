@@ -1,0 +1,250 @@
+---
+title: "Bugs, Errors, and Regular Expressions"
+description: "Learn systematic debugging techniques, how to handle errors with try/catch and custom error types, and how to use regular expressions to match and transform text patterns."
+module: 6
+moduleTitle: "Bugs, Errors, and Regular Expressions"
+lesson: 1
+duration: "60 min"
+youtubeId: "mDueR5bjAN8"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Types of Bugs
+
+Not all bugs are the same. Knowing which kind you're dealing with changes how you approach finding and fixing it.
+
+**Syntax errors** — the code isn't valid JavaScript/TypeScript. The engine can't parse it at all. These are caught immediately by the compiler or interpreter before any code runs.
+
+```javascript
+// Syntax error — missing closing parenthesis:
+console.log("hello"
+```
+
+**Runtime errors** — the code is syntactically valid but fails during execution. These throw an exception.
+
+```javascript
+null.toString()  // TypeError: Cannot read properties of null
+```
+
+**Logic errors** — the code runs without throwing, but produces the wrong result. These are the hardest to find because nothing explicitly breaks.
+
+```javascript
+function average(nums) {
+  return nums.reduce((sum, n) => sum + n) / nums.length;
+  // Bug: reduce without initial value uses first element as accumulator,
+  // so it's off-by-one — use reduce(..., 0) instead
+}
+```
+
+---
+
+## Debugging with the Console
+
+The browser console and Node.js REPL are your first debugging tools:
+
+```javascript
+console.log("value:", someVariable);       // print a value
+console.warn("this might be wrong");       // yellow warning
+console.error("something broke");          // red error
+console.table([{a: 1}, {a: 2}]);          // display array as table
+console.time("loop"); /* work */ console.timeEnd("loop"); // measure duration
+```
+
+**`console.log` debugging** is underrated. For quick checks, placing strategic `console.log` calls is faster than opening a debugger. Print the inputs and outputs of each function to find where the wrong value enters the pipeline.
+
+---
+
+## The Debugger
+
+For complex bugs, use the built-in debugger. In VS Code, press F5 or use the Debug panel. In Chrome DevTools, open Sources → find your file → click a line number to set a breakpoint.
+
+Key concepts:
+- **Breakpoint** — execution pauses here; you can inspect all variables
+- **Step over** — execute the current line and pause at the next one
+- **Step into** — follow execution into a function call
+- **Step out** — finish the current function and pause at the caller
+- **Watch expressions** — evaluate arbitrary expressions as you step
+
+The most efficient debugging strategy: narrow the problem first with `console.log`, then switch to the debugger when you've isolated the function where things go wrong.
+
+---
+
+## Error Handling: try / catch / finally
+
+When code might throw an exception, wrap it in `try/catch`:
+
+```typescript
+try {
+  const data = JSON.parse(userInput);  // might throw SyntaxError
+  processData(data);
+} catch (error) {
+  if (error instanceof SyntaxError) {
+    console.error("Invalid JSON:", error.message);
+  } else {
+    throw error;  // re-throw unexpected errors
+  }
+} finally {
+  // runs regardless of success or failure — good for cleanup:
+  closeConnection();
+}
+```
+
+**`finally`** always executes — even if the `catch` block throws. Use it to release resources: close files, release locks, clean up connections.
+
+---
+
+## Custom Error Types
+
+For application-specific errors, extend the built-in `Error` class:
+
+```typescript
+class ValidationError extends Error {
+  constructor(
+    message: string,
+    public field: string,
+  ) {
+    super(message);
+    this.name = "ValidationError";
+  }
+}
+
+class NetworkError extends Error {
+  constructor(
+    message: string,
+    public statusCode: number,
+  ) {
+    super(message);
+    this.name = "NetworkError";
+  }
+}
+
+function validateAge(age: number): void {
+  if (age < 0 || age > 150) {
+    throw new ValidationError("Age must be between 0 and 150", "age");
+  }
+}
+
+try {
+  validateAge(-5);
+} catch (error) {
+  if (error instanceof ValidationError) {
+    console.error(`Field "${error.field}": ${error.message}`);
+  }
+}
+```
+
+Custom error types let callers distinguish between different failure modes and handle each appropriately.
+
+<CodeLab title="The Error Handling Decision Tree">
+
+When you encounter a potential error, ask:
+
+1. **Can this realistically happen?** If the input is internal and always valid, don't add error handling for a case that can't occur.
+
+2. **Should the caller handle it?** If yes, `throw` — don't silently swallow errors.
+
+3. **Is this recoverable?** If yes, catch it and recover. If no, let it propagate up.
+
+4. **Does the user need to know?** If yes, surface it in the UI. If no, log it and continue.
+
+```typescript
+// Good: throw for invalid external input, let callers decide
+function parseAge(input: string): number {
+  const age = parseInt(input, 10);
+  if (isNaN(age)) throw new ValidationError("Not a valid number", "age");
+  return age;
+}
+
+// Bad: swallowing errors silently
+function silentParse(input: string): number | null {
+  try {
+    return parseInt(input, 10);
+  } catch {
+    return null;  // caller has no idea what went wrong
+  }
+}
+```
+
+</CodeLab>
+
+---
+
+## Regular Expressions
+
+A **regular expression** (regex) is a pattern that describes a set of strings. Use them to test, find, and replace text:
+
+```javascript
+const email = "alice@example.com";
+
+// Test if a string matches a pattern:
+/^\S+@\S+\.\S+$/.test(email)  // true (basic email check)
+
+// Find all matches:
+const text = "Call us at 555-1234 or 555-5678";
+text.match(/\d{3}-\d{4}/g)    // ["555-1234", "555-5678"]
+
+// Replace matches:
+"hello world".replace(/world/, "TypeScript")  // "hello TypeScript"
+"a1b2c3".replace(/\d/g, "X")                 // "aXbXcX"
+
+// Extract groups:
+const date = "2024-03-15";
+const match = date.match(/(\d{4})-(\d{2})-(\d{2})/);
+if (match) {
+  const [, year, month, day] = match;
+  // year="2024", month="03", day="15"
+}
+```
+
+### Regex Syntax Quick Reference
+
+| Pattern | Matches |
+|---|---|
+| `.` | Any character except newline |
+| `\d` | Any digit (0–9) |
+| `\w` | Word character (letter, digit, underscore) |
+| `\s` | Whitespace |
+| `^` | Start of string |
+| `$` | End of string |
+| `*` | Zero or more of the preceding |
+| `+` | One or more of the preceding |
+| `?` | Zero or one of the preceding |
+| `{n,m}` | Between n and m of the preceding |
+| `[abc]` | Any of a, b, or c |
+| `[^abc]` | Anything except a, b, or c |
+| `(abc)` | Capture group |
+| `a\|b` | a or b |
+
+<Pitfall title="Catastrophic Backtracking">
+
+Certain regex patterns can cause the engine to try exponentially many combinations on bad input — this is called **catastrophic backtracking** and can hang your server.
+
+The dangerous pattern: nested quantifiers with overlapping alternatives, like `(a+)+` or `(\w+\s)+`.
+
+For production use — especially parsing user input — test your regex against adversarial inputs (long strings that don't match) and consider using a regex linter. Don't use complex regex on untrusted input in a hot path.
+
+</Pitfall>
+
+---
+
+<Quiz question="What is the difference between a runtime error and a logic error?">
+
+<div>
+
+A **runtime error** throws an exception — the program crashes (or throws to the nearest `catch` block) because something impossible happened during execution, like reading a property of `null`, dividing by zero in some languages, or calling a non-function.
+
+A **logic error** produces the wrong result without throwing. The program runs to completion, but it computed the wrong answer. A loop that counts to 9 instead of 10, an average that's off by one, a sort that puts items in the wrong order — these are logic errors.
+
+Logic errors are harder to catch because nothing tells you something is wrong. The only way to detect them is testing with known inputs and expected outputs, or careful code review. This is why writing tests alongside your code is so valuable.
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+You can now debug systematically, handle errors intentionally, and manipulate text with regular expressions. In Module 7, we'll tackle one of JavaScript's most important features: **asynchronous programming** — how to write code that doesn't block while waiting for slow operations like network requests and file reads.

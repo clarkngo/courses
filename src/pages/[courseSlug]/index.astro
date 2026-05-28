@@ -1,5 +1,5 @@
 ---
-import BaseLayout from '../../../layouts/BaseLayout.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
 
 export async function getStaticPaths() {
@@ -59,7 +59,7 @@ const lessonSlug = firstLesson?.slug.replace(courseSlug + '/', '');
         <div class="flex flex-wrap items-center gap-4">
           {firstLesson && (
             <a
-              href={`${base}courses/${courseSlug}/lessons/${lessonSlug}`}
+              href={`${base}${courseSlug}/lessons/${lessonSlug}`}
               class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-white font-bold shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-150 text-sm"
               style={`color: ${course.data.color}`}
             >
@@ -102,7 +102,7 @@ const lessonSlug = firstLesson?.slug.replace(courseSlug + '/', '');
                 return (
                   <li>
                     <a
-                      href={`${base}courses/${courseSlug}/lessons/${slug}`}
+                      href={`${base}${courseSlug}/lessons/${slug}`}
                       class="flex items-center gap-4 px-6 py-3.5 hover:bg-gray-50 transition-colors group"
                     >
                       <span class="text-gray-300 group-hover:text-gray-400 text-sm w-5 flex-shrink-0">

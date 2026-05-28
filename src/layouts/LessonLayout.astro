@@ -60,7 +60,7 @@ const base = import.meta.env.BASE_URL;
         <div class="flex items-center gap-2 text-sm text-gray-500 min-w-0">
           <a href={base} class="hover:text-brand-600 font-medium flex-shrink-0">Home</a>
           <span>›</span>
-          <a href={`${base}courses/${courseSlug}/`} class="hover:text-brand-600 flex-shrink-0 truncate max-w-[120px]">{courseTitle}</a>
+          <a href={`${base}${courseSlug}/`} class="hover:text-brand-600 flex-shrink-0 truncate max-w-[120px]">{courseTitle}</a>
           <span>›</span>
           <span class="text-gray-800 font-semibold truncate">{title}</span>
         </div>
@@ -157,7 +157,7 @@ const base = import.meta.env.BASE_URL;
 
   function lessonHref(fullSlug) {
     const lessonSlug = fullSlug.replace(courseSlug + '/', '');
-    return `${base}courses/${courseSlug}/lessons/${lessonSlug}`;
+    return `${base}${courseSlug}/lessons/${lessonSlug}`;
   }
 
   if (prev) {

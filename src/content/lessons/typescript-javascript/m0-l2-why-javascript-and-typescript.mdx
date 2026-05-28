@@ -1,0 +1,160 @@
+---
+title: "Why JavaScript & TypeScript"
+description: "Understand why JavaScript became the language of the web, what problems TypeScript solves on top of it, and how this course will take you from fundamentals to computer science."
+module: 0
+moduleTitle: "Getting Started"
+lesson: 2
+duration: "20 min"
+youtubeId: "KOmHnkJN_lI"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## JavaScript: The Language That Runs the Web
+
+JavaScript was created in 10 days in 1995 by Brendan Eich at Netscape. It was designed to make web pages interactive — letting browsers respond to clicks, validate forms, and update content without reloading the page.
+
+Three decades later, JavaScript runs:
+
+- **In every browser** — Chrome, Firefox, Safari, Edge all have a built-in JavaScript engine
+- **On servers** — via Node.js, JavaScript handles millions of requests at companies like Netflix and LinkedIn
+- **In mobile apps** — React Native uses JavaScript to build iOS and Android apps from shared code
+- **In desktop apps** — VS Code and Slack are built with Electron, a JavaScript-based framework
+
+No other language runs natively in the browser. That monopoly made JavaScript unavoidable — and learning it well pays dividends across virtually every kind of software project.
+
+---
+
+## The Problem JavaScript Has
+
+JavaScript is **dynamically typed**. That means variables can hold any type of value, and the language figures out the type at runtime:
+
+```javascript
+let x = 42;       // x is a number
+x = "hello";      // now x is a string — no error
+x = true;         // now x is a boolean — still no error
+```
+
+For small scripts, this flexibility is convenient. For large codebases, it becomes dangerous:
+
+```javascript
+function add(a, b) {
+  return a + b;
+}
+
+add(1, 2);        // 3 — correct
+add("1", 2);      // "12" — string concatenation, not addition!
+add(undefined, 2) // NaN — no warning, no error
+```
+
+These silent failures cause real bugs in production. The language has no way to catch them before your code runs — and your users find the bugs instead of your compiler.
+
+---
+
+## TypeScript: JavaScript with a Safety Net
+
+TypeScript was created at Microsoft in 2012 and released publicly in the same year. It adds a **type system** on top of JavaScript:
+
+```typescript
+function add(a: number, b: number): number {
+  return a + b;
+}
+
+add(1, 2);        // 3 — correct
+add("1", 2);      // Error: Argument of type 'string' is not assignable to parameter of type 'number'
+add(undefined, 2) // Error: Argument of type 'undefined' is not assignable to parameter of type 'number'
+```
+
+The TypeScript compiler catches both errors before the code ever runs. This shifts bug detection from **runtime** (when users experience it) to **compile time** (when you're still writing code).
+
+TypeScript is a **superset of JavaScript** — all valid JavaScript is valid TypeScript. You can start with JavaScript and gradually add types as your codebase grows.
+
+---
+
+## Why Learn Both Together
+
+This course teaches JavaScript and TypeScript side by side for a specific reason:
+
+1. **TypeScript compiles to JavaScript.** Understanding JavaScript deeply makes TypeScript types meaningful rather than mechanical.
+
+2. **Most jobs use TypeScript.** Type safety is now the industry standard for serious JavaScript projects. Learning only plain JavaScript leaves you unprepared for real codebases.
+
+3. **The concepts transfer.** Functions, closures, prototypes, promises — these are JavaScript concepts. TypeScript adds type annotations on top. You learn the concepts once, then express them in either language.
+
+<CodeLab title="JavaScript vs TypeScript Side by Side">
+
+The same function written in both languages:
+
+**JavaScript:**
+```javascript
+function greet(name) {
+  return `Hello, ${name}!`;
+}
+```
+
+**TypeScript:**
+```typescript
+function greet(name: string): string {
+  return `Hello, ${name}!`;
+}
+```
+
+The only difference is `: string` on the parameter and the return type annotation. The logic is identical. TypeScript adds the safety layer — it doesn't change how you write logic.
+
+</CodeLab>
+
+---
+
+## What This Course Covers
+
+The course is structured in three phases:
+
+**Phase 1 — Language Fundamentals (Modules 1–3)**
+Values, types, operators, program structure, arrays, objects, and functions. This is the foundation everything else builds on.
+
+**Phase 2 — Programming Paradigms (Modules 4–7)**
+How to structure programs using functional programming and object-oriented programming. Plus real-world skills: debugging, error handling, regular expressions, and asynchronous code.
+
+**Phase 3 — Computer Science Core (Modules 8–10)**
+Algorithm analysis (Big O notation), searching and sorting algorithms, and essential data structures — hash tables, stacks, queues, linked lists, and binary trees.
+
+---
+
+## Course Requirements
+
+**FreeCodeCamp:** Programming labs use the [JavaScript Algorithms and Data Structures Certification](https://www.freecodecamp.org/learn/javascript-algorithms-and-data-structures/). You'll work through the challenges alongside each module.
+
+**Team Project:** You'll collaborate on a group project. The challenge: take a JavaScript project from FreeCodeCamp and rebuild it as a strictly typed TypeScript version.
+
+**Daily Concept Tests:** Short assessments at the start of each session cover the previous day's material. These keep concepts fresh and track attendance.
+
+<Pitfall title="Don't Skip the FreeCodeCamp Labs">
+
+Reading about programming is not the same as programming. The FreeCodeCamp exercises force you to actually write code that passes tests — that's where real learning happens.
+
+If you only watch the videos and skip the labs, you'll understand the concepts abstractly but won't be able to apply them under pressure. Treat the FreeCodeCamp certification as required coursework, not optional extra credit.
+
+</Pitfall>
+
+---
+
+<Quiz question="What is the main advantage TypeScript adds over plain JavaScript?">
+
+<div>
+
+TypeScript adds **static type checking** — the ability to catch type errors at compile time, before the code runs.
+
+In JavaScript, a function that receives the wrong type (like a string instead of a number) will often produce a wrong result silently. TypeScript's compiler catches that mismatch while you're writing the code and tells you exactly where the problem is.
+
+This matters most in large codebases where functions pass data through many layers — without types, a wrong value can travel far before it causes an observable bug.
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+In Module 1, we'll start with the foundational building blocks of both languages: values, types, operators, and program structure. By the end of that module, you'll be writing real JavaScript and TypeScript programs.

@@ -1,0 +1,335 @@
+---
+title: "Hash Tables, Stacks, and Queues"
+description: "Implement and understand three essential data structures — hash tables for fast key-value lookup, stacks for LIFO operations, and queues for FIFO processing."
+module: 9
+moduleTitle: "Hash Tables, Stacks, and Queues"
+lesson: 1
+duration: "75 min"
+youtubeId: "ol6Z34L1ut0"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Why Data Structures Matter
+
+An algorithm is only as fast as the data structure it operates on. Choosing the right data structure turns O(n) lookups into O(1), prevents unnecessary traversals, and makes code that would otherwise be too slow to ship run in milliseconds.
+
+This module covers three structures that appear in virtually every non-trivial program:
+
+- **Hash Table** — O(1) average key-value lookup
+- **Stack** — Last-In, First-Out (LIFO) access
+- **Queue** — First-In, First-Out (FIFO) access
+
+---
+
+## Hash Tables
+
+A **hash table** (also called a hash map or dictionary) stores key-value pairs and provides average O(1) lookup, insertion, and deletion.
+
+### How It Works
+
+1. A **hash function** converts a key into an integer (the hash)
+2. The hash is used as an index into an array of "buckets"
+3. The value is stored in that bucket
+4. On lookup, the same hash function finds the bucket in O(1)
+
+```
+key: "alice"
+hash function: "alice" → 3
+bucket[3] → { value: { age: 28, role: "engineer" } }
+```
+
+**Collisions** happen when two different keys hash to the same bucket. Solutions include **chaining** (store a linked list at each bucket) and **open addressing** (probe neighboring buckets).
+
+### JavaScript's Built-in Hash Tables
+
+JavaScript provides two built-in hash table implementations:
+
+```typescript
+// Object — the original hash map, string/symbol keys only:
+const scores: { [key: string]: number } = {};
+scores["alice"] = 95;
+scores["bob"]   = 87;
+scores["alice"]  // 95
+
+// Map — modern, supports any key type, preserves insertion order:
+const userMap = new Map<string, { age: number }>();
+userMap.set("alice", { age: 28 });
+userMap.set("bob",   { age: 34 });
+userMap.get("alice")  // { age: 28 }
+userMap.has("carol")  // false
+userMap.size          // 2
+```
+
+**Prefer `Map` over plain objects** when:
+- Keys are not known at compile time
+- You need to iterate in insertion order
+- Keys might collide with built-in properties (`constructor`, `toString`, etc.)
+
+### Implementing a Simple Hash Table
+
+```typescript
+class HashTable<V> {
+  private buckets: Array<Array<[string, V]>>;
+  private size: number;
+
+  constructor(size: number = 53) {
+    this.size = size;
+    this.buckets = new Array(size).fill(null).map(() => []);
+  }
+
+  private hash(key: string): number {
+    let hash = 0;
+    for (let i = 0; i < key.length; i++) {
+      hash = (hash + key.charCodeAt(i) * (i + 1)) % this.size;
+    }
+    return hash;
+  }
+
+  set(key: string, value: V): void {
+    const index = this.hash(key);
+    const bucket = this.buckets[index];
+    const existing = bucket.findIndex(([k]) => k === key);
+    if (existing >= 0) {
+      bucket[existing][1] = value;
+    } else {
+      bucket.push([key, value]);
+    }
+  }
+
+  get(key: string): V | undefined {
+    const index = this.hash(key);
+    const pair = this.buckets[index].find(([k]) => k === key);
+    return pair?.[1];
+  }
+}
+
+const ht = new HashTable<number>();
+ht.set("alice", 95);
+ht.set("bob", 87);
+ht.get("alice")  // 95
+```
+
+<CodeLab title="Using a Hash Table for Frequency Count">
+
+Hash tables excel at counting occurrences — a pattern that appears constantly in real problems:
+
+```typescript
+function charFrequency(str: string): Map<string, number> {
+  const freq = new Map<string, number>();
+  for (const char of str) {
+    freq.set(char, (freq.get(char) ?? 0) + 1);
+  }
+  return freq;
+}
+
+charFrequency("hello")
+// Map { 'h' => 1, 'e' => 1, 'l' => 2, 'o' => 1 }
+
+// Check if two strings are anagrams in O(n):
+function isAnagram(a: string, b: string): boolean {
+  if (a.length !== b.length) return false;
+  const freq = charFrequency(a);
+  for (const char of b) {
+    const count = freq.get(char);
+    if (!count) return false;
+    if (count === 1) freq.delete(char);
+    else freq.set(char, count - 1);
+  }
+  return freq.size === 0;
+}
+
+isAnagram("listen", "silent")  // true
+isAnagram("hello", "world")    // false
+```
+
+Without a hash table, the naive approach would be O(n²) (sort then compare, or nested loops). The hash table gives O(n).
+
+</CodeLab>
+
+---
+
+## Stacks
+
+A **stack** is a Last-In, First-Out (LIFO) data structure. Think of a stack of plates — you add to the top and remove from the top.
+
+Operations:
+- **push** — add to the top
+- **pop** — remove from the top
+- **peek** — look at the top without removing
+- **isEmpty** — check if the stack is empty
+
+```typescript
+class Stack<T> {
+  private items: T[] = [];
+
+  push(item: T): void {
+    this.items.push(item);
+  }
+
+  pop(): T | undefined {
+    return this.items.pop();
+  }
+
+  peek(): T | undefined {
+    return this.items[this.items.length - 1];
+  }
+
+  get isEmpty(): boolean {
+    return this.items.length === 0;
+  }
+
+  get size(): number {
+    return this.items.length;
+  }
+}
+
+const stack = new Stack<number>();
+stack.push(1);
+stack.push(2);
+stack.push(3);
+stack.pop()   // 3 — last in, first out
+stack.peek()  // 2
+stack.size    // 2
+```
+
+### Real-World Stack Uses
+
+- **Browser back button** — each page visit is pushed; back pops
+- **Undo/redo** — actions are pushed; undo pops the most recent
+- **Function call stack** — the JavaScript engine uses a stack to track which function called which
+- **Expression evaluation** — parsing and evaluating mathematical expressions
+
+```typescript
+// Check for balanced parentheses using a stack:
+function isBalanced(expression: string): boolean {
+  const stack = new Stack<string>();
+  const pairs: Record<string, string> = { ")": "(", "]": "[", "}": "{" };
+
+  for (const char of expression) {
+    if ("([{".includes(char)) {
+      stack.push(char);
+    } else if (")]}" .includes(char)) {
+      if (stack.pop() !== pairs[char]) return false;
+    }
+  }
+
+  return stack.isEmpty;
+}
+
+isBalanced("({[]})")   // true
+isBalanced("([)]")     // false
+isBalanced("{[}")      // false
+```
+
+---
+
+## Queues
+
+A **queue** is a First-In, First-Out (FIFO) data structure. Think of a line at a coffee shop — first person in, first person served.
+
+Operations:
+- **enqueue** — add to the back
+- **dequeue** — remove from the front
+- **peek** — look at the front without removing
+- **isEmpty** — check if the queue is empty
+
+```typescript
+class Queue<T> {
+  private items: T[] = [];
+
+  enqueue(item: T): void {
+    this.items.push(item);
+  }
+
+  dequeue(): T | undefined {
+    return this.items.shift();
+  }
+
+  peek(): T | undefined {
+    return this.items[0];
+  }
+
+  get isEmpty(): boolean {
+    return this.items.length === 0;
+  }
+
+  get size(): number {
+    return this.items.length;
+  }
+}
+
+const queue = new Queue<string>();
+queue.enqueue("Alice");
+queue.enqueue("Bob");
+queue.enqueue("Carol");
+queue.dequeue()  // "Alice" — first in, first out
+queue.peek()     // "Bob"
+```
+
+### Real-World Queue Uses
+
+- **Task queues** — jobs waiting to be processed (background workers, print queues)
+- **Breadth-first search** — algorithms that explore nodes level by level use a queue
+- **Rate limiting** — queuing requests to avoid overwhelming an API
+- **Event loops** — the JavaScript event loop processes callbacks from a task queue
+
+<Pitfall title="Array shift() Is O(n) — Use a Proper Queue Implementation for Performance">
+
+Using a plain array with `shift()` for dequeue is O(n) because all remaining elements must be re-indexed. For high-throughput queues, use a linked list or circular buffer implementation instead.
+
+For most application-level use cases, `Array.shift()` is fine — the O(n) cost only matters if you're dequeuing thousands of times per second. But knowing the tradeoff prevents surprises if you put this under load.
+
+```typescript
+// High-performance queue using a head pointer:
+class EfficientQueue<T> {
+  private items: Map<number, T> = new Map();
+  private head = 0;
+  private tail = 0;
+
+  enqueue(item: T): void {
+    this.items.set(this.tail++, item);
+  }
+
+  dequeue(): T | undefined {
+    if (this.head === this.tail) return undefined;
+    const item = this.items.get(this.head);
+    this.items.delete(this.head++);
+    return item;
+  }
+
+  get size(): number {
+    return this.tail - this.head;
+  }
+}
+```
+
+</Pitfall>
+
+---
+
+<Quiz question="What is the average time complexity of a hash table lookup, and what causes it to degrade?">
+
+<div>
+
+A hash table lookup is **O(1) on average** — the hash function maps the key to a bucket index directly, no traversal required.
+
+It degrades to **O(n) in the worst case** due to **collisions** — when multiple keys hash to the same bucket. In the worst case (a terrible hash function that maps everything to one bucket), every lookup becomes a linear scan through the collision chain.
+
+Good hash table performance depends on:
+1. A high-quality hash function that distributes keys evenly
+2. A low **load factor** (ratio of items to buckets) — typically keep it below 0.7
+3. **Rehashing** — when the load factor gets too high, create a larger array and re-hash all entries
+
+JavaScript's built-in `Map` and object property access handle all of this for you.
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+You now understand hash tables, stacks, and queues — three structures that solve distinct access patterns efficiently. In Module 10, we'll complete the data structures foundation with **linked lists and binary trees** — structures built from nodes with explicit pointers.
