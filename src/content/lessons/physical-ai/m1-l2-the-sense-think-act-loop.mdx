@@ -1,0 +1,119 @@
+---
+title: "The Sense-Think-Act Loop"
+description: "Learn the three-step cycle at the heart of every physical AI system — and why getting each step right is harder than it sounds."
+module: 1
+moduleTitle: "What Is Physical AI?"
+lesson: 2
+duration: "15 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## One Loop to Rule Them All
+
+A self-driving car. A surgical robot. A warehouse drone. A Mars rover.
+
+These systems look nothing alike, but they all run the same fundamental loop:
+
+1. **Sense** — gather data from the environment
+2. **Think** — process that data and decide what to do
+3. **Act** — execute the decision in the physical world
+
+Then repeat — thousands of times per second.
+
+This is the **Sense-Think-Act loop**, and it's the foundation of every physical AI system ever built.
+
+---
+
+## Sense
+
+Sensing means collecting raw information about the world. Physical AI systems use a variety of sensors depending on what they need to know:
+
+- **Cameras** — capture visual information (color, shape, depth)
+- **LiDAR** — measure distance by firing laser pulses
+- **Radar** — detect objects and measure speed using radio waves
+- **Microphones** — capture audio
+- **IMUs (Inertial Measurement Units)** — measure acceleration and rotation
+- **GPS** — determine location
+- **Touch and force sensors** — detect contact and pressure
+
+No single sensor is sufficient. Real systems combine many inputs — a process called **sensor fusion** — to build a complete picture of the environment.
+
+---
+
+## Think
+
+The "think" step is where AI lives. Given the sensor data, the system must:
+
+1. **Perceive** — interpret the raw data (what objects are present? where are they? what are they doing?)
+2. **Plan** — determine what action to take given the current state and the system's goal
+3. **Predict** — anticipate how the environment will change
+
+This is where deep learning, computer vision, and reinforcement learning are applied. It's also where most of the hard problems in physical AI live.
+
+<CodeLab title="Thinking Fast and Slow in Physical AI">
+
+Physical AI systems often have two thinking modes running simultaneously:
+
+**Fast path (reactive):** millisecond responses to immediate hazards. A robot arm detects unexpected contact and stops instantly — no planning required.
+
+**Slow path (deliberative):** seconds-to-minutes planning for complex tasks. A robot navigating a warehouse maps its route, avoids dynamic obstacles, and schedules its next pickup.
+
+Getting these two modes to coexist — fast enough to be safe, smart enough to be useful — is one of the core engineering challenges in physical AI.
+
+</CodeLab>
+
+---
+
+## Act
+
+Acting means sending commands to physical actuators — the components that create motion or force:
+
+- **Electric motors** — spin wheels, joints, fans
+- **Hydraulic actuators** — move heavy loads with fluid pressure
+- **Pneumatic actuators** — use compressed air for fast, light movements
+- **Speakers** — produce sound
+- **Grippers and hands** — manipulate objects
+
+The action closes the loop: the system changes the world, which changes what the sensors detect, which triggers the next cycle.
+
+---
+
+## Why the Loop Is Hard
+
+Each step introduces error:
+
+- Sensors give noisy, incomplete readings
+- AI models make wrong predictions
+- Actuators don't execute perfectly
+
+In software, errors compound slowly. In physical AI, errors compound at the speed of the loop — which means small mistakes can cascade quickly into dangerous situations.
+
+<Pitfall title="The Latency Problem">
+
+The speed of the loop matters enormously. A self-driving car traveling at 60 mph covers **88 feet per second**. If the perception-to-action loop takes 200 milliseconds (a fifth of a second), the car travels 17 feet before it can respond to a detected obstacle.
+
+Every millisecond of latency in the sense-think-act loop has a direct physical consequence. This is why physical AI hardware is optimized obsessively for speed.
+
+</Pitfall>
+
+---
+
+<Quiz question="Why do physical AI systems use sensor fusion instead of relying on a single sensor?">
+
+<div>
+
+No single sensor captures the full picture. Cameras can't measure distance accurately. LiDAR struggles in rain and fog. GPS fails indoors. Radar can't distinguish object shapes.
+
+By combining multiple sensors, a system can compensate for the weaknesses of each individual sensor — getting a more complete, accurate, and reliable picture of the environment than any one sensor could provide alone.
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+In **Lesson 3**, we'll take a tour of real Physical AI systems — from factory robots to autonomous cars to surgical machines — to see the sense-think-act loop in action.

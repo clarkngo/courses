@@ -1,0 +1,131 @@
+---
+title: "How Machines Feel"
+description: "Touch, force, and motion sensors give Physical AI systems a sense of their own bodies. Learn how proprioception works in machines."
+module: 2
+moduleTitle: "Sensors & Perception"
+lesson: 2
+duration: "15 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Two Kinds of Sensing
+
+The sensors from Lesson 1 — cameras, LiDAR, radar — are **exteroceptive**: they sense the external environment.
+
+Physical AI systems also need **proprioceptive** sensors: sensors that tell the machine about its own state. Where are my joints? How fast am I moving? Am I balanced? Am I applying too much force?
+
+Without proprioception, a robot is blind to itself.
+
+---
+
+## IMUs — The Inner Ear of Machines
+
+An **Inertial Measurement Unit (IMU)** combines two sensor types:
+
+- **Accelerometers** — measure linear acceleration (forward/backward, left/right, up/down)
+- **Gyroscopes** — measure rotational rate (roll, pitch, yaw)
+
+By integrating acceleration over time, an IMU can estimate velocity and position. By integrating rotation rate, it can track orientation.
+
+**Where IMUs appear:**
+- Every smartphone (screen auto-rotation, step counting)
+- Drones (maintaining level flight)
+- Self-driving cars (tracking motion between GPS updates)
+- Humanoid robots (detecting falls, maintaining balance)
+
+**IMU limitation:** errors accumulate over time. Tiny measurement errors, when integrated, produce **drift** — the position estimate slowly wanders away from reality. IMUs must be corrected periodically by GPS, visual odometry, or other absolute-reference sensors.
+
+---
+
+## Force and Torque Sensors
+
+Force/torque (F/T) sensors measure the forces and moments acting on a robot's body or end-effector (gripper, hand).
+
+**Why they matter:**
+
+Without force sensing, a robot can't tell if it's gripping too hard (and crushing an object) or too soft (and dropping it). It can't feel when it hits something unexpected. It can't apply consistent pressure for tasks like polishing or surgical cutting.
+
+**Applications:**
+- **Collaborative robots (cobots)** — stop instantly when they detect unexpected contact with a human
+- **Surgical robots** — measure tissue resistance to prevent over-cutting
+- **Grasping** — adjust grip force for objects of different weight and fragility
+- **Assembly** — feel when a part has snapped into place
+
+<CodeLab title="Tactile Sensors — The Next Frontier">
+
+Force/torque sensors measure bulk forces on a whole limb or gripper. **Tactile sensors** go further — they measure distributed pressure across a surface, like human fingertips.
+
+Research systems from MIT, CMU, and Stanford can detect the texture of surfaces, the slip of an object in a gripper, and the exact contact geometry between a finger and an object.
+
+Human hands have about **17,000 touch receptors** per fingertip. Building artificial hands with comparable sensitivity is an active area of research — and one of the key unsolved problems in humanoid robotics.
+
+</CodeLab>
+
+---
+
+## Encoders — Knowing Where Your Joints Are
+
+A **rotary encoder** measures the angle of a rotating shaft. Every joint in a robot arm has one. They answer the question: "Exactly how far has this joint rotated?"
+
+Encoders are how a robot arm knows its own configuration — the position of every joint at every moment. This is essential for **forward kinematics** (calculating where the end-effector is given joint angles) and **inverse kinematics** (calculating what joint angles are needed to reach a target position).
+
+**Two types:**
+- **Incremental encoders** — count pulses from a reference point; need to be re-homed after power loss
+- **Absolute encoders** — report exact angle at any time, even after power loss; more expensive
+
+---
+
+## Microphones and Audio Sensing
+
+Sound is an underrated sensor modality in Physical AI. Microphones can detect:
+
+- **Collisions and impacts** — a sudden noise indicates unexpected contact
+- **Mechanical faults** — a bearing going bad sounds different from a healthy one
+- **Human speech** — enabling voice commands and human-robot interaction
+- **Environmental cues** — a robot in a warehouse might use audio to detect an approaching forklift
+
+Audio-based **predictive maintenance** — listening to machines to predict failures before they happen — is one of the most commercially mature Physical AI applications.
+
+---
+
+## Putting It Together
+
+A well-instrumented physical AI system has sensors pointing both outward (to understand the environment) and inward (to understand itself):
+
+| Sensor | What It Measures |
+|---|---|
+| IMU | Acceleration, rotation, orientation |
+| Force/Torque | Forces acting on the body |
+| Encoders | Joint positions and velocities |
+| Tactile | Surface contact and pressure |
+| Microphones | Sound, audio events |
+
+<Pitfall title="Sensor Failure Is Silent">
+
+Software bugs usually produce obvious errors — crashes, wrong outputs, error messages. Sensor failures are often silent: a miscalibrated IMU returns plausible-but-wrong values. A dirty force sensor reads lower than reality. A damaged encoder skips counts.
+
+Physical AI systems need **sensor health monitoring** — continuously checking whether each sensor's readings are consistent with what the other sensors report. A single bad sensor silently feeding wrong data is one of the most dangerous failure modes in physical systems.
+
+</Pitfall>
+
+---
+
+<Quiz question="What is drift in the context of IMU sensors, and why is it a problem?">
+
+<div>
+
+Drift is the accumulation of small measurement errors over time. An IMU estimates position by integrating acceleration readings. Even tiny errors in those readings, when summed up over many seconds or minutes, produce a position estimate that wanders increasingly far from the true position.
+
+This is why IMUs are always paired with corrective sensors — GPS outdoors, visual odometry indoors — that can periodically reset the position estimate to an accurate reference.
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+We have cameras pointing outward and proprioceptive sensors pointing inward. In **Lesson 3**, we combine them — exploring how Physical AI systems fuse multiple sensor streams into a single coherent picture of the world.

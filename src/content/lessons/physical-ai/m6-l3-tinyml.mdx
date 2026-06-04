@@ -1,0 +1,138 @@
+---
+title: "TinyML — Intelligence in Your Pocket"
+description: "Neural networks that fit in kilobytes, running on chips that cost a dollar. TinyML is bringing AI to a trillion devices that have never been connected to the cloud."
+module: 6
+moduleTitle: "Edge AI & Embedded Systems"
+lesson: 3
+duration: "17 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## A Trillion Sensors, No Intelligence
+
+There are an estimated 15-30 billion microcontrollers currently in operation worldwide — in appliances, medical devices, vehicles, industrial machines, toys, and consumer electronics. Almost none of them are "smart" in any meaningful sense.
+
+They run scripted logic: if this sensor reading crosses this threshold, do this. They can't adapt, learn, or recognize patterns.
+
+TinyML is the effort to change that — to bring neural network-based intelligence to the devices that have always been too small and too power-constrained for it.
+
+---
+
+## What Is TinyML?
+
+**TinyML** (Tiny Machine Learning) is the deployment of machine learning models on microcontrollers and ultra-low-power processors.
+
+The defining constraints:
+- **Memory:** kilobytes of RAM (not megabytes or gigabytes)
+- **Storage:** hundreds of kilobytes of flash memory
+- **Power:** microwatts to milliwatts
+- **No operating system:** bare-metal or RTOS (real-time operating system)
+- **No network connectivity required**
+
+A standard MobileNet image classification model is 16 MB. A TinyML version for microcontrollers might be 50-200 KB — 100-300x smaller, with carefully managed accuracy tradeoffs.
+
+---
+
+## TinyML Applications
+
+**Wake word detection**
+"Hey Siri," "Alexa," "OK Google" — your device is always listening for its wake word using a TinyML model running on a tiny always-on processor. The main CPU sleeps until the wake word is heard. This is why your phone can listen 24/7 without draining the battery.
+
+**Gesture recognition**
+Smartwatches and fitness trackers use accelerometer data to recognize hand gestures and workout movements. A model running on the wearable's MCU classifies motion patterns locally — no cloud needed.
+
+**Fall detection**
+Wearables for elderly users detect falls from accelerometer/gyroscope data and automatically alert emergency services. The entire detection must happen locally — falls require an immediate response, not a cloud round-trip.
+
+**Anomaly detection in industrial equipment**
+Vibration sensors attached to motors, bearings, and pumps run TinyML models that learn normal vibration signatures. Any deviation triggers an alert — often 2-4 weeks before a failure becomes visible, enabling predictive maintenance.
+
+**Environmental sensing**
+TinyML models classify acoustic events (gunshots, breaking glass, bird species) or air quality signatures from chemical sensors — providing intelligent local sensing without continuous cloud streaming.
+
+<CodeLab title="The TensorFlow Lite for Microcontrollers Stack">
+
+The most widely used TinyML framework is **TensorFlow Lite for Microcontrollers (TFLM)**, developed at Google.
+
+The pipeline:
+1. Train a standard TensorFlow/Keras model in the cloud
+2. Convert it to TensorFlow Lite format (flatbuffer format, optimized for inference)
+3. Quantize it (float32 → int8) — reduces size 4x and speeds up inference
+4. Run the TFLM interpreter on the microcontroller
+
+The interpreter itself is under 20 KB. Models can be as small as 20-30 KB for simple classification tasks.
+
+Competing frameworks: **Edge Impulse** (full pipeline with data collection, training, and deployment), **ONNX Runtime for Mobile**, **MicroAI**, and vendor-specific tools from STMicroelectronics, Nordic, and others.
+
+</CodeLab>
+
+---
+
+## Model Compression for TinyML
+
+Getting a useful model into kilobytes requires aggressive compression:
+
+**Quantization-aware training (QAT)**
+Train the model while simulating the effects of quantization. The model learns to be robust to quantization error before it's applied — producing better accuracy than post-training quantization.
+
+**Structured pruning**
+Remove entire filters or layers that contribute little. The result is a smaller architecture that can be recompiled efficiently — unlike unstructured pruning, which removes individual weights and is hard to accelerate on hardware.
+
+**Neural Architecture Search (NAS)**
+Use automated search to find the smallest model architecture that meets accuracy requirements for a specific task and hardware target. Companies like Edge Impulse and ARM have developed NAS tools specifically for TinyML targets.
+
+---
+
+## Physical AI Applications of TinyML
+
+TinyML enables physical AI in domains that were previously impossible:
+
+**Smart agriculture**
+Soil sensors with embedded models detect irrigation needs or disease indicators without cellular connectivity. Battery life is months to years.
+
+**Structural health monitoring**
+Accelerometers embedded in bridges, buildings, and dams continuously analyze vibration patterns for structural anomalies — on coin-cell batteries, with years of life.
+
+**Wildlife tracking**
+Animal-worn collars with TinyML classify behaviors (eating, running, resting, mating) from accelerometer data — reducing data transmission and extending battery life from weeks to months.
+
+**Implantable medical devices**
+Pacemakers and neural stimulators use tiny models to detect arrhythmias or seizure precursors — responding in real time without any wireless transmission.
+
+<Pitfall title="The Model Degradation Problem">
+
+A TinyML model is trained on data from a specific environment and time period. When deployed, the real world drifts:
+- A motor anomaly detector trained on a new bearing will perform poorly on an old, worn bearing
+- A wake word detector trained in a quiet lab will have higher error rates in a noisy office
+- A gesture recognizer trained on one user's movements may struggle with another's
+
+TinyML devices typically can't be updated frequently, and many can't do on-device learning. Getting the training data distribution right before deployment — and planning for how to update deployed models — is a critical challenge in TinyML system design.
+
+</Pitfall>
+
+---
+
+<Quiz question="What is the primary technical challenge that TinyML solves compared to standard edge AI?">
+
+<div>
+
+TinyML solves the problem of running neural network inference on extremely constrained hardware — microcontrollers with kilobytes of RAM, milliwatt power budgets, and no operating system.
+
+Standard edge AI (on mobile phones, embedded Linux systems, or automotive compute platforms) still has megabytes to gigabytes of memory and watts of power available. TinyML targets the class of devices below that — the billions of microcontrollers in sensors, wearables, and industrial equipment that are too small and power-constrained for any of these approaches.
+
+</div>
+</Quiz>
+
+---
+
+## Module 6 Recap
+
+You now understand the full edge AI story:
+- Physical AI requires local inference for latency, connectivity, and privacy reasons
+- Different hardware tiers — automotive GPUs, embedded NPUs, MCUs — serve different power and performance requirements
+- TinyML extends AI capability to the most constrained devices, enabling a new class of always-on, battery-powered physical intelligence
+
+In **Module 7**, we see what Physical AI looks like when applied to specific real-world industries.

@@ -1,0 +1,139 @@
+---
+title: "Humanoid Robots — Where Are We Really?"
+description: "Separate the hype from the reality. Where does humanoid robotics actually stand in 2025, and what are the remaining hard problems?"
+module: 4
+moduleTitle: "Robotics"
+lesson: 3
+duration: "20 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## The Dream and the Reality
+
+The humanoid robot has been the defining image of science fiction AI for 80 years. C-3PO. Data. The Terminator. A machine with a human body, walking, talking, doing human tasks in a human world.
+
+In 2025, humanoid robots are real. They exist, they walk, some can manipulate objects. Billions of dollars are being invested by serious companies.
+
+They are also, in many ways, still very much a work in progress.
+
+This lesson separates what's working from what's not — and why the remaining problems are so hard.
+
+---
+
+## The Appeal of Human Form
+
+Why build a robot that looks like a human? Three reasons:
+
+**1. The world is designed for humans.**
+Doorknobs, stairs, ladders, tools, vehicles, kitchens — virtually every human environment and tool was designed for a human body. A humanoid robot can operate in these environments without redesigning them.
+
+**2. Human tasks are diverse.**
+A robot built for a specific task is efficient but inflexible. A humanoid robot is, in theory, a general-purpose worker that can do any physical task a human can do.
+
+**3. Human interaction.**
+Humans are social animals who naturally interact with things that look like them. A humanoid robot may be more intuitive to communicate with and collaborate alongside than an abstract arm or wheeled platform.
+
+---
+
+## What's Working
+
+**Bipedal locomotion**
+Boston Dynamics' Atlas can run, jump, do backflips, and navigate rough terrain. Figure, 1X, Agility Robotics, and Unitree have all demonstrated stable bipedal walking in real-world environments. Walking on flat floors, climbing stairs, and recovering from pushes are all solved or nearly solved.
+
+**Basic manipulation**
+Humanoid robots can pick up boxes, stack items, open doors, and carry objects. These are not trivial — they represent years of progress in grasping, balance adjustment while holding loads, and coordinated whole-body motion.
+
+**LLM integration**
+Large language models are being integrated as the "brain" for humanoid robots — allowing them to understand natural language instructions and reason about tasks. You can tell some robots what to do in plain English.
+
+---
+
+## What's Still Hard
+
+**Dexterous manipulation**
+Hands are extremely difficult. A human hand has 27 degrees of freedom and 17,000 touch receptors per fingertip. Current humanoid robot hands are dramatically less capable: fewer fingers, less dexterity, almost no tactile sensing.
+
+Tasks like using a key, buttoning a shirt, or unscrewing a jar cap remain very difficult for current humanoid robots. These require coordination, force modulation, and tactile feedback that is far beyond current hardware.
+
+**Speed and energy efficiency**
+Current humanoid robots walk slowly — typically 1-1.5 m/s, compared to 1.4 m/s average human walking speed. Running and fast manipulation are either impossible or very limited. Battery life is typically 1-2 hours of active operation.
+
+**Generalization**
+This is the biggest challenge. A humanoid robot trained to stack boxes in a factory can't spontaneously figure out how to fold laundry. Each new task requires significant retraining or programming. The vision of a robot that can do anything a human can do — transferring knowledge across domains fluidly — remains far from reality.
+
+<CodeLab title="The Manipulation Benchmark">
+
+Stanford researchers propose a simple test for humanoid robot capability: **can the robot put a shirt on a hanger?**
+
+It requires:
+- Identifying the shirt and hanger despite deformable shape
+- Grasping a floppy, non-rigid object
+- Threading the hanger through the collar (precise dexterous manipulation)
+- Adjusting grip as the shirt moves (tactile feedback)
+- Completing the task in reasonable time
+
+No current humanoid robot can do this reliably. It's a useful benchmark for tracking real progress against the hype.
+
+</CodeLab>
+
+---
+
+## The Key Players (2025)
+
+**Boston Dynamics (Atlas)**
+The most technically impressive locomotion — Atlas can run, jump, and handle rough terrain. Focus on dynamic movement and whole-body control. Hyundai-owned.
+
+**Figure AI**
+BMW partnership for automotive factory deployment. One of the best-funded startups. Integrating OpenAI models for language understanding.
+
+**Agility Robotics (Digit)**
+Amazon partnership for warehouse logistics. Focused on a narrow use case (moving totes in fulfillment centers) rather than general purpose. More commercially realistic near-term.
+
+**1X Technologies**
+Norwegian company with backing from OpenAI. Focus on "androidal" robot for general home and industrial use.
+
+**Tesla Optimus**
+Tesla's humanoid project. Slower to show capability than some competitors, but Tesla's manufacturing scale and AI investment are significant long-term advantages.
+
+**Unitree (H1, G1)**
+Chinese manufacturer producing the lowest-cost humanoid robots. H1 costs under $100,000, making humanoid hardware accessible for research.
+
+---
+
+<Pitfall title="The Demo Gap">
+
+Robot demos are almost universally misleading.
+
+A demo video shows a robot doing an impressive task smoothly and successfully. What it doesn't show:
+- How many takes were required
+- How controlled the environment was
+- Whether the robot can do this reliably (99%+ of the time) or occasionally (10-30%)
+- What happens when anything goes slightly wrong
+
+The gap between "can do this in ideal conditions occasionally" and "can do this reliably in real-world conditions" is enormous — often years of engineering work.
+
+When evaluating humanoid robot progress, ask not "can it do this?" but "what is the success rate, under what conditions, with how much human intervention?"
+
+</Pitfall>
+
+---
+
+<Quiz question="Why is dexterous manipulation considered one of the hardest remaining problems in humanoid robotics?">
+
+<div>
+
+Dexterous manipulation requires simultaneous capabilities that current hardware and AI struggle to provide: many degrees of freedom in the hand (27 in the human hand), fine tactile sensing (17,000 touch receptors per human fingertip), real-time force modulation (adjusting grip as objects slip or shift), and the ability to handle deformable and unpredictable objects.
+
+Most humanoid robot hands have far fewer joints, minimal tactile sensing, and struggle with the force control required for delicate manipulation. Tasks as simple as using a key, buttoning a shirt, or handling a raw egg remain beyond reliable capability for current systems.
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+Module 4 covered the robots you build. In **Module 5**, we focus on robots that navigate — specifically, autonomous vehicles that have to find their way through the most complex environment of all: the real world.

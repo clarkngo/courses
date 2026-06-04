@@ -1,0 +1,143 @@
+---
+title: "Sensor Fusion — Combining Inputs"
+description: "No single sensor is enough. Learn how Physical AI systems combine multiple data streams to build a reliable model of the world."
+module: 2
+moduleTitle: "Sensors & Perception"
+lesson: 3
+duration: "18 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## The Blind Men and the Elephant
+
+An old parable: several blind men each touch a different part of an elephant and describe what they feel. One says it's a wall (the side). One says it's a snake (the trunk). One says it's a tree trunk (the leg). Each is correct in isolation. None has the full picture.
+
+Physical AI sensors have the same problem. A camera sees a shape but doesn't know its distance. LiDAR knows the distance but not the color. Radar knows the velocity but not the type. GPS knows the location but not the surroundings.
+
+**Sensor fusion** is the process of combining multiple sensor inputs to produce a unified, accurate model of the environment that is better than any single sensor could provide.
+
+---
+
+## Why Fusion Beats Any Single Sensor
+
+Consider a self-driving car trying to detect a pedestrian at night in light rain:
+
+- **Camera alone:** dark image, reduced visibility, pedestrian hard to detect
+- **LiDAR alone:** can detect the pedestrian's shape but rain scatters laser pulses, adding noise
+- **Radar alone:** detects motion but can't distinguish a pedestrian from a blowing piece of trash
+
+**Fused together:** the system cross-validates all three. LiDAR says there's an object at 15 meters. Radar says it's moving at 3 mph (walking speed). Camera (even degraded) shows a human silhouette. Confidence is high: pedestrian detected.
+
+Each sensor's weakness is covered by another sensor's strength.
+
+---
+
+## Levels of Fusion
+
+Sensor fusion can happen at different stages of the processing pipeline:
+
+**Early fusion (raw data fusion)**
+Raw sensor data is combined before any interpretation. A deep neural network receives camera pixels, LiDAR points, and radar returns simultaneously and processes them together.
+
+*Advantage:* the model can learn cross-sensor relationships that humans wouldn't think to engineer.
+*Disadvantage:* computationally expensive; a failure in one sensor corrupts the whole input.
+
+**Late fusion (decision fusion)**
+Each sensor is processed independently to produce its own interpretation. Those interpretations are then combined.
+- Camera says: "90% confident there's a pedestrian at bearing 15°"
+- LiDAR says: "object detected at 12m, bearing 14°"
+- Radar says: "moving object, 2.5 mph, bearing 15°"
+- Fusion layer: combine these into a single high-confidence detection
+
+*Advantage:* modular; a failing sensor can be downweighted without corrupting others.
+*Disadvantage:* may miss cross-sensor relationships.
+
+**Middle fusion (feature fusion)**
+Features (intermediate representations) from each sensor are extracted and then fused — a practical compromise between the two extremes.
+
+---
+
+## The Kalman Filter — The Workhorse of Fusion
+
+The **Kalman filter** is a mathematical algorithm that has been at the heart of sensor fusion since the Apollo program. It solves a core problem: given a series of noisy, uncertain measurements, what is the best estimate of the true state?
+
+The filter does two things in a loop:
+
+1. **Predict** — based on the current state and a model of how the system moves, predict where things will be next
+2. **Update** — when a new sensor reading arrives, correct the prediction using the measurement, weighted by how trustworthy the sensor is
+
+<CodeLab title="A Simple Kalman Filter Intuition">
+
+Imagine you're tracking a car's position using GPS (accurate to 3 meters) and wheel odometry (drifts over time but accurate short-term).
+
+The Kalman filter:
+- Predicts position based on wheel odometry (good for short intervals)
+- Corrects the prediction when a GPS update arrives (good for absolute position)
+- Weights each source by its current uncertainty
+
+Over time, the combined estimate is more accurate than either source alone — and the filter automatically handles cases where one source is temporarily unavailable.
+
+Modern variants (Extended Kalman Filter, Unscented Kalman Filter) handle non-linear systems like those common in robotics.
+
+</CodeLab>
+
+---
+
+## SLAM — Building Maps While Moving
+
+One of the most impressive applications of sensor fusion is **Simultaneous Localization and Mapping (SLAM)**.
+
+SLAM solves a chicken-and-egg problem:
+- To localize (know where you are), you need a map
+- To build a map, you need to know where you are
+
+SLAM algorithms do both at the same time, using sensor fusion to continuously:
+1. Build a map of the environment from LiDAR, cameras, or depth sensors
+2. Localize within that map using the same sensors plus IMU data
+
+SLAM is how self-driving cars navigate without GPS, how warehouse robots know their position on the floor, and how Mars rovers navigate terrain that has never been mapped.
+
+---
+
+## When Fusion Fails
+
+<Pitfall title="Sensor Disagreement Without Resolution">
+
+What happens when sensors disagree and the fusion algorithm can't resolve the conflict?
+
+In March 2018, an Uber self-driving car struck and killed a pedestrian in Tempe, Arizona. Post-incident analysis found that the perception system detected the pedestrian but repeatedly reclassified her — first as an unknown object, then as a vehicle, then as a bicycle. Each reclassification reset the predicted path.
+
+The fusion system couldn't reconcile the inconsistent sensor readings into a stable detection. When it finally committed to a classification, it was too late to brake.
+
+Sensor fusion is not a magic solution. Designing systems that fail **safely** when sensors conflict is as important as designing them to succeed when sensors agree.
+
+</Pitfall>
+
+---
+
+<Quiz question="What is the difference between early fusion and late fusion in sensor processing?">
+
+<div>
+
+Early fusion combines raw sensor data (pixels, points, radar returns) before any interpretation. A single model processes everything together. Late fusion processes each sensor independently to produce its own interpretation, then combines those interpretations at the end.
+
+Early fusion can learn cross-sensor patterns but is fragile to sensor failures. Late fusion is more modular and robust to individual sensor failures. Most real systems use a hybrid approach.
+
+</div>
+</Quiz>
+
+---
+
+## Module 2 Recap
+
+You now know how Physical AI systems perceive the world:
+- **Cameras** capture rich visual information but need computation to extract meaning
+- **LiDAR** measures precise 3D distances
+- **Radar** works in any weather and measures velocity
+- **IMUs, encoders, and force sensors** give machines awareness of their own state
+- **Sensor fusion** combines these streams into a reliable world model
+
+In **Module 3**, we move from perception to action — how Physical AI systems decide what to do with what they sense.

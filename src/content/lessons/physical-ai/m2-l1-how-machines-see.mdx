@@ -1,0 +1,124 @@
+---
+title: "How Machines See"
+description: "Cameras, LiDAR, and radar are the eyes of Physical AI. Learn how each works, what it's good at, and where it fails."
+module: 2
+moduleTitle: "Sensors & Perception"
+lesson: 1
+duration: "20 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## The Perception Problem
+
+A physical AI system can only act on what it knows. And what it knows is only as good as what it can perceive.
+
+Perception — the ability to build an accurate model of the environment from raw sensor data — is arguably the hardest problem in Physical AI. Humans do it effortlessly and unconsciously. Machines have to be engineered to do it, piece by piece.
+
+The three dominant visual sensors in Physical AI are cameras, LiDAR, and radar. Each captures the world differently.
+
+---
+
+## Cameras
+
+Cameras are the cheapest, most information-rich sensor available. A camera captures a 2D grid of pixels, each with color and brightness values. Modern cameras can produce high-resolution images at 60+ frames per second.
+
+**What cameras are good at:**
+- Reading signs, text, lane markings, and traffic lights (require color/texture)
+- Recognizing objects — faces, cars, pedestrians — using deep learning
+- Working in full color, which contains huge amounts of semantic information
+- Low cost — a capable camera sensor costs a few dollars
+
+**Where cameras struggle:**
+- **No native depth perception** — a single camera can't tell you how far away an object is
+- **Lighting-dependent** — performance degrades in darkness, glare, fog, and rain
+- **Computationally expensive** — processing HD video in real time requires significant compute
+
+**Stereo cameras** solve the depth problem by using two lenses offset horizontally, like human eyes. By comparing the slight difference between the two images, the system can calculate depth — but only reliably at short distances.
+
+---
+
+## LiDAR
+
+LiDAR (**Li**ght **D**etection **A**nd **R**anging) works by firing laser pulses and measuring how long they take to bounce back. From millions of these measurements per second, it builds a precise 3D point cloud of the surrounding environment.
+
+**What LiDAR is good at:**
+- **Precise 3D distance measurement** — accurate to centimeters at long range
+- **Works in darkness** — it generates its own light
+- **360-degree coverage** — rotating LiDAR units (like the spinning units on early self-driving cars) see in all directions simultaneously
+
+**Where LiDAR struggles:**
+- **Expensive** — high-end units cost thousands of dollars, though prices have dropped dramatically
+- **Struggles in precipitation** — rain, snow, and fog scatter laser pulses
+- **No color or texture** — a point cloud tells you where things are, not what they are
+- **Sparse at distance** — the point cloud gets less dense farther from the sensor
+
+<CodeLab title="The LiDAR Price Collapse">
+
+The first commercial LiDAR unit used in autonomous vehicles (Velodyne HDL-64E) cost **$75,000** in 2007.
+
+By 2023, solid-state LiDAR units capable of autonomous driving applications cost **under $500**. Some automotive-grade units are under $200.
+
+This price collapse — driven by solid-state designs that eliminate spinning mechanical parts — is one of the key enablers of the autonomous vehicle industry.
+
+</CodeLab>
+
+---
+
+## Radar
+
+Radar (**Ra**dio **D**etection **A**nd **R**anging) uses radio waves instead of light. It has been in cars for decades — your car's blind spot monitor and adaptive cruise control use radar.
+
+**What radar is good at:**
+- **Works in any weather** — radio waves pass through rain, fog, snow, and dust
+- **Measures velocity directly** — Doppler radar can tell you exactly how fast an object is moving
+- **Long range** — automotive radar can detect objects 200+ meters away
+- **Cheap and robust** — radar sensors are mature, mass-produced technology
+
+**Where radar struggles:**
+- **Low resolution** — radar returns are blurry compared to LiDAR point clouds or camera images
+- **Can't identify objects** — radar tells you something is there and how fast it's moving, but not what it is
+- **Interference** — multiple radar systems in close proximity can interfere with each other
+
+---
+
+## Comparing the Three
+
+| Sensor | Depth | Color/Texture | Weather | Cost |
+|---|---|---|---|---|
+| Camera | No (stereo helps) | Yes | Poor | Very low |
+| LiDAR | Yes | No | Moderate | Moderate |
+| Radar | Yes | No | Excellent | Low |
+
+No single sensor covers all the bases. This is why real Physical AI systems combine all three — and we'll explore how in Lesson 3.
+
+<Pitfall title="The 'Cameras Only' Debate">
+
+Tesla has argued that cameras alone — like human eyes — should be sufficient for autonomous driving, and has removed LiDAR and radar from some of its vehicles.
+
+Critics argue this is premature: human eyes come with a brain that has 20 years of visual experience and biological redundancy. Camera-only AI systems have failed in conditions (bright sunlight, snow-covered lane markings) where humans wouldn't.
+
+This debate is unresolved. It's one of the most consequential engineering disagreements in the Physical AI field.
+
+</Pitfall>
+
+---
+
+<Quiz question="Why can't a single camera tell you how far away an object is?">
+
+<div>
+
+A single camera projects the 3D world onto a 2D image plane, discarding depth information in the process. A large object far away and a small object close up can produce identically sized images — the camera alone can't distinguish them.
+
+Recovering depth from a single image requires either additional information (known object sizes, motion parallax) or a second camera (stereo vision). LiDAR and radar avoid this problem by directly measuring the time it takes a signal to return from an object.
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+Cameras, LiDAR, and radar tell a machine about the world it can see. In **Lesson 2**, we look at sensors that tell a machine about itself — touch, force, and motion sensors that give a robot a sense of its own body.

@@ -1,0 +1,168 @@
+---
+title: "Self-Driving Cars — The Full Stack"
+description: "Autonomous vehicles are the most complex Physical AI systems ever built. Walk through the complete technical stack from sensors to steering."
+module: 5
+moduleTitle: "Autonomous Vehicles"
+lesson: 1
+duration: "22 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## The Hardest Physical AI Problem
+
+Building a self-driving car means solving, simultaneously, almost every hard problem in Physical AI:
+- Real-time perception in an uncontrolled, dynamic environment
+- Predicting the behavior of other agents (drivers, cyclists, pedestrians)
+- Planning safe trajectories at highway speeds
+- Acting under strict latency requirements
+- Maintaining safety across billions of miles of diverse driving conditions
+
+Billions of dollars and decades of research have produced systems that work — in defined geographic areas, under specific conditions. Full generalization remains unsolved.
+
+Here's the complete stack.
+
+---
+
+## Layer 1: Sensor Hardware
+
+A production autonomous vehicle is covered in sensors:
+
+**Cameras** — typically 8-12 cameras covering 360 degrees. Used for lane detection, traffic sign reading, object classification, and traffic light state.
+
+**LiDAR** — 1-3 units providing a 3D point cloud of the surrounding environment. Used for precise object localization, free-space detection, and as a check on camera-based detections.
+
+**Radar** — 4-6 radars for long-range detection and velocity measurement. Works in all weather. Detects vehicles, pedestrians, and cyclists.
+
+**GPS/GNSS** — provides global position with 1-3 meter accuracy. Combined with HD maps for lane-level localization.
+
+**IMU** — provides high-frequency position and orientation updates between GPS fixes.
+
+Waymo's vehicles use all five sensor types. Tesla has argued for cameras only. The debate continues.
+
+---
+
+## Layer 2: Perception
+
+Perception takes raw sensor data and produces a semantic understanding of the environment:
+
+**Object detection and tracking**
+Identify all vehicles, pedestrians, cyclists, animals, and obstacles in the scene. Track each one across time to maintain a consistent model. Deep neural networks (typically 3D detectors operating on LiDAR point clouds + camera features) are the standard approach.
+
+**Semantic segmentation**
+Classify every pixel/point: road, sidewalk, lane marking, building, vegetation, sky. Establishes drivable space.
+
+**Traffic element detection**
+Read traffic lights (red/yellow/green), stop signs, speed limit signs, and construction zone markers.
+
+**Localization**
+Determine the vehicle's precise position and orientation within a centimeter-accurate HD map. Sensors alone give ~1-3 meter GPS accuracy; localization against a map pushes this to 10-20 cm.
+
+---
+
+## Layer 3: Prediction
+
+Knowing where objects are now is not enough. The system must predict where they will be in 2, 5, 10 seconds.
+
+A pedestrian at the curb: will they step into the road? A car in an adjacent lane: will it merge? A cyclist ahead: will they turn?
+
+Prediction is one of the hardest problems in autonomous driving. Human behavior is:
+- Intention-driven (you can't see intent from sensors)
+- Social (behavior depends on other agents)
+- Context-dependent (same person behaves differently at a crosswalk vs. a highway)
+
+Modern prediction systems use transformer-based neural networks trained on millions of real-world driving scenarios to forecast likely trajectories for all nearby agents.
+
+---
+
+## Layer 4: Planning
+
+Given the current environment model and predictions, the planner decides what the vehicle should do:
+
+**Mission planning**
+Route from current location to destination using map data. This is essentially GPS navigation.
+
+**Behavioral planning**
+High-level decisions: follow the lane, yield to the pedestrian, merge left, prepare to turn. Implemented as a combination of rule-based logic and learned policies.
+
+**Motion planning**
+Compute a specific trajectory — positions, velocities, and accelerations over the next 5-10 seconds — that achieves the behavioral decision safely and comfortably.
+
+The trajectory must satisfy:
+- Physics (the car can't turn too sharply at speed)
+- Safety (maintain clearance from all detected objects, with buffer for prediction uncertainty)
+- Comfort (smooth accelerations, no jerky motions)
+- Traffic rules (stay in lane, obey speed limits)
+
+<CodeLab title="The Cost Function">
+
+Motion planning is typically formulated as an optimization problem: find the trajectory that minimizes a cost function.
+
+The cost function penalizes:
+- Proximity to obstacles (safety)
+- Deviation from the road centerline (lane keeping)
+- High accelerations and jerks (comfort)
+- Speed deviation from the limit (efficiency and legality)
+- Deviation from a reference path (navigation)
+
+Each term is weighted, and the weights encode the designer's priorities. Setting these weights — trading off safety margin vs. comfort vs. efficiency — is as much policy as engineering.
+
+</CodeLab>
+
+---
+
+## Layer 5: Control
+
+The controller translates the planned trajectory into actuator commands: steering angle, throttle, brake.
+
+A cascade of controllers is typical:
+1. Lateral controller (steering) tracks the planned path
+2. Longitudinal controller (throttle/brake) tracks the planned speed profile
+
+Both use feedback control (PID or model predictive control) to compensate for vehicle dynamics, road conditions, and model errors.
+
+---
+
+## Layer 6: HD Maps
+
+HD (High Definition) maps are not Google Maps. They contain centimeter-accurate geometric data about:
+- Lane boundaries, centerlines, and lane types
+- Road curvature and grades
+- Speed limits and traffic rules
+- Traffic light positions and associations with lanes
+- Stop line positions
+
+HD maps are built by driving mapping vehicles over every road and processed offline. They allow autonomous vehicles to "know" the road geometry before they see it — dramatically reducing the perception burden.
+
+The downside: HD maps must be maintained. Road construction, new signs, and changed lane configurations invalidate map data. Keeping HD maps current is a major operational challenge.
+
+<Pitfall title="The Long Tail Problem">
+
+Autonomous driving development has a brutal statistical property: the common cases are easy; the rare cases are hard; the hardest cases are the most dangerous.
+
+A self-driving car can handle normal highway driving after relatively limited development. But "edge cases" — unusual road geometry, unusual weather, unusual human behavior, equipment failures, novel obstacles — appear infrequently but must be handled safely.
+
+The challenge: you need billions of miles of real-world driving to encounter enough edge cases to train against them. This is why autonomous vehicle companies publish their "miles driven" numbers obsessively — it's a proxy for edge case coverage.
+
+</Pitfall>
+
+---
+
+<Quiz question="Why do self-driving cars need HD maps in addition to their real-time sensors?">
+
+<div>
+
+Real-time sensors tell the vehicle what is currently visible in the environment. HD maps provide prior knowledge about the road's geometry, lane boundaries, traffic rules, and signal positions at centimeter accuracy.
+
+This combination allows the vehicle to localize precisely (matching current sensor data to the map), anticipate road features before they're visible (e.g., a stop sign around a corner), and reduce the perception burden by confirming expected structures rather than discovering everything from scratch.
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+Self-driving cars navigate on the ground. In **Lesson 2**, we look up — at drones and aerial autonomous systems that face their own unique version of the same problems.

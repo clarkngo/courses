@@ -1,0 +1,85 @@
+---
+title: "From Software to the Physical World"
+description: "Understand what makes Physical AI different from the AI you already know — and why it changes everything."
+module: 1
+moduleTitle: "What Is Physical AI?"
+lesson: 1
+duration: "15 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## The AI You Know
+
+Most people's first experience with AI is invisible. A chatbot answers your question. A recommendation engine suggests a show. A spam filter silently deletes an email.
+
+These systems live entirely inside computers. They take text in, produce text out. Nothing in the physical world changes because of them — unless a human reads the output and decides to act.
+
+That's about to change.
+
+---
+
+## When AI Grows a Body
+
+**Physical AI** is the application of artificial intelligence to systems that interact with the real world — systems that move, manipulate, navigate, and respond to physical conditions.
+
+The key difference from software AI:
+
+| Software AI | Physical AI |
+|---|---|
+| Acts on data | Acts on the world |
+| Mistakes are usually reversible | Mistakes can cause physical harm |
+| Runs in a controlled environment | Operates in an unpredictable world |
+| Can pause and restart | Must respond in real time |
+| Failure = wrong answer | Failure = collision, injury, damage |
+
+A chatbot that gives bad advice is a problem. A self-driving car that makes a bad decision at 60 mph is a catastrophe.
+
+---
+
+## Three Things That Make It Hard
+
+Physical AI faces challenges that pure software AI doesn't:
+
+**1. The real world doesn't wait.**
+Software can process a query in its own time. A robot arm moving toward a human worker has milliseconds to detect a collision and stop. Latency isn't a user experience issue — it's a safety issue.
+
+**2. Sensors lie.**
+Cameras get dirty. LiDAR gets confused by rain. GPS fails indoors. Physical AI systems must work with noisy, incomplete, and sometimes wrong data about the world they're operating in.
+
+**3. Actions have consequences.**
+You can't "undo" a surgical incision or a warehouse collision. Physical AI must be right — or at least safely wrong — in a way that software never has to be.
+
+---
+
+## Why Now?
+
+Physical AI isn't new. Factories have used robotic arms since the 1960s. What's changed:
+
+- **Compute** — AI chips are now small enough and cheap enough to embed in devices
+- **Data** — decades of sensor data and video have trained perception models that actually work
+- **ML advances** — deep learning cracked computer vision, the hardest problem in physical AI
+- **Cost** — sensors that cost $75,000 in 2012 cost $500 today
+
+The result: physical AI is moving out of controlled factory floors and into hospitals, roads, farms, and homes.
+
+---
+
+<Quiz question="What is the most important difference between a software AI mistake and a physical AI mistake?">
+
+<div>
+
+Physical AI mistakes can cause real-world harm — damage, injury, or death — that cannot be undone. A wrong answer from a chatbot is correctable. A wrong action from a robot or autonomous vehicle may not be.
+
+This is why physical AI systems require much stricter safety engineering, testing, and redundancy than pure software systems.
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+In **Lesson 2**, we'll look at the fundamental loop that every physical AI system runs — the cycle of sensing, deciding, and acting that makes machines intelligent in the real world.

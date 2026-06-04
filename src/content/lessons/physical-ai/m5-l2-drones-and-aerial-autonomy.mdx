@@ -1,0 +1,147 @@
+---
+title: "Drones and Aerial Autonomy"
+description: "From package delivery to search and rescue, autonomous drones are reshaping what's possible. Learn the unique physics and AI challenges of flight."
+module: 5
+moduleTitle: "Autonomous Vehicles"
+lesson: 2
+duration: "17 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Flying Is Different
+
+Autonomous ground vehicles and autonomous aerial vehicles share many principles — perception, planning, control. But flight introduces unique constraints that shape every design decision.
+
+**The margin for error is zero.**
+A ground robot that fails can stop and sit. A drone that loses power or control falls from the sky. Every subsystem must be designed with this in mind.
+
+**The environment is sparse but three-dimensional.**
+Air has fewer obstacles than ground environments, but the obstacle space is 3D. Obstacle avoidance must account for objects above, below, and to the sides.
+
+**Physics is unforgiving.**
+Multirotor drones (quadcopters, hexacopters) are inherently unstable — a microcontroller running at hundreds of Hz is constantly correcting motor speeds to maintain level flight. There is no "coasting."
+
+---
+
+## Types of Autonomous Drones
+
+**Multirotor (quadcopter/hexacopter)**
+The most common drone type for commercial and consumer use. Multiple rotors provide lift and control through differential speed. Simple mechanically, but computationally demanding to stabilize.
+
+*Advantages:* hover capability, vertical takeoff/landing, compact
+*Disadvantages:* energy-inefficient, limited range and endurance
+
+**Fixed-wing**
+Like a conventional airplane — a wing provides lift and a forward motor provides thrust. Much more energy-efficient than multirotors.
+
+*Advantages:* long range, high speed, efficient
+*Disadvantages:* cannot hover, requires launch and landing area or mechanism
+
+**VTOL (Vertical Takeoff and Landing) hybrid**
+Takes off vertically like a multirotor, transitions to fixed-wing flight for cruise, then lands vertically. Combines the best of both.
+
+*Advantages:* hover + range + efficiency
+*Disadvantages:* complex, transition is a challenging flight phase
+
+Most long-range commercial delivery drones use VTOL designs.
+
+---
+
+## The AI Stack for Drones
+
+**State estimation**
+The drone must know its position, velocity, and orientation at all times. This is harder than it sounds:
+- GPS is the primary position source outdoors but fails indoors, in urban canyons, and in GPS-denied environments (GPS jamming, spoofing)
+- IMU provides high-frequency updates but drifts
+- Visual odometry uses cameras to estimate motion relative to the environment
+- Barometer provides altitude
+
+**Obstacle avoidance**
+At low altitudes, obstacles are everywhere: trees, power lines, buildings, birds, other aircraft. Modern consumer drones (DJI) use stereo cameras and infrared sensors for obstacle detection. Professional delivery drones use LiDAR. At higher altitudes, ATC (Air Traffic Control) integration and detect-and-avoid (DAA) systems handle aircraft separation.
+
+**Path planning**
+3D path planning in an obstacle environment. Drones can go up and over obstacles, making planning more flexible than ground vehicles — but the 3D search space is computationally more demanding.
+
+**Weather integration**
+Wind is the enemy of small drone operations. Modern delivery drones integrate weather forecasts and real-time wind measurements to plan routes and assess go/no-go decisions.
+
+<CodeLab title="The Autonomy Stack on a DJI Drone">
+
+A consumer DJI drone like the Mavic 3 runs multiple AI systems:
+
+- **Attitude controller** — PID control running at 400 Hz to stabilize the platform
+- **Position hold** — GPS + vision fusion to maintain hover position in wind
+- **Obstacle avoidance** — stereo cameras + AI detect and avoid objects in 6 directions
+- **Return to home** — GPS-guided autonomous return on low battery or signal loss
+- **ActiveTrack** — deep learning object detection to follow a moving subject
+
+All of this runs on embedded processors weighing under a kilogram, on a battery that lasts 45 minutes.
+
+</CodeLab>
+
+---
+
+## Commercial Drone Applications
+
+**Last-mile delivery**
+Alphabet's Wing, Amazon Prime Air, Zipline (medical supplies), Manna (Ireland/UK) are all operational. Drones avoid traffic, reduce cost for lightweight goods, and can reach locations inaccessible by road.
+
+**Infrastructure inspection**
+Power lines, wind turbines, cell towers, bridges, oil rigs — drones can inspect hazardous structures faster, cheaper, and more safely than human crews.
+
+**Precision agriculture**
+Multispectral cameras measure crop health. AI analysis produces prescription maps. Spraying drones apply pesticides or fertilizer exactly where needed, reducing chemical use by 30-50%.
+
+**Search and rescue**
+Thermal cameras on drones can find missing persons in forests or after natural disasters, covering terrain that would take ground teams days in hours.
+
+**Mapping and surveying**
+Photogrammetry from drone imagery produces centimeter-accurate 3D maps of construction sites, mines, and terrain.
+
+---
+
+## Regulatory Environment
+
+Drone autonomy is as much a regulatory problem as a technical one.
+
+**BVLOS (Beyond Visual Line of Sight)**
+Most commercial drone operations require keeping the drone in sight of the operator. True autonomous delivery and inspection require BVLOS, which is regulated by aviation authorities (FAA in the US, EASA in Europe).
+
+BVLOS approvals are slowly being granted, but the regulatory process is years behind the technology.
+
+**Urban Air Mobility (UAM)**
+Autonomous air taxis (Joby, Archer, Wisk) plan to carry human passengers. The safety bar here is much higher than for cargo drones — they must eventually meet commercial aviation safety standards (one accident per 10 billion flight hours).
+
+<Pitfall title="GPS Spoofing and Jamming">
+
+Consumer and commercial drones rely heavily on GPS for navigation. GPS is trivially easy to jam (overwhelm the receiver with noise) or spoof (broadcast fake GPS signals that send the drone to a wrong location).
+
+In conflict zones, GPS jamming has caused many civilian drone failures. Even in commercial environments, GPS spoofing has been demonstrated to redirect delivery drones.
+
+Robust autonomous drones must fuse GPS with other localization sources — visual odometry, LiDAR SLAM, barometer, IMU — so that GPS loss or corruption doesn't cause a crash or misdirection.
+
+</Pitfall>
+
+---
+
+<Quiz question="Why are VTOL hybrid drones preferred for long-range commercial delivery over pure multirotors?">
+
+<div>
+
+Pure multirotors are energy-inefficient for cruise flight — they must continuously spin all rotors at high speed to maintain lift, even during level flight. This limits range and endurance.
+
+VTOL hybrids take off and land vertically (like a multirotor) but transition to fixed-wing flight for cruise, where a wing provides lift efficiently with much less power. This dramatically extends range and endurance, making long-range delivery economically practical.
+
+The tradeoff is complexity — the transition between hover and fixed-wing flight is a demanding phase that requires careful control design.
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+Self-driving cars and drones both claim varying degrees of autonomy. In **Lesson 3**, we look at the standardized way to describe and compare these systems: the SAE levels of autonomy.
