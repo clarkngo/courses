@@ -1,0 +1,214 @@
+---
+title: "Sensor Fusion — Combining Multiple Data Streams"
+description: "Learn how maritime AI systems merge radar, camera, lidar, and AIS data into a single trusted picture of the environment using Kalman filters and deep learning."
+module: 2
+moduleTitle: "Sensors and Perception at Sea"
+lesson: 2
+duration: "45 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## What Is Sensor Fusion?
+
+Sensor fusion is the process of combining data from multiple sensors into a representation more accurate and complete than any single sensor could provide. In maritime AI, it answers the question:
+
+> "Given noisy, partial measurements from radar, camera, lidar, and AIS — what is actually out there, where exactly, and how is it moving?"
+
+The output is a **track** for each detected object: a position estimate with a confidence interval, a velocity vector, and ideally a classification (vessel, buoy, debris, mammal).
+
+---
+
+## Why Simple Averaging Isn't Enough
+
+Suppose radar reports an object at bearing 045°, range 800 m, and camera image analysis places the same object at bearing 046°, estimated range 780 m. You can't just average these — they have very different noise characteristics:
+
+- Radar range is precise (±10 m) but bearing is coarse (±0.5° resolution)
+- Camera bearing is precise but range is an AI estimate (±50 m at this distance)
+
+A naive average would weight them equally and produce a worse answer than either sensor alone. You need a method that weights each sensor by its **measurement uncertainty**.
+
+That method is the **Kalman Filter**.
+
+---
+
+## The Kalman Filter
+
+The Kalman Filter is a recursive algorithm that maintains a state estimate (position, velocity) and its uncertainty, then updates both every time a new measurement arrives. It weights measurements by how reliable they are relative to the current uncertainty.
+
+**Two-step cycle:**
+
+```
+1. PREDICT
+   - Use the current state + motion model to predict next state
+   - Uncertainty grows (we're less sure after prediction)
+
+2. UPDATE
+   - Receive a new measurement
+   - If measurement uncertainty < current state uncertainty → trust the measurement more
+   - If measurement uncertainty > current state uncertainty → trust the prediction more
+   - Fuse them: new estimate = weighted blend of prediction and measurement
+   - Uncertainty shrinks
+```
+
+This cycle runs at the sensor update rate — potentially dozens of times per second for lidar.
+
+---
+
+## A Simple Python Demonstration
+
+Install numpy:
+
+```bash
+pip install numpy matplotlib
+```
+
+Create `kalman_1d.py` — a 1D Kalman filter tracking a vessel's range:
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+
+# True vessel behavior: moves from 1000 m to 500 m at constant speed
+true_range = np.linspace(1000, 500, 50)
+
+# Simulated radar measurements (high noise)
+radar_noise = 30  # meters std dev
+radar_meas  = true_range + np.random.normal(0, radar_noise, 50)
+
+# Simulated lidar measurements (lower noise, shorter range — only first 25 steps)
+lidar_noise = 8
+lidar_meas  = true_range[:25] + np.random.normal(0, lidar_noise, 25)
+
+# Kalman filter state
+x  = 1000.0   # initial range estimate
+P  = 100.0    # initial uncertainty (variance)
+Q  = 1.0      # process noise (how much state can change between steps)
+
+estimates = []
+
+for i in range(50):
+    # --- PREDICT ---
+    # (1D, constant velocity model: range decreases ~10 m per step)
+    x = x - 10
+    P = P + Q
+
+    # --- UPDATE with radar ---
+    R_radar = radar_noise ** 2
+    K = P / (P + R_radar)
+    x = x + K * (radar_meas[i] - x)
+    P = (1 - K) * P
+
+    # --- UPDATE with lidar if available ---
+    if i < 25:
+        R_lidar = lidar_noise ** 2
+        K = P / (P + R_lidar)
+        x = x + K * (lidar_meas[i] - x)
+        P = (1 - K) * P
+
+    estimates.append(x)
+
+plt.figure(figsize=(10, 5))
+plt.plot(true_range,  label="True range",    linewidth=2)
+plt.plot(radar_meas,  label="Radar (noisy)", alpha=0.5, linestyle="--")
+plt.plot(estimates,   label="Kalman estimate", linewidth=2)
+plt.axvline(25, color="gray", linestyle=":", label="Lidar cuts out at step 25")
+plt.xlabel("Time step")
+plt.ylabel("Range (m)")
+plt.title("Kalman Filter: Fusing Radar + Lidar")
+plt.legend()
+plt.tight_layout()
+plt.savefig("kalman_fusion.png", dpi=150)
+print("Chart saved to kalman_fusion.png")
+```
+
+```bash
+python kalman_1d.py
+```
+
+Notice: the estimate closely follows true range when lidar is active (low noise). After step 25 it degrades slightly as it relies on radar alone — but still better than raw radar. This is the core benefit of multi-sensor fusion.
+
+---
+
+## Extended and Unscented Kalman Filters
+
+The standard Kalman Filter assumes linear motion and Gaussian noise. Real maritime scenarios break both assumptions:
+
+- Vessels maneuver (turn, accelerate) — **non-linear motion**
+- Camera-based range estimates have non-Gaussian error distributions
+
+**Extended Kalman Filter (EKF):** linearizes non-linear models at each step using a Jacobian. Used in most real marine navigation systems.
+
+**Unscented Kalman Filter (UKF):** uses a set of carefully chosen sample points (sigma points) instead of linearizing. More accurate for highly non-linear systems; used in advanced COLAV systems.
+
+For production maritime applications, Python libraries like `filterpy` implement all three variants.
+
+---
+
+## Deep Learning for Sensor Fusion
+
+Modern systems increasingly replace or augment Kalman-based fusion with neural networks, particularly:
+
+**Multi-modal transformers:** The same attention mechanism used in LLMs can attend across sensor modalities. A transformer trained on radar + camera + AIS data learns spatial and temporal correlations that hand-coded Kalman models miss.
+
+**Point cloud + image fusion:** Networks like PointFusion and DeepFusion directly combine 3D lidar point clouds with camera images to produce better object classifications than either modality alone.
+
+The limitation is interpretability — a Kalman filter's uncertainty estimate is mathematically principled. A neural network's confidence score is harder to validate for safety certification.
+
+---
+
+<CodeLab title="Fusion Architecture in a Real COLAV System">
+
+A production collision avoidance system (e.g., Kongsberg's K-CHIEF Maritime or Rolls-Royce's HELIOS) typically uses this fusion stack:
+
+```
+Raw sensor streams
+    │
+    ▼
+Pre-processing (clutter filtering, coordinate transforms, time alignment)
+    │
+    ▼
+Track initiation (new contact identified)
+    │
+    ▼
+Multi-hypothesis tracking (MHT) — maintains multiple hypotheses for ambiguous contacts
+    │
+    ▼
+EKF / UKF per track (state estimation + covariance)
+    │
+    ▼
+Data association (match new measurements to existing tracks)
+    │
+    ▼
+Fusion output: Track list with position, velocity, classification, and confidence
+    │
+    ▼
+COLAV planner consumes track list
+```
+
+</CodeLab>
+
+<Pitfall title="Sensor Fusion Does Not Eliminate Uncertainty — It Quantifies It">
+
+A common misconception is that sensor fusion produces a "ground truth" view of the environment. It doesn't. It produces the *best possible estimate* given the available sensors — with a principled measure of uncertainty. A well-designed maritime AI system propagates that uncertainty through to the decision layer. If uncertainty is high (e.g., a contact is detected by radar but not camera, and range is ambiguous), the system should be more conservative — slow down, maintain greater clearance, or alert a human operator. Ignoring uncertainty estimates is a top source of real-world AI failures.
+
+</Pitfall>
+
+---
+
+<Quiz question="Why does the Kalman Filter weight measurements by uncertainty rather than averaging them equally?">
+
+<div>
+
+Different sensors have fundamentally different error characteristics. Radar measures range very precisely but bearing coarsely; cameras provide precise bearing but imprecise range; lidar gives accurate 3D positions at close range but loses signal in spray. Equal-weight averaging would waste the strengths of each sensor and amplify their weaknesses. The Kalman Filter weights each measurement inversely proportional to its variance — sensors with lower noise contribute more to the estimate. The result is an estimate that is, provably, the minimum-variance unbiased estimator — the mathematically optimal fusion of all available measurements.
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+In **Lesson 3**, you'll use computer vision and a pre-trained object detection model to identify vessels, buoys, and other objects in maritime camera images — the perception step that feeds classified objects into the fusion pipeline.

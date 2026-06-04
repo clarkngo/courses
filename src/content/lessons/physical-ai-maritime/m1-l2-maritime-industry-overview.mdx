@@ -1,0 +1,126 @@
+---
+title: "The Maritime Industry and AI Opportunity"
+description: "Map the size, structure, and pain points of global maritime — and see exactly where AI is creating the most impact."
+module: 1
+moduleTitle: "Introduction to Physical AI in Maritime"
+lesson: 2
+duration: "35 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## The Scale of Maritime
+
+Before you can understand where AI helps, you need to understand the industry's scale:
+
+- **~100,000 commercial vessels** operate globally at any time
+- **~1.89 million seafarers** crew those vessels
+- **$14 trillion** in goods move by sea each year
+- **90%** of world trade by volume travels by ship
+- **Shipping emits ~2.5%** of global CO₂ — under intense pressure to decarbonize by 2050
+
+This is one of the oldest industries in the world — and one of the least digitized until recently.
+
+---
+
+## Vessel Types and Their AI Needs
+
+Different vessel types have different AI priorities:
+
+| Vessel Type | Primary AI Use Case |
+|---|---|
+| **Container ships** | Route optimization, predictive maintenance, port scheduling |
+| **Tankers (oil/LNG)** | Leak detection, safe berthing, cargo monitoring |
+| **Bulk carriers** | Structural health monitoring, loading optimization |
+| **Ferries** | Autonomous navigation, passenger safety, docking assist |
+| **Offshore supply vessels** | Station-keeping in rough seas, crane automation |
+| **Fishing vessels** | Fish-finding AI, catch prediction, compliance monitoring |
+| **Naval vessels** | Threat detection, mine avoidance, ISR (intelligence, surveillance, reconnaissance) |
+
+Each category has its own regulatory regime, operating environment, and risk profile. Physical AI systems must be tailored to these specifics — a one-size-fits-all approach fails quickly.
+
+---
+
+## The Four Major Pain Points AI Addresses
+
+### 1. Safety
+
+Human error causes **75–96%** of maritime accidents according to the IMO. Fatigue, distraction, and poor situational awareness on the bridge kill crew and damage cargo. AI systems that monitor 360° around the clock don't get tired.
+
+### 2. Fuel and Emissions
+
+Fuel is typically **40–60%** of a voyage's operating cost. Slow steaming, weather routing, trim optimization, and engine tuning — all powered by AI — can reduce fuel use by 10–20%. With carbon taxes rising, this is now a regulatory as much as a financial issue.
+
+### 3. Maintenance
+
+Unplanned downtime at sea is catastrophic. A failed engine in the middle of the Pacific can cost $1 million per day in charter penalties, salvage, and repair. AI-powered condition monitoring catches failures before they happen.
+
+### 4. Port Efficiency
+
+A container ship burns money while waiting at anchor. Predictive port arrival (PPA) systems coordinate vessel speed with berth availability, reducing waiting time. Inside the port, AI coordinates cranes, trucks, and yard operations to minimize dwell time.
+
+---
+
+## Key Stakeholders in Maritime AI
+
+Understanding who uses — and who must approve — maritime AI:
+
+```
+Shipowners          → buy vessels, want ROI on AI investment
+Ship managers       → operate day-to-day, care about crew safety and maintenance costs
+Charterers          → hire vessels, want on-time delivery and fuel efficiency
+Flag States         → license vessels, set safety standards (e.g., Panama, Liberia, Marshall Islands)
+Port Authorities    → control access, enforce local regulations
+Classification Societies → certify that vessels meet safety standards (DNV, Lloyd's Register, ABS)
+IMO                 → the UN body that sets global maritime regulations
+Insurers            → P&I clubs and hull insurers price risk based on safety record
+```
+
+Any AI system deployed on a commercial vessel needs buy-in from most of these stakeholders. Classification societies like **DNV** have published frameworks specifically for approving AI systems on vessels — a process called "class notation."
+
+---
+
+<CodeLab title="DNV's Maritime AI Class Notation">
+
+DNV (Det Norske Veritas) offers a class notation called **NAUTICUS(Autonomous)** for vessels using AI-driven navigation. To receive this notation a vessel must demonstrate:
+
+- Defined Operational Design Domain (ODD) — where and under what conditions the AI can operate
+- Fallback procedures if AI fails
+- Human override capability at all times
+- Cybersecurity measures protecting the AI system
+- Validation testing in simulation and at sea
+
+This framework is one of the first regulatory structures specifically designed for Physical AI in maritime.
+
+</CodeLab>
+
+---
+
+## The Decarbonization Driver
+
+The IMO's 2023 strategy calls for **net-zero emissions from shipping by 2050**, with intermediate targets in 2030 and 2040. This creates urgent demand for AI because:
+
+- **Wind-assisted propulsion** (Flettner rotors, rigid sails) requires AI to optimize sail deployment based on wind, course, and sea state
+- **Ammonia and hydrogen fuels** are harder to manage than diesel — AI monitors complex fuel systems
+- **Carbon Intensity Indicator (CII)** ratings require ships to report and improve efficiency — AI provides the data and the optimization
+
+Decarbonization is the single biggest market driver for Physical AI in maritime over the next decade.
+
+---
+
+<Quiz question="Why do classification societies matter for maritime AI deployment?">
+
+<div>
+
+Classification societies (DNV, Lloyd's Register, ABS, Bureau Veritas, etc.) certify that vessels meet internationally recognized safety standards. Without a valid class certificate, a vessel cannot obtain insurance, enter most ports, or legally carry cargo. When classification societies develop frameworks for approving AI systems — like DNV's NAUTICUS(Autonomous) — they become the de facto gatekeepers for which AI technologies can be commercially deployed at sea. Understanding their requirements is essential for anyone building or procuring maritime AI systems.
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+In **Lesson 3**, you'll get hands-on with publicly available maritime data — AIS vessel tracking feeds — and write your first Python script to parse and visualize vessel positions in real time.

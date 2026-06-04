@@ -1,0 +1,193 @@
+---
+title: "Working with AIS Vessel Tracking Data"
+description: "Parse and visualize real AIS vessel position data using Python — your first hands-on step with maritime sensor streams."
+module: 1
+moduleTitle: "Introduction to Physical AI in Maritime"
+lesson: 3
+duration: "50 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## What Is AIS?
+
+**AIS (Automatic Identification System)** is a VHF radio-based transponder system that every commercial vessel over 300 gross tons must carry. Every few seconds, a vessel broadcasts:
+
+- **MMSI** — Maritime Mobile Service Identity (unique vessel ID, like a phone number)
+- **Latitude / Longitude** — GPS position
+- **Speed Over Ground (SOG)** — in knots
+- **Course Over Ground (COG)** — direction of travel in degrees
+- **Heading** — where the bow points (may differ from COG in currents)
+- **Vessel name and type**
+- **Destination and ETA**
+
+AIS data is the "heartbeat" of maritime situational awareness. Coastal stations and satellites receive these broadcasts and make the data available via APIs. This lesson uses a free public AIS feed.
+
+---
+
+## Setting Up Your Environment
+
+```bash
+python -m venv .venv
+source .venv/bin/activate   # Windows: .venv\Scripts\activate.bat
+
+pip install requests pandas folium
+```
+
+- **requests** — HTTP calls to the AIS API
+- **pandas** — tabular data manipulation
+- **folium** — generates interactive Leaflet.js maps from Python
+
+---
+
+## Fetching AIS Data
+
+We'll use **AISHub** (free tier, requires registration) or the **MarineTraffic** API. For this lesson we use a static sample file that mirrors the real API response format so you can run this without an API key.
+
+Create `ais_sample.json`:
+
+```json
+[
+  {"mmsi": "123456789", "name": "EVER GIVEN", "lat": 30.6832, "lon": 32.2697,
+   "sog": 8.4, "cog": 185.0, "vessel_type": "Container Ship", "destination": "ROTTERDAM"},
+  {"mmsi": "987654321", "name": "NORDIC ORION", "lat": 29.9, "lon": 32.5,
+   "sog": 11.2, "cog": 175.5, "vessel_type": "Bulk Carrier", "destination": "HAMBURG"},
+  {"mmsi": "111222333", "name": "STENA IMPERO", "lat": 26.4, "lon": 57.1,
+   "sog": 0.0, "cog": 0.0, "vessel_type": "Tanker", "destination": "BANDAR ABBAS"},
+  {"mmsi": "444555666", "name": "OCEAN WARRIOR", "lat": 1.28, "lon": 103.83,
+   "sog": 14.0, "cog": 90.0, "vessel_type": "Container Ship", "destination": "SINGAPORE"}
+]
+```
+
+---
+
+## Parsing and Analyzing with Pandas
+
+Create `ais_analysis.py`:
+
+```python
+import json
+import pandas as pd
+
+with open("ais_sample.json") as f:
+    records = json.load(f)
+
+df = pd.DataFrame(records)
+
+# Flag stationary vessels (SOG below 0.5 knots)
+df["is_stationary"] = df["sog"] < 0.5
+
+print("=== All Vessels ===")
+print(df[["name", "lat", "lon", "sog", "cog", "vessel_type"]].to_string(index=False))
+
+print("\n=== Stationary Vessels ===")
+stationary = df[df["is_stationary"]]
+print(stationary[["name", "vessel_type", "destination"]].to_string(index=False))
+
+print("\n=== Vessel Type Counts ===")
+print(df["vessel_type"].value_counts())
+
+print("\n=== Average Speed by Type ===")
+print(df.groupby("vessel_type")["sog"].mean().round(2))
+```
+
+Run it:
+
+```bash
+python ais_analysis.py
+```
+
+You'll see a breakdown of vessel types, a flagged stationary tanker, and average speeds per category. This simple filtering is the foundation of anomaly detection — a stationary tanker in a traffic lane is a potential emergency.
+
+---
+
+## Visualizing on a Map
+
+Create `ais_map.py`:
+
+```python
+import json
+import folium
+import pandas as pd
+
+with open("ais_sample.json") as f:
+    records = json.load(f)
+
+df = pd.DataFrame(records)
+
+# Color-code by vessel type
+TYPE_COLORS = {
+    "Container Ship": "blue",
+    "Bulk Carrier":   "green",
+    "Tanker":         "red",
+}
+
+m = folium.Map(location=[20, 60], zoom_start=4)
+
+for _, row in df.iterrows():
+    color = TYPE_COLORS.get(row["vessel_type"], "gray")
+    popup_text = (
+        f"<b>{row['name']}</b><br>"
+        f"Type: {row['vessel_type']}<br>"
+        f"Speed: {row['sog']} kn | Course: {row['cog']}°<br>"
+        f"Destination: {row['destination']}"
+    )
+    folium.Marker(
+        location=[row["lat"], row["lon"]],
+        popup=folium.Popup(popup_text, max_width=200),
+        icon=folium.Icon(color=color, icon="ship", prefix="fa"),
+    ).add_to(m)
+
+m.save("vessels.html")
+print("Map saved to vessels.html — open in your browser.")
+```
+
+```bash
+python ais_map.py
+open vessels.html   # macOS; on Windows: start vessels.html
+```
+
+You'll see an interactive world map with color-coded vessel markers. Click any marker for the vessel's details.
+
+---
+
+<CodeLab title="AIS Data Quality Issues">
+
+Real AIS feeds are messy. Common problems you'll encounter:
+
+| Problem | Cause | Mitigation |
+|---|---|---|
+| **Spoofing** | Vessel falsely reports position to hide illicit activity | Cross-reference with satellite imagery |
+| **Gap filling** | Vessels turn off AIS in sanctioned waters | Use satellite AIS (S-AIS) instead of coastal receivers |
+| **Duplicate MMSI** | Vessels illegally reuse another vessel's ID | Flag MMSIs appearing in two distant locations simultaneously |
+| **Stale position** | Poor VHF reception or transmission failure | Flag records older than 10 minutes as unreliable |
+| **Position jumps** | GPS glitch or spoofing | Filter positions that imply physically impossible speeds (>50 kn for large vessels) |
+
+Any AI system built on AIS data must account for these quality issues — garbage in, garbage out applies with real physical consequences at sea.
+
+</CodeLab>
+
+<Pitfall title="AIS Is Not a Safety System">
+
+AIS was designed for situational awareness and collision avoidance assistance — not as a primary safety system. Vessels are not required to act on AIS data alone, and AIS has no authentication. A vessel relying entirely on AIS for collision avoidance is non-compliant with COLREGs, which require using all available means including visual lookout and radar. Always layer AIS with radar and camera data in any Physical AI collision avoidance system.
+
+</Pitfall>
+
+---
+
+<Quiz question="What does a vessel's Speed Over Ground (SOG) of 0.0 knots tell an AI system?">
+
+<div>
+
+SOG of 0.0 knots means the vessel is not moving relative to the ground (accounting for current and wind). This could mean the vessel is at anchor, drifting without power (a possible emergency), berthed at a port, or has turned off propulsion. A Physical AI system would combine SOG with the vessel's last known destination, nearby anchorage locations, and time of day to distinguish between routine anchoring and a distress situation. SOG alone is not enough — context from other data layers is essential.
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+In **Module 2**, you'll go deeper into the sensor ecosystem — learning how radar, lidar, cameras, and sonar each perceive the maritime environment, and how **sensor fusion** combines them into a single coherent picture that an AI can act on.

@@ -1,0 +1,158 @@
+---
+title: "Safety and Certification of Maritime AI Systems"
+description: "Understand how maritime AI systems are validated, certified by classification societies, and designed to fail safely — with a focus on the safety case methodology."
+module: 5
+moduleTitle: "Safety, Security, and Compliance"
+lesson: 1
+duration: "45 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Why Maritime AI Safety Is Different
+
+Software AI in most domains fails gracefully — a wrong recommendation, a missed classification. In maritime Physical AI, failures have physical consequences:
+
+- A collision avoidance system that fails to detect a fishing boat can sink the vessel and kill crew
+- A DP system that loses station can swing a vessel into a platform, causing an oil spill
+- A predictive maintenance system that clears a faulty component for service can cause an engine failure in open ocean
+
+This is why maritime AI is subject to **formal safety certification** by classification societies — the independent bodies (DNV, Lloyd's Register, ABS, Bureau Veritas, ClassNK) that have verified maritime safety since the 19th century.
+
+---
+
+## The Safety Case Methodology
+
+A **safety case** is a structured argument that a system is acceptably safe for a defined use. It is the primary framework used by maritime classification societies to evaluate AI systems.
+
+A safety case has three components:
+
+```
+┌──────────────────────────────────────────────────┐
+│  CLAIM: The collision avoidance system is safe   │
+│  to operate in the North Sea ferry route         │
+├──────────────────────────────────────────────────┤
+│  ARGUMENT: Structured logical chain showing how  │
+│  evidence supports the claim, at each level      │
+│  of decomposition                                │
+├──────────────────────────────────────────────────┤
+│  EVIDENCE: Test results, simulation data,        │
+│  failure mode analysis, operational trials,      │
+│  expert review                                   │
+└──────────────────────────────────────────────────┘
+```
+
+For AI systems, building a safety case is harder than for traditional software because AI behavior is not fully specified in code — it emerges from training data. The safety case must argue that the training data and validation process produce safe behavior across the full operational domain.
+
+---
+
+## Operational Design Domain (ODD)
+
+The **ODD** defines the conditions under which an AI system is certified to operate. Every autonomous or AI-assisted maritime system must specify its ODD clearly.
+
+For a collision avoidance system, the ODD might include:
+
+| Dimension | Specification |
+|---|---|
+| **Geographic area** | Norwegian coastal waters, within 50 nm of shore |
+| **Water depth** | > 20 m |
+| **Visibility** | > 200 m (dense fog: fall back to manual control) |
+| **Sea state** | Significant wave height < 4 m |
+| **Traffic density** | < 20 AIS contacts within 5 nm |
+| **Time of day** | Day and night (IR cameras required at night) |
+| **Ice** | No ice — operation suspended in icing conditions |
+
+Operating outside the ODD must trigger a fallback — slow down, engage human operator, anchor, or return to port. The AI must continuously monitor whether current conditions are within ODD.
+
+---
+
+## Hazard Analysis and Risk Assessment
+
+Before building a safety case, you must identify what can go wrong. The maritime industry uses two standard methods:
+
+**FMEA (Failure Mode and Effects Analysis):**
+For each component, enumerate: What can fail? How likely? What is the effect on the system? Is there a detection mechanism? What mitigation exists?
+
+Example row:
+| Component | Failure Mode | Effect | Severity | Likelihood | Detection | Mitigation |
+|---|---|---|---|---|---|---|
+| Radar | Power failure | Loss of obstacle detection | Critical | Low | System health monitor | Camera + AIS still active; alert operator |
+
+**HAZOP (Hazard and Operability Study):**
+A structured what-if analysis: "What if the sensor gives wrong data?" "What if two sensors disagree?" "What if the AI takes too long to respond?" Used for complex systems with many interacting components.
+
+---
+
+## Functional Safety Standards Applied to Maritime AI
+
+Automotive AI uses **ISO 26262**; industrial AI uses **IEC 61508**. Maritime is adapting these frameworks through:
+
+- **IEC 62443** (cybersecurity for industrial control systems)
+- **IMO MSC-FAL.1/Circ.3** (Guidelines on maritime cyber risk management)
+- **DNV GL-ST-0700** (cyber security for ships)
+- **IACS UR E26/E27** (unified requirements for cybersecurity — mandatory for newbuildings from 2024)
+
+For AI specifically, DNV's **RP-0467** (recommended practice for AI and data) provides guidance on data quality, model validation, and uncertainty management for AI systems in safety applications.
+
+---
+
+<CodeLab title="Minimum Risk Condition (MRC)">
+
+Every autonomous maritime system must define a **Minimum Risk Condition** — the safest state the vessel can reach if AI fails catastrophically.
+
+Typical MRC hierarchy:
+1. **Level 1:** Continue with degraded functionality (e.g., radar fails → slow down, rely on camera + AIS, alert operator)
+2. **Level 2:** Reduce speed to minimum steerage, alert VTS and nearby vessels via AIS/VHF
+3. **Level 3:** Heave to (stop forward motion, maintain station against wind)
+4. **Level 4:** Anchor if in suitable depth; broadcast MAYDAY
+
+The AI must reach MRC autonomously within a defined time (typically 30–60 seconds of detecting a critical failure). This behavior must be tested, not just designed — actual hardware-in-the-loop simulation with injected failures is required for classification society approval.
+
+</CodeLab>
+
+## Validation and Testing Requirements
+
+Evidence for a maritime AI safety case must include:
+
+**Simulation testing:**
+- Monte Carlo simulation across the full ODD (thousands of scenarios)
+- Adversarial scenarios (sensor failure, spoofed inputs, unusual vessel types)
+- Edge case coverage documented
+
+**Hardware-in-the-loop (HIL) testing:**
+- Real navigation computers running AI software against simulated sensor inputs
+- Verifies real-time performance (can the system respond within required latency?)
+
+**Open water trials:**
+- Controlled sea trials in an approved test area
+- Witnessed by classification society surveyor
+- Documented performance against KPIs (detection rate, false alarm rate, reaction time)
+
+**Ongoing monitoring:**
+- Once deployed, performance must be logged and periodically reviewed
+- Classification society notified of significant incidents
+
+<Pitfall title="Simulation Coverage Does Not Equal Real-World Safety">
+
+Simulation test suites can achieve high scenario coverage within the scenarios they define — but cannot cover unknown unknowns. The maritime environment regularly produces situations that no scenario designer anticipated: an unusual vessel type, a sensor failure coinciding with a low-visibility situation, a harbor pilot taking manual control without notifying the AI system. Testing must actively try to find failure modes, not just confirm that designed scenarios work. Red-teaming — where a separate team specifically tries to break the system — is an essential part of any maritime AI validation program.
+
+</Pitfall>
+
+---
+
+<Quiz question="What is an Operational Design Domain (ODD) and why must an autonomous maritime system continuously monitor whether it's operating within one?">
+
+<div>
+
+An ODD is the set of conditions — geographic area, weather, sea state, traffic density, visibility, ice conditions, and more — within which an AI system has been validated and certified to operate safely. Outside the ODD, the system's behavior is not validated and may be unsafe. Continuous ODD monitoring is required because environmental conditions at sea change rapidly — a vessel may enter fog unexpectedly, wind may pick up beyond the maximum allowable sea state, or ice may drift into the operating area. When ODD boundaries are approached or exceeded, the system must transition to a fallback mode or alert a human operator before the unsafe condition fully arrives — not after. Waiting until the condition is fully present may leave insufficient time for a safe response.
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+In **Lesson 2**, you'll examine **maritime cybersecurity** — the specific threats targeting shipboard AI systems, connected ports, and maritime data infrastructure, and the regulatory frameworks requiring cyber resilience.

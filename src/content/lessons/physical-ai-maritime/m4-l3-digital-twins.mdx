@@ -1,0 +1,202 @@
+---
+title: "Digital Twins for Maritime Systems"
+description: "Learn how digital twins — virtual replicas of vessels and ports — enable AI to simulate, optimize, and predict before acting in the physical world."
+module: 4
+moduleTitle: "Port and Fleet Intelligence"
+lesson: 3
+duration: "45 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## What Is a Digital Twin?
+
+A **digital twin** is a continuously updated virtual model of a physical asset, synchronized with real sensor data. It is not just a 3D visualization — it is a living, computational replica that can:
+
+- **Explain** current behavior (why is fuel consumption elevated?)
+- **Monitor** health and flag anomalies (compare actual performance vs. model prediction)
+- **Simulate** future states (what happens if we increase speed by 2 knots in this sea state?)
+- **Optimize** operations (find the speed and trim that minimizes fuel cost per ton-mile)
+
+The digital twin is the connective tissue between sensor data, AI models, and physical operations.
+
+---
+
+## Digital Twins in Maritime
+
+Maritime was an early adopter of digital twin technology because vessels are expensive, operate in harsh conditions, and generate enormous amounts of sensor data that was historically unused.
+
+| Twin Type | Asset | Key Use |
+|---|---|---|
+| **Hull twin** | Ship structure | Fatigue life monitoring, damage assessment |
+| **Propulsion twin** | Engine + shaft + propeller | Fuel optimization, performance degradation tracking |
+| **Voyage twin** | Entire vessel | Route optimization, ETA prediction, CII compliance |
+| **Port twin** | Terminal + berths + cranes | Throughput simulation, congestion prediction, capacity planning |
+| **Fleet twin** | All vessels in a fleet | Network-level optimization, maintenance scheduling |
+
+---
+
+## The Vessel Performance Model
+
+At the core of a voyage digital twin is the **vessel performance model** — a mathematical model that predicts fuel consumption and speed given:
+
+- **Sea state** (wave height, period, direction)
+- **Wind** (speed, direction)
+- **Current** (speed, direction)
+- **Vessel draft** (how deep the hull sits, determined by cargo weight)
+- **Hull and propeller fouling** (increases drag over time between dry-docks)
+- **Engine load and RPM**
+
+Traditional performance models are based on **ship model basin tests** and **computational fluid dynamics (CFD)**. AI improves on these by learning a model directly from operational data — every voyage's fuel logs, GPS track, sea state data, and engine readings become training points.
+
+A **Gaussian Process** or **neural network** trained on this data produces a performance model that automatically captures real-world effects (hull roughness, propeller pitch wear) that CFD models miss.
+
+---
+
+## Python: Simple Vessel Speed-Power Model
+
+Create `vessel_twin.py` — a simplified model of the relationship between vessel speed and fuel consumption:
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.gaussian_process import GaussianProcessRegressor
+from sklearn.gaussian_process.kernels import RBF, WhiteKernel
+
+# Admiralty formula: P ∝ V^3 * displacement^(2/3)
+# Real-world: fuel rate (tonnes/day) ≈ a * speed^n, n ≈ 2.7-3.2
+
+def theoretical_fuel(speed_kn, fouling_factor=1.0):
+    """Simplified fuel consumption model (tonnes/day)."""
+    return fouling_factor * 0.8 * (speed_kn ** 3.0) / 100
+
+rng = np.random.default_rng(0)
+
+# Simulated operational data from past voyages
+# (speed varies 10–18 kn; consumption measured)
+speeds_obs   = rng.uniform(10, 18, 40)
+# Add sea-state and fouling noise on top of the cubic relationship
+fuel_obs     = theoretical_fuel(speeds_obs, fouling_factor=1.08) + rng.normal(0, 0.15, 40)
+
+X_train = speeds_obs.reshape(-1, 1)
+y_train = fuel_obs
+
+# Gaussian Process regression
+kernel = RBF(length_scale=2.0) + WhiteKernel(noise_level=0.02)
+gp     = GaussianProcessRegressor(kernel=kernel, n_restarts_optimizer=5, random_state=0)
+gp.fit(X_train, y_train)
+
+# Predict across speed range
+X_pred = np.linspace(8, 20, 200).reshape(-1, 1)
+y_mean, y_std = gp.predict(X_pred, return_std=True)
+
+# Find optimal speed for given freight rate and fuel cost
+fuel_cost_usd_tonne = 600
+freight_rate_usd_day = 25000
+
+daily_profit = []
+for speed, fuel_rate in zip(X_pred.flatten(), y_mean):
+    revenue = freight_rate_usd_day  # fixed per day (simplification)
+    fuel_cost = fuel_rate * fuel_cost_usd_tonne
+    daily_profit.append(revenue - fuel_cost)
+
+optimal_idx   = np.argmax(daily_profit)
+optimal_speed = X_pred.flatten()[optimal_idx]
+optimal_fuel  = y_mean[optimal_idx]
+print(f"Optimal speed: {optimal_speed:.1f} kn  |  Fuel rate: {optimal_fuel:.2f} t/day")
+print(f"Daily profit at optimal speed: ${daily_profit[optimal_idx]:,.0f}")
+
+# Plot
+fig, axes = plt.subplots(1, 2, figsize=(12, 5))
+
+ax = axes[0]
+ax.scatter(speeds_obs, fuel_obs, color="steelblue", zorder=5, label="Observed voyages")
+ax.plot(X_pred, y_mean, "r-", label="GP mean (digital twin)")
+ax.fill_between(X_pred.flatten(), y_mean - 2*y_std, y_mean + 2*y_std, alpha=0.2, color="red", label="±2σ")
+ax.axvline(optimal_speed, color="green", linestyle="--", label=f"Optimal speed {optimal_speed:.1f} kn")
+ax.set_xlabel("Speed (knots)"); ax.set_ylabel("Fuel consumption (t/day)")
+ax.set_title("Vessel Performance Digital Twin"); ax.legend(); ax.grid(True)
+
+ax = axes[1]
+ax.plot(X_pred, daily_profit, color="darkgreen")
+ax.axvline(optimal_speed, color="green", linestyle="--")
+ax.set_xlabel("Speed (knots)"); ax.set_ylabel("Daily profit (USD)")
+ax.set_title("Speed vs. Economic Optimum"); ax.grid(True)
+
+plt.tight_layout()
+plt.savefig("vessel_twin.png", dpi=150)
+print("Chart saved to vessel_twin.png")
+```
+
+```bash
+pip install scikit-learn && python vessel_twin.py
+```
+
+The Gaussian Process learns the vessel's actual speed-fuel curve from operational data. The economic optimization layer finds the speed that maximizes profit given current freight rates and fuel prices — a live calculation that changes every time fuel prices change.
+
+---
+
+## Port Digital Twins
+
+Port digital twins model the entire terminal as a system:
+
+- **Vessel arrival stream** (from AIS and booking systems)
+- **Berth occupancy** (real-time from vessel sensors)
+- **Crane state** (productivity, availability, maintenance)
+- **Yard state** (stack height, container locations, reefer plug occupancy)
+- **Gate flow** (truck arrivals, inspection times)
+
+The twin enables **what-if simulation**: "If a crane goes offline tomorrow, how many vessels are delayed and by how much?" Operations managers run these scenarios in seconds rather than building spreadsheet models.
+
+The Port of Rotterdam's **Pronto** platform is one of the most advanced port digital twins in operation, integrating data from 500+ stakeholders to enable collaborative optimization across the entire port community.
+
+---
+
+<CodeLab title="Digital Twin Data Architecture">
+
+A maritime digital twin platform typically has three tiers:
+
+```
+Edge tier (on vessel or at berth)
+  ├── IoT sensors → edge processing → data normalization
+  └── Local storage for offline operation
+
+Cloud tier (shore)
+  ├── Time-series database (InfluxDB, TimescaleDB)
+  ├── Model inference engine (runs performance models)
+  └── AI training pipeline (retrains models as new data arrives)
+
+Application tier
+  ├── Fleet management dashboard
+  ├── Route optimization API
+  └── Anomaly alert service
+```
+
+The edge tier handles data quality and bandwidth constraints (satellite links cost $5–15/MB). Only compressed, pre-processed features are transmitted to shore — raw sensor data stays local for post-incident download.
+
+</CodeLab>
+
+<Pitfall title="A Digital Twin Is Only as Good as Its Data Lineage">
+
+A vessel performance model trained on data from one vessel in one trade route can give dangerously wrong recommendations when applied to a different vessel or route. Before deploying a digital twin model, verify: Was the training data representative of current operating conditions? Has the vessel undergone hull cleaning or engine overhaul since the model was trained? Is the sea-state data source consistent between training and inference? Document the data lineage and retrain models regularly — every dry-dock at minimum, ideally every quarter as hull fouling accumulates.
+
+</Pitfall>
+
+---
+
+<Quiz question="How does a Gaussian Process model improve on a physics-based performance model for vessel fuel optimization?">
+
+<div>
+
+Physics-based models (Admiralty formula, CFD) are derived from hull design specifications and model basin tests, which don't capture real-world effects like hull roughness from biofouling, propeller wear, or trim variations from actual cargo loading. A Gaussian Process learns the vessel's actual performance curve directly from operational sensor data, automatically capturing all these real-world effects. It also provides principled uncertainty estimates — it knows where it has little data and returns wider confidence intervals, alerting the optimization layer to be conservative in those regions. As new voyage data accumulates, the GP model updates to track gradual performance changes like fouling buildup, which a physics model would require manual re-parameterization to capture.
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+In **Module 5**, you'll explore the safety, security, and regulatory dimensions of maritime AI — understanding how AI systems are certified, what cybersecurity threats target maritime Physical AI, and the ethical frameworks governing autonomous vessels.

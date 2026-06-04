@@ -1,0 +1,189 @@
+---
+title: "Maritime Object Detection with Computer Vision"
+description: "Use a pre-trained YOLO model to detect vessels, buoys, and obstacles in maritime camera images — and understand the challenges of deploying vision AI at sea."
+module: 2
+moduleTitle: "Sensors and Perception at Sea"
+lesson: 3
+duration: "55 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Object Detection in Maritime AI
+
+Camera-based object detection is the "eyes" of a maritime Physical AI system. The goal is to identify and localize every relevant object in a camera frame — other vessels, buoys, floating debris, personnel on deck, and coastlines — in real time, regardless of lighting and sea conditions.
+
+We'll use **YOLOv8** (You Only Look Once, version 8) from Ultralytics. YOLO is a single-stage object detector that processes an entire image in one neural network pass, making it fast enough for real-time deployment on shipboard hardware.
+
+---
+
+## Setup
+
+```bash
+pip install ultralytics opencv-python-headless requests pillow
+```
+
+YOLOv8 pre-trained on COCO detects 80 object classes — including "boat" (class 8) — which gives us a starting point for maritime detection without any custom training.
+
+---
+
+## Running Inference on a Maritime Image
+
+Create `detect_vessels.py`:
+
+```python
+from ultralytics import YOLO
+from PIL import Image
+import requests
+from io import BytesIO
+
+# Load the smallest YOLOv8 variant (fastest, lowest memory)
+model = YOLO("yolov8n.pt")  # downloads ~6 MB on first run
+
+# A public-domain maritime image (replace with any vessel photo)
+IMAGE_URL = (
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/"
+    "3/3f/Container_vessel_Cuxhaven.jpg/1280px-Container_vessel_Cuxhaven.jpg"
+)
+
+response = requests.get(IMAGE_URL, timeout=10)
+img = Image.open(BytesIO(response.content))
+img.save("test_vessel.jpg")
+
+# Run detection
+results = model("test_vessel.jpg", conf=0.25)
+
+# Print detections
+for r in results:
+    for box in r.boxes:
+        cls_id   = int(box.cls[0])
+        cls_name = model.names[cls_id]
+        conf     = float(box.conf[0])
+        xyxy     = box.xyxy[0].tolist()
+        print(f"  [{cls_name}] confidence={conf:.2f}  bbox={[round(c) for c in xyxy]}")
+
+# Save annotated image
+results[0].save("detected_vessels.jpg")
+print("\nAnnotated image saved to detected_vessels.jpg")
+```
+
+```bash
+python detect_vessels.py
+```
+
+You'll see bounding box coordinates and confidence scores for detected boats. The annotated image overlays boxes and labels directly on the photo.
+
+---
+
+## Understanding the Output
+
+A detection result has three components:
+
+| Component | Meaning |
+|---|---|
+| **Class** | What was detected (`boat`, `person`, `truck`, etc.) |
+| **Confidence** | Model certainty (0–1). Below your threshold → filtered out |
+| **Bounding box (xyxy)** | Pixel coordinates: top-left (x1, y1) and bottom-right (x2, y2) |
+
+The bounding box pixel coordinates need to be converted to real-world bearing and range before they can be used for collision avoidance. This is done using **camera calibration** (intrinsic parameters) and **lidar or radar range association**.
+
+---
+
+## Maritime-Specific Challenges for Object Detection
+
+Generic YOLO trained on COCO is a useful starting point, but it falls short in several maritime-specific ways:
+
+### 1. Small and Distant Objects
+
+A container ship 5 km away occupies maybe 20×10 pixels in a 1280×720 frame. YOLO variants struggle with objects smaller than 32×32 pixels. Maritime datasets typically contain many such small targets.
+
+**Fix:** Use models trained with multi-scale feature pyramids (YOLOv8's P2 head) and augment training data with synthetic small-object examples.
+
+### 2. Image Degradation
+
+Sea spray coats camera lenses. Sun glare reflects off water. Dense fog reduces contrast to near-zero. None of these conditions appear in COCO training data.
+
+**Fix:** Augment training data with simulated fog, rain, glare, and motion blur using albumentations or torchvision transforms.
+
+### 3. Horizon Clutter
+
+Waves near the horizon create textures that look like vessel silhouettes to a model trained on clear imagery.
+
+**Fix:** Fine-tune on maritime-specific datasets.
+
+---
+
+## Fine-Tuning on a Maritime Dataset
+
+The **SeaShips** and **MARVEL** datasets are public maritime object detection datasets. Here's how you'd fine-tune YOLOv8 on one (training would require a GPU and is shown as a reference):
+
+```python
+from ultralytics import YOLO
+
+model = YOLO("yolov8n.pt")  # start from COCO pre-trained weights
+
+results = model.train(
+    data="maritime.yaml",      # dataset config with class names + paths
+    epochs=100,
+    imgsz=640,
+    batch=16,
+    device="0",                # GPU index; "cpu" for no GPU
+    augment=True,
+    degrees=5.0,               # slight rotation augment for pitch/roll
+    fliplr=0.5,                # horizontal flip — vessels look the same both ways
+    mosaic=1.0,                # mosaic augmentation helps small object detection
+    project="maritime_runs",
+    name="yolov8n_maritime",
+)
+```
+
+The `maritime.yaml` file specifies your dataset path and class names — for example:
+```yaml
+path: ./maritime_dataset
+train: images/train
+val:   images/val
+nc: 6
+names: [vessel, fishing_boat, sailboat, buoy, debris, person_in_water]
+```
+
+---
+
+<CodeLab title="Deploying on Shipboard Hardware">
+
+Commercial vessels increasingly carry edge AI hardware for real-time inference:
+
+| Hardware | Use Case |
+|---|---|
+| **NVIDIA Jetson Orin** | High-throughput inference; runs YOLOv8 at 60 fps on 1080p |
+| **Intel OpenVINO + NUC** | Lower power draw; good for always-on monitoring |
+| **Coral Edge TPU** | Extremely low power; inference for lightweight models only |
+| **Raspberry Pi + USB Coral** | Budget ASV projects and research vessels |
+
+For certification, inference pipelines must log inputs and outputs with timestamps for post-incident analysis. Think of it like a flight data recorder for AI decisions.
+
+</CodeLab>
+
+<Pitfall title="Confidence Threshold Tuning Is Safety-Critical">
+
+Setting your detection confidence threshold too high means objects get missed (false negatives) — dangerous in collision avoidance. Setting it too low means the system floods the operator with phantom detections (false positives) — causing alert fatigue and ignored alarms. There is no universal right value. Threshold tuning must be done empirically on representative maritime imagery, and the resulting miss rate and false alarm rate must be evaluated against your vessel's operational design domain. Document this analysis for classification society review.
+
+</Pitfall>
+
+---
+
+<Quiz question="Why is a COCO-pretrained YOLO model insufficient for production maritime object detection without fine-tuning?">
+
+<div>
+
+COCO contains photos taken in everyday land environments — streets, parks, and interiors. It lacks the domain-specific characteristics of maritime imagery: sun glare on water, sea spray degradation, small distant vessels near the horizon, wave clutter, fog, and classes like buoys and life rafts. A model fine-tuned only on COCO will have poor recall for the exact object types and conditions that matter most in maritime safety. Fine-tuning on datasets like SeaShips or MARVEL — collected at sea, in varying weather — is required before the model is safe to deploy as part of a collision avoidance pipeline.
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+In **Module 3**, you'll move from perception to decision-making: how an autonomous vessel uses its fused sensor picture to plan a safe course, avoid collisions, and comply with COLREGs — the international rules of the road at sea.

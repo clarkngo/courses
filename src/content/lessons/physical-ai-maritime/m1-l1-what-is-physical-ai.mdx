@@ -1,0 +1,113 @@
+---
+title: "What Is Physical AI?"
+description: "Understand how AI moves beyond screens into the physical world — sensing, deciding, and acting in real environments like ships, ports, and oceans."
+module: 1
+moduleTitle: "Introduction to Physical AI in Maritime"
+lesson: 1
+duration: "30 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## From Software AI to Physical AI
+
+Most AI you interact with daily — chatbots, recommendation engines, image classifiers — lives entirely in software. It processes data and returns data. Nothing physically moves.
+
+**Physical AI** is different. It closes the loop between the digital and physical worlds:
+
+1. **Sense** — cameras, radar, sonar, GPS, and other sensors feed real-world data into the system
+2. **Perceive** — AI models interpret that raw data (obstacle ahead, sea state rough, engine temperature rising)
+3. **Decide** — the system plans the best response given constraints (safety rules, mission goals, regulations)
+4. **Act** — motors turn, valves open, alarms sound, course corrections execute
+
+This sense-perceive-decide-act cycle runs continuously — often hundreds of times per second — while the physical world changes around it.
+
+---
+
+## Why Maritime Is a Prime Domain for Physical AI
+
+The maritime industry is one of the most demanding environments for Physical AI for several reasons:
+
+| Challenge | Why It's Hard |
+|---|---|
+| **Vast, unstructured environment** | Open ocean has no road markings, no traffic lights, no fixed lanes |
+| **Extreme sensor conditions** | Saltwater, fog, spray, and darkness degrade cameras and lidar |
+| **Safety stakes** | A mistake in a cargo corridor can sink a vessel or cause an oil spill |
+| **Regulatory complexity** | COLREGs, SOLAS, flag-state rules, and port authority requirements all apply |
+| **Crew limitations** | Fatigue, small crews on large vessels, and remote operations demand automation |
+
+Despite — or because of — these challenges, shipping carries **90% of world trade**, and the industry is investing heavily in AI to improve safety, efficiency, and sustainability.
+
+---
+
+## The Physical AI Stack in Maritime
+
+Think of maritime Physical AI as five stacked layers, each depending on the one below it:
+
+```
+┌─────────────────────────────────────┐
+│  5. Mission Layer                   │  voyage planning, fleet management
+├─────────────────────────────────────┤
+│  4. Decision Layer                  │  collision avoidance, route optimization
+├─────────────────────────────────────┤
+│  3. Perception Layer                │  object detection, sea-state estimation
+├─────────────────────────────────────┤
+│  2. Sensor Layer                    │  radar, AIS, cameras, sonar, IMU
+├─────────────────────────────────────┤
+│  1. Physical Layer                  │  hull, propulsion, rudder, actuators
+└─────────────────────────────────────┘
+```
+
+Each layer feeds information upward and receives commands downward. A breakdown at any layer affects every layer above it. In Module 2 we explore the sensor layer in depth; in Module 3 we cover the decision layer.
+
+---
+
+## Real-World Physical AI in Maritime Today
+
+These systems are already operating commercially:
+
+**Autonomous Surface Vessels (ASVs)**
+Rolls-Royce and Kongsberg have demonstrated remotely operated and semi-autonomous ferries in Norwegian fjords. The Yara Birkeland — a zero-emission container ship — sailed autonomously between Norwegian ports in 2022.
+
+**Predictive Maintenance**
+Wärtsilä's AI platform monitors engine vibration, exhaust temperatures, and fuel flow in real time. It predicts failures days before they happen, allowing planned maintenance instead of emergency repairs at sea.
+
+**Port Automation**
+The Port of Rotterdam uses AI to coordinate berth scheduling, crane sequencing, and truck flow. Computer vision tracks every container in the yard.
+
+**Weather Routing AI**
+Systems like StormGeo and Weathernews analyze satellite data and model forecasts to find fuel-optimal routes that avoid heavy weather — saving 5–15% on fuel per voyage.
+
+---
+
+<CodeLab title="Key Terminology">
+
+| Term | Definition |
+|---|---|
+| **ASV** | Autonomous Surface Vessel — an unmanned boat operating on the water's surface |
+| **AUV** | Autonomous Underwater Vehicle — an unmanned submarine-style vehicle |
+| **COLREGs** | International Regulations for Preventing Collisions at Sea — the "rules of the road" for ships |
+| **IMU** | Inertial Measurement Unit — measures acceleration and rotation; used for navigation |
+| **AIS** | Automatic Identification System — vessels broadcast their position, speed, and identity via AIS |
+| **COLAV** | Collision Avoidance — the onboard system that detects and responds to collision risk |
+
+</CodeLab>
+
+---
+
+<Quiz question="What distinguishes Physical AI from traditional software AI?">
+
+<div>
+
+Physical AI closes the sense-perceive-decide-act loop in the real world. Unlike pure software AI that takes data in and returns data out, Physical AI has actuators that change the physical environment — turning a rudder, sounding an alarm, or stopping an engine. The consequences of errors are physical and often irreversible, which is why safety and reliability requirements are far stricter than for software-only systems.
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+In **Lesson 2**, you'll explore the maritime sensor ecosystem — radar, AIS, lidar, cameras, and sonar — and learn how data from these sensors is fused together to give an AI system a coherent picture of its surroundings.

@@ -1,0 +1,184 @@
+---
+title: "AI-Assisted Docking and Port Approach"
+description: "Explore how AI and precise sensor systems guide a vessel through the most demanding phase of a voyage — docking in confined port waters."
+module: 3
+moduleTitle: "Autonomous Navigation Systems"
+lesson: 3
+duration: "45 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Why Docking Is the Hardest Maneuver
+
+Open-ocean navigation is demanding but forgiving — errors of meters are usually safe. Docking is the opposite:
+
+- **Clearances of < 1 meter** between hull and quay wall
+- **GNSS accuracy degrades** in port (multipath errors from buildings and cranes)
+- **Wind and current** act unpredictably in confined harbor basins
+- **Time pressure** — other vessels waiting, tidal windows closing
+- **Stakes** — a docking collision costs $1–20 million in hull damage and cargo delays
+
+Traditional docking relies on a harbor pilot with decades of local knowledge, tugboats, and constant radio communication. AI-assisted docking automates or augments all of this.
+
+---
+
+## Sensors for Docking
+
+At docking distances (< 200 m), different sensors take over from the open-ocean suite:
+
+| Sensor | Role in Docking |
+|---|---|
+| **DGPS / RTK-GPS** | Sub-meter position accuracy using shore-based correction signals |
+| **Lidar** | Precise distance to quay wall, ranging of bollards and fenders |
+| **Cameras + CV** | Visual confirmation of berth, mooring line target detection |
+| **Ultrasonic sensors** | Very close-range (<10 m) gap measurement |
+| **Current meters / ADCP** | Real-time current velocity — critical for thruster compensation |
+| **Wind sensors (anemometers)** | Wind force and direction for drift calculation |
+| **Docking aid lasers** | Shore-mounted lasers that measure approach angle and speed |
+
+The data fusion challenge at docking is different from open ocean: the vessel is nearly stationary, dynamics are dominated by external forces (wind, current, tug forces), and the system must compute thruster commands with very short time horizons.
+
+---
+
+## Thruster Configuration and Control
+
+Modern vessels in ports use **azimuth thrusters** (pods that rotate 360°) and **bow thrusters** (transverse propellers). Together they can produce force in any direction without the vessel moving forward — enabling precise maneuvering.
+
+**Control hierarchy:**
+
+```
+AI / Operator command layer
+        │
+        ▼
+Dynamic Positioning (DP) Controller
+        │
+        ▼
+Thruster Allocation Algorithm
+        │
+        ▼
+Individual thruster drive units
+```
+
+The **DP controller** keeps the vessel at a target position and heading against environmental forces. It takes a desired vessel position/heading and outputs a required force/moment. The **thruster allocation algorithm** then distributes this force optimally across all available thrusters, minimizing power consumption while avoiding forbidden zones (e.g., can't point a thruster directly at the hull).
+
+---
+
+## Python: Simplified 2D DP Station-Keeping
+
+Create `station_keeping.py` — a simplified simulation of a vessel maintaining position against wind disturbance:
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Vessel state: [x (m), y (m), psi (heading, rad)]
+state = np.array([0.0, 0.0, 0.0])
+
+# Target position and heading
+target = np.array([0.0, 0.0, 0.0])
+
+# PD controller gains
+Kp = np.array([0.8, 0.8, 1.5])
+Kd = np.array([1.5, 1.5, 2.0])
+
+dt = 0.5  # seconds
+steps = 200
+
+# Wind disturbance (constant northward force, meters/s^2 equivalent)
+disturbance = np.array([0.0, 0.05, 0.0])
+
+states  = []
+forces  = []
+prev_err = np.zeros(3)
+
+for i in range(steps):
+    error = target - state
+    # Normalize heading error to [-pi, pi]
+    error[2] = (error[2] + np.pi) % (2 * np.pi) - np.pi
+
+    d_error  = (error - prev_err) / dt
+    prev_err = error.copy()
+
+    # PD control output (thrust force in body frame)
+    force = Kp * error + Kd * d_error
+    force = np.clip(force, -2.0, 2.0)
+
+    # Apply force + disturbance, simple first-order dynamics
+    state = state + (force - disturbance) * dt * 0.5
+
+    states.append(state.copy())
+    forces.append(force.copy())
+
+states = np.array(states)
+forces = np.array(forces)
+
+fig, axes = plt.subplots(1, 3, figsize=(14, 4))
+labels = ["X position (m)", "Y position (m)", "Heading (rad)"]
+for i, (ax, label) in enumerate(zip(axes, labels)):
+    ax.plot(states[:, i], label="Actual")
+    ax.axhline(target[i], color="r", linestyle="--", label="Target")
+    ax.set_title(label); ax.legend(); ax.set_xlabel("Time step"); ax.grid(True)
+
+plt.tight_layout()
+plt.savefig("station_keeping.png", dpi=150)
+print("Chart saved to station_keeping.png")
+```
+
+```bash
+python station_keeping.py
+```
+
+The vessel starts at origin and maintains position against a constant wind disturbance. You'll see the PD controller bring all three states to near-zero error. In a real DP system, this controller runs at 10 Hz and handles 6 degrees of freedom.
+
+---
+
+## AI Improvements Over Classical DP
+
+Classical DP controllers are well-understood and certified, but AI adds value in several ways:
+
+**Learned disturbance models:** Neural networks trained on historical docking data predict wind and current forces more accurately than sensor measurements alone — because they learn the micro-environment of specific berths (how wind funnels between buildings, how current wraps around a quay).
+
+**Reinforcement learning for thruster allocation:** RL agents trained in simulation learn thruster strategies that minimize fuel use while maintaining position — outperforming classical allocation algorithms in high-current scenarios.
+
+**Computer vision for mooring line guidance:** Camera-based AI detects bollard positions and guides line-throwing equipment to automate the final step of mooring. Systems like Cavotec's MoorMaster replace mooring lines entirely with vacuum pads controlled by real-time computer vision.
+
+---
+
+<CodeLab title="MoorMaster — Lineless Mooring">
+
+Cavotec's MoorMaster system uses vacuum suction pads mounted on the quay. When a vessel approaches, the pads extend, contact the hull, and lock with vacuum pressure — no lines needed. The system continuously adjusts pad position to accommodate tide and vessel motion.
+
+AI components:
+- Computer vision identifies the target hull zone and guides pad extension
+- Force sensors on each pad feed into a DP-like controller that compensates for swell
+- Communication between vessel DP system and quay-side MoorMaster coordinates the final approach
+
+This system is operational in several Norwegian ferry terminals and reduces docking time from 15 minutes to under 3 minutes.
+
+</CodeLab>
+
+<Pitfall title="Tug Integration Is Rarely Automated">
+
+AI-assisted docking systems control the vessel's own thrusters. But most large vessels in port also use tugboats for additional force. The coordination between the vessel's AI/DP system and external tugs is still largely done via radio communication between the pilot, the tug masters, and the vessel's bridge. Automating this coordination — with tug AI systems that respond to DP commands directly — is an active research area but not yet commercially deployed. Any autonomous docking system for large vessels must account for this human-in-the-loop element in its safety case.
+
+</Pitfall>
+
+---
+
+<Quiz question="Why is GNSS insufficient as the primary positioning sensor for docking operations?">
+
+<div>
+
+Standard GPS has accuracy of 2–5 meters, which is acceptable for open-ocean navigation but completely inadequate when docking tolerances are under a meter. In ports, GPS accuracy degrades further due to multipath errors — signals bouncing off cranes, buildings, and other vessels — which can introduce errors of 10–20 meters. Docking requires RTK-GPS (centimeter-level accuracy using shore-based correction signals), supplemented by lidar distance measurements to the quay wall, camera-based confirmation, and ultrasonic close-range sensors. No single positioning system is trusted alone; they are cross-validated against each other throughout the approach.
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+In **Module 4**, you'll move from individual vessel navigation to the broader intelligence layer — how AI manages an entire port's operations, from vessel scheduling and crane coordination to cargo tracking and predictive logistics.
