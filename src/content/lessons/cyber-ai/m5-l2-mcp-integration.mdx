@@ -1,0 +1,297 @@
+---
+title: "MCP Integration for Tool Access"
+description: "Add a Model Context Protocol server that exposes firewall, CMDB, and ticketing tools to the agent network through a standardized interface."
+module: 5
+moduleTitle: "Closed-Loop Orchestration"
+lesson: 2
+duration: "60 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## What MCP Adds
+
+So far, agents communicate through the shared state dictionary — they don't directly call external systems. MCP changes that by giving agents a standardized way to invoke tools: query a CMDB, create a ticket, check a firewall rule.
+
+**Model Context Protocol (MCP)** defines:
+- A standard message format for tool invocation
+- A server that hosts tool implementations
+- A client that agents use to call those tools
+
+The benefit: you can swap out the underlying system (replace ServiceNow with Jira) without changing agent code — just update the MCP server implementation.
+
+---
+
+## MCP Server Architecture
+
+```
+Agent (LangGraph node)
+       │
+       │  tool_call("create_ticket", {...})
+       ▼
+[MCP Client]  ─────────────────────────▶  [MCP Server]
+                  stdio / SSE transport         │
+                                          ┌─────┴──────┐
+                                          │  Tool       │
+                                          │  handlers:  │
+                                          │  - CMDB     │
+                                          │  - Firewall │
+                                          │  - Tickets  │
+                                          └─────────────┘
+```
+
+---
+
+## The MCP Server
+
+```python
+# mcp_server/server.py
+import json
+from mcp.server import Server
+from mcp.server.stdio import stdio_server
+from mcp import types
+
+app = Server("cyber-ai-tools")
+
+# --- Simulated backends (replace with real API calls in production) ---
+
+_cmdb: dict[str, dict] = {
+    "perimeter-fw01": {"os": "linux", "role": "firewall", "owner": "network-team"},
+    "db01":           {"os": "linux", "role": "database",  "owner": "db-team"},
+    "core-switch":    {"os": "cisco_ios", "role": "switch", "owner": "network-team"},
+}
+
+_tickets: list[dict] = []
+_ticket_counter = 1
+
+_blocked_ips: set[str] = set()
+
+# --- Tool definitions ---
+
+@app.list_tools()
+async def list_tools() -> list[types.Tool]:
+    return [
+        types.Tool(
+            name="cmdb_lookup",
+            description="Look up a host in the CMDB to get its OS, role, and owner.",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "hostname": {"type": "string", "description": "Hostname to look up"}
+                },
+                "required": ["hostname"],
+            },
+        ),
+        types.Tool(
+            name="create_ticket",
+            description="Create an incident ticket in the ticketing system.",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "title":    {"type": "string"},
+                    "severity": {"type": "string", "enum": ["low", "medium", "high", "critical"]},
+                    "body":     {"type": "string"},
+                },
+                "required": ["title", "severity", "body"],
+            },
+        ),
+        types.Tool(
+            name="check_firewall_rule",
+            description="Check if a specific IP is already blocked in the firewall.",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "ip": {"type": "string", "description": "IP address to check"}
+                },
+                "required": ["ip"],
+            },
+        ),
+        types.Tool(
+            name="apply_firewall_block",
+            description="Block an IP address in the perimeter firewall. Requires prior human approval.",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "ip":             {"type": "string"},
+                    "approved_by":    {"type": "string", "description": "Engineer who approved this action"},
+                    "incident_id":    {"type": "string"},
+                },
+                "required": ["ip", "approved_by", "incident_id"],
+            },
+        ),
+    ]
+
+@app.call_tool()
+async def call_tool(name: str, arguments: dict) -> list[types.TextContent]:
+    global _ticket_counter
+
+    if name == "cmdb_lookup":
+        host = arguments["hostname"]
+        record = _cmdb.get(host, {"error": f"Host '{host}' not found in CMDB"})
+        return [types.TextContent(type="text", text=json.dumps(record))]
+
+    elif name == "create_ticket":
+        ticket = {
+            "id": f"INC-{_ticket_counter:04d}",
+            "title": arguments["title"],
+            "severity": arguments["severity"],
+            "body": arguments["body"],
+            "status": "open",
+        }
+        _tickets.append(ticket)
+        _ticket_counter += 1
+        return [types.TextContent(type="text", text=json.dumps(ticket))]
+
+    elif name == "check_firewall_rule":
+        ip = arguments["ip"]
+        blocked = ip in _blocked_ips
+        return [types.TextContent(
+            type="text",
+            text=json.dumps({"ip": ip, "blocked": blocked})
+        )]
+
+    elif name == "apply_firewall_block":
+        ip = arguments["ip"]
+        _blocked_ips.add(ip)
+        return [types.TextContent(
+            type="text",
+            text=json.dumps({
+                "success": True,
+                "ip": ip,
+                "approved_by": arguments["approved_by"],
+                "incident_id": arguments["incident_id"],
+                "message": f"IP {ip} blocked at perimeter firewall.",
+            })
+        )]
+
+    return [types.TextContent(type="text", text=json.dumps({"error": f"Unknown tool: {name}"}))]
+
+async def main():
+    async with stdio_server() as (read_stream, write_stream):
+        await app.run(read_stream, write_stream, app.create_initialization_options())
+
+if __name__ == "__main__":
+    import asyncio
+    asyncio.run(main())
+```
+
+---
+
+## The MCP Client Wrapper
+
+```python
+# mcp_server/client.py
+import asyncio
+import json
+from mcp import ClientSession, StdioServerParameters
+from mcp.client.stdio import stdio_client
+
+class CyberAITools:
+    """Thin wrapper around the MCP client for use in agent nodes."""
+
+    def __init__(self, server_script: str = "mcp_server/server.py"):
+        self.server_params = StdioServerParameters(
+            command="python",
+            args=[server_script],
+        )
+
+    async def _call(self, tool_name: str, args: dict) -> dict:
+        async with stdio_client(self.server_params) as (read, write):
+            async with ClientSession(read, write) as session:
+                await session.initialize()
+                result = await session.call_tool(tool_name, args)
+                text = result.content[0].text
+                return json.loads(text)
+
+    async def cmdb_lookup(self, hostname: str) -> dict:
+        return await self._call("cmdb_lookup", {"hostname": hostname})
+
+    async def create_ticket(self, title: str, severity: str, body: str) -> dict:
+        return await self._call("create_ticket", {"title": title, "severity": severity, "body": body})
+
+    async def check_firewall_rule(self, ip: str) -> dict:
+        return await self._call("check_firewall_rule", {"ip": ip})
+
+    async def apply_firewall_block(self, ip: str, approved_by: str, incident_id: str) -> dict:
+        return await self._call("apply_firewall_block", {
+            "ip": ip, "approved_by": approved_by, "incident_id": incident_id
+        })
+
+tools = CyberAITools()
+```
+
+<CodeLab title="stdio vs. SSE Transport">
+
+The MCP server in this course uses **stdio transport** — the client spawns the server as a subprocess and communicates over stdin/stdout. This is simple for development but impractical for production, where you want the server running as a persistent service.
+
+**SSE (Server-Sent Events) transport** runs the MCP server as an HTTP service. The client connects to a URL and sends/receives tool calls over the connection. Use this for production deployments.
+
+The server implementation (tool handlers) is identical either way — only the transport layer changes.
+
+</CodeLab>
+
+---
+
+## Test the MCP Integration
+
+```python
+# test_mcp.py
+import asyncio
+from mcp_server.client import tools
+
+async def main():
+    # CMDB lookup
+    host_info = await tools.cmdb_lookup("perimeter-fw01")
+    print(f"CMDB: {host_info}")
+
+    # Create a ticket
+    ticket = await tools.create_ticket(
+        title="SSH Brute Force — 203.0.113.42",
+        severity="high",
+        body="Automated detection: 15 failed SSH attempts for root in 60s.",
+    )
+    print(f"Ticket: {ticket}")
+
+    # Check firewall
+    fw_status = await tools.check_firewall_rule("203.0.113.42")
+    print(f"Firewall: {fw_status}")
+
+asyncio.run(main())
+```
+
+```bash
+python test_mcp.py
+```
+
+---
+
+<Pitfall title="Each MCP Call Spawns a Subprocess">
+
+The current client implementation opens a new subprocess for every tool call (`async with stdio_client(...)`). For a high-volume system processing hundreds of incidents per hour, this is expensive.
+
+In production: run the MCP server as a persistent process and keep a long-lived client connection open. Use a connection pool if you need concurrency. Alternatively, switch to SSE transport, which is inherently connection-oriented.
+
+</Pitfall>
+
+---
+
+<Quiz question="What is the advantage of exposing firewall and CMDB operations through an MCP server rather than calling those APIs directly from agent code?">
+
+<div>
+
+**Standardization**: MCP gives every agent the same tool-call interface regardless of what's behind it. An agent that calls `apply_firewall_block` works whether the backend is iptables, Cisco ASA, or pfSense — the MCP server handles the translation.
+
+**Auditability**: All tool calls flow through the MCP layer, which can log every invocation with timestamps, arguments, and results. This creates an immutable audit trail without any agent-level instrumentation.
+
+**Replaceability**: Swap the backend (e.g., migrate from ServiceNow to Jira for ticketing) by updating the MCP server's handler — zero agent code changes.
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+MCP is integrated. In **Lesson 3**, the final lesson, you'll combine all the pieces into a fully autonomous closed-loop system — with guardrails, observability, and a live end-to-end demo.

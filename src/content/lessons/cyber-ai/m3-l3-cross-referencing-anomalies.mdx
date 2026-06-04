@@ -1,0 +1,255 @@
+---
+title: "Cross-Referencing Anomalies Against the Knowledge Base"
+description: "Implement the full Agent B function — retrieve relevant documents, synthesize them with LLM reasoning, and emit a structured recommended action."
+module: 3
+moduleTitle: "Agent B — SecOps RAG Agent"
+lesson: 3
+duration: "60 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## What Agent B Produces
+
+Agent B receives a triaged incident from the queue and enriches it:
+
+**Input** (from Agent A):
+- `incident_type` — e.g., `brute_force`
+- `triage_summary` — one-sentence description
+
+**Output** (added to state):
+- `relevant_docs` — list of retrieved document excerpts
+- `historical_precedents` — patterns from threat models
+- `recommended_action` — specific, grounded recommendation for Agent C
+
+The LLM's job is to synthesize the retrieved context, not to recall information from training data.
+
+---
+
+## The Agent B Function
+
+```python
+# agents/secops_rag.py
+from langchain_openai import ChatOpenAI
+from langchain_core.prompts import ChatPromptTemplate
+from pydantic import BaseModel, Field
+from state import IncidentState
+from knowledge_base.retriever import retrieve
+
+class RAGResult(BaseModel):
+    relevant_docs_summary: str = Field(
+        description="Summary of what the retrieved documents say about this incident"
+    )
+    historical_precedents: list[str] = Field(
+        description="Historical patterns or past incidents mentioned in the documentation"
+    )
+    recommended_action: str = Field(
+        description="Specific, actionable recommendation for the patching agent"
+    )
+
+DOC_TYPE_MAP = {
+    "brute_force":   ["runbook", "threat_model"],
+    "config_drift":  ["runbook", "threat_model", "equipment_manual"],
+    "port_scan":     ["threat_model"],
+    "data_exfil":    ["runbook", "threat_model"],
+    "unknown":       [],
+}
+
+SYSTEM_PROMPT = """You are a senior security operations analyst.
+You receive incident context and relevant documentation excerpts.
+Your job is to synthesize the documentation — not add information from memory.
+All claims in your recommended_action must be supported by the provided documents.
+If the documents don't cover the incident, say so explicitly.
+"""
+
+USER_PROMPT = """Incident:
+Type: {incident_type}
+Summary: {triage_summary}
+
+Retrieved Documentation:
+{documents}
+
+Based ONLY on the documentation above, provide your analysis.
+"""
+
+llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
+structured_llm = llm.with_structured_output(RAGResult)
+prompt = ChatPromptTemplate.from_messages([
+    ("system", SYSTEM_PROMPT),
+    ("human", USER_PROMPT),
+])
+rag_chain = prompt | structured_llm
+
+def _retrieve_for_incident(incident_type: str, triage_summary: str) -> list[dict]:
+    doc_types = DOC_TYPE_MAP.get(incident_type, [])
+    chunks = []
+
+    if doc_types:
+        for doc_type in doc_types:
+            chunks.extend(retrieve(triage_summary, n_results=2, doc_type=doc_type))
+    else:
+        chunks.extend(retrieve(triage_summary, n_results=4))
+
+    # Deduplicate by source+chunk text
+    seen = set()
+    unique = []
+    for c in chunks:
+        key = c["text"][:50]
+        if key not in seen:
+            seen.add(key)
+            unique.append(c)
+    return unique
+
+def _format_docs(chunks: list[dict]) -> str:
+    lines = []
+    for i, c in enumerate(chunks, 1):
+        lines.append(f"[{i}] [{c['doc_type']}] {c['source']}\n{c['text']}\n")
+    return "\n".join(lines) if lines else "No relevant documentation found."
+
+def secops_rag_agent(state: IncidentState) -> IncidentState:
+    chunks = _retrieve_for_incident(
+        state["incident_type"] or "unknown",
+        state["triage_summary"] or "",
+    )
+    docs_text = _format_docs(chunks)
+
+    try:
+        result: RAGResult = rag_chain.invoke({
+            "incident_type": state["incident_type"],
+            "triage_summary": state["triage_summary"],
+            "documents": docs_text,
+        })
+        return {
+            **state,
+            "relevant_docs": [c["text"] for c in chunks],
+            "historical_precedents": result.historical_precedents,
+            "recommended_action": result.recommended_action,
+        }
+    except Exception as exc:
+        return {
+            **state,
+            "relevant_docs": [],
+            "historical_precedents": [],
+            "recommended_action": "Unable to retrieve recommendations. Escalate to human analyst.",
+            "error": str(exc),
+            "escalate": True,
+        }
+```
+
+<CodeLab title="Grounding vs. Hallucination">
+
+The system prompt says: "All claims in your recommended_action must be supported by the provided documents."
+
+This instruction reduces hallucination by giving the model a clear rule: don't invent procedures. In practice, it's not foolproof — LLMs can still confabulate. But combining this instruction with structured output (which limits the shape of the response) and document grounding (which provides the right facts) significantly improves reliability.
+
+For critical systems, add a post-generation step: check that key phrases in the `recommended_action` appear verbatim (or near-verbatim) in the retrieved documents.
+
+</CodeLab>
+
+---
+
+## Test Agent B
+
+```python
+# test_secops_rag.py
+from datetime import datetime, timezone
+from agents.secops_rag import secops_rag_agent
+
+test_state = {
+    "raw_log": "Failed password for root from 203.0.113.42 port 22 ssh2",
+    "source": "syslog",
+    "ingested_at": datetime.now(timezone.utc).isoformat(),
+    "severity": "high",
+    "incident_type": "brute_force",
+    "triage_summary": "Repeated SSH login failures for root from external IP — likely brute force attack.",
+    "relevant_docs": None,
+    "historical_precedents": None,
+    "recommended_action": None,
+    "patch_proposal": None,
+    "patch_code": None,
+    "patch_status": None,
+    "escalate": False,
+    "error": None,
+}
+
+result = secops_rag_agent(test_state)
+
+print("Relevant docs retrieved:", len(result["relevant_docs"]))
+print("\nHistorical precedents:")
+for p in result["historical_precedents"]:
+    print(f"  - {p}")
+print(f"\nRecommended action:\n{result['recommended_action']}")
+```
+
+Expected output (varies by retrieval and model):
+```
+Relevant docs retrieved: 4
+
+Historical precedents:
+  - High volume of failed SSH logins from single external IP matching T1110 brute force pattern.
+  - Successful login after burst of failures indicates potential credential compromise.
+
+Recommended action:
+Block source IP 203.0.113.42 at the perimeter firewall using iptables. Audit
+/var/log/auth.log for successful logins from this IP in the past 24 hours. If
+a successful login is found, escalate to CRITICAL and rotate credentials
+for the affected account.
+```
+
+---
+
+## Wire Agent B into the Queue
+
+Agent B consumes from the incident queue (set up in Module 2):
+
+```python
+# consumers/secops_consumer.py
+import asyncio
+from queues import incident_queue
+from agents.secops_rag import secops_rag_agent
+from queues import patching_queue  # To be created in Module 4
+
+async def secops_rag_consumer():
+    while True:
+        state = await incident_queue.get()
+        try:
+            enriched = await asyncio.to_thread(secops_rag_agent, state)
+            await patching_queue.put(enriched)
+        except Exception as exc:
+            print(f"[Agent B error] {exc}")
+        finally:
+            incident_queue.task_done()
+```
+
+Add `patching_queue: asyncio.Queue = asyncio.Queue(maxsize=50)` to `queues.py`.
+
+---
+
+<Pitfall title="Retrieval Miss">
+
+If the knowledge base doesn't contain anything relevant to the incident, `retrieve()` still returns results — just less relevant ones. The LLM may hallucinate a recommendation based on superficially similar content.
+
+Guard against this: check the cosine distance of the top result. ChromaDB returns distances in `results["distances"]`. If the closest document has distance > 0.8 (on a 0–2 scale), treat it as a retrieval miss and set `recommended_action` to "No relevant documentation found. Escalate to human analyst."
+
+</Pitfall>
+
+---
+
+<Quiz question="Why does Agent B receive `triage_summary` rather than `raw_log` as its query for retrieval?">
+
+<div>
+
+The `triage_summary` is a clean, semantically rich description of what happened — already sanitized and structured by Agent A. Using it as the retrieval query gives the vector search the best signal.
+
+The `raw_log` contains vendor-specific formatting, IP addresses, and port numbers that add noise to the embedding. A log line like `Failed password for root from 203.0.113.42 port 22 ssh2` embeds differently from `SSH brute force attack against root account` — even though they mean the same thing. Agent A's summary bridges that gap.
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+Agent B is complete. In **Module 4**, you'll build Agent C — the Patching Agent — which takes Agent B's recommended action and translates it into concrete, executable config patches.

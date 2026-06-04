@@ -1,0 +1,216 @@
+---
+title: "Setting Up Your Environment"
+description: "Install and verify LangGraph, ChromaDB, and an MCP server — the three foundational pieces of the Cyber AI stack."
+module: 1
+moduleTitle: "Introduction to Cyber AI"
+lesson: 3
+duration: "45 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## What You're Installing
+
+The Cyber AI stack has three layers:
+
+| Layer | Library | Purpose |
+|---|---|---|
+| **Orchestration** | `langgraph`, `langchain-core` | Graph-based multi-agent coordination |
+| **Retrieval** | `chromadb`, `sentence-transformers` | Local vector database for RAG |
+| **Tool Access** | `mcp` (Python SDK) | Model Context Protocol server |
+| **LLM Client** | `openai` or `anthropic` | API calls to a reasoning model |
+
+You'll install all of these into a single virtual environment.
+
+---
+
+## Step 1: Create the Project
+
+```bash
+mkdir cyber-ai && cd cyber-ai
+
+# Add large folders to .gitignore before creating them
+echo ".venv" >> .gitignore
+echo "chroma_db/" >> .gitignore
+echo ".env" >> .gitignore
+
+python -m venv .venv
+source .venv/bin/activate   # Windows: .venv\Scripts\activate
+```
+
+Create `requirements.txt`:
+
+```
+langgraph==0.2.50
+langchain-core==0.3.25
+langchain-openai==0.2.10
+chromadb==0.5.20
+sentence-transformers==3.3.1
+mcp==1.2.0
+openai==1.58.1
+python-dotenv==1.0.1
+```
+
+Install:
+
+```bash
+pip install -r requirements.txt
+```
+
+---
+
+## Step 2: Configure Your API Key
+
+Create `.env` in the project root:
+
+```
+OPENAI_API_KEY=your_key_here
+```
+
+To get an OpenAI key: visit [platform.openai.com/api-keys](https://platform.openai.com/api-keys), create a new secret key, and paste it here.
+
+<Pitfall title="Never Commit .env">
+
+Your API key is a credential. If it lands in a public GitHub repo, it will be scraped by bots within seconds. Verify `.env` is in `.gitignore` before your first `git add`.
+
+</Pitfall>
+
+---
+
+## Step 3: Verify LangGraph
+
+Create `verify_langgraph.py`:
+
+```python
+from typing import TypedDict
+from langgraph.graph import StateGraph, END
+
+class TestState(TypedDict):
+    message: str
+    processed: bool
+
+def process_node(state: TestState) -> TestState:
+    return {"message": f"processed: {state['message']}", "processed": True}
+
+builder = StateGraph(TestState)
+builder.add_node("process", process_node)
+builder.set_entry_point("process")
+builder.add_edge("process", END)
+
+graph = builder.compile()
+result = graph.invoke({"message": "hello", "processed": False})
+print(result)
+# Expected: {'message': 'processed: hello', 'processed': True}
+```
+
+Run it:
+
+```bash
+python verify_langgraph.py
+```
+
+If you see the expected output, LangGraph is wired up correctly.
+
+---
+
+## Step 4: Verify ChromaDB
+
+```python
+# verify_chroma.py
+import chromadb
+
+client = chromadb.Client()
+collection = client.create_collection("test")
+
+collection.add(
+    documents=["Reboot the affected node when CPU exceeds 95% for 5 minutes."],
+    ids=["runbook-001"]
+)
+
+results = collection.query(query_texts=["high CPU utilization response"], n_results=1)
+print(results["documents"][0][0])
+# Expected: the runbook sentence above
+```
+
+```bash
+python verify_chroma.py
+```
+
+<CodeLab title="How ChromaDB Works">
+
+ChromaDB stores documents as **embedding vectors** — numerical representations of meaning. When you query with a question, ChromaDB embeds your question and finds the documents whose vectors are closest in meaning, not just in keywords.
+
+By default, ChromaDB uses a local sentence-transformer model for embeddings. No external API call required.
+
+</CodeLab>
+
+---
+
+## Step 5: Verify MCP
+
+MCP (Model Context Protocol) is a standard that lets AI agents call external tools through a consistent interface. You'll use it in Module 5, but verify the import now:
+
+```python
+# verify_mcp.py
+from mcp import ClientSession, StdioServerParameters
+print("MCP SDK imported successfully")
+```
+
+```bash
+python verify_mcp.py
+```
+
+---
+
+## Project Structure
+
+At the end of setup, your project should look like this:
+
+```
+cyber-ai/
+├── .env
+├── .gitignore
+├── requirements.txt
+├── verify_langgraph.py
+├── verify_chroma.py
+├── verify_mcp.py
+├── agents/
+│   ├── __init__.py
+│   ├── triage.py          # Module 2
+│   ├── secops_rag.py      # Module 3
+│   └── patching.py        # Module 4
+├── knowledge_base/
+│   ├── __init__.py
+│   └── loader.py          # Module 3
+├── mcp_server/
+│   └── server.py          # Module 5
+└── main.py                # Module 5
+```
+
+Create the directories now:
+
+```bash
+mkdir -p agents knowledge_base mcp_server
+touch agents/__init__.py knowledge_base/__init__.py
+```
+
+---
+
+<Quiz question="Why does the project use a local ChromaDB client instead of a hosted vector database for this course?">
+
+<div>
+
+A local ChromaDB client stores everything in memory (or on disk). No API key, no network call, no cost. For development and testing, that's ideal — you can iterate fast without worrying about rate limits or data leaving your machine.
+
+In production, you'd switch to a persistent, hosted vector database (Chroma Cloud, Pinecone, Weaviate, etc.). The ChromaDB client API is the same either way — just change the initialization line.
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+Environment verified. In **Module 2**, you'll build Agent A — the Triage Agent — starting with how it parses log data, classifies severity, and emits structured incident signals.

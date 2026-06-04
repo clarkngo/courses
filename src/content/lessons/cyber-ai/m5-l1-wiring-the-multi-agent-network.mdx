@@ -1,0 +1,242 @@
+---
+title: "Wiring the Multi-Agent Network with LangGraph"
+description: "Assemble all three agents into a single LangGraph graph — with conditional routing, error handling, and a live test run on a simulated incident."
+module: 5
+moduleTitle: "Closed-Loop Orchestration"
+lesson: 1
+duration: "65 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## The Full Graph
+
+You now have:
+- **Agent A** (`triage_agent`) — classifies events
+- **Agent B** (`secops_rag_agent`) — enriches with documentation
+- **Agent C** (`patching_agent`) — writes config patches
+- **Approval gate** — holds or auto-applies patches
+
+LangGraph wires these into a directed graph where the edges encode the routing logic from Module 1.
+
+---
+
+## Building the Graph
+
+```python
+# graph.py
+import asyncio
+from typing import Literal
+from langgraph.graph import StateGraph, END
+
+from state import IncidentState
+from agents.triage import triage_agent
+from agents.secops_rag import secops_rag_agent
+from agents.patching import patching_agent
+from review.approval_gate import approval_gate
+from audit import log_decision
+
+# --- Routing functions ---
+
+def route_after_triage(state: IncidentState) -> Literal["secops_rag", "end"]:
+    if state.get("error"):
+        log_decision(state["ingested_at"], "failed_validation", state)
+        return "end"
+    if state["severity"] == "noise":
+        return "end"
+    return "secops_rag"
+
+def route_after_patching(state: IncidentState) -> Literal["approval_gate", "end"]:
+    if state.get("error"):
+        log_decision(state["ingested_at"], "failed_validation", state)
+        return "end"
+    if state.get("patch_proposal"):
+        return "approval_gate"
+    return "end"
+
+# --- Node wrappers (async-safe) ---
+
+async def triage_node(state: IncidentState) -> IncidentState:
+    return await asyncio.to_thread(triage_agent, state)
+
+async def secops_rag_node(state: IncidentState) -> IncidentState:
+    return await asyncio.to_thread(secops_rag_agent, state)
+
+async def patching_node(state: IncidentState) -> IncidentState:
+    return await asyncio.to_thread(patching_agent, state)
+
+# --- Graph assembly ---
+
+def build_graph() -> StateGraph:
+    builder = StateGraph(IncidentState)
+
+    builder.add_node("triage", triage_node)
+    builder.add_node("secops_rag", secops_rag_node)
+    builder.add_node("patching", patching_node)
+    builder.add_node("approval_gate", approval_gate)
+
+    builder.set_entry_point("triage")
+
+    builder.add_conditional_edges(
+        "triage",
+        route_after_triage,
+        {"secops_rag": "secops_rag", "end": END},
+    )
+    builder.add_edge("secops_rag", "patching")
+    builder.add_conditional_edges(
+        "patching",
+        route_after_patching,
+        {"approval_gate": "approval_gate", "end": END},
+    )
+    builder.add_edge("approval_gate", END)
+
+    return builder.compile()
+
+cyber_ai_graph = build_graph()
+```
+
+---
+
+## Run a Complete Incident
+
+```python
+# main.py
+import asyncio
+from datetime import datetime, timezone
+from graph import cyber_ai_graph
+from state import IncidentState
+
+async def process_incident(raw_log: str, source: str) -> IncidentState:
+    initial_state = IncidentState(
+        raw_log=raw_log,
+        source=source,
+        ingested_at=datetime.now(timezone.utc).isoformat(),
+        severity=None,
+        incident_type=None,
+        triage_summary=None,
+        relevant_docs=None,
+        historical_precedents=None,
+        recommended_action=None,
+        patch_proposal=None,
+        patch_code=None,
+        patch_status=None,
+        escalate=False,
+        error=None,
+    )
+    result = await cyber_ai_graph.ainvoke(initial_state)
+    return result
+
+async def main():
+    test_incidents = [
+        ("Failed password for root from 203.0.113.42 port 22 ssh2", "syslog"),
+        ("cpuUsage exceeded threshold: 97% on host db01", "snmp"),
+        ("Accepted password for alice from 10.0.0.15 port 22 ssh2", "syslog"),
+    ]
+
+    for log, source in test_incidents:
+        print(f"\n{'='*60}")
+        print(f"Input: {log[:60]}...")
+        result = await process_incident(log, source)
+        print(f"Severity:      {result['severity']}")
+        print(f"Incident type: {result['incident_type']}")
+        print(f"Patch status:  {result['patch_status']}")
+        if result.get("error"):
+            print(f"Error:         {result['error']}")
+
+if __name__ == "__main__":
+    asyncio.run(main())
+```
+
+```bash
+python main.py
+```
+
+Expected output (abbreviated):
+```
+============================================================
+Input: Failed password for root from 203.0.113.42 port 22 ss...
+Severity:      high
+Incident type: brute_force
+Patch status:  proposed
+
+[PENDING APPROVAL] Incident 2026-06-04T10-00-00+00-00
+  Severity: high
+  Blast radius: low
+  Proposal: Block source IP 203.0.113.42 at INPUT chain...
+
+============================================================
+Input: cpuUsage exceeded threshold: 97% on host db01...
+Severity:      medium
+Incident type: config_drift
+Patch status:  proposed
+
+============================================================
+Input: Accepted password for alice from 10.0.0.15 port 22 ssh2...
+Severity:      noise
+Incident type: unknown
+Patch status:  None
+```
+
+---
+
+## LangGraph Recursion Limit
+
+Add a safety cap on graph iterations:
+
+```python
+cyber_ai_graph = build_graph()
+
+# Wrap invocation with recursion limit
+async def process_incident(raw_log: str, source: str) -> IncidentState:
+    ...
+    result = await cyber_ai_graph.ainvoke(
+        initial_state,
+        config={"recursion_limit": 10},
+    )
+    return result
+```
+
+A well-designed graph without cycles should never need more than 4–5 steps. The recursion limit is a safety net, not a normal operating parameter.
+
+<CodeLab title="LangGraph vs. AutoGen">
+
+Both LangGraph and AutoGen can build multi-agent systems, but they take different philosophical approaches:
+
+**LangGraph** — graph-based, explicit routing. You define nodes and edges. State flows through the graph deterministically. Best for: workflows where you know the routing logic in advance and want full control.
+
+**AutoGen** — conversation-based, emergent routing. Agents talk to each other; the conversation drives behavior. Best for: open-ended tasks where agent collaboration is more ad hoc.
+
+Cyber AI uses LangGraph because incident management has defined stages (triage → enrich → patch → review). The routing is not emergent — it's a policy decision encoded in the graph.
+
+</CodeLab>
+
+---
+
+<Pitfall title="Missing `asyncio.to_thread` Causes Deadlock">
+
+If you call a synchronous function (like `triage_agent`) directly inside a LangGraph async node without `asyncio.to_thread`, it blocks the event loop. With multiple concurrent incidents, this causes all processing to stall until the blocked call completes.
+
+Always wrap synchronous LLM calls in `asyncio.to_thread` when running in an async graph. Or use the async SDK clients throughout.
+
+</Pitfall>
+
+---
+
+<Quiz question="Why does the graph route directly from `secops_rag` to `patching` with a fixed edge, rather than a conditional edge?">
+
+<div>
+
+Every incident that reaches Agent B (i.e., not noise) needs a patch proposal — even if the proposal is "no automated remediation available, escalate to human." There's no case where Agent B's output should bypass Agent C.
+
+Conditional edges are for routing decisions. A fixed edge (`add_edge`) says "always go here next." Using a fixed edge where a conditional isn't needed keeps the graph simpler and easier to reason about.
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+The three-agent pipeline runs end-to-end. In **Lesson 2**, you'll add MCP (Model Context Protocol) tool access — giving the agents standardized interfaces to external systems like firewalls, CMDBs, and ticketing systems.

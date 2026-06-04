@@ -1,0 +1,249 @@
+---
+title: "Human-in-the-Loop Guardrails"
+description: "Implement the approval gate that holds high-risk patches for human review — and build the CLI interface that lets an engineer approve, reject, or modify a proposal."
+module: 4
+moduleTitle: "Agent C — Patching Agent"
+lesson: 3
+duration: "50 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Why Human-in-the-Loop Is Non-Negotiable
+
+An autonomous patching agent operating without human oversight is a liability:
+
+- LLMs can generate syntactically valid but semantically wrong commands
+- Retrieval can surface outdated runbook procedures
+- Context may be misclassified (a high incident treated as medium)
+- Novel attack vectors may not map cleanly to existing runbooks
+
+The human-in-the-loop (HITL) gate doesn't mean a human reviews every event — that defeats the purpose of automation. It means:
+
+- **Low blast radius + low severity**: auto-apply after validation
+- **Medium severity or medium blast radius**: auto-apply with mandatory post-apply audit
+- **High/critical severity OR high blast radius**: human must approve before execution
+
+---
+
+## The Approval Gate
+
+```python
+# review/approval_gate.py
+import asyncio
+from state import IncidentState
+from validation.orchestrator import validate_patch
+from agents.patching import PatchProposal
+
+# In production: a database table or Redis key
+_pending_approvals: dict[str, dict] = {}
+
+async def approval_gate(state: IncidentState) -> IncidentState:
+    """
+    Decide: auto-apply, hold for human, or reject.
+    Returns updated state with patch_status set.
+    """
+    if not state.get("patch_code"):
+        return {**state, "patch_status": "rejected", "error": "No patch to review"}
+
+    # Re-parse the proposal from state for validation
+    # (In production, store the PatchProposal object directly in state)
+    proposal = _parse_proposal_from_state(state)
+    validation = validate_patch(proposal)
+
+    if not validation["structural_valid"]:
+        return {
+            **state,
+            "patch_status": "rejected",
+            "error": f"Patch failed validation: {validation['structural_error']}",
+        }
+
+    if validation["approved_for_auto_apply"]:
+        print(f"[Auto-apply] Low-risk patch for {state['incident_type']} — applying.")
+        return await _apply_patch(state, proposal)
+    else:
+        incident_id = state["ingested_at"].replace(":", "-")
+        _pending_approvals[incident_id] = {
+            "state": state,
+            "proposal": proposal,
+            "validation": validation,
+        }
+        print(
+            f"\n[PENDING APPROVAL] Incident {incident_id}\n"
+            f"  Severity: {state['severity']}\n"
+            f"  Blast radius: {validation['blast_radius']}\n"
+            f"  Proposal:\n{state['patch_proposal']}\n"
+            f"\nRun: python review_cli.py approve {incident_id}"
+        )
+        return {**state, "patch_status": "proposed"}
+
+def _parse_proposal_from_state(state: IncidentState) -> PatchProposal:
+    """Extract a PatchProposal from the serialized state."""
+    commands = [
+        line.lstrip("$ ").strip()
+        for line in (state.get("patch_code") or "").splitlines()
+        if line.strip()
+    ]
+    return PatchProposal(
+        target_host="perimeter-fw01",
+        platform="linux",
+        patch_description=state.get("patch_proposal", ""),
+        patch_commands=commands,
+        rollback_commands=[],
+        estimated_impact=state.get("severity", "medium"),
+        requires_approval=state.get("escalate", True),
+    )
+
+async def _apply_patch(state: IncidentState, proposal: PatchProposal) -> IncidentState:
+    """Apply the patch (stubbed — replace with real executor in production)."""
+    print(f"[APPLYING PATCH]\n{chr(10).join(proposal.patch_commands)}")
+    # In production: SSH to target_host and run commands via Paramiko or Netmiko
+    return {**state, "patch_status": "applied"}
+```
+
+---
+
+## The Review CLI
+
+```python
+# review_cli.py
+"""
+Usage:
+  python review_cli.py list
+  python review_cli.py show <incident_id>
+  python review_cli.py approve <incident_id>
+  python review_cli.py reject <incident_id>
+"""
+import sys
+import asyncio
+from review.approval_gate import _pending_approvals, _apply_patch
+
+def cmd_list():
+    if not _pending_approvals:
+        print("No pending approvals.")
+        return
+    for incident_id, entry in _pending_approvals.items():
+        state = entry["state"]
+        print(f"  {incident_id} | {state['severity']} | {state['incident_type']}")
+
+def cmd_show(incident_id: str):
+    entry = _pending_approvals.get(incident_id)
+    if not entry:
+        print(f"Incident {incident_id} not found.")
+        return
+    state = entry["state"]
+    print(f"\n{'='*60}")
+    print(f"Incident:   {incident_id}")
+    print(f"Severity:   {state['severity']}")
+    print(f"Type:       {state['incident_type']}")
+    print(f"Summary:    {state['triage_summary']}")
+    print(f"\nProposal:\n{state['patch_proposal']}")
+    print(f"\nValidation: {entry['validation']}")
+    print("="*60)
+
+async def cmd_approve(incident_id: str):
+    entry = _pending_approvals.pop(incident_id, None)
+    if not entry:
+        print(f"Incident {incident_id} not found.")
+        return
+    print(f"Approved by engineer. Applying patch...")
+    result = await _apply_patch(entry["state"], entry["proposal"])
+    print(f"Patch status: {result['patch_status']}")
+
+def cmd_reject(incident_id: str):
+    entry = _pending_approvals.pop(incident_id, None)
+    if not entry:
+        print(f"Incident {incident_id} not found.")
+        return
+    print(f"Patch {incident_id} rejected. No changes applied.")
+
+if __name__ == "__main__":
+    args = sys.argv[1:]
+    if not args or args[0] == "list":
+        cmd_list()
+    elif args[0] == "show" and len(args) == 2:
+        cmd_show(args[1])
+    elif args[0] == "approve" and len(args) == 2:
+        asyncio.run(cmd_approve(args[1]))
+    elif args[0] == "reject" and len(args) == 2:
+        cmd_reject(args[1])
+    else:
+        print(__doc__)
+```
+
+<CodeLab title="Production HITL Alternatives">
+
+The CLI is suitable for a course, but production HITL usually means:
+
+- **Slack bot**: post the patch proposal to a `#security-approvals` channel with Approve/Reject buttons
+- **PagerDuty with custom actions**: embed the proposal in the alert and let the on-call engineer approve from their phone
+- **Internal web dashboard**: a React UI that shows all pending proposals with diff-style display and one-click approve/reject
+
+The approval logic (auto-apply vs. hold) remains the same regardless of the UI layer.
+
+</CodeLab>
+
+---
+
+## Audit Log
+
+Every decision — auto-apply, human-approved, rejected — must be logged:
+
+```python
+# audit.py
+import json
+from datetime import datetime, timezone
+from pathlib import Path
+
+LOG_PATH = Path("./audit_log.jsonl")
+
+def log_decision(incident_id: str, decision: str, state: dict, actor: str = "system") -> None:
+    entry = {
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "incident_id": incident_id,
+        "decision": decision,    # "auto_applied" | "approved" | "rejected" | "failed_validation"
+        "actor": actor,          # "system" | engineer username
+        "severity": state.get("severity"),
+        "incident_type": state.get("incident_type"),
+        "patch_proposal": state.get("patch_proposal", "")[:200],  # Truncate for log
+    }
+    with open(LOG_PATH, "a") as f:
+        f.write(json.dumps(entry) + "\n")
+```
+
+Call `log_decision()` at every decision point in `approval_gate()`.
+
+---
+
+<Pitfall title="HITL Is Not a Silver Bullet">
+
+A human who sees 200 approval requests per shift will start rubber-stamping them. Alert fatigue applies to patch approvals too.
+
+Design the system so humans review only genuinely risky patches. If your auto-apply threshold is too conservative (holding every patch for review), engineers will disengage. If it's too aggressive (auto-applying high-blast-radius changes), you've lost the safety benefit.
+
+Tune thresholds based on real incident data. Track how often human reviewers override the agent's proposal — a low override rate may mean the agent is good, or it may mean reviewers aren't reading carefully.
+
+</Pitfall>
+
+---
+
+<Quiz question="What is the risk of storing pending approvals in an in-memory dictionary as done in this lesson?">
+
+<div>
+
+If the process restarts, all pending approvals are lost. An engineer expecting to review a high-severity patch would find no record of it.
+
+In production, pending approvals belong in a persistent store — a database table with a `status` column (`pending`, `approved`, `rejected`). The approval gate writes to the database; the review UI reads from it. The system survives restarts, and you have a permanent audit trail.
+
+The in-memory dict is acceptable for development, but should be flagged as a known limitation before any production deployment.
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+All three agents are built and validated. In **Module 5**, you'll wire them into a complete LangGraph pipeline and add MCP tool access — transforming three standalone agents into a single, closed-loop incident management system.

@@ -1,0 +1,282 @@
+---
+title: "Autonomous Incident Management with Guardrails"
+description: "Run the complete Cyber AI system end-to-end — live telemetry → triage → RAG enrichment → patch proposal → human gate → MCP tool execution."
+module: 5
+moduleTitle: "Closed-Loop Orchestration"
+lesson: 3
+duration: "70 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## The Complete System
+
+Every component is now built. This lesson assembles them into a single runnable system and validates the full closed-loop flow:
+
+```
+Log Simulator
+     │
+     ▼
+[Agent A: Triage] ──noise──▶ audit log
+     │
+  non-noise
+     │
+     ▼
+[Agent B: SecOps RAG]
+     │
+     ▼
+[Agent C: Patching]
+     │
+     ├── low risk ──▶ [MCP: apply_firewall_block] ──▶ [MCP: create_ticket]
+     │
+     └── high risk ─▶ [Approval Gate] ──▶ human reviews CLI
+                              │
+                    approved ─┤
+                              ▼
+                       [MCP: apply_firewall_block]
+                       [MCP: create_ticket]
+```
+
+---
+
+## Updated Graph: MCP Tool Nodes
+
+Add two new nodes to the graph — `auto_apply` and `post_review_apply` — that call MCP tools after the patch decision:
+
+```python
+# graph.py (final version)
+import asyncio
+import re
+from typing import Literal
+from langgraph.graph import StateGraph, END
+
+from state import IncidentState
+from agents.triage import triage_agent
+from agents.secops_rag import secops_rag_agent
+from agents.patching import patching_agent
+from review.approval_gate import approval_gate
+from mcp_server.client import tools
+from audit import log_decision
+
+def _extract_ip(patch_code: str) -> str | None:
+    """Extract IP from iptables-style patch code."""
+    match = re.search(r"-s\s+(\d{1,3}(?:\.\d{1,3}){3})", patch_code or "")
+    return match.group(1) if match else None
+
+async def execute_tools_node(state: IncidentState) -> IncidentState:
+    """Apply approved patches via MCP and create an incident ticket."""
+    if state.get("patch_status") != "approved" and state.get("patch_status") != "auto_apply":
+        return state
+
+    ip = _extract_ip(state.get("patch_code", ""))
+    incident_id = state["ingested_at"].replace(":", "-")
+
+    results = []
+
+    # 1. Apply firewall block if an IP was identified
+    if ip:
+        fw_result = await tools.apply_firewall_block(
+            ip=ip,
+            approved_by=state.get("approved_by", "system"),
+            incident_id=incident_id,
+        )
+        results.append(f"Firewall: {fw_result.get('message', 'applied')}")
+
+    # 2. Create an incident ticket
+    ticket = await tools.create_ticket(
+        title=f"[{state['severity'].upper()}] {state['incident_type']} — {incident_id}",
+        severity=state["severity"],
+        body=(
+            f"Summary: {state['triage_summary']}\n\n"
+            f"Recommended action: {state['recommended_action']}\n\n"
+            f"Patch applied: {state.get('patch_code', 'N/A')}"
+        ),
+    )
+    results.append(f"Ticket: {ticket.get('id', 'created')}")
+
+    log_decision(incident_id, "applied", state, actor=state.get("approved_by", "system"))
+    print(f"[APPLIED] {' | '.join(results)}")
+
+    return {**state, "patch_status": "applied"}
+
+def route_after_gate(state: IncidentState) -> Literal["execute_tools", "end"]:
+    if state.get("patch_status") in ("approved", "auto_apply"):
+        return "execute_tools"
+    return "end"
+
+def build_graph() -> StateGraph:
+    builder = StateGraph(IncidentState)
+
+    builder.add_node("triage",        lambda s: asyncio.to_thread(triage_agent, s))
+    builder.add_node("secops_rag",    lambda s: asyncio.to_thread(secops_rag_agent, s))
+    builder.add_node("patching",      lambda s: asyncio.to_thread(patching_agent, s))
+    builder.add_node("approval_gate", approval_gate)
+    builder.add_node("execute_tools", execute_tools_node)
+
+    builder.set_entry_point("triage")
+    builder.add_conditional_edges("triage", route_after_triage,
+        {"secops_rag": "secops_rag", "end": END})
+    builder.add_edge("secops_rag", "patching")
+    builder.add_conditional_edges("patching", route_after_patching,
+        {"approval_gate": "approval_gate", "end": END})
+    builder.add_conditional_edges("approval_gate", route_after_gate,
+        {"execute_tools": "execute_tools", "end": END})
+    builder.add_edge("execute_tools", END)
+
+    return builder.compile()
+```
+
+---
+
+## The Full Orchestrator
+
+```python
+# orchestrator.py
+import asyncio
+from graph import build_graph
+from simulator.log_generator import log_stream
+from datetime import datetime, timezone
+from state import IncidentState
+
+graph = build_graph()
+
+async def run(events_per_second: float = 0.5, max_concurrent: int = 3):
+    semaphore = asyncio.Semaphore(max_concurrent)
+    print("Cyber AI system online. Processing events...\n")
+
+    async def handle(event: dict):
+        async with semaphore:
+            state = IncidentState(
+                raw_log=event["raw_log"],
+                source=event["source"],
+                ingested_at=event["ingested_at"],
+                severity=None, incident_type=None, triage_summary=None,
+                relevant_docs=None, historical_precedents=None,
+                recommended_action=None, patch_proposal=None,
+                patch_code=None, patch_status=None,
+                escalate=False, error=None,
+            )
+            try:
+                await graph.ainvoke(state, config={"recursion_limit": 10})
+            except Exception as exc:
+                print(f"[Graph error] {exc}")
+
+    async for event in log_stream(events_per_second):
+        asyncio.create_task(handle(event))
+
+if __name__ == "__main__":
+    asyncio.run(run())
+```
+
+---
+
+## System Observability
+
+Add a status endpoint so you can inspect the system while it's running:
+
+```python
+# status.py
+from queues import incident_queue, escalation_queue, noise_log
+from review.approval_gate import _pending_approvals
+from audit import LOG_PATH
+
+def system_status() -> dict:
+    try:
+        with open(LOG_PATH) as f:
+            lines = f.readlines()
+        applied = sum(1 for l in lines if '"applied"' in l)
+        rejected = sum(1 for l in lines if '"rejected"' in l)
+    except FileNotFoundError:
+        applied = rejected = 0
+
+    return {
+        "incident_queue_depth":   incident_queue.qsize(),
+        "escalation_queue_depth": escalation_queue.qsize(),
+        "pending_approvals":      len(_pending_approvals),
+        "noise_events_discarded": len(noise_log),
+        "patches_applied":        applied,
+        "patches_rejected":       rejected,
+    }
+```
+
+Print this every 60 seconds from a background task in `orchestrator.py`.
+
+---
+
+## Guardrail Summary
+
+Before calling the system complete, verify all guardrails are in place:
+
+| Guardrail | Implementation | Location |
+|---|---|---|
+| Prompt injection prevention | `sanitize_log()` strips injection keywords | `agents/triage.py` |
+| Structured outputs | Pydantic models for all LLM responses | All agents |
+| Command allowlist | Pattern matching on patch commands | `validation/structural.py` |
+| Blast radius cap | Commands touching "all" / "0.0.0.0" flagged as high | `validation/blast_radius.py` |
+| Human-in-the-loop | High/critical + high blast radius → approval gate | `review/approval_gate.py` |
+| Rollback required | `rollback_commands` is non-optional in PatchProposal | `agents/patching.py` |
+| Recursion limit | LangGraph `recursion_limit=10` | `graph.py` |
+| Audit log | Every decision written to JSONL | `audit.py` |
+
+---
+
+<CodeLab title="Academic Reflection: Closed-Loop Agentic Reasoning">
+
+The Cyber AI system demonstrates the four properties that distinguish agentic AI from static prompting:
+
+1. **Perception** — Agent A reads structured telemetry, not human-written text
+2. **Memory** — shared state (`IncidentState`) persists context across the pipeline
+3. **Action** — MCP tools execute real changes in external systems
+4. **Feedback** — the audit log and patch_status field close the loop; future incidents can be correlated with past actions
+
+The guardrails are not obstacles — they are the design. Autonomous reasoning without strict guardrails produces a system that is fast and unreliable. Guardrails constrain the action space to what is safe and auditable, allowing the speed of automation without sacrificing accountability.
+
+This is the core thesis of responsible agentic AI: **autonomy proportional to confidence, with human oversight proportional to risk.**
+
+</CodeLab>
+
+---
+
+<Pitfall title="This Is a Development System">
+
+The system you've built in this course has several known gaps for production use:
+
+- MCP server uses stdio (should use SSE)
+- Pending approvals are in-memory (should be in a database)
+- Patch application is simulated (should use Paramiko/Netmiko for SSH, or vendor APIs)
+- No authentication on the approval CLI (should require signed tokens)
+- Single-process architecture (should use worker pools)
+
+These are intentional simplifications that let you focus on the agentic architecture. Each gap is a real engineering project — and now you have the architectural vocabulary to spec and build each one.
+
+</Pitfall>
+
+---
+
+<Quiz question="The system applies patches automatically for low-blast-radius incidents without human approval. What additional safeguard should a production system add to validate that an auto-applied patch had the intended effect?">
+
+<div>
+
+A **post-apply verification step**: after executing `apply_firewall_block`, call `check_firewall_rule` to confirm the IP is now blocked. If it's not, mark the patch as failed, create a high-priority ticket, and escalate to a human.
+
+More broadly: any autonomous action should be followed by an observation that confirms the action had the intended effect. This is the "Observe" step of the sense-think-act loop applied to patch execution. Without it, the system can silently fail — applying a command that returns exit code 0 but doesn't actually change system state.
+
+</div>
+</Quiz>
+
+---
+
+## Course Complete
+
+You've built a full Cyber AI orchestration and triaging layer:
+
+- **Agent A** ingests, sanitizes, and classifies telemetry at scale
+- **Agent B** grounds recommendations in your organization's actual documentation
+- **Agent C** proposes concrete, validated, reversible config patches
+- **LangGraph** orchestrates the agent network with deterministic routing
+- **MCP** provides a standardized, auditable interface to external tools
+- **Guardrails** at every layer keep the system safe and accountable
+
+The architectural pattern — structured inputs, typed state, validated outputs, human gates for high-risk actions — applies to any autonomous agentic system, well beyond cybersecurity.

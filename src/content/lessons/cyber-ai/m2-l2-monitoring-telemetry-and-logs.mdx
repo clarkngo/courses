@@ -1,0 +1,220 @@
+---
+title: "Monitoring System Telemetry and Logs"
+description: "Build a log ingestion pipeline that feeds real-time events into the Triage Agent — including a simulated log generator and a structured event queue."
+module: 2
+moduleTitle: "Agent A — Triage Agent"
+lesson: 2
+duration: "55 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## From One Event to a Stream
+
+In Lesson 1, you tested the triage agent with hand-crafted events. In production, Agent A would consume a continuous stream from a SIEM, a syslog collector, or a metrics aggregator.
+
+This lesson builds two components:
+
+1. **A log simulator** — generates realistic syslog, SNMP, and netflow events at a configurable rate
+2. **An async ingestion pipeline** — feeds events into the triage agent without blocking the main thread
+
+---
+
+## Part 1: The Log Simulator
+
+```python
+# simulator/log_generator.py
+import random
+import asyncio
+from datetime import datetime, timezone
+
+SYSLOG_TEMPLATES = [
+    "Failed password for root from {ip} port 22 ssh2",
+    "Failed password for {user} from {ip} port 22 ssh2",
+    "Accepted password for {user} from {ip} port 22 ssh2",
+    "sudo: {user} : TTY=pts/0 ; COMMAND=/bin/bash",
+    "kernel: iptables DROPPED IN=eth0 SRC={ip} DST=10.0.0.1 PROTO=TCP DPT=443",
+    "sshd[1234]: pam_unix(sshd:auth): authentication failure; user={user} rhost={ip}",
+]
+
+SNMP_TEMPLATES = [
+    "ifOperStatus changed from up to down on GigabitEthernet0/{n}",
+    "cpuUsage exceeded threshold: {val}% on host {host}",
+    "memFree dropped below 10%: {val}MB remaining on {host}",
+    "linkDown trap received from {host}",
+]
+
+NETFLOW_TEMPLATES = [
+    "SRC={ip} DST=192.168.1.1 PROTO=TCP SPT={port} DPT=443 BYTES={bytes}",
+    "SRC={ip} DST=10.0.0.50 PROTO=UDP SPT={port} DPT=53 BYTES={bytes}",
+    "SRC=10.0.0.{n} DST={ip} PROTO=TCP SPT=12345 DPT=22 BYTES={bytes}",
+]
+
+USERS = ["alice", "bob", "charlie", "admin", "service_acct"]
+IPS = [f"203.0.113.{i}" for i in range(1, 20)] + [f"10.0.0.{i}" for i in range(1, 50)]
+HOSTS = ["db01", "web02", "fw01", "core-switch"]
+
+def _fill(template: str) -> str:
+    return template.format(
+        ip=random.choice(IPS),
+        user=random.choice(USERS),
+        n=random.randint(0, 4),
+        val=random.randint(70, 99),
+        host=random.choice(HOSTS),
+        port=random.randint(1024, 65535),
+        bytes=random.randint(100, 1_000_000),
+    )
+
+def generate_event() -> dict:
+    source = random.choices(
+        ["syslog", "snmp", "netflow"],
+        weights=[0.6, 0.25, 0.15]
+    )[0]
+
+    if source == "syslog":
+        log = _fill(random.choice(SYSLOG_TEMPLATES))
+    elif source == "snmp":
+        log = _fill(random.choice(SNMP_TEMPLATES))
+    else:
+        log = _fill(random.choice(NETFLOW_TEMPLATES))
+
+    return {
+        "raw_log": log,
+        "source": source,
+        "ingested_at": datetime.now(timezone.utc).isoformat(),
+    }
+
+async def log_stream(events_per_second: float = 1.0):
+    """Async generator that yields simulated events."""
+    interval = 1.0 / events_per_second
+    while True:
+        yield generate_event()
+        await asyncio.sleep(interval)
+```
+
+---
+
+## Part 2: The Async Ingestion Pipeline
+
+The triage agent makes an LLM API call per event. At high throughput, you want those calls to happen concurrently — not sequentially. Use `asyncio` with a bounded semaphore to cap parallelism:
+
+```python
+# ingestion/pipeline.py
+import asyncio
+from datetime import datetime, timezone
+from state import IncidentState
+from agents.triage import triage_agent
+
+def _init_state(event: dict) -> IncidentState:
+    return IncidentState(
+        raw_log=event["raw_log"],
+        source=event["source"],
+        ingested_at=event["ingested_at"],
+        severity=None,
+        incident_type=None,
+        triage_summary=None,
+        relevant_docs=None,
+        historical_precedents=None,
+        recommended_action=None,
+        patch_proposal=None,
+        patch_code=None,
+        patch_status=None,
+        escalate=False,
+        error=None,
+    )
+
+async def process_event(event: dict, semaphore: asyncio.Semaphore) -> IncidentState:
+    async with semaphore:
+        state = _init_state(event)
+        try:
+            return await asyncio.to_thread(triage_agent, state)
+        except Exception as exc:
+            return {**state, "error": str(exc), "escalate": True}
+
+async def run_pipeline(events_per_second: float = 1.0, max_concurrent: int = 5):
+    from simulator.log_generator import log_stream
+
+    semaphore = asyncio.Semaphore(max_concurrent)
+    tasks = set()
+
+    async for event in log_stream(events_per_second):
+        task = asyncio.create_task(process_event(event, semaphore))
+        tasks.add(task)
+        task.add_done_callback(tasks.discard)
+
+        # Print results as they complete
+        done, _ = await asyncio.wait(tasks, timeout=0)
+        for completed in done:
+            result = completed.result()
+            if result["severity"] != "noise":
+                print(
+                    f"[{result['severity'].upper()}] "
+                    f"{result['incident_type']} | "
+                    f"{result['triage_summary']}"
+                )
+```
+
+<CodeLab title="asyncio.to_thread">
+
+`triage_agent` is a synchronous function (it calls the OpenAI SDK, which is blocking by default). `asyncio.to_thread` runs it in a thread pool executor so it doesn't block the event loop. This lets you process many events concurrently without rewriting the agent as async.
+
+For high-throughput production use, the `openai` async client (`AsyncOpenAI`) would be a better fit.
+
+</CodeLab>
+
+---
+
+## Run the Pipeline
+
+```python
+# run_simulator.py
+import asyncio
+from ingestion.pipeline import run_pipeline
+
+if __name__ == "__main__":
+    print("Starting Cyber AI triage pipeline. Press Ctrl+C to stop.\n")
+    asyncio.run(run_pipeline(events_per_second=0.5, max_concurrent=3))
+```
+
+```bash
+python run_simulator.py
+```
+
+You should see non-noise events appear as the simulator generates them:
+
+```
+[HIGH] brute_force | Repeated SSH login failures for root from external IP suggest a brute-force attack in progress.
+[MEDIUM] config_drift | Network interface GigabitEthernet0/2 went down unexpectedly — possible link failure or config change.
+[LOW] port_scan | Outbound TCP connection to unusual external IP on port 443.
+```
+
+---
+
+<Pitfall title="Rate Limiting">
+
+At 1 event/second with `gpt-4o-mini`, you'll spend roughly 500–1,000 tokens per event. At scale, implement a **debouncing or batching** strategy: group related events by source host within a 5-second window, summarize the batch, and triage the summary rather than each individual line.
+
+This is a standard pattern in SIEM design and significantly reduces LLM costs.
+
+</Pitfall>
+
+---
+
+<Quiz question="What does the semaphore in the ingestion pipeline control, and why is it necessary?">
+
+<div>
+
+The semaphore caps the number of concurrent LLM calls. Without it, a burst of events would spawn hundreds of simultaneous API calls — hitting rate limits, exhausting memory, and potentially causing cascading failures.
+
+`asyncio.Semaphore(max_concurrent)` is a simple backpressure mechanism: when `max_concurrent` calls are already in flight, new events wait for a slot to open. The event stream continues to generate, but processing is bounded.
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+Agent A is now ingesting and classifying events from a live stream. In **Lesson 3**, you'll handle the classification output — routing noise to the trash, routing real incidents to Agent B, and escalating critical events to a human queue.
