@@ -1,0 +1,120 @@
+---
+title: "Calibrating and Maintaining the Physics Model"
+description: "A digital twin drifts from reality over time. Learn how to keep the physics model accurate as the physical asset ages."
+module: 3
+moduleTitle: "Physics Simulation with NVIDIA Omniverse and Isaac Sim"
+lesson: 3
+duration: "12 min"
+---
+
+import Quiz from '@components/Quiz.astro';
+
+## The Calibration Problem
+
+A digital twin is initialized with the manufacturer's specifications: nominal joint masses, friction coefficients, gear ratios, motor constants. These numbers are accurate on day one.
+
+Then the physical asset starts operating. Lubricants degrade. Bearings wear. Belts stretch. The physical robot changes — but the twin's model doesn't update automatically.
+
+If the model's parameters drift from reality, the twin's predictions become wrong. It computes "expected" torques based on a robot that no longer exists. The anomaly detection system starts generating false positives (or worse, missing real anomalies).
+
+Calibration keeps the model honest.
+
+---
+
+## System Identification
+
+**System identification** is the process of estimating a physical system's parameters from observed input-output behavior. For a robot joint:
+
+- Apply a known input (a commanded motion profile)
+- Measure the resulting output (actual torques, velocities, accelerations)
+- Fit model parameters to minimize the difference between simulated and observed behavior
+
+This can be done periodically (scheduled calibration runs) or continuously (online estimation).
+
+```python
+from scipy.optimize import minimize
+import numpy as np
+
+def physics_model(params, commands):
+    mass, friction, damping = params
+    # Simulate joint motion with given parameters
+    return simulate_joint(mass, friction, damping, commands)
+
+def calibration_loss(params, commands, observed_torques):
+    predicted = physics_model(params, commands)
+    return np.mean((predicted - observed_torques) ** 2)
+
+# Run during scheduled maintenance window
+result = minimize(
+    calibration_loss,
+    x0=[nominal_mass, nominal_friction, nominal_damping],
+    args=(calibration_commands, observed_torques),
+    method='L-BFGS-B'
+)
+updated_params = result.x
+```
+
+---
+
+## Online Parameter Estimation
+
+Scheduled calibration has a lag — the model is wrong between calibration runs. Online estimation updates parameters continuously using a **Kalman filter** or **recursive least squares** algorithm.
+
+The Extended Kalman Filter (EKF) treats model parameters as hidden state variables and updates them in real time as new sensor readings arrive:
+
+```
+State vector: [joint_position, joint_velocity, friction_coefficient]
+Observation:  joint_torque (from sensor)
+
+Each sensor reading → EKF update → parameter estimate improves
+```
+
+This approach keeps the twin accurate even for slowly drifting parameters — exactly the kind of gradual wear that causes unexpected failures.
+
+---
+
+## When Calibration Fails: Model Confidence
+
+Sometimes parameters drift faster than calibration can track — sudden damage, a replaced component, or an unanticipated failure mode. The twin should report **model confidence** alongside its predictions:
+
+- High confidence: simulated behavior closely matches recent sensor readings
+- Low confidence: the twin's model is diverging from reality — predictions are unreliable, alert operators
+
+A twin that reports low confidence is more valuable than one that silently produces wrong predictions.
+
+---
+
+## The Calibration-Twin Feedback Loop
+
+Effective digital twin maintenance follows a continuous cycle:
+
+```
+1. Operate physically
+2. Twin predicts expected behavior
+3. Compare predictions vs. observations
+4. Identify parameter drift
+5. Run calibration (scheduled or online)
+6. Update twin parameters
+7. Return to step 1
+```
+
+This loop shrinks over time as calibration algorithms improve. The long-term goal: a twin that self-calibrates continuously, always reflecting the current physical state of the asset.
+
+---
+
+<Quiz question="Why is model confidence reporting important for a digital twin used in predictive maintenance?">
+
+<div>
+
+A predictive maintenance system is only useful if operators trust its alerts. If the twin's physics model has drifted from reality, it will generate wrong predictions — and operators who act on those predictions waste resources on unnecessary maintenance or, worse, miss actual failures.
+
+By reporting confidence, the twin distinguishes between "I predicted a failure with high confidence" (act now) and "my model is diverging from sensor data — the prediction may be unreliable" (verify before acting). This transparency keeps the human-in-the-loop informed and prevents automation bias from compounding a bad model.
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+Module 4 addresses the academic core of digital twin research: **synchronization latency** — the gap between a physical event and its reflection in the twin, and why minimizing it determines the twin's real-world value.

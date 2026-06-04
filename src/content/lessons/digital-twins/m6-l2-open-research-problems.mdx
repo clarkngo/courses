@@ -1,0 +1,90 @@
+---
+title: "Open Research Problems"
+description: "The unsolved challenges driving digital twin research — from model fidelity to fleet-scale coordination."
+module: 6
+moduleTitle: "Digital Twins in Practice"
+lesson: 2
+duration: "12 min"
+---
+
+import Quiz from '@components/Quiz.astro';
+
+## The Field Is Still Young
+
+Digital twins have moved from research labs to production deployments — but many foundational problems remain unsolved. This is what makes the field scientifically interesting and practically important.
+
+---
+
+## Problem 1: Minimizing Synchronization Latency
+
+This is the central academic focus of the field. Current state-of-the-art production systems achieve 5–20ms end-to-end synchronization latency. Research targets are:
+
+- **Sub-millisecond** for real-time closed-loop control applications
+- **Sub-5ms** for safety-critical intervention (stopping a robot before a collision becomes contact)
+
+Active research directions:
+- **Predictive state estimation** — instead of waiting for a sensor reading, predict the asset's state at time t+1 using the physics model, then correct when the reading arrives. Reduces effective latency to near-zero for slowly-changing systems.
+- **Hardware timestamping** — stamping packets at the NIC level (rather than in software) eliminates OS scheduling jitter, reducing timestamp uncertainty from microseconds to nanoseconds.
+- **In-network computing** — processing pipeline stages on programmable network hardware (P4 switches) rather than servers, eliminating the server queuing delay entirely.
+
+---
+
+## Problem 2: Model-Reality Gap
+
+Every physics model makes simplifying assumptions. A rigid-body model ignores cable flexibility. A kinematic model ignores motor dynamics. These simplifications accumulate, causing the twin to diverge from reality in ways that are hard to detect.
+
+Research challenges:
+- **Automated model discovery** — can a twin identify what its model is missing by analyzing residual structure? (e.g., residuals show periodic variation → model is missing a cyclic load)
+- **Adaptive model complexity** — use a simple model during normal operation, automatically invoke a more complex model when anomalies appear
+- **Learned physics** — neural networks that learn physical dynamics from data, used as correction terms on top of first-principles models (physics-informed neural networks, PINNs)
+
+---
+
+## Problem 3: Fleet-Scale Twin Management
+
+Deploying one digital twin is a software engineering problem. Deploying 10,000 twins — for a fleet of robots, aircraft, or vehicles — is an infrastructure and coordination problem.
+
+Open questions:
+- **Shared knowledge** — if twin 42 learns that a bearing failure exhibits a specific vibration signature 48 hours before failure, can twin 43 immediately benefit from that knowledge? Federated learning across a twin fleet is an active research area.
+- **Resource allocation** — when 10,000 twins are running simultaneously, which get GPU time for high-fidelity simulation? Priority systems that allocate compute based on current health state are still maturing.
+- **Twin lifecycle management** — how do you update the physics model across a fleet without taking twins offline? Continuous deployment for simulation software is an unsolved operational challenge.
+
+---
+
+## Problem 4: Uncertainty Quantification
+
+Current RUL estimates report confidence intervals, but the intervals themselves are uncertain — they're estimated from limited historical data and may not capture the true distribution of outcomes.
+
+**Bayesian approaches** to digital twins treat all model parameters as probability distributions rather than point estimates. This propagates uncertainty from sensor noise through the physics model to the final prediction — producing credible intervals with better coverage guarantees.
+
+Challenge: Bayesian inference is computationally expensive. Running full Bayesian updating in real time at 1kHz sensor rates requires either approximation methods (variational inference, particle filters) or hardware acceleration that doesn't yet exist at industrial scale.
+
+---
+
+## Problem 5: Human-Twin Interaction
+
+Digital twins generate more information than operators can consume. A factory with 800 robots might generate 400 maintenance alerts per day — far more than a maintenance team can act on.
+
+Research problems:
+- **Alert prioritization** — which alerts require immediate action, which can wait, which should be silently dismissed?
+- **Explainability** — operators need to understand *why* the twin is predicting a failure, not just *that* it is. Black-box anomaly scores from ML models don't build trust.
+- **Cognitive load** — what visualization and interaction paradigm lets an operator monitor 800 robots simultaneously without becoming overwhelmed?
+
+---
+
+<Quiz question="Why is 'predictive state estimation' a more effective latency reduction technique than simply upgrading to a faster network?">
+
+<div>
+
+A faster network reduces transit time — typically from 5ms to 1ms, a 4ms improvement. Predictive state estimation eliminates the need to wait for a reading at all: the twin predicts the asset's state at the next timestep using the physics model, and only corrects the prediction when the actual reading arrives.
+
+For slowly-changing signals (temperature, gradual position change), the prediction is nearly perfect — the effective latency approaches zero. For fast-changing signals (impact, sudden load change), the prediction is corrected within one sensor cycle. The technique doesn't reduce network latency; it makes latency less relevant.
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+In the final lesson, we'll look at where digital twins are heading — the convergence with AI agents, generative simulation, and what the fully autonomous industrial twin might look like.

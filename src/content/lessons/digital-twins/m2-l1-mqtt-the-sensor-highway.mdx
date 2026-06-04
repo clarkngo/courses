@@ -1,0 +1,137 @@
+---
+title: "MQTT: The Sensor Highway"
+description: "Learn how MQTT's publish-subscribe model moves sensor data from physical assets to digital twins with minimal overhead."
+module: 2
+moduleTitle: "Data Streams and Connectivity"
+lesson: 1
+duration: "15 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Why Normal Networking Doesn't Work
+
+Industrial sensors have constraints that standard HTTP doesn't handle well:
+
+- **Limited compute** — a temperature sensor may have kilobytes of RAM
+- **Unreliable networks** — factory floors and remote assets have intermittent connectivity
+- **High frequency** — a robot joint may emit 1,000 readings per second
+- **Fan-out** — one sensor's data may need to reach the twin, a logger, an alert system, and a dashboard simultaneously
+
+MQTT was designed specifically for these constraints.
+
+---
+
+## How MQTT Works
+
+MQTT is a **publish-subscribe** protocol. Instead of a sensor sending data directly to the twin (point-to-point), it publishes data to a **broker** — a central message router. Any system that needs the data subscribes to the relevant topic.
+
+```
+Robot Joint Sensor
+       │
+       │  publish("robot/arm/joint2/torque", 42.7)
+       ▼
+  MQTT Broker (e.g., Mosquitto, HiveMQ)
+       │
+       ├──► Digital Twin Simulation Engine
+       ├──► Time-Series Database (InfluxDB)
+       ├──► Alert System
+       └──► Operator Dashboard
+```
+
+The sensor doesn't know who's listening. The broker handles routing. This decoupling is the key architectural advantage.
+
+---
+
+## Topics: The Addressing System
+
+MQTT uses hierarchical **topics** to route messages — similar to file paths:
+
+```
+robot/arm/joint2/torque
+robot/arm/joint2/velocity
+facility/line3/temperature
+facility/line3/pressure
+```
+
+Subscribers can use wildcards:
+- `robot/arm/+/torque` — subscribe to torque from any joint
+- `facility/#` — subscribe to everything from the facility
+
+This makes it easy to build systems that consume only the data they need.
+
+---
+
+## Quality of Service Levels
+
+MQTT has three delivery guarantees, balancing reliability against bandwidth:
+
+| QoS Level | Guarantee | Use Case |
+|---|---|---|
+| 0 — At most once | Fire and forget, may lose messages | High-frequency sensors where occasional loss is acceptable |
+| 1 — At least once | Delivered at least once, may duplicate | Alerts and status updates |
+| 2 — Exactly once | Guaranteed single delivery | Financial transactions, critical commands |
+
+For most sensor telemetry feeding a digital twin, QoS 0 or 1 is appropriate. The twin's physics model can tolerate occasional missed readings.
+
+---
+
+## A Minimal MQTT Publisher
+
+<CodeLab language="python">
+```python
+import paho.mqtt.client as mqtt
+import json
+import time
+
+broker = "localhost"
+port = 1883
+
+client = mqtt.Client()
+client.connect(broker, port)
+
+while True:
+    payload = {
+        "joint": "joint2",
+        "torque": read_torque_sensor(),   # from hardware driver
+        "velocity": read_velocity_sensor(),
+        "timestamp": time.time()
+    }
+    client.publish("robot/arm/joint2/state", json.dumps(payload), qos=1)
+    time.sleep(0.001)  # 1 kHz
+
+client.disconnect()
+```
+</CodeLab>
+
+---
+
+## MQTT's Limitations
+
+MQTT excels at getting data off the device — but it has limits:
+
+- **No built-in persistence** — the broker doesn't store historical data; you need a time-series database downstream
+- **Limited throughput** — a single broker handles millions of messages per second, but very high-volume industrial deployments need something more
+- **No ordering guarantees across topics** — messages on different topics may arrive out of order
+
+When you need higher throughput, strict ordering, or replay capability, you reach for Kafka.
+
+---
+
+<Quiz question="Why does MQTT use a publish-subscribe model instead of direct sensor-to-twin communication?">
+
+<div>
+
+Direct communication (point-to-point) tightly couples each sensor to each consumer. If you add a new consumer — say, a second dashboard or a new alert system — you'd need to update every sensor's firmware.
+
+The pub-sub model decouples producers from consumers via the broker. Sensors publish without knowing who listens. New consumers subscribe without touching the sensors. The broker handles fan-out. This makes the architecture composable and maintainable at scale.
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+In **Lesson 2**, we'll look at Apache Kafka — and understand when the scale of an industrial deployment demands something beyond MQTT.

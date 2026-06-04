@@ -1,0 +1,97 @@
+---
+title: "NVIDIA Omniverse: The Simulation Platform"
+description: "Understand how NVIDIA Omniverse provides the physics-accurate, real-time 3D foundation for industrial digital twins."
+module: 3
+moduleTitle: "Physics Simulation with NVIDIA Omniverse and Isaac Sim"
+lesson: 1
+duration: "15 min"
+---
+
+import Quiz from '@components/Quiz.astro';
+
+## What Omniverse Is
+
+NVIDIA Omniverse is a real-time 3D simulation and collaboration platform built on two core technologies:
+
+- **Universal Scene Description (USD)** — Pixar's open format for describing 3D scenes, extended by NVIDIA for physics simulation
+- **RTX rendering** — GPU-accelerated physically-based rendering that produces photorealistic output in real time
+
+For digital twins, the key value of Omniverse is not the rendering — it's the simulation substrate. Omniverse provides a shared, physics-accurate virtual space that multiple simulation engines can write into simultaneously.
+
+---
+
+## The USD Foundation
+
+USD (Universal Scene Description) is the "language" that Omniverse speaks. Every object in the scene — a robot arm, a conveyor belt, a camera — is a USD prim with:
+
+- **Transform** — position, rotation, scale
+- **Geometry** — mesh or primitive shape
+- **Physics properties** — mass, friction, restitution, joint constraints
+- **Sensor data bindings** — which real-world sensor feeds drive this object's state
+
+When real sensor data arrives, the twin updates the relevant USD prims — the robot arm moves to the reported joint angles, the conveyor runs at the reported speed. The scene reflects reality.
+
+---
+
+## Physics Simulation in Omniverse
+
+Omniverse integrates **NVIDIA PhysX** — the same physics engine used in video games and robotics simulation — to compute:
+
+- **Rigid body dynamics** — how solid objects move, collide, and interact under forces
+- **Articulation physics** — joint-constrained motion for robot arms and kinematic chains
+- **Soft body simulation** — deformable materials like cables, cloth, and rubber seals
+- **Contact forces** — normal force, friction, and contact geometry during collisions
+
+For digital twins, this means the virtual robot doesn't just display the reported joint angles — it computes the expected torques, velocities, and contact forces that should accompany those angles. Deviations from those expectations are anomalies.
+
+---
+
+## Why GPU Acceleration Matters
+
+A single robot arm with 6 joints running at 1 kHz requires ~6,000 physics state updates per second. A production line with 100 robots requires 600,000. A fleet of 10,000 robots across a manufacturer's global facilities requires 60 million.
+
+NVIDIA's PhysX runs on GPU, enabling massive parallelism. Thousands of physics simulations that would take hours on CPU execute in real time on modern data center GPUs. This is what makes fleet-scale digital twins computationally feasible.
+
+---
+
+## Omniverse Nucleus: The Shared State
+
+In a digital twin deployment, multiple systems need to read and write the scene simultaneously:
+
+- The data ingestion layer is updating robot positions from sensor feeds
+- The analytics layer is reading joint forces to compute anomaly scores
+- The visualization layer is rendering the scene for operators
+- Engineers are running what-if simulations in parallel
+
+Omniverse **Nucleus** is the shared database that coordinates concurrent access to the USD scene. It's analogous to a version-controlled file system for 3D scenes — multiple clients can subscribe to changes, write updates, and receive diffs without stepping on each other.
+
+---
+
+## Omniverse Extensions
+
+Omniverse is extensible via Python-based **extensions** that add domain-specific capabilities:
+
+- **Isaac Sim extension** — robotics-specific physics, sensor simulation, ROS integration
+- **Factory extension** — conveyor systems, palletizers, industrial logic
+- **Sensor simulation** — virtual cameras, LiDAR, IMUs that emit synthetic data
+
+This modular architecture means a single Omniverse instance can host a complete factory digital twin — robots, conveyors, cameras, and all — in one unified physics simulation.
+
+---
+
+<Quiz question="Why does NVIDIA Omniverse's physics simulation add value beyond simply displaying a 3D visualization of the physical asset?">
+
+<div>
+
+A visualization shows what the asset looks like. The physics simulation computes what the asset *should* be doing — expected torques, forces, velocities, and contact states — given the reported sensor inputs.
+
+This computed expectation is the baseline against which real sensor readings are compared. Deviations between "what the physics model predicts" and "what the sensors report" are the anomaly signals that enable predictive maintenance. Without the physics model, you can only observe; with it, you can predict.
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+In **Lesson 2**, we'll go deeper into Isaac Sim — NVIDIA's robotics-specific simulation environment that extends Omniverse with sensor models, ROS integration, and reinforcement learning support.

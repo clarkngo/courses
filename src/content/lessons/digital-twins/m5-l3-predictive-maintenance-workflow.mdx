@@ -1,0 +1,146 @@
+---
+title: "The Predictive Maintenance Workflow"
+description: "Alerts, work orders, and human-in-the-loop decisions — how digital twin predictions connect to real maintenance operations."
+module: 5
+moduleTitle: "Predictive Maintenance and Anomaly Detection"
+lesson: 3
+duration: "12 min"
+---
+
+import Quiz from '@components/Quiz.astro';
+
+## The Three Maintenance Strategies
+
+Before digital twins, facilities operated under one of two strategies:
+
+**Reactive maintenance** — fix it when it breaks. Low upfront cost, high downtime cost. An unplanned failure in a production line can cost $50,000–$500,000 per hour.
+
+**Preventive maintenance** — replace components on a fixed schedule (every 6 months, every 10,000 cycles). Predictable but wasteful — components are often replaced when they still have 40–60% of their useful life remaining.
+
+**Predictive maintenance** — replace components when degradation data indicates failure is imminent. Maximum component utilization, minimum unplanned downtime. Enabled entirely by the digital twin's anomaly detection and RUL estimation.
+
+---
+
+## The End-to-End Workflow
+
+```
+Digital Twin
+    │
+    │  Anomaly detected: joint2 torque drift
+    │  RUL estimate: 58 ± 14 hours
+    ▼
+Alert Management System
+    │
+    │  Severity: WARNING
+    │  Recommended action: inspect joint2 bearing
+    │  Suggested window: next maintenance shift
+    ▼
+CMMS (Computerized Maintenance Management System)
+    │
+    │  Work order created: WO-2024-8847
+    │  Assigned to: Maintenance Team B
+    │  Parts: 6205-2RS bearing × 2, bearing puller kit
+    │  Scheduled: Wednesday 02:00–04:00
+    ▼
+Maintenance Execution
+    │
+    │  Technician inspects joint2
+    │  Bearing shows pitting on inner race (confirmed)
+    │  Bearing replaced
+    ▼
+Twin Feedback Loop
+    │
+    │  Post-replacement baseline re-established
+    │  RUL clock restarted for joint2
+    │  Maintenance event logged for model refinement
+    ▼
+Model Improvement
+    │
+    │  Actual failure time vs. predicted failure time recorded
+    │  Degradation model parameters updated
+    │  Anomaly detection thresholds re-calibrated
+```
+
+---
+
+## The CMMS Integration
+
+A Computerized Maintenance Management System (CMMS) — systems like IBM Maximo, SAP PM, or Fiix — manages work orders, parts inventory, and technician scheduling.
+
+The digital twin integrates with the CMMS via API, converting predictions into actionable work orders:
+
+```python
+def create_maintenance_work_order(alert: MaintenanceAlert, rul: RULEstimate):
+    cmms_client.create_work_order(
+        asset_id=alert.asset_id,
+        description=f"Predictive alert: {alert.anomaly_type} detected on {alert.joint_id}",
+        priority=determine_priority(rul.rul_hours),
+        required_parts=parts_lookup(alert.joint_id, alert.anomaly_type),
+        latest_start=datetime.now() + timedelta(hours=rul.confidence_interval[0]),
+        instructions=generate_inspection_procedure(alert.joint_id),
+        source="digital_twin",
+        prediction_confidence=rul.confidence_interval,
+    )
+
+def determine_priority(rul_hours):
+    if rul_hours < 24:
+        return "CRITICAL"
+    elif rul_hours < 72:
+        return "HIGH"
+    elif rul_hours < 168:
+        return "MEDIUM"
+    else:
+        return "LOW"
+```
+
+---
+
+## Closing the Loop: Feeding Outcomes Back
+
+The prediction is only half the system. What actually happened is equally important:
+
+- Technician inspects joint2: confirmed bearing failure → prediction was correct
+- Technician inspects joint5: no defect found → false positive
+- Component runs another 200 hours before failure → RUL was underestimated
+
+Each outcome is logged and used to refine the degradation model:
+
+- True positives: validate the anomaly detection threshold
+- False positives: tighten the threshold or add a confirmation window
+- RUL errors: adjust the degradation rate model
+
+Over time, the system becomes more accurate — the twin learns the specific degradation behavior of each asset in this facility, under these operating conditions.
+
+---
+
+## Human-in-the-Loop Design
+
+Autonomous maintenance scheduling is technically possible but operationally risky. Best practice: the twin recommends, the human decides.
+
+Key design principles:
+
+- **Explain predictions** — show the technician the residual trend that triggered the alert, not just the alert
+- **Show confidence** — present the RUL confidence interval, not a single number
+- **Enable override** — operators must be able to dismiss or escalate alerts with a documented reason
+- **Track overrides** — when an operator dismisses a warning and the component fails anyway, that's data
+
+Human oversight is not a limitation on the twin's capability — it's a quality control layer that keeps the system honest and builds operator trust over time.
+
+---
+
+<Quiz question="Why is it important to log the outcome of every digital twin maintenance prediction, including false positives?">
+
+<div>
+
+The twin's anomaly detection and RUL models are calibrated on historical data. Without outcome feedback, those models can't improve — the system is forever as accurate as it was on day one.
+
+False positives in particular are valuable: they reveal where the model's sensitivity is miscalibrated, where normal operating variation is being mistaken for degradation. Each logged false positive is a training example for threshold refinement. Over months, a system that tracks outcomes becomes significantly more precise than one that generates alerts and never learns from them.
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+Module 6 brings everything together — real-world digital twin deployments across industries, and the open research problems that make this field one of the most active in engineering today.

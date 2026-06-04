@@ -1,0 +1,89 @@
+---
+title: "What Is a Digital Twin?"
+description: "Understand what a digital twin really is — and why it's far more than a 3D visualization."
+module: 1
+moduleTitle: "Digital Twins From the Ground Up"
+lesson: 1
+duration: "15 min"
+---
+
+import Quiz from '@components/Quiz.astro';
+
+## More Than a 3D Model
+
+When people hear "digital twin," they often picture a spinning 3D render of a factory floor or a robot arm. That's a visualization — useful, but not a twin.
+
+A **digital twin** is a living, physics-backed simulation model that mirrors the real-time state of a physical asset, process, or system. It doesn't just look like the thing — it *behaves* like the thing, responds to the same inputs, and predicts how the thing will behave in the future.
+
+The difference matters enormously in practice.
+
+---
+
+## The Three Properties That Define a True Twin
+
+**1. Real-time synchronization**
+The twin continuously ingests live sensor data from the physical asset and updates its internal state to match. If the physical robot arm slows down by 3%, the twin's model reflects that change within milliseconds.
+
+**2. Physics fidelity**
+The twin's behavior is governed by mathematical models — kinematics, thermodynamics, fluid dynamics, material stress — not just historical averages. It can simulate what *should* happen, so deviations from reality become visible.
+
+**3. Predictive capability**
+Because the twin understands the physics of the system, it can run forward simulations: "If this bearing continues degrading at the current rate, it will fail in 11 days." That's the core value proposition.
+
+---
+
+## A Simple Mental Model
+
+Think of it like this:
+
+| Physical Asset | Digital Twin |
+|---|---|
+| The real robot arm | The simulation running in parallel |
+| Moves in the real world | Moves in the virtual world |
+| Has real sensors | Ingests those sensor readings |
+| Can only do one thing at a time | Can run thousands of "what-if" scenarios |
+| Fails in ways that cost money | Fails in simulation, safely |
+
+---
+
+## Where Digital Twins Are Used
+
+Digital twins are not a single technology — they're an architectural pattern applied across industries:
+
+- **Manufacturing** — monitor CNC machines, predict tool wear, optimize throughput
+- **Energy** — model wind turbines and power grids in real time
+- **Aerospace** — simulate airframe fatigue across a fleet of aircraft
+- **Healthcare** — patient-specific organ models for surgical planning
+- **Smart cities** — traffic flow, utility grids, emergency response modeling
+- **Robotics** — validate robot behavior in simulation before physical deployment
+
+---
+
+## Why Now?
+
+Three converging forces made digital twins practical:
+
+- **Cheap, dense sensors** — IoT hardware costs have dropped 90% in a decade
+- **High-bandwidth connectivity** — MQTT, Kafka, and 5G make real-time data streams feasible
+- **Simulation platforms** — NVIDIA Omniverse and Isaac Sim can render physics at real-time speeds
+
+The result: what once required a supercomputer and a team of simulation engineers can now run on cloud infrastructure and be updated continuously from the factory floor.
+
+---
+
+<Quiz question="What separates a digital twin from a 3D visualization of the same asset?">
+
+<div>
+
+A 3D visualization is a static or manually updated representation — it shows what the asset looks like, not what it's doing or what it will do.
+
+A digital twin is a physics-backed simulation that ingests live sensor data, mirrors the asset's real-time state, and can predict future behavior. The key properties are continuous synchronization, physical fidelity, and predictive capability.
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+In **Lesson 2**, we'll look at the evolution of digital twins — from NASA's early spacecraft models to the industrial systems transforming manufacturing today.

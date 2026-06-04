@@ -1,0 +1,146 @@
+---
+title: "Anomaly Detection in Digital Twins"
+description: "How physics-model residuals and statistical methods identify failures before they happen."
+module: 5
+moduleTitle: "Predictive Maintenance and Anomaly Detection"
+lesson: 1
+duration: "15 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## The Two-Signal System
+
+Every digital twin anomaly detector works with two signals:
+
+1. **Observed** — what the physical sensors actually report
+2. **Expected** — what the physics model predicts given the same inputs
+
+The difference between them is the **residual**. Under normal operation, residuals are small and stationary (mean near zero, constant variance). An anomaly is a change in that pattern:
+
+- Sudden spike: acute event (impact, obstruction, electrical fault)
+- Gradual drift: slow degradation (wear, lubrication loss, bearing fatigue)
+- Changed variance: increased noise (sensor degradation, resonance)
+
+The anomaly detector's job is to distinguish signal from noise in the residual stream.
+
+---
+
+## Physics-Model Residuals
+
+For a robot joint, the residual is computed at each timestep:
+
+```python
+def compute_residual(joint_id, timestep):
+    observed = sensor.read_torque(joint_id)
+    expected = twin.predict_torque(joint_id, timestep)
+    return observed - expected
+```
+
+A well-calibrated twin produces residuals that are nearly zero-mean white noise. Any structure in the residual — trend, seasonality, autocorrelation — indicates the model is failing to capture something real.
+
+---
+
+## Statistical Process Control
+
+The simplest anomaly detection method: track the residual mean and flag when it exceeds a threshold.
+
+**CUSUM (Cumulative Sum Control Chart)** is well-suited for detecting gradual drift:
+
+```python
+class CUSUM:
+    def __init__(self, target=0, allowance=0.5, threshold=5.0):
+        self.target = target
+        self.k = allowance      # slack — changes below this are ignored
+        self.h = threshold      # alarm threshold
+        self.C_pos = 0.0        # cumulative positive deviation
+        self.C_neg = 0.0        # cumulative negative deviation
+
+    def update(self, residual):
+        self.C_pos = max(0, self.C_pos + (residual - self.target) - self.k)
+        self.C_neg = max(0, self.C_neg - (residual - self.target) - self.k)
+
+        if self.C_pos > self.h:
+            return AnomalyAlert("positive drift", self.C_pos)
+        if self.C_neg > self.h:
+            return AnomalyAlert("negative drift", self.C_neg)
+        return None
+```
+
+CUSUM detects small, sustained shifts that a simple threshold would miss — exactly the signature of gradual bearing wear.
+
+---
+
+## Machine Learning on Residuals
+
+For complex multi-joint systems, residuals from individual joints are correlated. A bearing failure in joint 2 changes residuals in joints 2, 3, and 4 simultaneously — because the arm's kinematics propagate the stiffness change through the chain.
+
+**Multivariate anomaly detection** captures these correlations. A common approach:
+
+1. Collect residual vectors `[r1, r2, r3, r4, r5, r6]` during normal operation
+2. Fit a multivariate Gaussian (mean vector + covariance matrix)
+3. At runtime, compute the **Mahalanobis distance** from the current residual to the normal distribution:
+
+```python
+from scipy.spatial.distance import mahalanobis
+import numpy as np
+
+def mahalanobis_anomaly_score(residuals, mean, cov_inv):
+    diff = residuals - mean
+    return np.sqrt(diff @ cov_inv @ diff)
+
+# Score > threshold → anomaly, alert maintenance
+score = mahalanobis_anomaly_score(current_residuals, normal_mean, normal_cov_inv)
+```
+
+Mahalanobis distance naturally accounts for correlation — joint2 torque and joint3 torque moving together is normal; them moving in opposite directions is anomalous.
+
+---
+
+<Pitfall>
+
+**Don't treat every deviation as an anomaly.** Real robot residuals have legitimate variation from payload changes, ambient temperature, and control mode switches. An overly sensitive detector that fires on every transient will be ignored. Tune thresholds on real operational data, not simulation data, and track false positive rates as a first-class metric.
+
+</Pitfall>
+
+---
+
+## The Maintenance Alert
+
+When an anomaly is detected, the twin generates a structured alert:
+
+```python
+@dataclass
+class MaintenanceAlert:
+    asset_id: str
+    joint_id: str
+    anomaly_type: str       # "torque_drift", "velocity_noise", "correlation_break"
+    severity: str           # "warning", "critical"
+    confidence: float       # 0.0 – 1.0
+    detected_at: datetime
+    estimated_rul: Optional[timedelta]  # remaining useful life
+    recommended_action: str
+```
+
+The `estimated_rul` field bridges anomaly detection and the next lesson's topic: remaining useful life prediction.
+
+---
+
+<Quiz question="Why are physics-model residuals more useful for anomaly detection than raw sensor readings alone?">
+
+<div>
+
+Raw sensor readings carry both signal (the physics of the system) and noise (anomalies, degradation). Without a reference, it's hard to tell them apart — a high torque reading might be normal under high load or anomalous under low load.
+
+Residuals subtract the "expected" signal from the "observed" signal. What remains is the unexplained component — the part that the physics model can't account for. Under normal conditions this is near-zero noise. When something degrades, the residual shifts in a structured way that statistical methods can detect reliably.
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+In **Lesson 2**, we'll build on anomaly detection to estimate **remaining useful life** — translating "something is wrong" into "you have N hours before failure."

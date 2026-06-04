@@ -1,0 +1,108 @@
+---
+title: "Network Architecture for Low-Latency Twins"
+description: "How dedicated industrial networks, TSN, and 5G private networks eliminate the latency bottlenecks in digital twin pipelines."
+module: 4
+moduleTitle: "Real-Time Synchronization"
+lesson: 2
+duration: "12 min"
+---
+
+import Quiz from '@components/Quiz.astro';
+
+## The Network Is the Bottleneck
+
+In most digital twin deployments, the network is where latency budgets are broken. A well-engineered physics simulation can update in under 1ms. A poorly engineered network can add 50–200ms.
+
+The culprit is usually **shared infrastructure** — sensors competing for bandwidth with office traffic, ERP systems, video cameras, and everything else on the factory LAN.
+
+The solution: dedicate network resources to the twin's data streams.
+
+---
+
+## Time-Sensitive Networking (TSN)
+
+TSN is a set of IEEE 802.1 standards that add deterministic timing guarantees to standard Ethernet. For digital twin telemetry, three standards matter:
+
+**802.1Qbv — Time-Aware Shaper**
+Divides each network cycle (typically 250µs–1ms) into time slots. Critical traffic (sensor data) gets its own reserved slot and is never pre-empted by lower-priority traffic. Maximum latency is bounded by the cycle length — predictable, not probabilistic.
+
+**802.1AS — Generalized Precision Time Protocol (gPTP)**
+Synchronizes all devices on the network to a common clock within ±1 microsecond. This eliminates timestamp skew — every sensor reading has a timestamp in the same reference frame, enabling the twin to reconstruct the precise sequence of events.
+
+**802.1Qcc — Stream Reservation**
+End-to-end bandwidth reservation for specific traffic flows. The twin's sensor stream is guaranteed its bandwidth allocation regardless of what else is happening on the network.
+
+---
+
+## 5G Private Networks
+
+For mobile assets — autonomous guided vehicles (AGVs), drones, mobile robots — wired TSN isn't an option. 5G private networks provide:
+
+- **Ultra-Reliable Low-Latency Communication (URLLC)** — latency targets of 1ms with 99.9999% reliability
+- **Network slicing** — dedicated virtual network slice for twin telemetry, isolated from other traffic
+- **Deterministic scheduling** — 5G NR's flexible numerology supports URLLC traffic patterns
+
+A factory deploying mobile robots can run a 5G private network for robot telemetry alongside a TSN wired backbone for fixed equipment — a hybrid that covers both mobility and latency requirements.
+
+---
+
+## Edge Compute Topology
+
+Network latency also depends on where the processing happens. Three common topologies:
+
+**Cloud-only**
+```
+Sensor → Factory LAN → WAN → Cloud DC → Twin
+Latency: 20ms–200ms (WAN-dominated)
+Good for: historical analysis, non-real-time prediction
+```
+
+**Hybrid edge-cloud**
+```
+Sensor → Factory LAN → Edge Server → MQTT/Kafka → Cloud DC → Twin
+Latency: 5ms–20ms (edge handles filtering; cloud handles simulation)
+Good for: predictive maintenance
+```
+
+**On-premise**
+```
+Sensor → TSN/5G → On-prem Server → Twin (running locally)
+Latency: 1ms–5ms
+Good for: real-time safety systems, control-loop integration
+```
+
+The choice is driven by operational requirements. Safety-critical real-time twins live on-premise. Fleet analytics twins live in the cloud.
+
+---
+
+## Clock Synchronization Across the System
+
+Even with fast networks, a clock skew of 10ms between a sensor and the twin's simulation engine means the twin assigns events to the wrong points in time. This corrupts state reconstruction and anomaly detection.
+
+The full clock synchronization stack:
+
+1. **GPS/PTP grandmaster** — network-wide time reference, accurate to nanoseconds
+2. **IEEE 802.1AS (gPTP)** — distributes time to all TSN-capable switches and devices
+3. **MQTT/Kafka timestamps** — messages timestamped at the edge using synchronized clock
+4. **Twin simulation clock** — aligned to the same reference via NTP/PTP
+
+With this stack, every sensor reading, every physics update, and every log entry shares a common time axis. Event reconstruction becomes reliable.
+
+---
+
+<Quiz question="Why does TSN's time-aware shaper (802.1Qbv) improve digital twin synchronization latency even if the total bandwidth on the network is unchanged?">
+
+<div>
+
+Latency in shared networks is not primarily caused by insufficient bandwidth — it's caused by unpredictable queueing behind lower-priority traffic. A 1GB file transfer can cause sensor packets to queue for tens of milliseconds even if the network is only 20% utilized on average.
+
+802.1Qbv eliminates this by giving sensor traffic its own reserved time slot that no other traffic can enter. The sensor packet is never queued behind anything. Its end-to-end latency becomes deterministic and bounded — not because the network is faster, but because it's isolated.
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+In **Lesson 3**, we'll look at state reconciliation — the algorithms that keep the twin synchronized when messages are delayed, reordered, or lost.

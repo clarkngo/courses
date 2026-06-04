@@ -1,0 +1,171 @@
+---
+title: "Kafka for Industrial-Scale Telemetry"
+description: "When MQTT isn't enough — learn how Apache Kafka handles massive telemetry streams with ordering guarantees and replay."
+module: 2
+moduleTitle: "Data Streams and Connectivity"
+lesson: 2
+duration: "15 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Quiz from '@components/Quiz.astro';
+
+## When MQTT Hits Its Limits
+
+MQTT is excellent for getting data off constrained edge devices. But consider a mid-size automotive plant:
+
+- 800 robots, each with 12 sensors
+- Each sensor emitting 500 readings/second
+- That's **4.8 million messages per second**
+
+A single MQTT broker starts to struggle. More critically: if the digital twin simulation falls behind and needs to replay the last 30 minutes of sensor data to resync, MQTT has no answer — it doesn't retain messages.
+
+This is where Apache Kafka comes in.
+
+---
+
+## What Kafka Is
+
+Kafka is a **distributed streaming platform** designed for high-throughput, fault-tolerant, ordered data streams. Originally built at LinkedIn to handle billions of events per day, it's now the backbone of data pipelines at companies like Uber, Airbnb, and major industrial manufacturers.
+
+Key properties:
+- **Durable log** — messages are written to disk and retained for a configurable period (days, weeks)
+- **Ordered within partitions** — messages in a partition are always delivered in the order they were written
+- **Horizontally scalable** — add brokers to handle more throughput linearly
+- **Consumer groups** — multiple consumers can independently read the same stream at their own pace
+
+---
+
+## The Kafka Model
+
+```
+Producers (sensors / edge gateways)
+       │
+       ▼
+  Kafka Broker Cluster
+  ┌─────────────────────────────┐
+  │  Topic: robot.telemetry     │
+  │  ┌──────────┬──────────┐   │
+  │  │Partition0│Partition1│   │  ← messages written in order
+  │  └──────────┴──────────┘   │
+  └─────────────────────────────┘
+       │
+       ├──► Consumer Group A: Digital Twin Simulation
+       ├──► Consumer Group B: Time-Series Database
+       └──► Consumer Group C: Anomaly Detection ML Model
+```
+
+Each consumer group tracks its own **offset** — its position in the log. If the twin simulation crashes and restarts, it resumes from where it left off. If you add a new ML model tomorrow, it can start consuming from the beginning of the retained log.
+
+---
+
+## Kafka Topics and Partitions
+
+Topics are divided into **partitions** for parallelism. A good partitioning strategy for robot telemetry:
+
+- Partition by `robot_id` — all data for a given robot lands in the same partition, ensuring temporal ordering per robot
+- The digital twin for robot 42 always reads from partition 42's data
+
+```
+Topic: robot.telemetry
+  Partition 0: all data from robot_id 0–99
+  Partition 1: all data from robot_id 100–199
+  ...
+```
+
+---
+
+## Producing Telemetry to Kafka
+
+<CodeLab language="python">
+```python
+from kafka import KafkaProducer
+import json
+import time
+
+producer = KafkaProducer(
+    bootstrap_servers=['kafka-broker:9092'],
+    value_serializer=lambda v: json.dumps(v).encode('utf-8')
+)
+
+robot_id = 42
+
+while True:
+    record = {
+        "robot_id": robot_id,
+        "joint": "joint2",
+        "torque": read_torque_sensor(),
+        "velocity": read_velocity_sensor(),
+        "timestamp": time.time()
+    }
+    # key=robot_id ensures all records for this robot go to the same partition
+    producer.send(
+        "robot.telemetry",
+        key=str(robot_id).encode(),
+        value=record
+    )
+    time.sleep(0.002)  # 500 Hz
+```
+</CodeLab>
+
+---
+
+## Consuming in the Digital Twin
+
+<CodeLab language="python">
+```python
+from kafka import KafkaConsumer
+import json
+
+consumer = KafkaConsumer(
+    "robot.telemetry",
+    bootstrap_servers=['kafka-broker:9092'],
+    group_id="digital-twin-simulation",
+    value_deserializer=lambda v: json.loads(v.decode('utf-8')),
+    auto_offset_reset='latest'  # or 'earliest' for replay
+)
+
+for message in consumer:
+    record = message.value
+    twin.update_state(
+        robot_id=record["robot_id"],
+        joint=record["joint"],
+        torque=record["torque"],
+        velocity=record["velocity"],
+        timestamp=record["timestamp"]
+    )
+```
+</CodeLab>
+
+---
+
+## MQTT vs. Kafka: Choosing the Right Tool
+
+| Dimension | MQTT | Kafka |
+|---|---|---|
+| Device constraints | Excellent — runs on microcontrollers | Requires gateway; not for edge |
+| Throughput | Millions msg/sec (single broker) | Billions msg/sec (cluster) |
+| Message retention | None (broker doesn't store) | Days to weeks, configurable |
+| Replay | No | Yes — consumers choose their offset |
+| Ordering | Per topic, best-effort | Guaranteed within partition |
+
+In practice, many industrial systems use both: MQTT at the edge (device → gateway) and Kafka in the cloud (gateway → digital twin infrastructure).
+
+---
+
+<Quiz question="Why is Kafka's message retention capability particularly valuable for digital twin systems?">
+
+<div>
+
+Digital twin simulations can fall behind, crash, or need to be rebuilt from scratch. If the data stream has no retention, any gap in simulation coverage is permanent — that historical state is gone.
+
+Kafka's durable log lets the twin resync by replaying messages from any point in the retained window. It also enables new consumers — a new ML model, a new analytics pipeline — to start from the beginning without any special data backfill process.
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+In **Lesson 3**, we'll look at the edge layer — how raw sensor data is preprocessed, timestamped, and batched before it ever reaches the twin's simulation engine.

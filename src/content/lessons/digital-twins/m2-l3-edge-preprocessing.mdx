@@ -1,0 +1,114 @@
+---
+title: "Edge Preprocessing and Telemetry Pipelines"
+description: "Raw sensor data is noisy, unordered, and high-volume. Learn how edge gateways clean and route it before it reaches the twin."
+module: 2
+moduleTitle: "Data Streams and Connectivity"
+lesson: 3
+duration: "12 min"
+---
+
+import Quiz from '@components/Quiz.astro';
+
+## The Problem With Raw Sensor Data
+
+Sensors lie — not maliciously, but they produce data that's hard to use directly:
+
+- **Noise** — electrical interference adds jitter to readings
+- **Dropout** — packets are lost on unreliable factory-floor networks
+- **Clock skew** — sensors have slightly different clocks, causing timestamp drift
+- **Volume** — at 1 kHz per sensor, 100 sensors produce 6 million readings per minute; most of them redundant
+
+Sending all of this raw to the cloud and sorting it out there is wasteful and slow. The solution is **edge preprocessing** — cleaning and compressing data close to the source, before transmission.
+
+---
+
+## The Edge Gateway
+
+An edge gateway sits between sensors and the cloud data stream. It's typically a small server or industrial PC on the factory floor, running a lightweight processing stack.
+
+```
+Sensors (1 kHz)
+    │
+    ▼
+Edge Gateway
+  ├── Timestamp normalization (NTP sync)
+  ├── Noise filtering (Kalman, moving average)
+  ├── Change detection (only send if value changed > threshold)
+  ├── Batch compression
+  └── MQTT publish to cloud broker → Kafka
+```
+
+---
+
+## Key Preprocessing Techniques
+
+**Timestamp normalization**
+Each sensor's timestamps are aligned to a synchronized clock (NTP or PTP). Without this, the twin's simulation runs on out-of-order data, producing incorrect state.
+
+**Noise filtering**
+A simple moving average or Kalman filter removes electrical noise without introducing significant lag:
+
+```python
+class MovingAverage:
+    def __init__(self, window=10):
+        self.window = window
+        self.buffer = []
+
+    def update(self, value):
+        self.buffer.append(value)
+        if len(self.buffer) > self.window:
+            self.buffer.pop(0)
+        return sum(self.buffer) / len(self.buffer)
+```
+
+**Change detection (deadband filtering)**
+Only transmit a reading if it has changed by more than a threshold. A temperature sensor stable at 72.3°C doesn't need to send 1,000 identical readings per second.
+
+```python
+def should_transmit(new_value, last_value, threshold=0.1):
+    return abs(new_value - last_value) > threshold
+```
+
+This single technique can reduce transmission volume by 80–95% for stable systems.
+
+---
+
+## Downsampling vs. Event-Driven Transmission
+
+Two philosophies for managing high-frequency data:
+
+**Downsampling** — always transmit, but at a lower rate. Send every 10th reading instead of every reading. Simple, predictable. Risk: you miss a transient spike between samples.
+
+**Event-driven** — only transmit when something interesting happens (value changes, threshold crossed, anomaly detected). Efficient under normal conditions. Risk: complex to implement correctly; easy to accidentally suppress important data.
+
+Most production systems use a hybrid: event-driven for normal operation, with a heartbeat message at fixed intervals to confirm the sensor is still alive.
+
+---
+
+## Why This Matters for Synchronization Latency
+
+The academic focus of digital twin research is minimizing **synchronization latency** — the delay between a physical event and its reflection in the twin's state. Edge preprocessing is a primary lever:
+
+- Raw data sent at 1 kHz → network congestion → queuing delay → high latency
+- Filtered data at effective 50 Hz of meaningful changes → lower network load → lower latency
+
+The twin that processes 50 meaningful updates per second responds faster than one drowning in 1,000 redundant readings.
+
+---
+
+<Quiz question="Why does deadband filtering reduce synchronization latency, even though it transmits fewer messages?">
+
+<div>
+
+Sending every reading at full frequency congests the network and creates queuing backlogs at the broker and simulation engine. Latency is dominated by queue depth, not transmission speed.
+
+Deadband filtering eliminates redundant messages, reducing queue depth. The remaining messages — the ones that carry real state changes — flow through the pipeline faster. Fewer messages, lower latency, higher quality signal.
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+Module 3 moves into the simulation engine — how NVIDIA Omniverse and Isaac Sim provide the physics-accurate virtual environment that gives digital twins their predictive power.
