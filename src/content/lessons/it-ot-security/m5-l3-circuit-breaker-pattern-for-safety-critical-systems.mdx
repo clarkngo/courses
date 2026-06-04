@@ -1,0 +1,371 @@
+---
+title: "Circuit Breaker Pattern for Safety-Critical Systems"
+description: "Extend the Modbus proxy with a circuit breaker that automatically suspends SCADA-to-PLC communication when sustained anomalous patterns indicate an active attack."
+module: 5
+moduleTitle: "Physical Safety Guardrails — Inline Detection"
+lesson: 3
+duration: "55 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## The Circuit Breaker Pattern
+
+In software engineering, the **circuit breaker pattern** protects a system from cascading failures: if a downstream service starts failing repeatedly, the circuit opens and stops sending requests to it — instead failing fast and allowing the system to recover.
+
+Applied to OT security, the circuit breaker operates in reverse: if *incoming* commands repeatedly violate safety parameters, the proxy opens the circuit between SCADA and the PLC — stopping all writes until a human operator reviews and resets the state.
+
+The three circuit states map directly to OT security states:
+
+| State | Meaning | Behavior |
+|---|---|---|
+| **Closed** | Normal operation | Commands forwarded after validation |
+| **Open** | Attack suspected | All write commands blocked; reads may continue |
+| **Half-Open** | Recovery test | Limited writes permitted; monitoring for recurrence |
+
+---
+
+## When Does the Circuit Open?
+
+Define triggering conditions that indicate a coordinated attack rather than a random anomaly:
+
+```python
+@dataclass
+class CircuitBreakerConfig:
+    # Open if this many validation failures occur within the time window
+    failure_threshold: int = 5
+    failure_window_seconds: float = 60.0
+    # How long the circuit stays open before testing recovery
+    open_duration_seconds: float = 300.0  # 5 minutes
+    # In half-open state, allow this many test commands before closing
+    half_open_test_count: int = 3
+```
+
+These defaults mean: if 5 or more blocked commands occur within 60 seconds, open the circuit for 5 minutes. This pattern distinguishes a single misconfigured SCADA setpoint (one failure) from a Stuxnet-style rapid-fire attack (many failures in quick succession).
+
+---
+
+## Circuit Breaker Implementation
+
+```python
+# circuit_breaker.py
+import asyncio
+import logging
+import time
+from collections import deque
+from dataclasses import dataclass, field
+from enum import Enum, auto
+
+log = logging.getLogger('circuit-breaker')
+
+class CircuitState(Enum):
+    CLOSED = auto()     # Normal: commands flow through validation
+    OPEN = auto()       # Attack suspected: writes blocked
+    HALF_OPEN = auto()  # Testing recovery
+
+@dataclass
+class CircuitBreakerConfig:
+    failure_threshold: int = 5
+    failure_window_seconds: float = 60.0
+    open_duration_seconds: float = 300.0
+    half_open_test_count: int = 3
+
+class CircuitBreaker:
+    def __init__(self, config: CircuitBreakerConfig, alerter):
+        self.config = config
+        self.alerter = alerter  # callable(message: str) — sends to SIEM/paging system
+        self._state = CircuitState.CLOSED
+        self._failure_timestamps: deque = deque()
+        self._open_since: float = 0.0
+        self._half_open_successes: int = 0
+        self._lock = asyncio.Lock()
+
+    @property
+    def state(self) -> CircuitState:
+        return self._state
+
+    async def record_failure(self, reason: str):
+        async with self._lock:
+            now = time.monotonic()
+            window_start = now - self.config.failure_window_seconds
+            # Trim old failures outside the window
+            while self._failure_timestamps and self._failure_timestamps[0] < window_start:
+                self._failure_timestamps.popleft()
+            self._failure_timestamps.append(now)
+
+            failure_count = len(self._failure_timestamps)
+            log.warning("Validation failure #%d in window: %s", failure_count, reason)
+
+            if (self._state == CircuitState.CLOSED and
+                    failure_count >= self.config.failure_threshold):
+                await self._open_circuit(reason, failure_count)
+
+    async def _open_circuit(self, triggering_reason: str, failure_count: int):
+        self._state = CircuitState.OPEN
+        self._open_since = time.monotonic()
+        self._half_open_successes = 0
+        message = (
+            f"CIRCUIT OPEN: {failure_count} validation failures in "
+            f"{self.config.failure_window_seconds}s. "
+            f"PLC write commands suspended. Trigger: {triggering_reason}"
+        )
+        log.critical(message)
+        # Non-blocking alert to SIEM and on-call
+        asyncio.create_task(self.alerter(message))
+
+    async def allow_command(self, is_write: bool) -> tuple[bool, str]:
+        """
+        Returns (allowed, reason).
+        Reads are always allowed (to maintain SCADA visibility).
+        Writes depend on circuit state.
+        """
+        async with self._lock:
+            if not is_write:
+                return True, ""
+
+            if self._state == CircuitState.CLOSED:
+                return True, ""
+
+            if self._state == CircuitState.OPEN:
+                elapsed = time.monotonic() - self._open_since
+                if elapsed >= self.config.open_duration_seconds:
+                    # Transition to half-open for recovery testing
+                    self._state = CircuitState.HALF_OPEN
+                    self._half_open_successes = 0
+                    log.info("Circuit transitioning to HALF-OPEN for recovery test")
+                    return True, ""  # Allow first test command
+                return False, (
+                    f"Circuit OPEN — write commands suspended. "
+                    f"Auto-recovery in {self.config.open_duration_seconds - elapsed:.0f}s. "
+                    f"Reset requires operator approval."
+                )
+
+            if self._state == CircuitState.HALF_OPEN:
+                self._half_open_successes += 1
+                if self._half_open_successes >= self.config.half_open_test_count:
+                    self._state = CircuitState.CLOSED
+                    self._failure_timestamps.clear()
+                    log.info("Circuit CLOSED — normal operation resumed after recovery test")
+                    asyncio.create_task(self.alerter("Circuit CLOSED: PLC write commands restored"))
+                return True, ""
+
+        return False, "Unknown circuit state"
+
+    async def manual_reset(self, operator_id: str):
+        """Allow an authorized operator to manually reset an open circuit."""
+        async with self._lock:
+            prev_state = self._state
+            self._state = CircuitState.CLOSED
+            self._failure_timestamps.clear()
+            self._half_open_successes = 0
+            message = f"Circuit manually reset by operator {operator_id} (was {prev_state.name})"
+            log.warning(message)
+            asyncio.create_task(self.alerter(message))
+```
+
+---
+
+## Integrating the Circuit Breaker into the Proxy
+
+Update the `ModbusProxyHandler` from Lesson 2 to include circuit breaker checks:
+
+```python
+# In ModbusProxyHandler.handle_client:
+
+async def handle_client(self, reader, writer):
+    source_ip = writer.get_extra_info('peername')[0]
+    plc_reader = plc_writer = None
+
+    try:
+        plc_reader, plc_writer = await asyncio.open_connection(
+            self.config.plc_host, self.config.plc_port
+        )
+
+        while True:
+            header = await asyncio.wait_for(reader.readexactly(7), timeout=30.0)
+            length = struct.unpack('>H', header[4:6])[0]
+            body = await asyncio.wait_for(reader.readexactly(length), timeout=5.0)
+            data = header + body
+
+            pdu = parse_modbus_pdu(data)
+            if pdu is None:
+                break
+
+            is_write = pdu['function_code'] in WRITE_FUNCTION_CODES
+
+            # 1. Check circuit breaker state
+            allowed, cb_reason = await self.circuit_breaker.allow_command(is_write)
+            if not allowed:
+                log.warning("CIRCUIT-BLOCKED: src=%s fc=%d reason=%s",
+                            source_ip, pdu['function_code'], cb_reason)
+                writer.write(build_exception_response(pdu, exception_code=0x06))  # 0x06 = Server Busy
+                await writer.drain()
+                continue
+
+            # 2. Run validation
+            is_valid, val_reason = self.validator.validate(pdu, source_ip)
+            if not is_valid:
+                log.warning("VALIDATION-BLOCKED: src=%s fc=%d reason=%s",
+                            source_ip, pdu['function_code'], val_reason)
+                # Record failure in circuit breaker
+                await self.circuit_breaker.record_failure(val_reason)
+                writer.write(build_exception_response(pdu))
+                await writer.drain()
+                continue
+
+            # 3. Forward to PLC
+            plc_writer.write(data)
+            await plc_writer.drain()
+            resp_header = await asyncio.wait_for(plc_reader.readexactly(7), timeout=5.0)
+            resp_length = struct.unpack('>H', resp_header[4:6])[0]
+            resp_body = await asyncio.wait_for(plc_reader.readexactly(resp_length), timeout=5.0)
+            writer.write(resp_header + resp_body)
+            await writer.drain()
+
+    except (asyncio.TimeoutError, asyncio.IncompleteReadError, ConnectionResetError):
+        pass
+    finally:
+        writer.close()
+        if plc_writer:
+            plc_writer.close()
+```
+
+---
+
+## Alert Integration
+
+The circuit breaker's `alerter` callable should reach both the SIEM and the on-call engineer:
+
+```python
+async def send_alert(message: str):
+    """Send circuit breaker alerts to syslog (SIEM) and PagerDuty."""
+    import subprocess
+    # syslog → SIEM
+    subprocess.run(['logger', '-t', 'modbus-circuit-breaker', '-p', 'local0.crit', message])
+
+    # PagerDuty (or replace with your alerting system)
+    import aiohttp
+    payload = {
+        "routing_key": PAGERDUTY_KEY,
+        "event_action": "trigger",
+        "payload": {
+            "summary": message,
+            "severity": "critical",
+            "source": "modbus-proxy",
+        }
+    }
+    async with aiohttp.ClientSession() as session:
+        await session.post(
+            "https://events.pagerduty.com/v2/enqueue",
+            json=payload
+        )
+```
+
+<CodeLab title="Simulate an Attack and Watch the Circuit Open">
+
+```python
+# simulate_attack.py — sends rapid out-of-range writes to trigger the circuit breaker
+import time
+from pymodbus.client import ModbusTcpClient
+
+client = ModbusTcpClient('127.0.0.1', port=5020)
+client.connect()
+
+print("Sending 10 out-of-range speed setpoint writes...")
+for i in range(10):
+    result = client.write_register(0, 0xFFFF)  # 65535 RPM
+    status = "EXCEPTION (blocked)" if result.isError() else "SUCCESS (unexpected!)"
+    print(f"  Write {i+1}: {status}")
+    time.sleep(2)
+
+print("\nChecking if circuit is open (write 11):")
+result = client.write_register(0, 900)  # Valid value
+if result.isError() and result.exception_code == 6:
+    print("  Circuit is OPEN — Server Busy exception (code 6) returned")
+else:
+    print(f"  Unexpected result: {result}")
+
+client.close()
+```
+
+Expected output after 5 failures (10s):
+```
+Write 1: EXCEPTION (blocked)
+Write 2: EXCEPTION (blocked)
+Write 3: EXCEPTION (blocked)
+Write 4: EXCEPTION (blocked)
+Write 5: EXCEPTION (blocked)    ← circuit opens here
+Write 6: EXCEPTION (blocked)
+...
+Write 11: Circuit is OPEN — Server Busy exception (code 6) returned
+```
+
+Check the proxy log for the `CIRCUIT OPEN` critical message and verify the alert reached your SIEM.
+
+</CodeLab>
+
+---
+
+## Operator Reset Procedure
+
+When the circuit opens, an on-call engineer receives a page. The reset procedure should be documented and require:
+
+1. **Identify the source**: check Zeek `notice.log` for the validation failures that triggered the trip
+2. **Confirm the attack is resolved**: verify the source IP is no longer sending malicious commands (or has been network-isolated)
+3. **Two-person review**: two engineers must agree the circuit can be safely closed
+4. **Manual reset via authenticated API**:
+
+```bash
+# Reset requires a Vault token with the circuit-breaker-reset policy
+VAULT_TOKEN=$(vault login -method=ldap username=operator1 -format=json | jq -r .auth.client_token)
+curl -X POST https://modbus-proxy:8443/api/circuit-breaker/reset \
+  -H "Authorization: Bearer $VAULT_TOKEN" \
+  -d '{"operator_id": "operator1", "justification": "Attack source isolated"}'
+```
+
+The reset action is logged in Vault's audit log — providing the evidence trail required by FR 6 (event response) and FR 2 (use control) of ISA/IEC 62443.
+
+---
+
+<Pitfall title="Don't Implement Automatic Full-Close Without Human Review">
+
+The half-open state allows the circuit to test for recovery automatically — but full closure should only happen after human review if the circuit opened due to a confirmed attack (not a configuration error).
+
+The implementation above closes the circuit automatically after `half_open_test_count` successful commands. For SL 3 environments, require manual confirmation instead: the half-open state should allow reads and alert the operator that manual review is needed before writes are restored.
+
+Automatic recovery is appropriate for transient network glitches. For security trips, assume the attacker is waiting for the circuit to close before resuming.
+
+</Pitfall>
+
+---
+
+<Quiz question="The circuit breaker opens after 5 out-of-range write attempts in 30 seconds. During the open period, the SCADA server continues sending Modbus read requests to monitor process values. Should the circuit breaker block reads? Why or why not?">
+
+<div>
+
+**No — reads should be allowed even when the circuit is open.**
+
+The rationale is specific to OT's availability requirement:
+
+1. **Operator visibility**: if SCADA can't read sensor values, operators lose visibility into the process state at exactly the moment they most need it (when an attack is in progress). Blind operators may make dangerous manual decisions.
+
+2. **Safety system independence**: the SIS also needs to read process values. Blocking reads could starve the SIS of sensor data it uses to determine whether to trigger a safe shutdown.
+
+3. **Attack pattern**: most OT attacks inject write commands, not read floods (reads don't cause physical damage). Blocking reads to "be safe" causes a denial-of-service to the control system while providing no additional protection.
+
+4. **ISA/IEC 62443 FR 7**: Availability of monitoring functions is a baseline requirement even during a security incident.
+
+The correct design: reads flow freely (they're protected by the source IP ACL), writes require circuit-closed state. This gives operators visibility to understand what's happening while preventing an attacker from manipulating process setpoints.
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+The inline guardrail stack is complete: a validated Modbus proxy with circuit breaker, Vault-backed configuration, and alerting integration.
+
+In **Module 6**, we complete the picture with ISA/IEC 62443 compliance documentation — mapping every control to its FR/SR reference and building the audit evidence package.

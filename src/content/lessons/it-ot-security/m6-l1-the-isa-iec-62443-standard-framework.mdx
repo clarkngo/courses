@@ -1,0 +1,212 @@
+---
+title: "The ISA/IEC 62443 Standard Framework"
+description: "Navigate the ISA/IEC 62443 document family, understand which series apply to your role, and learn how the standard's lifecycle approach integrates with the controls built in Modules 2–5."
+module: 6
+moduleTitle: "ISA/IEC 62443 Compliance and Governance"
+lesson: 1
+duration: "45 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Why a Standard?
+
+The controls built in Modules 2–5 address specific threats in a specific architecture. A standard provides three things those controls alone cannot:
+
+1. **Completeness assurance** — have we missed a category of control that a thoughtful adversary would exploit?
+2. **Auditability** — can an independent party verify that our controls are adequate without reading every line of code?
+3. **Regulatory alignment** — in regulated industries (nuclear, power grid, water treatment), a standard provides the legal basis for demonstrating due diligence.
+
+ISA/IEC 62443 is the only internationally recognized standard specifically for industrial automation and control system cybersecurity. Understanding its structure lets you map your work to audit requirements efficiently.
+
+---
+
+## The Document Family
+
+ISA/IEC 62443 is a collection of standards, not a single document. Knowing which documents apply to your role:
+
+### Series 1: General (Concepts and Vocabulary)
+
+| Document | Title | Use When |
+|---|---|---|
+| 62443-1-1 | Terminology, concepts, and models | Starting a site assessment — establishes shared vocabulary |
+| 62443-1-2 | Master glossary | Resolving definitional disputes in assessments |
+| 62443-1-3 | System security compliance metrics | Measuring current vs. target security level |
+| 62443-1-4 | IACS security lifecycle | Planning a multi-year security program |
+
+### Series 2: Policies and Procedures (Asset Owner / Operator)
+
+| Document | Title | Use When |
+|---|---|---|
+| 62443-2-1 | Requirements for an IACS security management system | Building a security program (governance layer) |
+| 62443-2-2 | Implementation guidance for an IACS CSMS | Implementing 62443-2-1 requirements operationally |
+| 62443-2-3 | Patch management in the IACS environment | Designing the OT patch process |
+| 62443-2-4 | Requirements for IACS solution suppliers | Vetting vendors and system integrators |
+
+### Series 3: System Requirements (System Integrator)
+
+| Document | Title | Use When |
+|---|---|---|
+| 62443-3-2 | Security risk assessment and system design | Performing the zone and conduit risk assessment (Module 1) |
+| 62443-3-3 | System security requirements and security levels | The core technical requirements — 51 FRs mapped to SLs |
+
+### Series 4: Component Requirements (Product Supplier)
+
+| Document | Title | Use When |
+|---|---|---|
+| 62443-4-1 | Secure product development lifecycle | Evaluating whether a PLC vendor follows secure SDLC |
+| 62443-4-2 | Technical security requirements for IACS components | Evaluating specific device capabilities (e.g., does this PLC support authentication?) |
+
+For most security engineers working at an asset owner or system integrator level, the most relevant documents are **62443-3-2** (risk assessment), **62443-3-3** (technical requirements), and **62443-2-1** (security management system).
+
+---
+
+## The Security Lifecycle
+
+62443-1-4 defines a lifecycle model for industrial security — not a one-time assessment, but an ongoing process:
+
+```
+Assess → Design → Implement → Maintain → Monitor → Respond → Review → Assess...
+```
+
+This lifecycle maps to the course modules:
+
+| Lifecycle Phase | Course Coverage |
+|---|---|
+| **Assess** | Module 1: Risk register, zone/conduit identification, SL assignment |
+| **Design** | Module 2: WireGuard network design; Module 3: IT security architecture |
+| **Implement** | Modules 2–5: WireGuard, Vault, Zeek, Suricata, Modbus proxy |
+| **Maintain** | Module 3: Vault key rotation, pipeline signing; Module 4: Zeek baseline updates |
+| **Monitor** | Module 4: Zeek behavioral logging; Suricata alert monitoring |
+| **Respond** | Module 5: Circuit breaker, alert integration, operator reset procedure |
+| **Review** | Module 6: Compliance mapping, audit evidence, SL-A vs SL-T assessment |
+
+---
+
+## The 7 Foundational Requirements Revisited
+
+In Module 1, you saw the 7 FRs at a high level. Now that the controls are implemented, map each one to specific artifacts:
+
+| FR | Category | Control Implemented | Where |
+|---|---|---|---|
+| FR 1 | Identification & Authentication | Vault AppRole, MFA on jump server, WireGuard key-based auth | M2, M3 |
+| FR 2 | Use Control | nftables ACLs, OAuth scopes, Vault policies, vendor time-limited access | M2, M3 |
+| FR 3 | System Integrity | Signed build pipeline, firmware signing with cosign | M3 |
+| FR 4 | Data Confidentiality | WireGuard encryption, TLS 1.3 on historian API | M2, M3 |
+| FR 5 | Restricted Data Flow | Zone/conduit design, OT DMZ with dual firewalls, nftables per-protocol rules | M1, M2 |
+| FR 6 | Timely Response to Events | Zeek notice.log → SIEM, Suricata alerts, circuit breaker paging | M4, M5 |
+| FR 7 | Resource Availability | Fail-open Suricata, proxy watchdog, reads-allowed during circuit open | M4, M5 |
+
+This mapping is the core of your compliance documentation. An auditor working through 62443-3-3 SR by SR should be able to find the evidence for each requirement in your documented controls.
+
+---
+
+<CodeLab title="Control-to-SR Mapping Template">
+
+Use this template to build your compliance traceability matrix:
+
+```yaml
+# compliance-traceability.yaml
+# Maps ISA/IEC 62443-3-3 system requirements to implemented controls
+
+target_security_level: 2  # Site-wide SL-T
+
+foundational_requirements:
+  FR1_identification_authentication:
+    SR_1_1_identification_and_authentication:
+      sl_required: 1
+      control: "Vault AppRole authentication for all services"
+      evidence: "Vault audit log showing AppRole login events"
+      owner: "IT Security Team"
+      last_tested: "2026-06-01"
+      status: compliant
+    SR_1_1_RE1_unique_identification:
+      sl_required: 2
+      control: "Individual user accounts on jump server (no shared accounts)"
+      evidence: "Jump server /etc/passwd showing per-engineer accounts; sshd_config restricting group"
+      owner: "OT Security Team"
+      last_tested: "2026-06-01"
+      status: compliant
+    SR_1_1_RE2_multifactor_authentication:
+      sl_required: 2
+      control: "Google Authenticator TOTP on jump server SSH"
+      evidence: "PAM config, test login showing TOTP prompt"
+      owner: "OT Security Team"
+      last_tested: "2026-06-01"
+      status: compliant
+
+  FR5_restricted_data_flow:
+    SR_5_1_network_segmentation:
+      sl_required: 1
+      control: "OT DMZ with dual firewalls; nftables default-deny on both boundaries"
+      evidence: "nftables ruleset dump; network diagram; SPAN port showing no direct IT-OT traffic"
+      owner: "Network Team"
+      last_tested: "2026-05-15"
+      status: compliant
+    SR_5_2_zone_boundary_protection:
+      sl_required: 2
+      control: "WireGuard tunnel for historian sync; Suricata DPI inline"
+      evidence: "wg show output; Suricata eve.json; module test results"
+      owner: "OT Security Team"
+      last_tested: "2026-06-01"
+      status: compliant
+```
+
+Fill in every SR from 62443-3-3 that applies to your target SL. Gaps (missing evidence or `status: non_compliant`) are your remediation backlog.
+
+</CodeLab>
+
+---
+
+## ISA/IEC 62443 vs. Other Standards
+
+How does 62443 relate to other standards you may encounter?
+
+| Standard | Scope | Relationship to 62443 |
+|---|---|---|
+| **NIST CSF** | General enterprise security | Complementary — CSF functions (Identify, Protect, Detect, Respond, Recover) map well to 62443 lifecycle |
+| **IEC 61511** | Safety instrumented systems (functional safety) | Different standard — 62443 covers cyber, 61511 covers functional. Must address both independently |
+| **NERC CIP** | North American bulk electric system | Mandatory for grid operators; 62443 compliance helps meet NERC CIP requirements but doesn't fully replace them |
+| **NIS2 Directive** | EU critical infrastructure (including OT) | 62443 compliance is widely accepted as evidence of NIS2 technical measures |
+| **IEC 62351** | Power systems security protocols | Specific to power sector protocols (DNP3, IEC 61850); complements 62443 FR 1, FR 4 for utilities |
+
+---
+
+<Pitfall title="62443 Compliance Is a Point-in-Time Statement">
+
+An ISA/IEC 62443 compliance assessment says "as of this date, these controls meet these requirements." It does not guarantee ongoing compliance. A firewall rule deleted six months after the assessment, a key rotation skipped, or a new OT device added without zone assignment can silently create a gap.
+
+The compliance program requires a continuous monitoring component (FR 6) and a regular review cadence (62443-2-1 Section 4.3.2) to remain valid. Many organizations treat compliance as a one-time audit and are surprised when an incident exposes a gap that the controls were supposed to close.
+
+</Pitfall>
+
+---
+
+<Quiz question="An OT engineer asks why the team needs to document compliance with ISA/IEC 62443 SR 2.3 (use control for portable and mobile devices) when no laptops are allowed on the OT network. Is SR 2.3 relevant?">
+
+<div>
+
+**Yes — SR 2.3 is relevant, and the assertion that no laptops are allowed needs to be verified and documented.**
+
+SR 2.3 requires that a policy exists for portable and mobile devices in the OT environment, and that the policy is enforced. The fact that laptops are prohibited is the policy — but compliance requires:
+
+1. **Documentation**: the policy must be written down, approved, and accessible
+2. **Technical enforcement**: "no laptops allowed" should be enforced technically, not just procedurally. Options include: locking unused switch ports, enabling 802.1X port authentication on OT switches, or using USB port control software on OT workstations
+3. **Evidence**: an auditor needs to see evidence that the technical enforcement works — not just a policy document
+
+Additionally, "no laptops" often turns out to be inaccurate when physically inspected. Vendor technicians frequently connect laptops for maintenance. The policy needs to address what happens during vendor access (temporary exception with logging, as per the vendor access process in Module 2) rather than implying it never happens.
+
+A gap in SR 2.3 is more likely to be discovered during a physical inspection than a network scan. Walk the plant floor before declaring compliance.
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+You understand the ISA/IEC 62443 document family and how to map controls to specific SRs.
+
+In **Lesson 2**, we work through Security Levels in depth — performing the SL-T vs. SL-A comparison for the course architecture and identifying the remaining gaps.

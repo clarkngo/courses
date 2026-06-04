@@ -1,0 +1,206 @@
+---
+title: "Purdue Model and ISA/IEC 62443 Zones"
+description: "Map the Purdue reference architecture onto the ISA/IEC 62443 zones-and-conduits model, and define the security requirements for each zone boundary."
+module: 1
+moduleTitle: "The IT/OT Divide"
+lesson: 2
+duration: "50 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## From Architecture to Standard
+
+The Purdue Model tells you *how to think* about layering IT and OT systems. The **ISA/IEC 62443** standard tells you *what security controls* are required at each layer. Together they give you both a mental map and an auditable checklist — which is why ISA/IEC 62443 has become the dominant compliance framework for industrial cybersecurity globally.
+
+---
+
+## ISA/IEC 62443 in One Page
+
+ISA/IEC 62443 is a family of documents (not a single standard) published jointly by the International Society of Automation (ISA) and the International Electrotechnical Commission (IEC). It covers three stakeholder groups:
+
+| Series | Who It's For | What It Covers |
+|---|---|---|
+| **62443-1.x** | Everyone | Concepts, terminology, security lifecycle |
+| **62443-2.x** | Asset owners & operators | Policies, patch management, supplier requirements |
+| **62443-3.x** | System integrators | Architecture, zones & conduits, security requirements |
+| **62443-4.x** | Product suppliers | Secure development, component requirements |
+
+The most operationally relevant document is **62443-3-3**: it defines the 51 foundational requirements (FRs) organized into 7 categories, and introduces **Security Levels (SL)** as the mechanism for specifying how strong those requirements must be in a given zone.
+
+---
+
+## Zones and Conduits
+
+The central architectural concept in 62443-3-3 is **zones and conduits**:
+
+- A **zone** is a grouping of assets with similar security requirements and the same level of trust. Think of it as a logical perimeter around a set of devices.
+- A **conduit** is the communication channel between zones. Every conduit must be explicitly defined and protected — it is the enforcement point for traffic crossing a zone boundary.
+
+This is zero trust expressed as architecture: traffic between zones is denied by default and permitted only through an explicitly defined, monitored conduit.
+
+### Mapping Purdue Levels to ISA/IEC 62443 Zones
+
+| Purdue Level | 62443 Zone (typical) | Example Assets |
+|---|---|---|
+| L5 Enterprise | Enterprise Zone | ERP, email, business BI |
+| L4 Site Business | IT/OT DMZ (conduit zone) | Historian mirror, data diode |
+| L3 Site Operations | Operations Zone | SCADA server, engineering workstation |
+| L2 Area Supervisory | Control Zone | DCS operator station, batch server |
+| L1 Basic Control | Field Control Zone | PLCs, RTUs, smart instruments |
+| L0 Physical Process | (not a network zone) | Sensors, actuators |
+
+The OT DMZ between L3 and L4 becomes a dedicated conduit zone in 62443 terms — not just a firewall rule, but a fully managed zone with its own security level specification.
+
+---
+
+## Security Levels Explained
+
+Every zone is assigned a **target Security Level (SL-T)** from 1 to 4, based on the consequences of a breach:
+
+| Security Level | Threat Actor | Consequence of Breach |
+|---|---|---|
+| **SL 1** | Unintentional or incidental | Minor operational disruption |
+| **SL 2** | Intentional, simple means, low motivation | Moderate plant disruption |
+| **SL 3** | Intentional, sophisticated means, nation-state capable | Serious injury or major environmental damage |
+| **SL 4** | State-sponsored, unlimited resources | Catastrophic consequence (mass casualties, national infrastructure) |
+
+Most industrial sites target SL 2 for general OT networks and SL 3 for safety-critical systems. Nuclear, water treatment, and power grid operators often have regulatory requirements for SL 3 or above.
+
+The **achieved Security Level (SL-A)** is what your controls actually deliver — the gap between SL-T and SL-A is your risk exposure.
+
+---
+
+## The 7 Foundational Requirement Categories
+
+62443-3-3 organizes its 51 requirements into these categories (FRs):
+
+| FR | Category | Core Idea |
+|---|---|---|
+| FR 1 | Identification & Authentication Control | Every entity (human, device, process) must prove identity before access |
+| FR 2 | Use Control | Authorized entities get only the access they need (least privilege) |
+| FR 3 | System Integrity | Hardware and software are protected against unauthorized modification |
+| FR 4 | Data Confidentiality | Data in transit and at rest is protected against unauthorized disclosure |
+| FR 5 | Restricted Data Flow | Communication between zones flows only through defined conduits |
+| FR 6 | Timely Response to Events | Detect, log, and respond to security events within defined time windows |
+| FR 7 | Resource Availability | Systems maintain required functions under stress, including attack |
+
+Each FR has multiple system requirements (SRs) with enhancements (RE) that apply at higher security levels. For example, FR 1 SR 1.1 requires user identification and authentication; RE 1 adds multi-factor authentication for SL 2+.
+
+<CodeLab title="Zone Boundary Checklist">
+
+Use this checklist when defining a zone boundary in your architecture review:
+
+```
+Zone Boundary Definition Checklist (per conduit)
+─────────────────────────────────────────────────
+[ ] Source zone identified and documented
+[ ] Destination zone identified and documented
+[ ] Security level assigned to each zone (SL 1–4)
+[ ] All protocols allowed through this conduit explicitly listed
+[ ] Default-deny enforced (no implicit allow)
+[ ] Inspection method defined (stateful firewall / DPI / data diode)
+[ ] Logging destination configured (SIEM or local historian)
+[ ] Authorized users/systems enumerated (not just "IT team")
+[ ] Conduit owner assigned (a named person, not a team)
+[ ] Review cadence documented (annually at minimum for SL 2+)
+```
+
+Print this and walk every conduit in your current architecture. Any unchecked box is a gap that belongs in your risk register.
+
+</CodeLab>
+
+---
+
+## Designing the OT DMZ
+
+The OT DMZ is the most critical conduit in a typical industrial deployment — it is the only path between the corporate network and the control system. Designing it correctly means:
+
+**1. No direct IT-to-OT routing**
+Traffic must pass through an inspecting host in the DMZ; no router rule should forward packets directly from the enterprise VLAN to the OT VLAN.
+
+**2. Historian replication, not direct database access**
+The corporate data warehouse pulls from a read-only historian replica in the DMZ — not from the SCADA historian directly. If the enterprise side is compromised, the attacker reaches only the replica, not the live process data store.
+
+**3. Jump server for engineering access**
+OT engineers access PLCs through a hardened jump server in the DMZ, not through direct VPN tunnels from their laptops. The jump server enforces MFA, session recording, and access control.
+
+**4. Data diodes for highest-sensitivity zones**
+A hardware data diode enforces one-way flow at the physical layer — data can exit the OT network (to the historian replica) but nothing from IT can enter. No software misconfiguration can reverse this.
+
+```
+Enterprise Network (L4/L5)
+        │
+   [Firewall 1]   ← permits only specific IP:port pairs inbound
+        │
+   ┌────┴────────────────────────────┐
+   │         OT DMZ                  │
+   │  [Historian Replica]            │
+   │  [Jump Server + MFA]            │
+   │  [Patch Management Proxy]       │
+   └────┬────────────────────────────┘
+        │
+   [Firewall 2]   ← default-deny; DPI-enabled; Zeek tap here
+        │
+   OT Network (L1–L3)
+```
+
+Both firewalls must be different brands/vendors — a single vendor vulnerability shouldn't bypass both layers simultaneously.
+
+---
+
+<Pitfall title="The 'Air Gap' That Isn't">
+
+Many organizations believe their OT network is air-gapped when it isn't. Common hidden connections include:
+
+- **Vendor modems**: a dial-up or cellular modem installed by a control system vendor for remote support, never documented in the network diagram
+- **Wireless access points**: installed by operators for convenience, bridging directly into the OT VLAN
+- **USB bridges**: a laptop that connects to both the corporate Wi-Fi and a PLC programming port simultaneously
+- **Historian sync**: a "one-way" ODBC connection that actually allows bidirectional queries
+
+Before assuming air-gap integrity, conduct a physical cable trace and RF scan. Tools like Nmap passive mode and Zeek's `conn.log` will surface unexpected connections within minutes of deployment.
+
+</Pitfall>
+
+---
+
+## Applying Zones and Conduits to This Course
+
+The rest of this course implements security controls at each zone boundary we've just defined:
+
+| Module | Zone / Conduit Addressed |
+|---|---|
+| M2: WireGuard | Secure authenticated transport for IT↔OT conduits |
+| M3: Vault + Pipelines | IT Enterprise Zone — credential management and build integrity |
+| M4: Zeek + Suricata | DPI at OT DMZ firewall 2 — the IT/OT conduit |
+| M5: Inline Guardrails | Field Control Zone — PLC command validation |
+| M6: ISA/IEC 62443 | Audit and documentation across all zones |
+
+Each tool we deploy maps directly to an FR in 62443-3-3. By the end of the course you'll have both working code and the documentation framework to demonstrate compliance.
+
+---
+
+<Quiz question="A zone contains a SCADA server that, if compromised, could allow an attacker to misoperate a chemical plant — causing potential worker injuries. What Security Level should this zone target?">
+
+<div>
+
+**SL 3** — Intentional attack with sophisticated means, with potential for serious physical harm.
+
+SL 2 covers simple intentional attacks with moderate consequence. Potential worker injuries in a chemical plant cross the threshold into "serious injury," which is the SL 3 consequence category.
+
+If the scenario involved mass-casualty potential or national infrastructure (e.g., a water treatment plant serving a major city), SL 4 would apply. In practice, SL 3 is the target for most safety-critical industrial sites.
+
+Note: the target SL also drives the required controls. At SL 3, FR 1 (authentication) requires multi-factor authentication (SR 1.1 + RE 1), and FR 5 (data flow restriction) requires encrypted conduits (SR 5.2 + RE 1) — requirements that are optional at SL 2.
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+You've mapped Purdue levels to ISA/IEC 62443 zones, assigned security levels, and designed the OT DMZ architecture. 
+
+In **Lesson 3**, we build the risk register — a structured assessment of threats across each zone boundary — that will guide every implementation decision in Modules 2 through 5.

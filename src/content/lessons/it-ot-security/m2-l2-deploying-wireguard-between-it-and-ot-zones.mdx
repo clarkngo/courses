@@ -1,0 +1,254 @@
+---
+title: "Deploying WireGuard Between IT and OT Zones"
+description: "Step-by-step deployment of WireGuard VPN gateways on both sides of the OT DMZ, with key management, peer configuration, and connectivity verification."
+module: 2
+moduleTitle: "Zero-Trust Network Architecture with WireGuard"
+lesson: 2
+duration: "60 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Lab Environment
+
+This lesson deploys WireGuard in a lab that mirrors the three-tier IT/OT architecture:
+
+| Host | Role | IP (eth0) | WG IP |
+|---|---|---|---|
+| `it-gw` | IT-side WireGuard gateway | 192.168.1.10 | 10.0.0.1/30 |
+| `ot-dmz-gw` | OT DMZ WireGuard gateway | 192.168.2.10 | 10.0.0.2/30 |
+| `ot-historian` | SCADA historian (OT network) | 10.100.0.50 | — |
+| `it-historian-replica` | Read-only replica (IT network) | 192.168.1.50 | — |
+
+All hosts run Ubuntu 22.04 LTS. The WireGuard tunnel (10.0.0.0/30) carries only historian sync traffic; all other cross-boundary flows are blocked at the OT DMZ gateway by iptables rules.
+
+---
+
+## Step 1: Install WireGuard
+
+Run on both `it-gw` and `ot-dmz-gw`:
+
+```bash
+sudo apt update && sudo apt install -y wireguard
+# Verify kernel module is loaded
+sudo modprobe wireguard && echo "WireGuard kernel module loaded"
+# Confirm version
+wg --version
+```
+
+---
+
+## Step 2: Generate Key Pairs
+
+Each WireGuard peer has a **private key** (never leaves the host) and a **public key** (shared with peers). Generate them on each host separately.
+
+On `it-gw`:
+
+```bash
+# Generate key pair with restricted permissions from the start
+wg genkey | sudo tee /etc/wireguard/it-gw-private.key | \
+  wg pubkey | sudo tee /etc/wireguard/it-gw-public.key
+sudo chmod 600 /etc/wireguard/it-gw-private.key
+
+# Print the public key — this goes into ot-dmz-gw's peer config
+sudo cat /etc/wireguard/it-gw-public.key
+```
+
+On `ot-dmz-gw`:
+
+```bash
+wg genkey | sudo tee /etc/wireguard/ot-gw-private.key | \
+  wg pubkey | sudo tee /etc/wireguard/ot-gw-public.key
+sudo chmod 600 /etc/wireguard/ot-gw-private.key
+sudo cat /etc/wireguard/ot-gw-public.key
+```
+
+Also generate a pre-shared key (PSK) on either host and securely copy it to both:
+
+```bash
+# Generate PSK (32 bytes, base64-encoded)
+wg genpsk | sudo tee /etc/wireguard/it-ot-psk.key
+sudo chmod 600 /etc/wireguard/it-ot-psk.key
+# Copy to ot-dmz-gw via scp (use a secure channel, not email or Slack)
+scp /etc/wireguard/it-ot-psk.key admin@ot-dmz-gw:/etc/wireguard/it-ot-psk.key
+```
+
+---
+
+## Step 3: Configure the IT Gateway
+
+Create `/etc/wireguard/wg0.conf` on `it-gw`:
+
+```ini
+[Interface]
+# IT gateway WireGuard IP
+Address = 10.0.0.1/30
+ListenPort = 51820
+PrivateKey = <contents of it-gw-private.key>
+
+# Enable IP forwarding for traffic to pass through this gateway
+PostUp = iptables -A FORWARD -i wg0 -j ACCEPT; iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+PostDown = iptables -D FORWARD -i wg0 -j ACCEPT; iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE
+
+[Peer]
+# OT DMZ gateway
+PublicKey = <contents of ot-gw-public.key>
+PresharedKey = <contents of it-ot-psk.key>
+# Only allow traffic destined for the OT historian through this tunnel
+AllowedIPs = 10.100.0.50/32
+# OT DMZ gateway's public endpoint
+Endpoint = 192.168.2.10:51820
+# Keep the tunnel alive across NAT devices
+PersistentKeepalive = 25
+```
+
+---
+
+## Step 4: Configure the OT DMZ Gateway
+
+Create `/etc/wireguard/wg0.conf` on `ot-dmz-gw`:
+
+```ini
+[Interface]
+Address = 10.0.0.2/30
+ListenPort = 51820
+PrivateKey = <contents of ot-gw-private.key>
+
+# Restrict forwarded traffic: IT historian replica may only reach OT historian port 8089
+PostUp = iptables -A FORWARD -i wg0 -s 10.0.0.1 -d 10.100.0.50 -p tcp --dport 8089 -j ACCEPT; \
+         iptables -A FORWARD -i wg0 -j DROP
+PostDown = iptables -D FORWARD -i wg0 -s 10.0.0.1 -d 10.100.0.50 -p tcp --dport 8089 -j ACCEPT; \
+           iptables -D FORWARD -i wg0 -j DROP
+
+[Peer]
+PublicKey = <contents of it-gw-public.key>
+PresharedKey = <contents of it-ot-psk.key>
+# Traffic allowed through this tunnel originates from the IT side
+AllowedIPs = 10.0.0.1/32
+```
+
+---
+
+## Step 5: Start and Enable WireGuard
+
+On both gateways:
+
+```bash
+# Start the interface
+sudo wg-quick up wg0
+
+# Verify the interface came up
+ip addr show wg0
+
+# Enable on boot
+sudo systemctl enable wg-quick@wg0
+```
+
+Check tunnel status — a successful handshake appears within a few seconds of the first packet:
+
+```bash
+sudo wg show wg0
+# Expected output includes:
+# latest handshake: X seconds ago
+# transfer: X bytes received, X bytes sent
+```
+
+---
+
+## Step 6: Verify Connectivity and Restriction
+
+Confirm the historian sync path works, and that other OT destinations are blocked:
+
+```bash
+# FROM it-gw: historian port should be reachable
+nc -zv 10.100.0.50 8089 && echo "PASS: historian sync port reachable"
+
+# Any other OT IP or port should be blocked by the FORWARD rules
+nc -zv 10.100.0.50 502 && echo "FAIL: Modbus reachable from IT" || echo "PASS: Modbus blocked"
+nc -zv 10.100.0.10 22 && echo "FAIL: PLC SSH reachable from IT" || echo "PASS: PLC SSH blocked"
+```
+
+<CodeLab title="Automated Tunnel Health Check">
+
+Add this script to cron on both gateways — it alerts if the WireGuard tunnel goes down or if the last handshake is older than 3 minutes (indicating a silent failure):
+
+```bash
+#!/usr/bin/env bash
+# /usr/local/bin/wg-health-check.sh
+
+PEER_PUBKEY="<ot-gw-public-key>"
+MAX_HANDSHAKE_AGE=180  # seconds
+
+last_handshake=$(wg show wg0 latest-handshakes | grep "$PEER_PUBKEY" | awk '{print $2}')
+now=$(date +%s)
+age=$(( now - last_handshake ))
+
+if [ "$age" -gt "$MAX_HANDSHAKE_AGE" ]; then
+  echo "ALERT: WireGuard tunnel to OT DMZ last handshake ${age}s ago — tunnel may be down"
+  # Send to your SIEM or alerting pipeline
+  logger -t wg-health "Tunnel stale: last handshake ${age}s ago"
+  exit 1
+fi
+
+echo "OK: WireGuard tunnel healthy (last handshake ${age}s ago)"
+```
+
+```bash
+# Add to crontab
+echo "*/2 * * * * root /usr/local/bin/wg-health-check.sh" >> /etc/cron.d/wg-health
+```
+
+</CodeLab>
+
+---
+
+<Pitfall title="Never Expose the WireGuard Endpoint Publicly Without Allowlisting">
+
+WireGuard's stealth mode (not responding to unauthenticated packets) provides some protection, but UDP port 51820 should not be publicly internet-accessible on an OT gateway. If the WireGuard endpoint must traverse the internet (e.g., for a remote plant), place it behind a dedicated firewall that allowlists the IT gateway's source IP at the UDP level before WireGuard authentication even occurs.
+
+An attacker who discovers the WireGuard port and launches a volumetric UDP flood can exhaust the gateway's bandwidth — an availability attack (FR 7 in 62443-3-3) that doesn't require any cryptographic weakness.
+
+</Pitfall>
+
+---
+
+## Key Rotation Policy
+
+WireGuard keys should be rotated on a schedule aligned with your security level:
+
+| Security Level | Key Rotation Cadence |
+|---|---|
+| SL 1 | Annually |
+| SL 2 | Every 6 months |
+| SL 3 | Every 90 days |
+| SL 4 | Every 30 days or per-session |
+
+For SL 3+ environments, automate key rotation through HashiCorp Vault (covered in Module 3). Vault can generate new WireGuard key pairs, distribute them to the gateways, and update peer configurations — eliminating the manual rotation step that organizations routinely skip.
+
+---
+
+<Quiz question="The OT DMZ WireGuard gateway's PostUp iptables rules drop all forwarded traffic not matching the historian rule. An attacker who has compromised the IT-side WireGuard gateway sends a Modbus TCP packet to 10.100.0.50:502 through the tunnel. What happens?">
+
+<div>
+
+The packet enters the WireGuard tunnel (authenticated, encrypted), decrypts at the OT DMZ gateway, and is evaluated by the FORWARD chain:
+
+1. Rule 1: `FORWARD -i wg0 -s 10.0.0.1 -d 10.100.0.50 -p tcp --dport 8089 -j ACCEPT` — destination port is 502, not 8089 → **no match**
+2. Rule 2: `FORWARD -i wg0 -j DROP` — **matches; packet is dropped**
+
+The Modbus packet never reaches the OT network. The attacker has a valid WireGuard credential but cannot reach any OT device except the historian on port 8089.
+
+This is the principle of least privilege applied at the network layer: WireGuard authenticates *who can enter the tunnel*, and iptables enforces *where they can go inside it*.
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+WireGuard tunnels are operational and the IT/OT conduit is authenticated and encrypted.
+
+In **Lesson 3**, we layer Access Control Lists (ACLs) and identity-based policy on top of the network controls — defining per-user and per-device access grants that the WireGuard tunnels enforce.

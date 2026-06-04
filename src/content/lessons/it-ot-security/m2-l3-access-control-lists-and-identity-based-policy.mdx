@@ -1,0 +1,260 @@
+---
+title: "Access Control Lists and Identity-Based Policy"
+description: "Design and implement granular ACLs for IT/OT zone boundaries, map identity to network policy, and audit access grants against the ISA/IEC 62443 FR 2 use control requirements."
+module: 2
+moduleTitle: "Zero-Trust Network Architecture with WireGuard"
+lesson: 3
+duration: "45 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## From Network to Identity
+
+WireGuard secures the transport. iptables rules restrict which destinations a peer can reach. But both controls are based on **network identity** — an IP address or a cryptographic key representing a *machine*. Zero trust requires tying access to **human identity** as well: who is the person behind the machine, and are they authorized for this specific action right now?
+
+This lesson builds the identity layer — ACL design, role-based access, and the audit trail that ISA/IEC 62443 FR 2 (Use Control) requires.
+
+---
+
+## ISA/IEC 62443 FR 2: Use Control
+
+FR 2 has four key system requirements relevant to our architecture:
+
+| SR | Requirement | What It Means |
+|---|---|---|
+| SR 2.1 | Authorization enforcement | Every access attempt is evaluated against an explicit policy |
+| SR 2.2 | Wireless use control | Wireless devices follow the same policy as wired (no implicit trust for being on-site) |
+| SR 2.3 | Use control for portable and mobile devices | Laptops and USB devices are treated as untrusted by default |
+| SR 2.4 | Mobile code | Scripts and downloaded code are reviewed before execution in the OT environment |
+
+At SL 2, SR 2.1 requires that each user has the minimum access necessary and that access is reviewed at least annually. At SL 3, the enhancement (RE 1) requires that all privileged access is multi-factor authenticated.
+
+---
+
+## Role Design for IT/OT Environments
+
+Start from roles, not from individuals. Roles map to the tasks each type of user performs — and therefore to the minimum network access they need:
+
+| Role | IT Network Access | OT Network Access | Justification |
+|---|---|---|---|
+| **OT Operator** | None | HMI on L2, read historian | Operators interact with process; no IT access needed |
+| **OT Engineer** | Jump server only | Engineering workstation + PLCs | Programming requires PLC access; jump server adds MFA + logging |
+| **IT Admin** | Full IT network | Historian replica (read-only) | IT admins have no operational OT need |
+| **Vendor (remote)** | None | Time-limited: specific PLC only | Vendor access is per-maintenance-window, revoked when done |
+| **SCADA Admin** | Historian replica | SCADA server, historians | Data integration role; no L1 PLC access needed |
+| **Security Analyst** | Full IT + OT DMZ | Zeek/Suricata log servers | Read access to logs; no ability to write commands |
+
+Document each role assignment, the justification, the approver, and the review date. This is the evidence trail FR 2 requires.
+
+---
+
+## Implementing ACLs with nftables
+
+Modern Linux deployments prefer **nftables** over iptables for its cleaner syntax, atomic ruleset updates, and native IPv6 support. The OT DMZ gateway enforces per-role ACLs:
+
+```bash
+# /etc/nftables.d/it-ot-acl.nft
+
+table inet it_ot_acl {
+  # Define named sets for easier maintenance
+  set ot_engineers {
+    type ipv4_addr
+    elements = { 10.0.0.10, 10.0.0.11 }  # engineer WireGuard IPs
+  }
+
+  set ot_scada_servers {
+    type ipv4_addr
+    elements = { 10.100.0.20, 10.100.0.21 }
+  }
+
+  set ot_plcs {
+    type ipv4_addr
+    elements = { 10.100.0.50, 10.100.0.51, 10.100.0.52 }
+  }
+
+  chain forward {
+    type filter hook forward priority 0; policy drop;
+
+    # OT engineers may reach SCADA servers (port 4840 OPC-UA) via jump server only
+    ip saddr @ot_engineers ip daddr @ot_scada_servers tcp dport 4840 accept
+
+    # OT engineers may reach PLCs for programming (port 44818 EtherNet/IP) during maintenance windows
+    # Time-based restriction: Mon-Fri 06:00-18:00 only
+    ip saddr @ot_engineers ip daddr @ot_plcs tcp dport 44818 \
+      meta time "06:00" - "18:00" meta day "Monday" - "Friday" accept
+
+    # Historian replica sync: only historian-to-historian on port 8089
+    ip saddr 10.0.0.5 ip daddr 10.100.0.30 tcp dport 8089 accept
+
+    # All other traffic: drop (logged)
+    log prefix "IT-OT FORWARD DROP: " drop
+  }
+}
+```
+
+```bash
+# Apply the ruleset atomically (no traffic interruption)
+sudo nft -f /etc/nftables.d/it-ot-acl.nft
+sudo systemctl enable nftables
+```
+
+The `log prefix` on the final drop rule feeds every denied connection into syslog — essential for detecting lateral movement attempts.
+
+---
+
+## Jump Server Configuration
+
+All human OT access flows through a hardened jump server in the OT DMZ. The jump server enforces:
+
+**1. Multi-factor authentication**
+
+```bash
+# Install Google Authenticator PAM (or use hardware tokens for SL 3)
+sudo apt install -y libpam-google-authenticator
+
+# Configure PAM for SSHD
+echo "auth required pam_google_authenticator.so" | sudo tee -a /etc/pam.d/sshd
+
+# Require both password AND TOTP
+sudo sed -i 's/^ChallengeResponseAuthentication no/ChallengeResponseAuthentication yes/' /etc/ssh/sshd_config
+sudo systemctl restart sshd
+```
+
+**2. Session recording**
+
+```bash
+# Install tlog for session recording (all keystrokes logged to journal)
+sudo apt install -y tlog
+
+# Configure as the shell wrapper for SSH sessions
+echo "session required pam_tlog.so" | sudo tee -a /etc/pam.d/sshd
+```
+
+**3. Access scope restriction**
+
+```bash
+# /etc/ssh/sshd_config additions:
+# Engineers can only SSH to specific OT targets from the jump server
+Match User ot-engineer-*
+  AllowTcpForwarding yes
+  PermitOpen 10.100.0.20:22 10.100.0.21:22  # SCADA servers only
+  # PLCs use vendor tools over EtherNet/IP, not SSH — no TCP forwarding to PLC IPs
+```
+
+<CodeLab title="Generate a Time-Boxed Vendor Access Credential">
+
+When a vendor requests remote maintenance access, generate a temporary WireGuard peer config that expires at the end of the maintenance window:
+
+```bash
+#!/usr/bin/env bash
+# generate-vendor-access.sh — run on the OT DMZ WireGuard gateway
+
+VENDOR_NAME="$1"
+MAINTENANCE_HOURS="${2:-4}"  # default 4-hour window
+TARGET_PLC="$3"  # e.g., 10.100.0.55
+
+# Generate one-time key pair for vendor
+wg genkey | tee /tmp/vendor-${VENDOR_NAME}-private.key | wg pubkey > /tmp/vendor-${VENDOR_NAME}-public.key
+chmod 600 /tmp/vendor-${VENDOR_NAME}-private.key
+
+# Add peer to WireGuard (restricted to the specific PLC)
+sudo wg set wg0 peer "$(cat /tmp/vendor-${VENDOR_NAME}-public.key)" \
+  allowed-ips "${TARGET_PLC}/32"
+
+# Schedule automatic revocation
+at "now + ${MAINTENANCE_HOURS} hours" <<EOF
+sudo wg set wg0 peer "$(cat /tmp/vendor-${VENDOR_NAME}-public.key)" remove
+logger -t vendor-access "Revoked WireGuard access for ${VENDOR_NAME} (target: ${TARGET_PLC})"
+EOF
+
+echo "Vendor WireGuard config for ${VENDOR_NAME}:"
+echo "Public key: $(cat /tmp/vendor-${VENDOR_NAME}-public.key)"
+echo "Access: ${TARGET_PLC} only"
+echo "Expires: $(date -d "+${MAINTENANCE_HOURS} hours")"
+echo "Private key path: /tmp/vendor-${VENDOR_NAME}-private.key (deliver securely to vendor)"
+```
+
+Send the private key to the vendor through an encrypted channel (not email). Log the access grant in your risk register under the vendor maintenance entry.
+
+</CodeLab>
+
+---
+
+## Access Review Process
+
+ISA/IEC 62443 FR 2 SR 2.1 requires that access grants are reviewed and revalidated. For SL 2, annually. For SL 3, at least every 6 months. The review must cover:
+
+- **Active WireGuard peers**: compare against the authorized peer registry. Any peer not in the registry → immediate revocation.
+- **Role assignments**: compare each user's current job function against their assigned role. Job changes (e.g., an OT engineer promoted to IT management) must trigger a role review.
+- **Vendor access**: confirm all temporary vendor credentials have been revoked after maintenance windows.
+- **ACL rules**: review each nftables rule and confirm the original justification still applies.
+
+<CodeLab title="Automated Access Audit Script">
+
+```bash
+#!/usr/bin/env bash
+# access-audit.sh — run quarterly on the OT DMZ gateway
+
+echo "=== WireGuard Peer Audit $(date) ==="
+echo ""
+
+# Show all active peers
+echo "Active WireGuard peers:"
+wg show wg0 peers | while read pubkey; do
+  last_handshake=$(wg show wg0 latest-handshakes | grep "$pubkey" | awk '{print $2}')
+  echo "  Key: ${pubkey:0:16}... | Last handshake: $(date -d @$last_handshake)"
+done
+
+echo ""
+echo "Compare against authorized peer registry in Vault:"
+echo "vault kv list secret/it-ot/wireguard/authorized-peers"
+
+echo ""
+echo "=== nftables Rule Audit ==="
+sudo nft list ruleset | grep -E "accept|drop" | while read rule; do
+  echo "  Rule: $rule"
+  echo "  -- Verify justification in access-register.yaml --"
+done
+```
+
+</CodeLab>
+
+---
+
+<Pitfall title="Shared Service Accounts Break Accountability">
+
+A single `ot-admin` account used by multiple engineers eliminates the non-repudiation requirement (FR 6 in 62443-3-3). When a PLC is misconfigured, you cannot determine which engineer made the change.
+
+Enforce individual accounts even for shared tasks. Where a service account is unavoidable (e.g., a SCADA application connecting to the historian), assign ownership to a named individual responsible for that application's security, and rotate the credential quarterly.
+
+</Pitfall>
+
+---
+
+<Quiz question="A nftables rule allows OT engineers to reach PLCs over EtherNet/IP Monday–Friday 06:00–18:00. An incident occurs at 02:00 Saturday — a PLC receives unauthorized configuration changes. What does this tell you about the ACL, and what should you investigate?">
+
+<div>
+
+The time-based ACL correctly blocked the change from occurring via the OT DMZ WireGuard path (which would have been denied outside business hours). The unauthorized change therefore came through a **different path** — one not covered by this ACL.
+
+Investigate:
+1. **Physical access**: Was someone physically present and connected a laptop directly to the PLC programming port?
+2. **Alternative network path**: Is there a second network interface on the PLC (e.g., a maintenance Wi-Fi adapter) not included in the monitored zone?
+3. **Insider threat**: Does an OT engineer have a personal laptop with an out-of-band modem or cellular connection to the OT network?
+4. **WireGuard key compromise**: Was a vendor key generated for the previous week's maintenance and not revoked?
+
+This is why Zeek connection logs (Module 4) matter — even if the ACL blocked the WireGuard path, Zeek on the OT network would have logged the actual traffic source, giving you the forensic evidence to answer these questions.
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+The zero-trust network layer is complete: authenticated WireGuard transport, granular ACLs, MFA-enforced jump server access, and time-limited vendor credentials.
+
+In **Module 3**, we secure the IT Enterprise Zone — the other half of the architecture. HashiCorp Vault replaces hardcoded credentials, and cryptographically signed build pipelines ensure that only verified artifacts reach the OT environment.

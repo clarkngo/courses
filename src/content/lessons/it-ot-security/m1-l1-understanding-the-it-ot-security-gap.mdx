@@ -1,0 +1,158 @@
+---
+title: "Understanding the IT/OT Security Gap"
+description: "Explore why IT and OT systems have fundamentally different security philosophies — and why that gap creates the most dangerous attack surface in industrial environments."
+module: 1
+moduleTitle: "The IT/OT Divide"
+lesson: 1
+duration: "45 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Two Worlds, One Network
+
+Industrial environments increasingly connect two fundamentally different worlds. The **IT (Information Technology)** world — servers, databases, enterprise software — was designed by software engineers who grew up optimizing for confidentiality and rapid delivery. The **OT (Operational Technology)** world — programmable logic controllers (PLCs), SCADA systems, industrial sensors — was designed by control engineers who optimized for safety, determinism, and decades-long uptime.
+
+When these worlds merge onto a shared network, the security assumptions of each side collide.
+
+---
+
+## The CIA Triad, Reordered
+
+Classic IT security arranges priorities as **Confidentiality → Integrity → Availability**. A data breach is the headline risk; a few minutes of downtime is acceptable if it means patching a vulnerability.
+
+OT security inverts this entirely: **Availability → Integrity → Confidentiality**. A refinery control system that goes offline for an unplanned patch costs hundreds of thousands of dollars per hour — and in the worst case, a safety interlock that stops working kills people. Confidentiality matters far less when the "data" is a temperature setpoint.
+
+| Priority | IT | OT |
+|---|---|---|
+| **1st** | Confidentiality | Availability |
+| **2nd** | Integrity | Integrity |
+| **3rd** | Availability | Confidentiality |
+| **Patch cadence** | Monthly / continuous | Years (or never) |
+| **System lifetime** | 3–5 years | 15–30 years |
+| **Failure consequence** | Data breach, financial loss | Physical damage, injury, death |
+
+This isn't stubbornness on the OT side — it's rational engineering. A PLC controlling a centrifuge cannot be rebooted mid-operation to apply a Windows Update.
+
+---
+
+## Why Convergence Creates Risk
+
+For most of the 20th century, OT systems were **air-gapped**: physically isolated from corporate networks and the internet. Security through obscurity was imperfect, but the attack surface was physically limited.
+
+Three forces shattered that isolation:
+
+**1. Business pressure for real-time visibility**
+Executives want dashboards showing plant output, energy consumption, and yield in real time. That data lives in OT systems. Pulling it out requires a network connection.
+
+**2. Remote maintenance**
+Vendors like Siemens, Honeywell, and Rockwell Automation support their equipment remotely. Technicians dial in over VPN — or worse, over an unencrypted modem — to troubleshoot PLCs. Each remote access session is an entry point.
+
+**3. Legacy systems on modern networks**
+A PLC installed in 2001 running Windows XP Embedded has never received a security patch. It was safe when the network was isolated. On a flat corporate network, it is catastrophically exposed.
+
+Stuxnet (2010) proved that OT systems could be targeted with surgical precision — not by breaking down the perimeter, but by exploiting trust relationships inside it. Triton/TRISIS (2017) went further: it targeted safety instrumented systems, the last line of defense against physical catastrophe.
+
+---
+
+## Attack Anatomy: From IT Breach to Physical Consequence
+
+The typical IT/OT attack follows a well-understood kill chain:
+
+1. **Initial access** — phishing email compromises an IT workstation in the corporate network
+2. **Lateral movement** — attacker pivots through the enterprise network toward the OT DMZ
+3. **Reconnaissance** — passive traffic sniffing maps PLC addresses, protocol types, and communication patterns
+4. **Payload delivery** — malicious firmware or rogue commands are pushed to PLCs
+5. **Physical effect** — motors overspeed, valves misopen, safety systems are disabled
+
+Each stage crosses a trust boundary. Each boundary is an opportunity to detect and stop the attack — if you have visibility there.
+
+---
+
+## The Vocabulary of OT Security
+
+Before going further, anchor these terms:
+
+| Term | Definition |
+|---|---|
+| **PLC** | Programmable Logic Controller — embedded computer that executes real-time control logic (e.g., "if pressure > 120 psi, close valve V-3") |
+| **SCADA** | Supervisory Control and Data Acquisition — software layer that aggregates sensor data and provides operator visibility across many PLCs |
+| **HMI** | Human-Machine Interface — the operator display screen connected to a SCADA system |
+| **DCS** | Distributed Control System — a more tightly integrated alternative to PLC+SCADA, common in continuous processes like oil refining |
+| **SIS/SIL** | Safety Instrumented System / Safety Integrity Level — the independent layer designed to bring a process to a safe state if primary controls fail |
+| **Historian** | A time-series database that records process data from SCADA; often the bridge between OT and IT networks |
+| **OT DMZ** | A demilitarized zone between the corporate IT network and the OT network — the intended checkpoint for all cross-boundary traffic |
+
+---
+
+## The Purdue Model
+
+The **Purdue Enterprise Reference Architecture** (PERA), developed in the 1990s, remains the dominant conceptual model for segmenting IT and OT. It defines five levels:
+
+| Level | Name | Components |
+|---|---|---|
+| **L5** | Enterprise | ERP, email, business applications |
+| **L4** | Site Business Planning | Plant-level scheduling, production databases |
+| **L3** | Site Operations | SCADA, historians, engineering workstations |
+| **L2** | Area Supervisory Control | DCS controllers, advanced HMIs |
+| **L1** | Basic Control | PLCs, RTUs, local controllers |
+| **L0** | Physical Process | Sensors, actuators, motors, valves |
+
+Traffic between levels should be explicitly authorized and inspected. The OT DMZ sits between L3 and L4. In practice, organizations frequently have flat networks where an L5 workstation can reach L1 PLCs directly — eliminating every inspection checkpoint the model was designed to create.
+
+<CodeLab title="Audit Your Network Segmentation">
+
+Before deploying any security tooling, map what you actually have. Run this from an IT workstation and note which OT addresses respond — any response indicates a missing segmentation control:
+
+```bash
+# Scan for common OT protocol ports across a suspected OT subnet
+# Modbus TCP: 502 | EtherNet/IP: 44818 | DNP3: 20000 | OPC-UA: 4840
+nmap -p 502,44818,20000,4840 --open 192.168.10.0/24
+
+# If nmap is unavailable, use nc to probe a specific PLC
+nc -zv 192.168.10.50 502 && echo "Modbus reachable from IT network — segment violation"
+```
+
+Any PLC or SCADA host that responds to these probes from your IT network is reachable without crossing a proper inspection boundary. Document each finding — this is your starting risk register.
+
+</CodeLab>
+
+---
+
+## The Business Case for Zero Trust
+
+Traditional perimeter security ("castle and moat") assumes that traffic inside the network is trusted. Once Stuxnet and Triton demonstrated that the most dangerous threats originate from within — from legitimate vendor credentials, compromised workstations, or malicious USB drives — the perimeter model collapsed.
+
+**Zero trust** replaces the perimeter assumption with a single rule: **never trust, always verify**. Every device, user, and network flow must authenticate and be authorized, regardless of where it originates. For industrial networks, this translates to:
+
+- Devices authenticate before communicating, not just at login
+- Protocols are inspected at every crossing point, not just at the firewall
+- Access is granted per-session to the minimum required scope
+- All traffic is logged and anomalies trigger alerts
+
+The remaining modules of this course implement zero trust specifically for the industrial context: WireGuard for authenticated network transport, Zeek and Suricata for deep packet inspection, HashiCorp Vault for secrets management, and inline command validation as the last guardrail before a PLC executes a command.
+
+---
+
+<Quiz question="Why do OT systems rarely receive security patches, even when critical vulnerabilities are discovered?">
+
+<div>
+
+OT systems prioritize **availability** above all else. Patching requires downtime — and unplanned downtime in an industrial environment can cost hundreds of thousands of dollars per hour, disrupt safety-critical processes, and require complex restart procedures that may take days.
+
+Additionally, many OT systems run vendor-certified software configurations. Applying an OS patch can void a vendor's support contract or invalidate a regulatory certification (e.g., for pharmaceutical manufacturing or nuclear power), leaving the operator legally exposed.
+
+This is why defense-in-depth matters so much in OT: you cannot rely on patching as a primary control. Network segmentation, protocol inspection, and behavioral anomaly detection must compensate for systems that will never be patched.
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+You now understand why the IT/OT gap exists, how it creates risk, and the vocabulary shared across industrial security teams.
+
+In **Lesson 2**, we map this to the ISA/IEC 62443 standard — the framework that turns these concepts into auditable requirements — and work through the Purdue Model's zones and conduits in concrete network terms.

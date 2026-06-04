@@ -1,0 +1,307 @@
+---
+title: "Zeek Scripts for Modbus and EtherNet/IP"
+description: "Write Zeek detection scripts that baseline normal industrial protocol behavior and alert on anomalous function codes, unauthorized source IPs, and out-of-range register writes."
+module: 4
+moduleTitle: "OT Network Monitoring — Zeek and Suricata"
+lesson: 2
+duration: "60 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Zeek Scripting for OT: The Baseline Approach
+
+Signature-based detection (matching known attack patterns) is insufficient for OT environments. Most OT attacks don't use known exploit code — they use **legitimate protocol commands sent from unauthorized sources or with unauthorized values**. A Stuxnet-style attack looks like normal Modbus traffic to a signature engine.
+
+The right model is **behavioral baselining**: establish what "normal" looks like for each device and alert when observed behavior deviates from that baseline. Zeek's scripting language is designed exactly for this type of stateful, protocol-aware analysis.
+
+---
+
+## Zeek Script 1: Modbus Write Authorization
+
+This script maintains a whitelist of which IP addresses are permitted to send Modbus write commands to which PLCs. Any write from an unauthorized source generates a notice.
+
+```zeek
+# /opt/zeek/share/zeek/site/modbus-write-auth.zeek
+
+module ModbusWriteAuth;
+
+export {
+    redef enum Notice::Type += {
+        Unauthorized_Modbus_Write,
+        Modbus_Write_To_Unknown_Device,
+    };
+}
+
+# Whitelist: map from PLC IP to set of authorized writer IPs
+global authorized_writers: table[addr] of set[addr] = {
+    # PLC-A (motor speed controller)
+    [10.100.0.50] = set(10.100.0.25),  # Only engineering workstation may write
+    # PLC-B (valve controller)
+    [10.100.0.51] = set(10.100.0.25, 10.100.0.20),  # EWS + SCADA server (setpoints only)
+};
+
+# Modbus function codes that modify state (writes)
+const write_function_codes: set[count] = {
+    5,   # Write Single Coil
+    6,   # Write Single Register
+    15,  # Write Multiple Coils
+    16,  # Write Multiple Registers
+    22,  # Mask Write Register
+    23,  # Read/Write Multiple Registers
+};
+
+event modbus_message(c: connection, headers: ModbusHeaders, is_orig: bool) {
+    # Only process requests (originator side), not responses
+    if (!is_orig) return;
+
+    local func_code = headers$function_code;
+
+    # Only interested in write operations
+    if (func_code !in write_function_codes) return;
+
+    local src = c$id$orig_h;
+    local dst = c$id$resp_h;
+
+    # Check if destination PLC is in our inventory
+    if (dst !in authorized_writers) {
+        NOTICE([$note=Modbus_Write_To_Unknown_Device,
+                $conn=c,
+                $msg=fmt("Modbus write (FC %d) to unregistered device %s from %s",
+                         func_code, dst, src),
+                $identifier=fmt("%s->%s:%d", src, dst, func_code)]);
+        return;
+    }
+
+    # Check if source is authorized to write to this PLC
+    if (src !in authorized_writers[dst]) {
+        NOTICE([$note=Unauthorized_Modbus_Write,
+                $conn=c,
+                $msg=fmt("UNAUTHORIZED Modbus write (FC %d) to %s from %s — source not in whitelist",
+                         func_code, dst, src),
+                $identifier=fmt("%s->%s", src, dst),
+                $suppress_for=10sec]);
+    }
+}
+```
+
+Load this script in `local.zeek`:
+```zeek
+@load modbus-write-auth
+```
+
+---
+
+## Zeek Script 2: Modbus Register Value Anomaly
+
+This script tracks register writes and alerts if the written value exceeds configured safe operating ranges — the core detection for a Stuxnet-style speed override attack.
+
+```zeek
+# /opt/zeek/share/zeek/site/modbus-value-anomaly.zeek
+
+module ModbusValueAnomaly;
+
+export {
+    redef enum Notice::Type += {
+        Modbus_Register_Out_Of_Range,
+        Modbus_Safety_Parameter_Write,
+    };
+}
+
+# Safe value ranges per (device IP, register address)
+# Format: [device_ip, register_address] = [min_value, max_value]
+type RegisterLimit: record {
+    min_val: int;
+    max_val: int;
+    description: string;
+};
+
+global register_limits: table[addr, count] of RegisterLimit = {
+    # PLC-A (motor speed controller)
+    # Register 40001: speed setpoint in RPM, max rated 1800
+    [10.100.0.50, 40001] = [$min_val=0, $max_val=1800, $description="Motor speed setpoint (RPM)"],
+    # Register 40002: torque limit in Nm, max rated 500
+    [10.100.0.50, 40002] = [$min_val=0, $max_val=500, $description="Torque limit (Nm)"],
+    # PLC-B (pressure controller)
+    # Register 40010: pressure setpoint in PSI, safe range 0-120
+    [10.100.0.51, 40010] = [$min_val=0, $max_val=120, $description="Pressure setpoint (PSI)"],
+};
+
+event modbus_write_single_register_request(c: connection, headers: ModbusHeaders,
+                                            register_address: count, value: count) {
+    local device = c$id$resp_h;
+    local key = [device, register_address];
+
+    if (key !in register_limits) return;
+
+    local limit = register_limits[key];
+    local int_value = count_to_int(value);
+
+    if (int_value < limit$min_val || int_value > limit$max_val) {
+        NOTICE([$note=Modbus_Register_Out_Of_Range,
+                $conn=c,
+                $msg=fmt("OUT-OF-RANGE write to %s register %d: value=%d, safe_range=[%d,%d] (%s)",
+                         device, register_address, int_value,
+                         limit$min_val, limit$max_val, limit$description),
+                $identifier=fmt("%s:reg%d", device, register_address)]);
+    }
+}
+```
+
+---
+
+## Zeek Script 3: EtherNet/IP Write Attribute Monitoring
+
+For EtherNet/IP (Allen-Bradley PLCs), detect Write Attribute commands from unexpected sources:
+
+```zeek
+# /opt/zeek/share/zeek/site/enip-write-monitor.zeek
+
+module ENIPWriteMonitor;
+
+export {
+    redef enum Notice::Type += {
+        ENIP_Unauthorized_Write,
+        ENIP_Execute_Service_Detected,
+    };
+}
+
+# Engineering workstation IPs authorized to write CIP attributes
+global enip_authorized_writers: set[addr] = {
+    10.100.0.25,  # Engineering workstation
+};
+
+# CIP service codes of interest
+# 0x4D = Write Attribute Single
+# 0x4B = Execute Service (extremely high interest — arbitrary code execution)
+const HIGH_INTEREST_SERVICES: set[count] = { 0x4D, 0x4B };
+
+event enip_implicit(c: connection, is_orig: bool, data: string) {
+    if (!is_orig) return;
+
+    local src = c$id$orig_h;
+
+    # Extract service code from CIP header (byte 0)
+    if (|data| < 1) return;
+    local service_code = bytestring_to_count(data[0:1], F);
+
+    if (service_code !in HIGH_INTEREST_SERVICES) return;
+
+    if (service_code == 0x4B) {
+        # Execute Service is always notable regardless of source
+        NOTICE([$note=ENIP_Execute_Service_Detected,
+                $conn=c,
+                $msg=fmt("EtherNet/IP Execute Service (0x4B) from %s to %s — arbitrary execution risk",
+                         src, c$id$resp_h)]);
+        return;
+    }
+
+    # Write Attribute from unauthorized source
+    if (src !in enip_authorized_writers) {
+        NOTICE([$note=ENIP_Unauthorized_Write,
+                $conn=c,
+                $msg=fmt("Unauthorized EtherNet/IP Write Attribute from %s to %s",
+                         src, c$id$resp_h),
+                $suppress_for=30sec]);
+    }
+}
+```
+
+---
+
+## Forwarding Zeek Notices to Your SIEM
+
+Zeek notices appear in `/opt/zeek/logs/current/notice.log`. For real-time alerting, forward them to a SIEM (Splunk, Elastic, or any syslog consumer):
+
+```zeek
+# /opt/zeek/share/zeek/site/notice-to-siem.zeek
+
+# Forward all notices to syslog with structured fields
+hook Notice::policy(n: Notice::Info) {
+    if (n$note == ModbusWriteAuth::Unauthorized_Modbus_Write ||
+        n$note == ModbusValueAnomaly::Modbus_Register_Out_Of_Range ||
+        n$note == ENIPWriteMonitor::ENIP_Execute_Service_Detected) {
+
+        # Structured log line consumed by syslog-ng or Filebeat
+        print fmt("ZEEK_OT_ALERT severity=HIGH notice=%s msg=\"%s\" src=%s dst=%s",
+                  n$note, n$msg,
+                  n?$id ? fmt("%s", n$id$orig_h) : "unknown",
+                  n?$id ? fmt("%s", n$id$resp_h) : "unknown");
+    }
+}
+```
+
+<CodeLab title="Test the Modbus Value Anomaly Script">
+
+Use a Python Modbus test client to send an out-of-range write and verify Zeek detects it:
+
+```python
+#!/usr/bin/env python3
+# test-modbus-anomaly.py — run from the engineering workstation (authorized writer)
+# Requires: pip install pymodbus
+
+from pymodbus.client import ModbusTcpClient
+
+client = ModbusTcpClient('10.100.0.50', port=502)
+client.connect()
+
+# Write an out-of-range speed setpoint: 65535 RPM (max uint16, way above 1800 RPM limit)
+# Register address 0 = Modbus register 40001 (Modbus uses 0-indexed addressing)
+result = client.write_register(address=0, value=0xFFFF, unit=1)
+print(f"Write result: {result}")
+client.close()
+```
+
+```bash
+# On the Zeek sensor, watch for the alert
+tail -f /opt/zeek/logs/current/notice.log | zeek-cut note msg
+
+# Expected output within seconds:
+# ModbusValueAnomaly::Modbus_Register_Out_Of_Range  OUT-OF-RANGE write to 10.100.0.50 register 40001: value=65535, safe_range=[0,1800] (Motor speed setpoint (RPM))
+```
+
+If the notice doesn't appear, check that `modbus-value-anomaly.zeek` is loaded and that the Zeek sensor's SPAN port is receiving traffic from the test workstation's subnet.
+
+</CodeLab>
+
+---
+
+<Pitfall title="Don't Let the Baseline Drift">
+
+A Zeek whitelist that is never updated becomes noise. When a new engineering workstation is added or a PLC is replaced with a different model that uses different register addresses, the script starts generating false positives. Teams learn to ignore noisy alerts — and miss real attacks.
+
+Treat Zeek scripts like code: version control them, require a review and change ticket to modify the whitelist, and schedule a quarterly review to confirm the baseline still reflects actual operations. A stale baseline is worse than no baseline: it creates a false sense of security.
+
+</Pitfall>
+
+---
+
+<Quiz question="A Zeek script detects an out-of-range Modbus write to the pressure setpoint register (40010) on PLC-B. The source IP is 10.100.0.25 — the authorized engineering workstation. Should this trigger an incident response? What are the plausible explanations?">
+
+<div>
+
+**Yes, this should trigger investigation** — but there are both malicious and benign explanations:
+
+**Benign explanations:**
+1. **Operator error** — an engineer entered 185 PSI when the limit is 120 PSI, a typo in the engineering software
+2. **Unit mismatch** — a new engineer entered the value in kPa instead of PSI (185 kPa ≈ 27 PSI, which would be valid, but the engineering software sent the raw integer 185 to Modbus)
+3. **Test scenario** — the engineer was intentionally testing the safety interlock and should have opened a formal change ticket first
+
+**Malicious explanations:**
+1. **Compromised engineering workstation** — malware on 10.100.0.25 is issuing commands using the legitimate workstation's network identity
+2. **Insider threat** — the engineer is deliberately trying to overpressure the system
+
+The correct response: immediately contact the engineer who was logged into 10.100.0.25 at that timestamp (from the jump server session recording). If they confirm it was intentional and a legitimate test, document it and close as a change-without-a-ticket. If they deny it, treat as a compromised workstation: isolate 10.100.0.25 from the OT network and begin forensic investigation.
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+Zeek is scripted with behavioral baselines for Modbus and EtherNet/IP.
+
+In **Lesson 3**, we add Suricata inline to the IT/OT conduit with IDS rules for OT traffic — moving from detection to active prevention of the most critical attack patterns.

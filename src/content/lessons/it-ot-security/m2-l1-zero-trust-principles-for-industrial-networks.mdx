@@ -1,0 +1,189 @@
+---
+title: "Zero-Trust Principles for Industrial Networks"
+description: "Translate zero-trust architecture principles into concrete network design requirements for the IT/OT boundary, and understand why traditional perimeter models fail in industrial settings."
+module: 2
+moduleTitle: "Zero-Trust Network Architecture with WireGuard"
+lesson: 1
+duration: "40 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Why Perimeter Security Failed OT
+
+The castle-and-moat model assumed that everything inside the perimeter was trustworthy. In IT environments, that assumption eroded as mobile devices, cloud workloads, and remote work blurred the perimeter boundary. In OT environments, the assumption was never valid — it just wasn't tested until Stuxnet.
+
+The core failure: once an attacker crosses the perimeter (through phishing, a vendor credential, or a USB drive), every device inside the OT network trusts every other. A compromised engineering workstation can send arbitrary Modbus commands to every PLC on the subnet, because Modbus has no authentication and the "trusted interior" never questioned it.
+
+Zero trust fixes this by removing the concept of a trusted interior entirely.
+
+---
+
+## The Five Zero-Trust Principles
+
+NIST SP 800-207 defines zero trust through five core tenets. Here's how each applies specifically to industrial networks:
+
+**1. All resources are treated as external**
+Even a PLC on the same subnet as the SCADA server is not inherently trusted. Before SCADA sends a command to the PLC, that communication should be authenticated and authorized — not just assumed valid because it originates from inside the OT VLAN.
+
+**2. All communication is secured regardless of network location**
+Traffic between SCADA and PLCs should be encrypted or authenticated (where the protocol supports it). Traffic between the OT DMZ historian and the IT-side replica must be encrypted end-to-end. WireGuard provides this at the network layer.
+
+**3. Access to resources is granted per-session**
+A vendor technician logging into a jump server gets access to the specific PLC they're servicing, for the duration of that maintenance window — not persistent access to all OT devices.
+
+**4. Access is determined by dynamic policy**
+Authorization decisions should incorporate device health, user identity, and time context — not just a static ACL. An engineering workstation with outdated antivirus signatures should not be granted access to L1 PLCs regardless of its IP address.
+
+**5. All traffic is monitored and logged**
+Every packet crossing a zone boundary is logged. Anomalies trigger alerts. This is where Zeek and Suricata fit: they enforce the "always verify" at the traffic level.
+
+---
+
+## Zero Trust Is Architecture, Not a Product
+
+Vendors sell "zero trust" solutions that are really just identity-aware proxies or micro-segmentation firewalls. These are components of a zero-trust architecture — not the architecture itself.
+
+A true zero-trust architecture for IT/OT requires:
+
+```
+┌─────────────────────────────────────────────────────────┐
+│                    Policy Engine                         │
+│  (who is allowed to talk to what, under what conditions) │
+└──────────────────────┬──────────────────────────────────┘
+                       │ enforced by
+        ┌──────────────┼──────────────────┐
+        │              │                  │
+   [Identity]    [Network Layer]    [Application Layer]
+   MFA, PKI,     WireGuard,         Zeek DPI,
+   Vault creds   firewall ACLs      protocol validators
+```
+
+Each layer reinforces the others. If an attacker steals a valid WireGuard key, the Zeek layer still detects anomalous protocol behavior. If an attacker finds a Modbus vulnerability, the identity layer's per-session access means they can only reach the specific PLC the stolen session authorized.
+
+---
+
+## WireGuard as the Zero-Trust Transport
+
+**WireGuard** is a modern VPN protocol built into the Linux kernel since 5.6. Compared to OpenVPN and IPsec, it offers:
+
+- **Smaller attack surface**: ~4,000 lines of code vs. ~100,000 for OpenVPN
+- **Cryptographic identity**: every peer is identified by its public key — there is no username/password authentication that can be brute-forced
+- **Stealth**: WireGuard does not respond to unauthenticated packets; the endpoint is invisible to port scanners
+- **Performance**: kernel-level implementation with ChaCha20-Poly1305 encryption adds minimal latency — critical for OT control loops with millisecond timing requirements
+
+For the IT/OT conduit, WireGuard provides the authenticated, encrypted transport that makes zero-trust network segmentation practical.
+
+---
+
+## Network Design: WireGuard in the OT DMZ
+
+The WireGuard topology for an IT/OT deployment places a WireGuard gateway in the OT DMZ. All cross-boundary traffic must traverse a WireGuard tunnel:
+
+```
+IT Enterprise Network
+    192.168.1.0/24
+         │
+    [WG Gateway - IT Side]
+    wg0: 10.0.0.1/32
+    public key: <IT_GW_PUB>
+         │
+    ~~~~ WireGuard Tunnel ~~~~
+    10.0.0.0/30 encrypted
+         │
+    [WG Gateway - OT DMZ]
+    wg0: 10.0.0.2/32
+    public key: <OT_GW_PUB>
+         │
+    OT Network
+    10.100.0.0/24
+    (PLCs, SCADA, historians)
+```
+
+No device in the IT network can reach the OT network without a packet first traversing the WireGuard tunnel. The tunnel requires the IT gateway to present a valid private key — defeating any attacker who has only a network foothold but not a cryptographic credential.
+
+---
+
+## Pre-Shared Keys and Defense in Depth
+
+WireGuard's public-key cryptography is quantum-vulnerable in theory (Diffie-Hellman key exchange). For environments where long-term data confidentiality matters (SL 3+), add a **pre-shared key (PSK)** to each WireGuard peer configuration. The PSK adds a symmetric layer on top of the asymmetric handshake — a quantum computer that breaks the asymmetric layer still can't read traffic without the PSK.
+
+```ini
+# In each peer stanza of wg0.conf:
+[Peer]
+PublicKey = <peer_public_key>
+PresharedKey = <32-byte-random-PSK>
+AllowedIPs = 10.100.0.0/24
+```
+
+Store PSKs in HashiCorp Vault (Module 3), not in plaintext config files.
+
+<CodeLab title="Verify WireGuard Cryptographic Identity">
+
+After deploying WireGuard, confirm that only authenticated peers can establish tunnels. On the OT gateway:
+
+```bash
+# Show all connected peers and their last handshake time
+wg show wg0
+
+# Output format:
+# peer: <base64 public key>
+#   endpoint: <IP>:<port>
+#   allowed ips: 10.0.0.1/32
+#   latest handshake: 47 seconds ago
+#   transfer: 1.23 MiB received, 456 KiB sent
+
+# A peer with no "latest handshake" line has never connected successfully.
+# If you see an unexpected peer, that public key was either leaked or
+# you have a configuration error — investigate before proceeding.
+```
+
+Compare the displayed public keys against your authorized peer registry (managed in Vault). Any key not in the registry should trigger an immediate access revocation.
+
+</CodeLab>
+
+---
+
+<Pitfall title="WireGuard Is Not a Firewall">
+
+WireGuard encrypts and authenticates traffic between peers — but it does not filter traffic *within* a tunnel. An authorized peer can send any traffic over the tunnel, including traffic to IP addresses and ports they shouldn't reach.
+
+After establishing WireGuard tunnels, apply **iptables or nftables rules** on the OT gateway to restrict which OT IPs a given IT peer can reach through the tunnel. Example:
+
+```bash
+# Allow IT historian server (10.0.0.5) to reach OT historian only (10.100.0.50:8089)
+# Block all other OT destinations from that peer
+iptables -A FORWARD -i wg0 -s 10.0.0.5 -d 10.100.0.50 -p tcp --dport 8089 -j ACCEPT
+iptables -A FORWARD -i wg0 -s 10.0.0.5 -j DROP
+```
+
+WireGuard + firewall rules together implement principle 3 (per-session access) and principle 2 (minimum required scope).
+
+</Pitfall>
+
+---
+
+<Quiz question="An engineer proposes deploying WireGuard between IT and OT zones and declaring the network 'zero-trust compliant.' What is missing from this architecture?">
+
+<div>
+
+WireGuard alone provides authenticated, encrypted transport (principle 2) and cryptographic identity (part of principle 1). But zero trust requires all five principles:
+
+- **Principle 3** (per-session access) requires that access grants are scoped and time-limited — WireGuard has persistent key-based access, so you'd need session management on top (e.g., Vault-issued short-lived certs or a policy engine that revokes peer configs after a session ends).
+- **Principle 4** (dynamic policy) requires that device health and context factor into authorization decisions — WireGuard has no visibility into whether the connecting workstation is running updated AV or has an open RDP session.
+- **Principle 5** (monitoring and logging) requires DPI and anomaly detection on the traffic inside the tunnel — Zeek and Suricata on the OT side of the gateway handle this.
+
+Zero trust is the combination of all five principles working together. WireGuard is one essential component, not a complete architecture.
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+You understand zero trust as an architecture and why WireGuard is the right transport layer for the IT/OT conduit.
+
+In **Lesson 2**, we deploy WireGuard on both sides of the OT DMZ — configuring peers, generating keys, and verifying encrypted connectivity between the IT historian replica and the OT historian.

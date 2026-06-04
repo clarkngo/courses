@@ -1,0 +1,242 @@
+---
+title: "Security Levels, Zones, and Conduits"
+description: "Perform the SL-Target versus SL-Achieved comparison for the course architecture, identify remaining gaps, and design the remediation roadmap."
+module: 6
+moduleTitle: "ISA/IEC 62443 Compliance and Governance"
+lesson: 2
+duration: "50 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## From Design to Measurement
+
+Security Level Target (SL-T) is a design intent. Security Level Achieved (SL-A) is a measurement of what's actually implemented. The gap between them is your risk exposure — and closing that gap is the purpose of your remediation roadmap.
+
+This lesson performs the SL-T vs. SL-A comparison for the architecture built throughout this course.
+
+---
+
+## Zone-by-Zone SL Assessment
+
+### Zone 1: IT Enterprise Zone
+
+**SL-T**: 2 (intentional attack, simple means, moderate consequence)
+
+| SR | Requirement | Control | SL-A | Evidence |
+|---|---|---|---|---|
+| 1.1 | User identification & authentication | Vault AppRole, LDAP for humans | 2 | Vault audit log |
+| 1.1 RE1 | Unique identification | Per-user accounts, no sharing | 2 | Account inventory |
+| 1.1 RE2 | Multi-factor auth | TOTP on jump server | 2 | PAM config |
+| 2.1 | Authorization enforcement | Vault policies, OAuth scopes | 2 | Policy docs |
+| 3.1 | Communication integrity | TLS 1.3 on historian API | 2 | TLS scan output |
+| 4.1 | Information confidentiality | TLS 1.3, WireGuard for sync | 2 | Config review |
+| 6.1 | Audit log generation | Vault audit log, nginx access log | 2 | Log samples |
+| 6.2 | Audit log protection | Logs forwarded to SIEM (read-only) | 2 | SIEM config |
+| 7.1 | DoS protection | Rate limiting on historian API | 1 | nginx config |
+
+**Zone 1 SL-A: 1** — SR 7.1 achieves only SL 1 (basic rate limiting exists, but no redundancy or DoS-specific mitigation). To reach SL 2 for this SR, add:
+- Load balancing across at least 2 historian API instances
+- Dedicated upstream DDoS mitigation (cloud WAF or on-prem scrubbing)
+
+### Zone 2: OT DMZ
+
+**SL-T**: 2
+
+| SR | Requirement | Control | SL-A | Evidence |
+|---|---|---|---|---|
+| 1.1 RE2 | Multi-factor auth for privileged access | TOTP on jump server | 2 | PAM config |
+| 2.1 | Authorization enforcement | nftables per-role ACLs | 2 | Ruleset dump |
+| 5.1 | Network segmentation | Dual-firewall OT DMZ | 2 | Network diagram |
+| 5.2 | Zone boundary protection | WireGuard tunnel, Suricata DPI | 2 | Config + test results |
+| 6.1 | Audit log generation | Suricata eve.json → SIEM | 2 | SIEM dashboard |
+| 7.1 | DoS protection | Suricata rate-limit rules | 2 | Rule file |
+| 7.5 | Emergency power | Not implemented | 0 | Gap |
+| 7.6 | Network and security configuration | Change management process | 1 | Process doc |
+
+**Zone 2 SL-A: 1** — Two gaps:
+- SR 7.5 (emergency power): UPS for DMZ gateways not yet installed
+- SR 7.6 (configuration management): change management process exists but is manual and not tool-enforced
+
+### Zone 3: OT Network (Field Control)
+
+**SL-T**: 2 (motor control, pump operations — serious consequence if misoperated)
+
+| SR | Requirement | Control | SL-A | Evidence |
+|---|---|---|---|---|
+| 1.1 | Authentication | None on PLCs (Modbus) | 0 | Protocol analysis |
+| 1.1 Compensating | Authentication compensated by proxy | Modbus proxy source IP check | 2* | Proxy code + tests |
+| 2.1 | Authorization | Modbus proxy write whitelist | 2 | Config + tests |
+| 3.1 | Communication integrity | None (Modbus unencrypted) | 0 | Protocol analysis |
+| 3.1 Compensating | Integrity compensated by proxy | Proxy value range validation | 1* | Partial — no integrity for reads |
+| 5.1 | Segmentation | VLAN isolation, nftables | 2 | Switch config |
+| 6.1 | Audit log | Zeek modbus.log → SIEM | 2 | Zeek config |
+| 7.1 | DoS protection | Circuit breaker in proxy | 2 | Proxy code + tests |
+
+**Zone 3 SL-A: 1** — The compensating controls bring many SRs to SL 2, but the absence of native authentication (SR 1.1) and communication integrity (SR 3.1) on the PLCs themselves means the zone cannot achieve SL 2 without compensating control documentation formally accepted in the risk register.
+
+*Compensating controls are acceptable under 62443 if documented, but they must be explicitly approved by the asset owner and noted as compensating (not equivalent to the native requirement).
+
+---
+
+## Compensating Control Documentation
+
+When a native control is not technically feasible (e.g., enabling authentication on a 20-year-old Modbus-only PLC), ISA/IEC 62443 allows **compensating controls** — alternative controls that reduce the risk to an acceptable level. Document them precisely:
+
+```yaml
+# compensating-controls.yaml
+compensating_controls:
+  - id: CC-001
+    sr_reference: "62443-3-3 SR 1.1 — Identification and Authentication"
+    zone: "Field Control (OT Network)"
+    reason_native_not_feasible: >
+      Legacy PLCs (Siemens S7-300 series) use Modbus TCP which has no native
+      authentication. Firmware upgrade to add authentication not available from
+      vendor. Hardware replacement budgeted for 2028.
+    compensating_control: >
+      Modbus proxy (modbus_proxy.py) validates source IP against authorized
+      writer whitelist before forwarding commands to PLC. Network segmentation
+      (VLAN isolation + nftables) ensures only the proxy host can reach PLC port 502.
+      WireGuard tunnel (Module 2) authenticates all traffic entering the OT VLAN.
+    risk_reduction: >
+      An attacker who compromises an IT host cannot send Modbus commands directly
+      (VLAN isolation). An attacker on the OT VLAN who is not the proxy host is
+      blocked by nftables. The compensating control achieves equivalent risk
+      reduction to native authentication for the defined threat actors (SL 2).
+    approval:
+      approver: "Plant Manager — J. Smith"
+      date: "2026-06-01"
+      review_date: "2027-06-01"
+    status: approved
+```
+
+This document is signed by the plant manager and becomes part of the audit package.
+
+---
+
+## Remediation Roadmap
+
+The SL-T vs. SL-A gap assessment produces a prioritized remediation list:
+
+```
+Priority 1 (Safety-impacting gaps)
+─────────────────────────────────────────────────────────────────────
+GAP-001: SR 7.5 Emergency Power — OT DMZ UPS
+  Zone: OT DMZ
+  Risk: Gateway failure during power event disables WireGuard tunnel and
+        Zeek monitoring. Estimated 4-hour recovery time.
+  Remediation: Install UPS for both DMZ gateway hosts and Zeek sensor.
+  Owner: IT Infrastructure
+  Target: Q3 2026
+  Cost estimate: $3,200 (hardware)
+
+Priority 2 (Compliance gaps, no immediate safety impact)
+─────────────────────────────────────────────────────────────────────
+GAP-002: SR 7.6 Configuration Management — Tool-enforced change control
+  Zone: OT DMZ
+  Risk: Manual change process allows undocumented firewall rule modifications.
+  Remediation: Deploy Ansible for nftables management; all changes via PR
+               with mandatory review. Commit to Git with signed commits.
+  Owner: OT Security Team
+  Target: Q4 2026
+  Cost estimate: 40 engineer-hours
+
+GAP-003: SR 7.1 DoS Protection — Historian API load balancing
+  Zone: IT Enterprise
+  Risk: Single historian API instance; DDoS takes down all dashboard visibility.
+  Remediation: Deploy second historian API instance; add load balancer.
+  Owner: IT Platform Team
+  Target: Q1 2027
+  Cost estimate: $800/month (additional cloud instance) + 20 engineer-hours
+```
+
+<CodeLab title="Automated SL Gap Report">
+
+This script compares your compliance traceability YAML against expected SL requirements and generates a gap report:
+
+```python
+#!/usr/bin/env python3
+# sl-gap-report.py
+
+import yaml
+import sys
+
+with open('compliance-traceability.yaml') as f:
+    traceability = yaml.safe_load(f)
+
+target_sl = traceability['target_security_level']
+gaps = []
+
+for fr_name, srs in traceability['foundational_requirements'].items():
+    for sr_name, sr_data in srs.items():
+        required_sl = sr_data.get('sl_required', 1)
+        achieved = sr_data.get('status', 'unknown')
+        if achieved != 'compliant' or required_sl > target_sl:
+            gaps.append({
+                'sr': sr_name,
+                'required_sl': required_sl,
+                'status': achieved,
+                'owner': sr_data.get('owner', 'unassigned'),
+            })
+
+if gaps:
+    print(f"SL GAP REPORT — Target SL: {target_sl}")
+    print(f"Gaps found: {len(gaps)}\n")
+    for gap in gaps:
+        print(f"  {gap['sr']}")
+        print(f"    Required SL: {gap['required_sl']} | Status: {gap['status']}")
+        print(f"    Owner: {gap['owner']}\n")
+    sys.exit(1)
+else:
+    print(f"All SRs compliant at SL {target_sl}.")
+    sys.exit(0)
+```
+
+Integrate this script into your CI/CD pipeline — if a compliance gap is introduced (e.g., a control is removed without a replacement), the pipeline fails and requires a review before merge.
+
+</CodeLab>
+
+---
+
+<Pitfall title="Don't Mistake Zone SL for Component SL">
+
+A zone's SL-A is bounded by its weakest component's SL. A perfectly configured WireGuard gateway in an OT DMZ zone doesn't bring the zone to SL 3 if the SCADA server in the same zone runs Windows XP with no antivirus and no patch management.
+
+62443-4-2 defines component-level requirements (SL-C) for individual devices. A zone can only achieve SL N if all its components can demonstrate SL-C N. Audit each component independently before claiming zone-level compliance.
+
+This is why legacy PLCs and unpatched SCADA servers frequently cap a zone at SL 1 regardless of how sophisticated the perimeter controls are.
+
+</Pitfall>
+
+---
+
+<Quiz question="The Field Control zone has SL-T = 2 but SL-A = 1 due to legacy PLCs without native authentication. The plant manager asks whether upgrading the surrounding controls (better proxy, stronger Zeek scripts) can bring SL-A to 2. What is the correct answer?">
+
+<div>
+
+**Partially yes — compensating controls can raise the effective protection level, but the zone's formal SL-A cannot exceed what the weakest component can demonstrate.**
+
+The correct path:
+
+1. **Document compensating controls** per the template shown in this lesson. The proxy's source IP validation, combined with network isolation, provides equivalent protection to native authentication for the defined threat actor (intentional, simple means, SL 2).
+
+2. **Submit compensating control documentation for approval** — the plant manager must sign off. This documents that the residual risk is accepted and the compensating controls are formally recognized.
+
+3. **Record the gap** in the compliance traceability matrix with status `compensating_control_approved` rather than `compliant`. The zone's SL-A is annotated as "SL 1 native, SL 2 with approved compensating controls."
+
+4. **Plan for native remediation** — the compensating control documentation should include a timeline for hardware replacement or firmware upgrade that provides native authentication.
+
+An auditor will accept this approach if the documentation is complete and the approver is appropriate (plant manager for safety-impacting gaps). They will not accept undocumented reliance on compensating controls, or compensating controls approved only by the security team.
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+The SL-T vs. SL-A gap analysis is complete and the remediation roadmap is prioritized.
+
+In **Lesson 3**, we build the audit evidence package — the documentation artifacts that an ISA/IEC 62443 assessor will review — and establish the governance processes to maintain compliance over time.

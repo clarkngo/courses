@@ -1,0 +1,218 @@
+---
+title: "Risk Assessment Across the IT/OT Boundary"
+description: "Build a structured risk register for IT/OT environments using threat modeling, consequence analysis, and the ISA/IEC 62443 risk framework."
+module: 1
+moduleTitle: "The IT/OT Divide"
+lesson: 3
+duration: "45 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Why Risk Assessment Comes First
+
+Every control you deploy has a cost: hardware, licensing, operational overhead, and engineer time. Risk assessment answers the question of *which threats deserve those costs* — and in what order. Without it, you end up with a perfectly hardened historian and an unmonitored PLC exposed to the corporate VLAN.
+
+ISA/IEC 62443-3-2 provides the formal methodology. This lesson distills it into a working process you can apply to a real site.
+
+---
+
+## The Risk Assessment Process
+
+62443-3-2 defines a structured, repeatable process:
+
+```
+1. Partition the system into zones and conduits
+2. Perform an initial cybersecurity risk assessment per zone
+3. Assign target security levels (SL-T)
+4. Document required compensating controls
+5. Reassess after control implementation (SL-A vs SL-T)
+6. Establish an ongoing review cadence
+```
+
+Steps 1 and 3 were covered in Lesson 2. This lesson focuses on steps 2 and 4: how to quantify risk and translate it into control requirements.
+
+---
+
+## Risk = Consequence × Likelihood
+
+The 62443 framework defines risk as the product of **consequence** (what happens if the threat succeeds) and **likelihood** (how probable is successful exploitation). Both are scored on a 1–5 scale.
+
+### Consequence Categories
+
+62443-3-2 uses these consequence dimensions:
+
+| Dimension | Examples |
+|---|---|
+| **Safety** | Injury, death, mass casualty |
+| **Environment** | Spill, release, regulatory violation |
+| **Financial** | Downtime cost, remediation cost, fines |
+| **Reputational** | Brand damage, public trust |
+
+Score each dimension 1 (negligible) through 5 (catastrophic), then use the highest single dimension score as the zone's consequence rating.
+
+### Likelihood Factors
+
+Likelihood depends on:
+- **Threat actor capability** — script kiddie vs. nation-state
+- **Attack surface** — is the zone internet-accessible? is there a known exploit?
+- **Existing controls** — does a firewall already block the attack vector?
+
+Score 1 (very unlikely) through 5 (near-certain given current exposure).
+
+### Risk Matrix
+
+| | **C1** | **C2** | **C3** | **C4** | **C5** |
+|---|:---:|:---:|:---:|:---:|:---:|
+| **L5** | Medium | High | High | Critical | Critical |
+| **L4** | Low | Medium | High | High | Critical |
+| **L3** | Low | Low | Medium | High | High |
+| **L2** | Low | Low | Low | Medium | High |
+| **L1** | Low | Low | Low | Low | Medium |
+
+Use this matrix to prioritize remediation: Critical and High findings go in the first sprint; Medium and Low are scheduled.
+
+---
+
+## Building the Risk Register
+
+A risk register is a living document — not a one-time audit artifact. Each row is a specific threat against a specific zone:
+
+```
+Risk Register — IT/OT Security Assessment
+──────────────────────────────────────────────────────────────────────────────
+ID   | Zone          | Threat                          | C | L | Risk   | Control
+─────|───────────────|─────────────────────────────────|───|───|────────|──────────────────────────────
+R-01 | Field Control | Unauthenticated Modbus command   | 4 | 4 | High   | Zeek + Suricata whitelist rules
+R-02 | OT DMZ        | Unencrypted historian sync       | 3 | 3 | Medium | WireGuard tunnel on port 8089
+R-03 | IT Enterprise | Hardcoded API key in pipeline    | 3 | 4 | High   | HashiCorp Vault dynamic secrets
+R-04 | Field Control | Firmware modification via USB    | 5 | 2 | High   | USB port disable + asset inventory
+R-05 | OT DMZ        | Jump server credential theft     | 4 | 3 | High   | MFA + session recording on jump server
+R-06 | Field Control | Safety interlock command bypass  | 5 | 2 | High   | Inline PLC command validator (M5)
+R-07 | IT Enterprise | Unsigned build artifact deployed | 3 | 3 | Medium | Sigstore/cosign pipeline signing (M3)
+```
+
+<CodeLab title="Risk Register Template">
+
+Start with this YAML structure — it's machine-readable and can feed a dashboard or ticketing system:
+
+```yaml
+# risk-register.yaml
+risks:
+  - id: R-01
+    zone: Field Control
+    conduit: OT-DMZ to Field Control
+    threat: Unauthenticated Modbus TCP command injection
+    threat_actor: Intentional, moderate capability (SL 2)
+    consequence: 4  # serious safety consequence if speed setpoint manipulated
+    likelihood: 4   # Modbus has no native authentication; directly reachable
+    risk: High
+    target_sl: 2
+    controls:
+      - description: Zeek script to whitelist valid Modbus function codes per device
+        status: planned
+        module: 4
+      - description: Suricata rule to alert on out-of-range register writes
+        status: planned
+        module: 4
+    residual_likelihood: 2  # after controls applied
+    residual_risk: Medium
+    owner: OT Security Team
+    review_date: 2026-12-01
+```
+
+Iterate this file as you implement each module. The `residual_likelihood` field should decrease as controls go live — if it doesn't, your control isn't working.
+
+</CodeLab>
+
+---
+
+## Threat Scenario Deep-Dive: Modbus Command Injection
+
+Walk through R-01 end-to-end to understand how abstract risk scores translate to real consequences.
+
+### The Asset
+
+A variable frequency drive (VFD) controls motor speed at an industrial pump station. The PLC sends Modbus TCP write commands to register 40001 (speed setpoint) over the OT network.
+
+### The Threat
+
+An attacker who has lateral-moved from a compromised engineering workstation sends a crafted Modbus TCP write command: register 40001, value 0xFFFF (65535 RPM — far beyond the motor's rated 1800 RPM).
+
+The PLC has no authentication on Modbus. It accepts the command and drives the motor at a destructive speed. The safety interlock (the SIS) should catch this — but if the attacker also disables the high-speed switch sensor (as Stuxnet disabled centrifuge sensors), the SIS never fires.
+
+### The Consequence
+
+Motor bearing failure, potential shaft separation, and — in a water treatment context — loss of service to a population center.
+
+### The Controls
+
+| Control | How It Helps | Module |
+|---|---|---|
+| Network segmentation | Attacker can't reach the PLC without crossing an inspected boundary | M2 |
+| Zeek whitelist | Logs any Modbus write to 40001; alerts on unexpected source IPs | M4 |
+| Suricata rule | Blocks Modbus write if value > safe_max (1800) inline | M4 |
+| Inline PLC validator | Last-mile check: rejects the command before the PLC receives it | M5 |
+
+Defense in depth means the attacker must defeat all four controls, not just one.
+
+---
+
+## Consequence Analysis for Safety Systems
+
+When the consequence dimension is **safety**, standard financial risk math is insufficient. A 1-in-1000-year event that kills 50 people is not acceptably managed by buying insurance.
+
+**ALARP (As Low As Reasonably Practicable)** is the engineering standard: risk must be reduced until the cost of further reduction is grossly disproportionate to the benefit gained. For safety-critical OT systems, this translates to:
+
+- Every identified High risk gets a control, regardless of cost, until it is at least Medium
+- Critical risks get controls until they reach Low or until the site can demonstrate that further controls are technically infeasible
+- Residual risk acceptance must be documented and signed by the plant manager (not just the security team)
+
+<Pitfall title="Don't Conflate SIL with Cybersecurity SL">
+
+**Safety Integrity Level (SIL)** from IEC 61511 and **Security Level (SL)** from IEC 62443 are different standards with different numbering that happen to overlap. A SIL 3 safety function is not the same as an SL 3 security requirement, and satisfying one does not satisfy the other.
+
+In fact, a system can have a SIL 3 safety function and an SL 1 security posture — meaning its safety interlock works correctly under normal conditions but can be defeated by a motivated attacker. Triton/TRISIS exploited exactly this gap: the SIL-certified safety system had no cybersecurity controls at all.
+
+Track both independently in your risk register.
+
+</Pitfall>
+
+---
+
+## The Review Cadence
+
+A risk register that isn't updated is an audit document, not a security tool. Schedule reviews triggered by:
+
+- **New asset** added to a zone (e.g., a new PLC model or historian upgrade)
+- **New threat intelligence** (e.g., a published exploit for Modbus-enabled devices)
+- **Control change** — a control modified, disabled, or bypassed
+- **Incident** — any security event, even minor ones
+- **Annual minimum** — regardless of changes, per 62443-2-1 requirements
+
+---
+
+<Quiz question="A zone assessment gives consequence = 5 (catastrophic safety risk) and likelihood = 2 (unlikely — existing firewall provides some protection). What is the risk level, and what does ALARP require?">
+
+<div>
+
+Using the risk matrix: **High** (C5, L2 = High).
+
+ALARP requires that every High finding receive controls until the residual risk is at least Medium. The existing firewall that reduces likelihood to 2 is already counted — the residual risk after controls must be reduced further.
+
+Acceptable next controls might include: adding DPI to the firewall (reducing likelihood to 1, dropping the risk to Medium), or reducing consequence by installing a hardware safety interlock that is physically independent of the compromised zone.
+
+Once you've applied controls and reassessed, the residual risk must be formally accepted by the plant manager in writing. "We knew and chose not to act" is not ALARP — it's negligence.
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+You have a structured risk register and understand how to translate threat scenarios into security level requirements.
+
+In **Module 2**, we begin implementing controls: deploying WireGuard to secure the authenticated network transport across IT/OT conduits — addressing the network-layer gaps surfaced in your risk register.

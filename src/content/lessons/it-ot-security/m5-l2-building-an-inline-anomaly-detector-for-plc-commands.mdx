@@ -1,0 +1,397 @@
+---
+title: "Building an Inline Anomaly Detector for PLC Commands"
+description: "Implement a Python Modbus TCP proxy that validates command source, value ranges, and timing before forwarding to the PLC — cutting the circuit on anomalous commands."
+module: 5
+moduleTitle: "Physical Safety Guardrails — Inline Detection"
+lesson: 2
+duration: "65 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Architecture: The Modbus Proxy
+
+The inline guardrail is a TCP proxy that sits between the SCADA network and the PLC. SCADA clients connect to the proxy on port 502; the proxy validates each Modbus PDU, then either forwards it to the real PLC or drops it and sends an exception response back to the client.
+
+```
+SCADA Server / Engineering Workstation
+          │
+     [connects to port 502 of...]
+          │
+  ┌───────────────────────────────────┐
+  │     Modbus Proxy (guardrail)      │
+  │                                   │
+  │  1. Parse Modbus PDU              │
+  │  2. Validate source IP            │
+  │  3. Validate function code        │
+  │  4. Validate register values      │
+  │  5. Check rate limits             │
+  │  6a. If valid → forward to PLC    │
+  │  6b. If invalid → drop + alert    │
+  └───────────────────────────────────┘
+          │ (only if valid)
+     [connects to PLC port 502]
+          │
+   PLC (10.100.0.50:502)
+```
+
+The PLC's listen port is accessible **only from the proxy host** — enforced by nftables rules on the OT network switch (or by the PLC's own IP access control if it supports it).
+
+---
+
+## Proxy Implementation
+
+```python
+#!/usr/bin/env python3
+"""
+modbus_proxy.py — Inline Modbus TCP guardrail
+Validates each Modbus PDU before forwarding to the target PLC.
+"""
+
+import asyncio
+import struct
+import logging
+import time
+from collections import defaultdict, deque
+from dataclasses import dataclass, field
+from typing import Optional
+import hvac  # HashiCorp Vault client
+
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s %(levelname)s [%(name)s] %(message)s'
+)
+log = logging.getLogger('modbus-proxy')
+
+# ── Configuration (loaded from Vault at startup) ─────────────────────────────
+
+@dataclass
+class RegisterLimit:
+    min_val: int
+    max_val: int
+    description: str
+
+@dataclass
+class ProxyConfig:
+    plc_host: str
+    plc_port: int = 502
+    listen_port: int = 5020  # proxy listens on 5020; PLC on 502
+    authorized_writers: set = field(default_factory=set)
+    # register_limits maps register_address -> RegisterLimit
+    register_limits: dict = field(default_factory=dict)
+    # max writes per source IP per 60-second window
+    rate_limit_writes_per_minute: int = 30
+
+def load_config_from_vault() -> ProxyConfig:
+    """Load guardrail configuration from Vault — not from local files."""
+    client = hvac.Client(url='https://vault.it.internal:8200')
+    # Authenticate using AppRole
+    with open('/etc/modbus-proxy/role-id') as f:
+        role_id = f.read().strip()
+    with open('/etc/modbus-proxy/secret-id') as f:
+        secret_id = f.read().strip()
+    client.auth.approle.login(role_id=role_id, secret_id=secret_id)
+
+    data = client.secrets.kv.v2.read_secret_version(
+        path='ot/plc-a/guardrail-config'
+    )['data']['data']
+
+    limits = {}
+    for reg_str, limit_data in data.get('register_limits', {}).items():
+        limits[int(reg_str)] = RegisterLimit(**limit_data)
+
+    return ProxyConfig(
+        plc_host=data['plc_host'],
+        authorized_writers=set(data['authorized_writers']),
+        register_limits=limits,
+        rate_limit_writes_per_minute=data.get('rate_limit_writes_per_minute', 30),
+    )
+
+# ── Modbus PDU parsing ────────────────────────────────────────────────────────
+
+WRITE_FUNCTION_CODES = {5, 6, 15, 16, 22, 23}
+
+def parse_modbus_pdu(data: bytes) -> Optional[dict]:
+    """Parse a Modbus TCP Application Data Unit (MBAP header + PDU)."""
+    if len(data) < 8:
+        return None
+    transaction_id, protocol_id, length, unit_id = struct.unpack('>HHHB', data[:7])
+    function_code = data[7]
+    payload = data[8:]
+    return {
+        'transaction_id': transaction_id,
+        'unit_id': unit_id,
+        'function_code': function_code,
+        'payload': payload,
+        'raw': data,
+    }
+
+def build_exception_response(pdu: dict, exception_code: int = 0x04) -> bytes:
+    """Build a Modbus exception response (function code | 0x80, exception code)."""
+    error_fc = pdu['function_code'] | 0x80
+    response_pdu = bytes([error_fc, exception_code])
+    mbap = struct.pack('>HHHB', pdu['transaction_id'], 0, len(response_pdu) + 1, pdu['unit_id'])
+    return mbap + response_pdu
+
+# ── Validation logic ──────────────────────────────────────────────────────────
+
+class CommandValidator:
+    def __init__(self, config: ProxyConfig):
+        self.config = config
+        # Rate limiting: track write timestamps per source IP
+        self._write_timestamps: dict[str, deque] = defaultdict(lambda: deque())
+
+    def validate(self, pdu: dict, source_ip: str) -> tuple[bool, str]:
+        """
+        Returns (is_valid, reason).
+        reason is empty string if valid.
+        """
+        fc = pdu['function_code']
+        payload = pdu['payload']
+
+        # 1. Source authorization check
+        if fc in WRITE_FUNCTION_CODES:
+            if source_ip not in self.config.authorized_writers:
+                return False, f"Unauthorized writer: {source_ip} not in whitelist"
+
+        # 2. Rate limit check (writes only)
+        if fc in WRITE_FUNCTION_CODES:
+            now = time.monotonic()
+            window_start = now - 60.0
+            ts_deque = self._write_timestamps[source_ip]
+            # Remove timestamps outside the window
+            while ts_deque and ts_deque[0] < window_start:
+                ts_deque.popleft()
+            if len(ts_deque) >= self.config.rate_limit_writes_per_minute:
+                return False, (
+                    f"Rate limit exceeded: {source_ip} sent "
+                    f"{len(ts_deque)} writes in the last 60s "
+                    f"(limit: {self.config.rate_limit_writes_per_minute})"
+                )
+            ts_deque.append(now)
+
+        # 3. Value range check for Write Single Register (FC 6)
+        if fc == 6 and len(payload) >= 4:
+            register_address = struct.unpack('>H', payload[0:2])[0]
+            value = struct.unpack('>H', payload[2:4])[0]
+            if register_address in self.config.register_limits:
+                limit = self.config.register_limits[register_address]
+                if not (limit.min_val <= value <= limit.max_val):
+                    return False, (
+                        f"OUT-OF-RANGE: register {register_address} "
+                        f"value={value}, safe=[{limit.min_val},{limit.max_val}] "
+                        f"({limit.description})"
+                    )
+
+        # 4. Value range check for Write Multiple Registers (FC 16)
+        if fc == 16 and len(payload) >= 5:
+            start_register = struct.unpack('>H', payload[0:2])[0]
+            num_registers = struct.unpack('>H', payload[2:4])[0]
+            byte_count = payload[4]
+            register_values = payload[5:5 + byte_count]
+            for i in range(num_registers):
+                reg_addr = start_register + i
+                if reg_addr in self.config.register_limits and i * 2 + 1 < len(register_values):
+                    value = struct.unpack('>H', register_values[i*2:i*2+2])[0]
+                    limit = self.config.register_limits[reg_addr]
+                    if not (limit.min_val <= value <= limit.max_val):
+                        return False, (
+                            f"OUT-OF-RANGE in FC16: register {reg_addr} "
+                            f"value={value}, safe=[{limit.min_val},{limit.max_val}] "
+                            f"({limit.description})"
+                        )
+
+        return True, ""
+
+# ── Proxy connection handler ──────────────────────────────────────────────────
+
+class ModbusProxyHandler:
+    def __init__(self, config: ProxyConfig, validator: CommandValidator):
+        self.config = config
+        self.validator = validator
+
+    async def handle_client(self, reader: asyncio.StreamReader,
+                             writer: asyncio.StreamWriter):
+        source_ip = writer.get_extra_info('peername')[0]
+        plc_reader = plc_writer = None
+
+        try:
+            # Connect to the real PLC
+            plc_reader, plc_writer = await asyncio.open_connection(
+                self.config.plc_host, self.config.plc_port
+            )
+
+            while True:
+                # Read Modbus MBAP header (7 bytes) to determine message length
+                header = await asyncio.wait_for(reader.readexactly(7), timeout=30.0)
+                length = struct.unpack('>H', header[4:6])[0]
+                body = await asyncio.wait_for(reader.readexactly(length), timeout=5.0)
+                data = header + body
+
+                pdu = parse_modbus_pdu(data)
+                if pdu is None:
+                    log.warning("Malformed Modbus PDU from %s — dropping", source_ip)
+                    break
+
+                is_valid, reason = self.validator.validate(pdu, source_ip)
+
+                if not is_valid:
+                    log.warning(
+                        "BLOCKED: src=%s fc=%d reason=%s",
+                        source_ip, pdu['function_code'], reason
+                    )
+                    # Send exception response to client; do NOT forward to PLC
+                    writer.write(build_exception_response(pdu))
+                    await writer.drain()
+                    continue
+
+                # Forward to PLC
+                plc_writer.write(data)
+                await plc_writer.drain()
+
+                # Forward PLC response to client
+                resp_header = await asyncio.wait_for(plc_reader.readexactly(7), timeout=5.0)
+                resp_length = struct.unpack('>H', resp_header[4:6])[0]
+                resp_body = await asyncio.wait_for(plc_reader.readexactly(resp_length), timeout=5.0)
+                writer.write(resp_header + resp_body)
+                await writer.drain()
+
+        except (asyncio.TimeoutError, asyncio.IncompleteReadError, ConnectionResetError):
+            pass
+        except Exception as e:
+            log.error("Proxy error for %s: %s", source_ip, e)
+        finally:
+            writer.close()
+            if plc_writer:
+                plc_writer.close()
+
+async def main():
+    config = load_config_from_vault()
+    validator = CommandValidator(config)
+    handler = ModbusProxyHandler(config, validator)
+
+    server = await asyncio.start_server(
+        handler.handle_client,
+        '0.0.0.0',
+        config.listen_port
+    )
+    log.info("Modbus proxy listening on port %d → PLC %s:%d",
+             config.listen_port, config.plc_host, config.plc_port)
+
+    async with server:
+        await server.serve_forever()
+
+if __name__ == '__main__':
+    asyncio.run(main())
+```
+
+---
+
+## Vault Configuration for the Proxy
+
+Store the proxy configuration in Vault so it cannot be modified without audit trail:
+
+```bash
+vault kv put ot/plc-a/guardrail-config \
+  plc_host="10.100.0.50" \
+  plc_port=502 \
+  listen_port=5020 \
+  authorized_writers='["10.100.0.25", "10.100.0.20"]' \
+  rate_limit_writes_per_minute=30 \
+  register_limits='{
+    "0": {"min_val": 0, "max_val": 1800, "description": "Motor speed setpoint (RPM)"},
+    "1": {"min_val": 0, "max_val": 500, "description": "Torque limit (Nm)"}
+  }'
+```
+
+---
+
+<CodeLab title="Integration Test: End-to-End Validation">
+
+```python
+#!/usr/bin/env python3
+# test_guardrail.py — validates all guardrail functions
+import pytest
+from pymodbus.client import ModbusTcpClient
+
+PROXY_HOST = "127.0.0.1"
+PROXY_PORT = 5020
+
+def get_client():
+    c = ModbusTcpClient(PROXY_HOST, port=PROXY_PORT)
+    c.connect()
+    return c
+
+def test_valid_write_within_range():
+    """Valid setpoint within safe range should be forwarded."""
+    c = get_client()
+    result = c.write_register(0, 900)  # 900 RPM, within [0, 1800]
+    assert not result.isError(), "Valid write should succeed"
+    c.close()
+
+def test_out_of_range_write_blocked():
+    """Setpoint exceeding max should return Modbus exception."""
+    c = get_client()
+    result = c.write_register(0, 0xFFFF)  # 65535 RPM, exceeds 1800
+    assert result.isError(), "Out-of-range write must be blocked"
+    c.close()
+
+def test_rate_limit():
+    """Exceeding 30 writes/minute should trigger rate limiting."""
+    c = get_client()
+    results = [c.write_register(0, 100) for _ in range(35)]
+    blocked = [r for r in results if r.isError()]
+    assert len(blocked) >= 5, "At least 5 writes should be blocked by rate limit"
+    c.close()
+```
+
+```bash
+# Run tests against the live proxy
+pip install pytest pymodbus
+pytest test_guardrail.py -v
+```
+
+</CodeLab>
+
+---
+
+<Pitfall title="The Proxy Is Now a Single Point of Failure">
+
+By making all PLC communication route through the proxy, you've created a single point of failure for control traffic. A proxy crash, memory exhaustion, or network partition between the proxy and the PLC stops all SCADA communication.
+
+Mitigate with:
+1. **Process supervisor**: run the proxy under `systemd` with `Restart=always` and `RestartSec=1s` — a crash restarts in under a second
+2. **Health monitoring**: a separate watchdog process checks that the proxy accepts connections every 10 seconds; pages on-call if it doesn't
+3. **Hardware bypass relay** (for SL 3+): a hardware relay controlled by the watchdog can physically bypass the proxy and connect SCADA directly to the PLC during an emergency — with an automatic alert that the safety layer is offline
+
+Document the bypass procedure and ensure it requires two-person authorization.
+
+</Pitfall>
+
+---
+
+<Quiz question="The proxy receives a Write Multiple Registers (FC 16) command covering registers 0–3. Register 0 (speed setpoint) has a value of 900 RPM (valid). Register 1 (torque limit) has a value of 600 Nm (exceeds the 500 Nm limit). What should the proxy do, and why?">
+
+<div>
+
+The proxy should **block the entire FC 16 command** and return a Modbus exception response to the client. It should not partially forward the command (registers 0–0 only) — Modbus provides no mechanism for partial writes, and the PLC would reject a malformed FC 16 PDU anyway.
+
+The reason to block the whole command rather than try to "fix" it:
+1. **Proxy integrity**: a proxy that modifies commands introduces new behavior that wasn't engineered or tested in the control system design. If the SCADA server sent 600 Nm for a reason (even a buggy one), silently changing it to 500 Nm could mask a SCADA configuration error that needs investigation.
+2. **Auditability**: the client should receive clear feedback that its command was rejected (the Modbus exception), log it, and alert the operator. The operator can then decide whether to retry with a corrected value or escalate.
+3. **Defense against split-write attacks**: an attacker might craft an FC 16 command where some register values are valid (to bypass naive per-register checks) while others are malicious. Blocking the whole command on any invalid value prevents this.
+
+The proxy's job is to enforce policy, not to fix commands. Rejection with a clear error code is the correct behavior.
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+The inline guardrail is built and tested — it validates every Modbus command before it reaches the PLC.
+
+In **Lesson 3**, we extend this into a full circuit-breaker pattern: automatic response to sustained attack patterns, including cutting the SCADA-to-PLC circuit entirely when a coordinated attack is detected.

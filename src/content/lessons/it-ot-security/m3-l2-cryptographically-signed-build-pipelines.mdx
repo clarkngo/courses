@@ -1,0 +1,280 @@
+---
+title: "Cryptographically Signed Build Pipelines"
+description: "Implement end-to-end supply chain integrity for software and firmware destined for the OT environment using Sigstore/cosign, Vault PKI, and SLSA provenance attestation."
+module: 3
+moduleTitle: "IT Tier Security — Vault, Pipelines, and ACLs"
+lesson: 2
+duration: "55 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Why Build Pipeline Integrity Matters in OT
+
+A PLC firmware update, a SCADA configuration change, or a historian database migration script: each of these is software destined for an OT system with potential physical consequences if tampered with. The supply chain attack vector — compromising the software before it reaches its target — is underappreciated in OT security.
+
+The SolarWinds attack (2020) demonstrated that signing the artifact at the *end* of a pipeline is insufficient if the build environment itself is compromised. The attacker inserted malicious code into the build system and the resulting artifact was legitimately signed.
+
+A **hardened build pipeline** signs at multiple points and records **provenance** — the full chain of evidence from source commit to deployed artifact. If any link in the chain is broken, the deployment is rejected before the artifact reaches the OT environment.
+
+---
+
+## The SLSA Framework
+
+**SLSA (Supply chain Levels for Software Artifacts)** defines four progressive levels of build integrity:
+
+| SLSA Level | What It Proves |
+|---|---|
+| **L1** | Artifact has a provenance document (how it was built) |
+| **L2** | Provenance is signed by a hosted build service (not the developer's laptop) |
+| **L3** | Build environment is hardened; provenance cannot be forged by the build service |
+| **L4** | Two-party review of all changes; hermetic, reproducible builds |
+
+For OT software (firmware, SCADA configs, historian migration scripts), target SLSA L2 as a minimum. SLSA L3 for anything that touches safety systems.
+
+---
+
+## The Signing Toolchain
+
+| Tool | Role |
+|---|---|
+| **Sigstore / cosign** | Signs and verifies container images and arbitrary files using ephemeral keys tied to OIDC identity |
+| **in-toto** | Records and verifies the provenance chain (each pipeline step's inputs and outputs) |
+| **Vault PKI** | Issues short-lived code-signing certificates to the CI/CD runner |
+| **SLSA GitHub Generator** | Produces SLSA L3 provenance for GitHub Actions workflows |
+
+---
+
+## Step 1: Vault PKI for Code Signing
+
+Instead of a long-lived code-signing certificate stored in CI environment variables, the pipeline runner requests a short-lived certificate from Vault at build time:
+
+```bash
+# Enable the PKI secrets engine (already done in Lesson 1)
+# Create an intermediate CA for code signing (never use the root CA for issuance)
+vault secrets enable -path=pki_code_signing pki
+vault secrets tune -max-lease-ttl=8760h pki_code_signing
+
+# Generate an intermediate CA CSR
+vault write -format=json pki_code_signing/intermediate/generate/internal \
+  common_name="IT/OT Build Pipeline Intermediate CA" \
+  | jq -r '.data.csr' > /tmp/build-pipeline-intermediate.csr
+
+# Sign with root CA (in Vault) and import the signed cert
+vault write -format=json pki/root/sign-intermediate \
+  csr=@/tmp/build-pipeline-intermediate.csr \
+  format=pem_bundle \
+  ttl=43800h \
+  | jq -r '.data.certificate' > /tmp/build-pipeline-intermediate.pem
+vault write pki_code_signing/intermediate/set-signed certificate=@/tmp/build-pipeline-intermediate.pem
+
+# Create a role for the CI/CD runner
+vault write pki_code_signing/roles/pipeline-runner \
+  allow_any_name=false \
+  allowed_domains="pipeline.it.internal" \
+  max_ttl="15m" \  # certificate expires after 15 minutes — one per build
+  key_usage="DigitalSignature" \
+  ext_key_usage="CodeSigning"
+```
+
+---
+
+## Step 2: Pipeline Configuration (GitHub Actions)
+
+This workflow runs on every pull request to `main`. It builds a container image, signs it with Vault-issued credentials, and attaches SLSA provenance. The OT DMZ gateway refuses to pull any image without a valid signature chain.
+
+```yaml
+# .github/workflows/build-sign.yml
+name: Build, Sign, and Attest
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  id-token: write  # required for OIDC → Vault auth
+
+jobs:
+  build-and-sign:
+    runs-on: ubuntu-latest
+    env:
+      IMAGE: registry.it.internal/ot-historian-sync:${{ github.sha }}
+      VAULT_ADDR: https://vault.it.internal:8200
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Authenticate to Vault via OIDC
+        uses: hashicorp/vault-action@v3
+        with:
+          url: ${{ env.VAULT_ADDR }}
+          method: jwt
+          role: pipeline-runner
+          secrets: |
+            pki_code_signing/issue/pipeline-runner common_name="pipeline.it.internal" | SIGNING_CERT ;
+            pki_code_signing/issue/pipeline-runner common_name="pipeline.it.internal" | SIGNING_KEY
+
+      - name: Build container image
+        run: docker build -t $IMAGE .
+
+      - name: Push image
+        run: docker push $IMAGE
+
+      - name: Sign image with cosign + Vault cert
+        run: |
+          # Write short-lived cert to disk for cosign
+          echo "$SIGNING_CERT" > /tmp/signing.crt
+          echo "$SIGNING_KEY" > /tmp/signing.key
+
+          cosign sign \
+            --key /tmp/signing.key \
+            --certificate /tmp/signing.crt \
+            --certificate-chain <(vault read -field=issuing_ca pki_code_signing/cert/ca) \
+            $IMAGE
+
+          # Cert is valid for 15 minutes — shred after use
+          shred -u /tmp/signing.key /tmp/signing.crt
+
+      - name: Generate SLSA provenance
+        uses: slsa-framework/slsa-github-generator/.github/workflows/generator_container_slsa3.yml@v1
+        with:
+          image: ${{ env.IMAGE }}
+          digest: ${{ steps.build.outputs.digest }}
+```
+
+---
+
+## Step 3: Verification at the OT DMZ
+
+Before any container image is pulled into the OT DMZ or beyond, the OT gateway verifies the signature chain. Configure a **cosign policy** that only allows images signed by the Vault intermediate CA:
+
+```bash
+# Create verification policy
+cat > /etc/cosign/policy.yaml <<EOF
+apiVersion: policy.sigstore.dev/v1alpha1
+kind: ClusterImagePolicy
+metadata:
+  name: ot-pipeline-policy
+spec:
+  images:
+    - glob: "registry.it.internal/**"
+  authorities:
+    - name: vault-pipeline-ca
+      key:
+        hashAlgorithm: sha256
+        data: |
+          $(vault read -field=certificate pki_code_signing/cert/ca | base64 -w0)
+EOF
+
+# Verify an image before pulling to the DMZ
+cosign verify \
+  --policy /etc/cosign/policy.yaml \
+  registry.it.internal/ot-historian-sync:abc1234
+
+# Expected output on success:
+# Verification for registry.it.internal/ot-historian-sync:abc1234 --
+# The following checks were performed on each of these signatures:
+#   - The cosign claims were validated
+#   - The signatures were verified against the specified public key
+```
+
+Integrate this verification into the OT DMZ's container runtime via an admission controller — no unverified image can be instantiated, regardless of who requests it.
+
+<CodeLab title="Verify a Firmware File (Non-Container)">
+
+For firmware files or SCADA configuration archives destined for OT devices (which don't run containers), use cosign's blob signing:
+
+```bash
+# Sign a PLC firmware update file during the build pipeline
+cosign sign-blob \
+  --key /tmp/signing.key \
+  --certificate /tmp/signing.crt \
+  plc-firmware-v2.3.1.bin \
+  --bundle firmware-v2.3.1.bundle
+
+# The .bundle file contains the signature, certificate, and transparency log entry
+# Ship the .bundle alongside the firmware file
+
+# Verify before flashing to the PLC
+cosign verify-blob \
+  --bundle firmware-v2.3.1.bundle \
+  --certificate-chain vault-intermediate-ca.pem \
+  plc-firmware-v2.3.1.bin
+
+echo "Exit code $? — 0 means verified, non-zero means reject"
+```
+
+The verification step should be part of the maintenance procedure documented for every firmware update. An unverified firmware file should never be loaded onto a PLC, regardless of who provided it.
+
+</CodeLab>
+
+---
+
+## in-toto Provenance: Linking the Chain
+
+**in-toto** records the full provenance chain from source to deployment. Each pipeline step signs a **link metadata** file describing its inputs (materials) and outputs (products):
+
+```python
+# simplified in-toto step: compilation
+from in_toto.models.link import Link
+from in_toto.models.metadata import Metablock
+
+link = Link.from_functionary_link_dict({
+    "name": "compile-historian-sync",
+    "materials": {
+        "src/historian_sync.py": {"sha256": "<hash>"}
+    },
+    "products": {
+        "dist/historian_sync": {"sha256": "<hash>"}
+    },
+    "byproducts": {},
+    "command": ["python", "-m", "build"],
+    "environment": {}
+})
+metadata = Metablock(signed=link)
+metadata.sign(pipeline_signing_key)
+metadata.dump("compile-historian-sync.<keyid>.link")
+```
+
+At deployment time, in-toto verifies that the artifact's full provenance chain — from the exact source commit through compilation, testing, and container packaging — is signed and unbroken. A tampered intermediate artifact breaks the chain at the tampered step.
+
+---
+
+<Pitfall title="Signed Doesn't Mean Safe">
+
+A signed artifact proves that the artifact came from your build pipeline and hasn't been tampered with *after* signing. It does not prove that the *source code* is safe. A developer who commits malicious code produces a validly signed artifact.
+
+Address the source code layer with:
+- **Mandatory code review**: no commit reaches `main` without at least one reviewer who is not the author
+- **CODEOWNERS**: for files that touch OT-critical logic (historian sync, PLC communication), require review by the OT security team specifically
+- **Static analysis**: run security-focused linters (Bandit for Python, Semgrep for multi-language) in the pipeline before the signing step
+
+</Pitfall>
+
+---
+
+<Quiz question="A SLSA L2 pipeline signs artifacts from a hosted CI runner. An attacker compromises the CI runner itself and modifies the build script to inject a backdoor before the signing step. The resulting artifact is signed with valid credentials. How does SLSA L3 address this?">
+
+<div>
+
+At SLSA L3, the **build environment is hardened and isolated from developer influence**. Specifically:
+
+1. The build definition (`.github/workflows/build.yml`) is not modifiable by the person triggering the build — it runs in a hermetically isolated environment controlled by the CI provider.
+2. The provenance is generated by the **CI platform itself** (not the build script), using an OIDC token that proves the provenance came from the platform, not from user-controlled steps.
+3. Because the build environment is read-only to the developer, injecting code into the build script itself requires compromising the CI platform, not just a developer's account.
+
+This is why the SLSA GitHub Generator uses a reusable workflow at a pinned hash — the platform generates the provenance after the build step, in a separate job the build script cannot influence. An attacker who compromises the build job still cannot forge the provenance that the platform generates in the verification job.
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+Build artifacts are now cryptographically signed and carry SLSA provenance. Only verified artifacts can cross into the OT DMZ.
+
+In **Lesson 3**, we complete the IT tier by designing the API security layer and strict least-privilege ACLs for services crossing the IT/OT boundary.

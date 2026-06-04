@@ -1,0 +1,337 @@
+---
+title: "Audit, Documentation, and Certification Path"
+description: "Build the complete ISA/IEC 62443 audit evidence package — from network diagrams to policy documents — and understand the certification pathway for sites and products."
+module: 6
+moduleTitle: "ISA/IEC 62443 Compliance and Governance"
+lesson: 3
+duration: "50 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## What an Auditor Reviews
+
+An ISA/IEC 62443 assessment (whether internal or conducted by a certified third-party assessor) reviews four categories of evidence:
+
+1. **Documentation** — policies, procedures, network diagrams, risk registers
+2. **Configuration evidence** — system configs, firewall rules, Vault policies, WireGuard peer lists
+3. **Testing evidence** — test results, penetration test reports, Zeek/Suricata validation outputs
+4. **Process evidence** — change tickets, access review records, incident response records, training logs
+
+Gaps in any category result in findings. This lesson builds a complete evidence package for the architecture developed throughout the course.
+
+---
+
+## Documentation Package
+
+### 1. System Description
+
+A written description of the industrial control system, its business purpose, and its overall architecture. This is the first thing an auditor reads.
+
+```markdown
+# System Description: Water Treatment Plant Control System
+
+## System Purpose
+The control system manages the intake, treatment, and distribution processes
+for a municipal water treatment facility serving 85,000 customers.
+
+## System Scope
+- IT Enterprise Zone: Corporate network, SCADA server farm, historian replica
+- OT DMZ: WireGuard gateways, Zeek sensor, jump server
+- OT Network: 12 PLCs controlling pump stations, chemical dosing, and filtration
+- Physical Process: Intake pumps, chemical injection systems, filtration beds,
+  distribution pressure control
+
+## SL Target by Zone
+- IT Enterprise: SL 2
+- OT DMZ: SL 2
+- OT Network (general): SL 2
+- Chemical Dosing System (sub-zone): SL 3 (safety consequence)
+```
+
+### 2. Network Diagram (Required by 62443-3-2)
+
+The network diagram must show:
+- All zones with their boundaries clearly marked
+- All conduits between zones
+- All assets within each zone (IP addresses for production systems)
+- Security controls on each conduit (firewall, WireGuard, DPI)
+
+Version-control this diagram — auditors will ask when it was last updated and whether it reflects the current state. A diagram that's 18 months old when the network changed 6 months ago is a finding.
+
+### 3. Risk Register (62443-3-2 Annex A)
+
+The risk register from Module 1, updated with residual risk after controls are applied. Every row must have:
+- Threat scenario with threat actor and initial likelihood
+- Consequence (scored)
+- Controls applied
+- Residual risk after controls
+- Acceptance statement and approver
+
+### 4. Zone and Conduit Security Plan
+
+One document per zone:
+
+```markdown
+# Zone Security Plan: Field Control Zone
+
+## Zone Identifier: Z-03
+## Zone Owner: OT Engineering Lead — R. Patel
+## Security Level Target: SL 2
+## Security Level Achieved: SL 1 (native) / SL 2 (with approved compensating controls)
+## Last Review: 2026-06-01
+
+## Zone Assets
+| Asset | IP | Function | Firmware Version |
+|---|---|---|---|
+| PLC-A (Pump Control) | 10.100.0.50 | Motor speed and torque control | v2.3.1 |
+| PLC-B (Valve Control) | 10.100.0.51 | Process valve actuation | v1.9.4 |
+
+## Conduits Entering This Zone
+| Conduit | Source Zone | Protocol | Control | Owner |
+|---|---|---|---|---|
+| C-03-a | OT DMZ | Modbus TCP | Inline proxy + nftables | OT Security |
+| C-03-b | OT DMZ | EtherNet/IP | nftables allowlist | OT Security |
+
+## Compensating Controls
+See compensating-controls.yaml CC-001 (legacy PLC authentication)
+
+## Open Gaps
+- GAP-001: UPS not installed (Priority 1, Target Q3 2026)
+```
+
+---
+
+## Configuration Evidence
+
+For each control, capture the current configuration in a reproducible format. Store these in a version-controlled repository with access restricted to the security team:
+
+```bash
+# Capture current nftables rules
+sudo nft list ruleset > evidence/nftables-$(date +%Y%m%d).conf
+git add evidence/nftables-$(date +%Y%m%d).conf
+git commit -m "Evidence capture: nftables ruleset $(date +%Y-%m-%d)"
+
+# Capture WireGuard peer list (public keys only — never private keys)
+sudo wg show wg0 | grep "^peer:" > evidence/wg-peers-$(date +%Y%m%d).txt
+
+# Capture Vault policy list and policy contents
+vault policies list > evidence/vault-policies-list-$(date +%Y%m%d).txt
+for policy in $(vault policies list | grep -v default | grep -v root); do
+  vault policy read "$policy" > "evidence/vault-policy-${policy}-$(date +%Y%m%d).hcl"
+done
+git add evidence/
+git commit -m "Evidence capture: Vault policies $(date +%Y-%m-%d)"
+```
+
+---
+
+## Testing Evidence
+
+### Penetration Test Summary
+
+For SL 2, a vulnerability assessment is typically sufficient. For SL 3, a penetration test by a qualified OT security firm (with scope limited to the test environment — never test against live OT systems) is required. The test report must be retained and findings tracked to remediation.
+
+### Control Validation Tests
+
+Each control should have documented test results:
+
+```markdown
+# Control Test Results: Modbus Proxy Authorization
+
+**Test Date**: 2026-06-01
+**Tester**: Security Team (J. Kim)
+**Environment**: Lab (OT simulator, not production PLCs)
+
+## Test 1: Unauthorized Source Blocked
+- **Procedure**: Sent FC 06 write from unauthorized IP 192.168.1.99
+- **Expected**: Modbus exception response; no command forwarded to PLC
+- **Result**: PASS — Exception code 0x04 returned; PLC register unchanged
+- **Evidence**: /evidence/test-logs/proxy-test-2026-06-01.log line 47
+
+## Test 2: Out-of-Range Value Blocked
+- **Procedure**: Sent FC 06 write, register 0 (speed setpoint), value 0xFFFF (65535 RPM)
+- **Expected**: Blocked; Modbus exception returned
+- **Result**: PASS — Exception returned; Zeek logged OUT-OF-RANGE notice
+- **Evidence**: /evidence/test-logs/proxy-test-2026-06-01.log line 112
+
+## Test 3: Circuit Breaker Trips
+- **Procedure**: Sent 6 blocked writes within 30 seconds
+- **Expected**: Circuit opens; subsequent writes return Server Busy (0x06)
+- **Result**: PASS — Circuit opened after 5th failure; reads continued normally
+- **Evidence**: /evidence/test-logs/proxy-test-2026-06-01.log line 203
+
+## Test 4: Valid Write Forwarded
+- **Procedure**: Sent FC 06 write from authorized IP, value 900 (within range)
+- **Expected**: Command forwarded; PLC register updated
+- **Result**: PASS — PLC register 0 confirmed at 900 after write
+- **Evidence**: /evidence/test-logs/proxy-test-2026-06-01.log line 278
+```
+
+---
+
+## Process Evidence
+
+Process evidence demonstrates that security is maintained operationally, not just at a point in time.
+
+### Access Review Record
+
+```markdown
+# Quarterly Access Review — Q2 2026
+
+**Date**: 2026-06-01
+**Reviewer**: OT Security Lead — S. Chen
+**Scope**: All WireGuard peers, jump server accounts, Vault AppRoles
+
+## WireGuard Peer Review
+- Active peers reviewed: 4
+- All peers matched authorized peer registry: YES
+- Peers revoked: 1 (vendor maintenance completed 2026-04-15 — key already expired)
+- Action required: None
+
+## Jump Server Account Review
+- Active accounts: 6 (ot-eng-01 through ot-eng-06)
+- All accounts verified against current employee list: YES
+- Departed employees with active accounts: 0
+- Accounts disabled this review: 0
+
+## Vault AppRole Review
+- Active AppRoles: 4 (historian-sync, pipeline-runner, modbus-proxy, siem-reader)
+- All roles matched authorized service inventory: YES
+- Secret IDs expiry verified: All within 24h TTL
+
+**Review Signed**: S. Chen, OT Security Lead, 2026-06-01
+**Next Review**: 2026-09-01
+```
+
+<CodeLab title="Generate Monthly Evidence Snapshot">
+
+Automate the evidence capture process to ensure it doesn't get skipped:
+
+```bash
+#!/usr/bin/env bash
+# /usr/local/bin/monthly-evidence-capture.sh
+# Run on the 1st of each month via cron
+
+DATE=$(date +%Y%m%d)
+EVIDENCE_DIR="/opt/compliance/evidence/${DATE}"
+mkdir -p "${EVIDENCE_DIR}"
+
+# Network controls
+sudo nft list ruleset > "${EVIDENCE_DIR}/nftables.conf"
+sudo wg show wg0 > "${EVIDENCE_DIR}/wireguard-status.txt"
+
+# Vault state
+vault policies list > "${EVIDENCE_DIR}/vault-policies.txt"
+vault secrets list > "${EVIDENCE_DIR}/vault-engines.txt"
+vault audit list > "${EVIDENCE_DIR}/vault-audit-devices.txt"
+
+# Zeek configuration
+cp /opt/zeek/share/zeek/site/local.zeek "${EVIDENCE_DIR}/zeek-local.zeek"
+ls /opt/zeek/share/zeek/site/*.zeek > "${EVIDENCE_DIR}/zeek-scripts-loaded.txt"
+
+# Suricata rules
+cp /etc/suricata/rules/ot-protection.rules "${EVIDENCE_DIR}/suricata-ot-rules.rules"
+
+# Commit to evidence repository
+cd /opt/compliance
+git add evidence/
+git commit -m "Monthly evidence snapshot ${DATE}" \
+           --trailer "Captured-By: monthly-evidence-capture.sh"
+
+logger -t compliance "Monthly evidence snapshot captured: ${EVIDENCE_DIR}"
+```
+
+```bash
+# Schedule for 1st of each month at 03:00
+echo "0 3 1 * * root /usr/local/bin/monthly-evidence-capture.sh" > /etc/cron.d/compliance-evidence
+```
+
+</CodeLab>
+
+---
+
+## The Certification Path
+
+If your organization requires a formal ISA/IEC 62443 certification (e.g., for a regulated utility or a product going to market):
+
+**For asset owners (site certification)**:
+1. Internal assessment against 62443-3-2 and 62443-3-3
+2. Gap remediation
+3. Third-party assessment by an ISASecure-certified assessor
+4. ISASecure CSMS (Cybersecurity Management System) certification — covers policies, procedures, and management system (62443-2-1)
+5. Optional: SDA (System Development Assessment) for the specific control system
+
+**For product suppliers (device certification)**:
+1. 62443-4-1 SDL (Secure Development Lifecycle) audit — evaluates how the product was built
+2. 62443-4-2 component assessment — tests the device's capabilities against SL requirements
+3. ISASecure SDLA (SDL Assessment) or ICSA Labs certification
+
+**Timeline estimates**:
+- Internal assessment for a mid-size facility: 3–6 months
+- Third-party assessment preparation and audit: 2–4 months
+- Remediation and re-assessment: 3–12 months (depends on gap size)
+- Total to certification: 12–24 months for a site starting from minimal controls
+
+---
+
+<Pitfall title="Evidence Must Be Contemporaneous">
+
+An auditor will check document dates. Evidence captured *after* an audit is scheduled does not prove the control was operating *before* the audit. The only way to prove continuous control operation is evidence captured continuously — which is why the monthly snapshot cron job matters.
+
+A finding of "controls in place but evidence not contemporaneous" is treated similarly to a finding of "controls not in place" — because you cannot distinguish between "the control was always there and we forgot to document it" and "we added the control after we knew the audit was coming."
+
+Automate evidence capture from day one, not from the week before the audit.
+
+</Pitfall>
+
+---
+
+## Course Complete: What You've Built
+
+Over six modules, you've assembled a complete IT/OT security architecture:
+
+| Module | What Was Built | Standard Alignment |
+|---|---|---|
+| M1 | Risk register, zone/conduit design, threat scenarios | 62443-3-2 |
+| M2 | WireGuard tunnels, nftables ACLs, jump server with MFA | 62443-3-3 FR 1, FR 2, FR 4, FR 5 |
+| M3 | Vault secrets management, signed build pipeline, API security | 62443-3-3 FR 1, FR 3, FR 4 |
+| M4 | Zeek behavioral baselining, Suricata inline IDS for OT protocols | 62443-3-3 FR 6 |
+| M5 | Modbus proxy with circuit breaker, attack case studies | 62443-3-3 FR 2, FR 6, FR 7 |
+| M6 | Compliance traceability matrix, audit evidence, gap remediation roadmap | 62443-3-3 full |
+
+---
+
+<Quiz question="An auditor asks for evidence that the Zeek behavioral baseline was updated when a new engineering workstation was added to the OT network three months ago. You have the Zeek script in Git with the new IP added, but the commit timestamp shows it was committed two weeks after the new workstation was connected. How does this affect your compliance finding?">
+
+<div>
+
+This is a **compliance finding** — specifically a gap in the change management process (SR 7.6 Configuration Management).
+
+The finding: a new asset was connected to the OT network without a contemporaneous update to the security controls (Zeek whitelist). For the two-week period between connection and script update, the new workstation's Modbus writes would have generated alerts (if the whitelist treated new IPs as unauthorized) or were not detected (if the policy was permissive-by-default).
+
+Evidence of the two-week gap:
+- The commit timestamp in Git
+- Possibly Zeek `notice.log` showing either alerts for the new IP during that period, or no alerts (indicating the policy failed to detect activity from the new host)
+
+Remediation:
+1. Implement a formal change management process that includes security control updates as a mandatory step in the new-asset onboarding procedure
+2. Automate where possible: an asset inventory tool that detects new OT network devices and opens a ticket for security review would have caught this
+3. Retroactively document that the two-week gap was identified and that no malicious activity occurred during that period (check historical Zeek logs)
+
+The auditor will likely accept the finding and a documented remediation plan. What they won't accept is dismissing the finding because "nothing bad happened."
+
+</div>
+</Quiz>
+
+---
+
+## Congratulations
+
+You've completed IT/OT Security: The Zero-Trust Defense.
+
+From the conceptual IT/OT divide through hands-on WireGuard deployment, Vault secrets management, Zeek scripting, Suricata rule writing, Python proxy development, and ISA/IEC 62443 compliance documentation — you now have both the technical skills and the standards framework to secure industrial environments against the threat landscape that defines modern OT security.
+
+The architecture you've built implements defense in depth at every layer: authenticated transport, least-privilege access, cryptographic build integrity, behavioral anomaly detection, inline command validation, and continuous compliance evidence — aligned to the international standard that regulators and auditors recognize.

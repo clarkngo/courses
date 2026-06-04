@@ -1,0 +1,212 @@
+---
+title: "Deep Packet Inspection for Industrial Protocols"
+description: "Understand the architecture of OT network monitoring with Zeek and Suricata, the industrial protocols they analyze, and how DPI fits the ISA/IEC 62443 FR 6 monitoring requirements."
+module: 4
+moduleTitle: "OT Network Monitoring — Zeek and Suricata"
+lesson: 1
+duration: "50 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Why Standard Network Monitoring Fails in OT
+
+A traditional SIEM sees IP addresses, TCP connections, and byte counts. It can detect a port scan or a brute-force login. What it cannot detect is a **valid Modbus command that sets a motor speed beyond its physical safe operating range**.
+
+To detect that, you need tooling that understands the application-layer semantics of industrial protocols — not just that a packet was sent to port 502, but that the packet's function code is a Write Single Register (FC 06), the target register is the speed setpoint, and the written value is 0xFFFF.
+
+This is **Deep Packet Inspection (DPI)** for OT: understanding the meaning of packets, not just their routing headers.
+
+---
+
+## The Two Tools
+
+**Zeek** (formerly Bro) is a passive network analysis framework. It captures and parses protocols, logs structured data to files or a SIEM, and lets you write custom analysis scripts in Zeek's scripting language. Zeek does not block traffic — it observes and records. Its strength is behavioral analysis and forensics.
+
+**Suricata** is an inline intrusion detection and prevention system (IDS/IPS). It matches traffic against rules and can take action — drop a packet, alert, or reset a connection. Its strength is real-time enforcement.
+
+In the OT architecture, they work together:
+
+```
+OT Network traffic
+        │
+   [TAP or SPAN port]
+        │
+        ├──────────────────→ [Zeek sensor]
+        │                      ├── Parses protocols
+        │                      ├── Logs to SIEM (conn.log, modbus.log, dnp3.log)
+        │                      └── Behavioral analysis (new function codes, new hosts)
+        │
+        └──────────────────→ [Suricata inline]
+                               ├── Matches rules
+                               ├── Drops packets matching attack signatures
+                               └── Alerts to SIEM on detection
+```
+
+Deploy Zeek as passive (out-of-band, connected to a network TAP or SPAN port) to preserve OT's availability requirement — a Zeek crash doesn't interrupt control traffic. Deploy Suricata **inline** only for specific high-risk paths (e.g., the IT/OT conduit) where you're willing to accept the risk of a false positive drop.
+
+---
+
+## Industrial Protocol Primer
+
+To configure effective DPI rules, you must understand the protocols you're monitoring:
+
+### Modbus TCP
+
+The most widely deployed OT protocol, developed in 1979. Designed for serial communication; adapted to TCP with a minimal wrapper. **Zero authentication. Zero encryption.**
+
+Key fields for DPI:
+- **Unit ID** (1 byte): identifies the target device on a shared bus
+- **Function Code** (1 byte): the operation type
+
+| Function Code | Operation | DPI Interest |
+|---|---|---|
+| 01 | Read Coils | Normal — read digital output states |
+| 03 | Read Holding Registers | Normal — read analog setpoints |
+| 05 | Write Single Coil | Monitor — who is writing, and to which coil? |
+| 06 | Write Single Register | High interest — setpoint modification |
+| 15 | Write Multiple Coils | High interest — bulk output change |
+| 16 | Write Multiple Registers | High interest — bulk setpoint change |
+| 43 | Read Device Identification | Reconnaissance indicator |
+
+A Modbus write to a register you've never seen written before is an anomaly worth alerting on.
+
+### EtherNet/IP (CIP)
+
+Common Industrial Protocol over Ethernet, used by Allen-Bradley/Rockwell PLCs. More complex than Modbus — supports explicit messaging (request/response) and implicit messaging (cyclic I/O).
+
+Key DPI targets:
+- **Service Code 0x4C (Read Attribute Single)**: normal reads, expected in SCADA polling
+- **Service Code 0x4D (Write Attribute Single)**: configuration writes — should only originate from engineering workstations, not SCADA servers
+- **Service Code 0x4B (Execute Service)**: arbitrary program execution — extremely high interest
+
+### DNP3
+
+Used in electric utilities and water treatment. Supports authentication (SA4 and SA5 variants), but older deployments use unauthenticated DNP3. 
+
+Key DPI target: **DNP3 application control functions** (Direct Operate) vs. **read functions**. Any Direct Operate from an unexpected source IP is a potential attack.
+
+### OPC-UA
+
+The modern, secure-by-design replacement for OPC Classic. Supports TLS and certificate authentication. Zeek can parse OPC-UA sessions; look for cleartext OPC-UA sessions (legacy configurations) and write operations from unexpected clients.
+
+---
+
+## Deployment Architecture
+
+The Zeek sensor needs a copy of all OT network traffic. Two options:
+
+**1. Network TAP (preferred for SL 3+)**
+A hardware TAP physically splits the fiber or copper and sends copies of all packets to the monitoring port. It's passive and invisible to the network — a TAP failure doesn't interrupt traffic.
+
+**2. SPAN/Mirror Port**
+Configures the switch to copy all traffic from monitored ports to a monitoring port. Cheaper but less reliable — switch CPU load can cause dropped packets in high-traffic scenarios.
+
+```
+Switch
+├── Port 1: SCADA Server (10.100.0.20)
+├── Port 2: Engineering WS (10.100.0.25)
+├── Port 3: PLC-A (10.100.0.50)
+├── Port 4: PLC-B (10.100.0.51)
+└── Port 24 (SPAN): → Zeek sensor eth1
+                     → Suricata (inline on IT/OT conduit only)
+```
+
+---
+
+## Installing Zeek with OT Protocol Support
+
+The Zeek Package Manager (zkg) provides community-maintained OT protocol parsers:
+
+```bash
+# Install Zeek (Ubuntu 22.04)
+echo 'deb http://download.opensuse.org/repositories/security:/zeek/xUbuntu_22.04/ /' | \
+  sudo tee /etc/apt/sources.list.d/zeek.list
+curl -fsSL https://download.opensuse.org/repositories/security:/zeek/xUbuntu_22.04/Release.key | \
+  sudo gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/zeek.gpg > /dev/null
+sudo apt update && sudo apt install -y zeek
+
+# Install OT protocol packages
+zkg install zeek/cybersecurity-zeek/zeek-modbus
+zkg install zeek/cybersecurity-zeek/zeek-enip  # EtherNet/IP
+zkg install zeek/cybersecurity-zeek/zeek-dnp3
+zkg install zeek/cybersecurity-zeek/zeek-opcua-binary
+
+# Load packages
+echo "@load packages" | sudo tee -a /opt/zeek/share/zeek/site/local.zeek
+```
+
+Configure Zeek to monitor the OT SPAN interface (`/opt/zeek/etc/node.cfg`):
+
+```ini
+[zeek]
+type=standalone
+host=localhost
+interface=eth1  # SPAN port receiving OT traffic
+```
+
+```bash
+# Start Zeek
+sudo zeekctl deploy
+```
+
+---
+
+<CodeLab title="Verify Zeek is Parsing Modbus">
+
+Send a test Modbus read request (from an authorized engineering workstation) and confirm Zeek logs it:
+
+```bash
+# After establishing Zeek, watch the modbus.log in real time
+tail -f /opt/zeek/logs/current/modbus.log | zeek-cut ts uid id.orig_h id.resp_h func request_response
+
+# Expected output on a Modbus read:
+# 1748985600.123  CXNaE3abc  10.100.0.25  10.100.0.50  READ_HOLDING_REGISTERS  REQUEST
+# 1748985600.145  CXNaE3abc  10.100.0.25  10.100.0.50  READ_HOLDING_REGISTERS  RESPONSE
+
+# If no modbus.log exists, verify the package loaded:
+zeek -e "redef exit_only_after_terminate=T;" -i eth1 -C &
+sleep 5 && ls /opt/zeek/logs/current/
+```
+
+No `modbus.log` usually means the package isn't loaded or no Modbus traffic is present on the SPAN port. Check `/opt/zeek/logs/current/reporter.log` for parsing errors.
+
+</CodeLab>
+
+---
+
+<Pitfall title="SPAN Ports Drop Packets Under Load">
+
+A switch SPAN port shares the switch CPU with routing functions. During a traffic burst (e.g., a firmware update being pushed to multiple PLCs simultaneously), the switch may drop SPAN packets before they reach the Zeek sensor. You don't know about the dropped traffic — Zeek's logs will have a gap, and an attacker who knows about SPAN limitations can time an attack to coincide with a high-traffic event.
+
+For SL 3 environments: use a hardware TAP. It has zero impact on traffic (it's a physical optical or electrical split), never drops packets, and fails safe (a TAP failure drops the monitoring copy, not the actual traffic).
+
+</Pitfall>
+
+---
+
+<Quiz question="A Zeek sensor detects a Modbus Write Multiple Registers command (FC 16) from IP 10.100.0.25 to PLC 10.100.0.50. Is this necessarily an attack? What additional context does Zeek's conn.log provide to help determine if this is legitimate?">
+
+<div>
+
+Not necessarily — FC 16 is a normal Modbus operation used by engineering workstations to update setpoints. Context from `conn.log` that helps determine legitimacy:
+
+1. **Source IP reputation**: is 10.100.0.25 on the authorized engineering workstation list in your asset inventory? If it's a SCADA server, a historian, or an unknown IP, that's anomalous.
+2. **Time of day**: if the write occurs outside the maintenance window defined in your nftables time-based ACL, it's bypassing network-level controls.
+3. **Connection frequency**: a single FC 16 once an hour (SCADA polling cycle) is normal. Fifty FC 16 commands in 10 seconds is reconnaissance or attack.
+4. **Register addresses**: Zeek's `modbus.log` shows which registers were written. Cross-reference against your process data dictionary — a write to the speed setpoint register (40001) from a SCADA server (which should only read) is anomalous.
+
+This is why Zeek's behavioral analysis complements Suricata's signature matching: a single write looks normal; the pattern of writes over time reveals the attack.
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+You understand DPI for OT protocols and have Zeek deployed and parsing Modbus traffic.
+
+In **Lesson 2**, we write Zeek scripts that implement behavioral baselines for Modbus and EtherNet/IP — alerting when any device or function code deviates from its established normal pattern.

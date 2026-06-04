@@ -1,0 +1,319 @@
+---
+title: "Suricata IDS Rules for OT Traffic"
+description: "Write and deploy Suricata rules that detect and block malicious OT protocol traffic inline at the IT/OT boundary — covering Modbus, EtherNet/IP, and DNP3 attack signatures."
+module: 4
+moduleTitle: "OT Network Monitoring — Zeek and Suricata"
+lesson: 3
+duration: "55 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Suricata vs. Zeek in the Detection Stack
+
+Zeek scripts detect behavioral anomalies — things that deviate from baseline — and log them for analyst review. Suricata matches traffic against explicit rules and can **drop packets inline** before they reach the destination.
+
+The two tools complement each other:
+
+| Capability | Zeek | Suricata |
+|---|---|---|
+| Behavioral baselining | ✓ | Limited |
+| Signature matching | Limited | ✓ |
+| Inline blocking | ✗ (passive only) | ✓ (IPS mode) |
+| Protocol-aware parsing | ✓ (extensible) | ✓ (built-in for major OT protocols) |
+| Forensic logging | ✓ (rich structured logs) | ✓ (alert logs) |
+
+For the IT/OT conduit: run Suricata inline in IPS mode on the OT DMZ gateway. For the OT internal network: run Zeek passively via SPAN to preserve availability.
+
+---
+
+## Step 1: Install Suricata in IPS Mode
+
+```bash
+sudo apt install -y suricata
+
+# Verify Suricata supports IPS (NFQ mode) and OT protocol detection
+suricata --list-app-layer-protos | grep -E "modbus|enip|dnp3"
+# Expected: modbus, enip, dnp3 (confirms protocol parsers are compiled in)
+```
+
+Configure Suricata for inline IPS on the OT DMZ gateway (`/etc/suricata/suricata.yaml`):
+
+```yaml
+# Use NFQueue to intercept packets from iptables
+nfq:
+  mode: accept  # accept by default; rules specify drop
+
+af-packet:
+  - interface: default
+
+# IPS mode: capture from NFQueue
+runmode: autofp
+
+vars:
+  address-groups:
+    OT_NETWORK: "[10.100.0.0/24]"
+    ENGINEERING_WS: "[10.100.0.25]"
+    SCADA_SERVERS: "[10.100.0.20, 10.100.0.21]"
+    IT_NETWORK: "[192.168.1.0/24]"
+
+outputs:
+  - eve-log:
+      enabled: yes
+      filetype: regular
+      filename: /var/log/suricata/eve.json
+      types:
+        - alert
+        - drop
+```
+
+Configure iptables to send OT traffic through NFQueue:
+
+```bash
+# Send all traffic passing through the OT DMZ gateway to Suricata via NFQueue 0
+sudo iptables -I FORWARD -j NFQUEUE --queue-num 0
+```
+
+```bash
+# Start Suricata in IPS mode
+sudo suricata -c /etc/suricata/suricata.yaml -q 0 --pidfile /var/run/suricata.pid -D
+```
+
+---
+
+## Step 2: OT-Specific Suricata Rules
+
+Create `/etc/suricata/rules/ot-protection.rules`:
+
+### Rule 1: Block Modbus Writes from Non-Authorized Sources
+
+```suricata
+# SID 9100001: Block Modbus write from IT network (should never cross the boundary)
+# Any Modbus write function code (FC 5, 6, 15, 16) originating from IT network
+alert tcp $IT_NETWORK any -> $OT_NETWORK 502 (
+    msg:"OT-ALERT: Modbus write from IT network — boundary violation";
+    flow:established,to_server;
+    app-layer-protocol:modbus;
+    modbus:function:write;
+    classtype:attempted-admin;
+    priority:1;
+    sid:9100001;
+    rev:1;
+)
+
+# Drop variant — use only after validating alert variant produces no false positives
+drop tcp $IT_NETWORK any -> $OT_NETWORK 502 (
+    msg:"OT-DROP: Modbus write from IT network blocked";
+    flow:established,to_server;
+    app-layer-protocol:modbus;
+    modbus:function:write;
+    sid:9100002;
+    rev:1;
+)
+```
+
+### Rule 2: Detect Modbus Reconnaissance
+
+Modbus FC 43 (Read Device Identification) is often the first step in OT reconnaissance — mapping PLC types and firmware versions before an attack:
+
+```suricata
+# SID 9100010: Modbus device identification scan
+alert tcp any any -> $OT_NETWORK 502 (
+    msg:"OT-RECON: Modbus device identification request (FC 43) — possible reconnaissance";
+    flow:established,to_server;
+    app-layer-protocol:modbus;
+    modbus:function:!read,!write;
+    # FC 43 has specific byte pattern: 2B 0E
+    content:"|2B 0E|";
+    offset:7;
+    depth:2;
+    threshold:type both, track by_src, count 3, seconds 60;
+    classtype:network-scan;
+    priority:2;
+    sid:9100010;
+    rev:1;
+)
+```
+
+### Rule 3: EtherNet/IP Execute Service
+
+Any CIP Execute Service (0x4B) is treated as critical — it enables arbitrary code execution on the PLC:
+
+```suricata
+# SID 9100020: CIP Execute Service — arbitrary execution on PLC
+alert tcp any any -> $OT_NETWORK 44818 (
+    msg:"OT-CRITICAL: EtherNet/IP CIP Execute Service (0x4B) detected — potential remote code execution";
+    flow:established,to_server;
+    app-layer-protocol:enip;
+    content:"|4B|";
+    offset:40;
+    depth:1;
+    classtype:attempted-admin;
+    priority:1;
+    sid:9100020;
+    rev:1;
+)
+```
+
+### Rule 4: DNP3 Unauthorized Direct Operate
+
+DNP3 Direct Operate commands control physical outputs. Only SCADA servers should issue them:
+
+```suricata
+# SID 9100030: DNP3 Direct Operate from non-SCADA source
+alert tcp !$SCADA_SERVERS any -> $OT_NETWORK 20000 (
+    msg:"OT-ALERT: DNP3 Direct Operate from unauthorized source %src%";
+    flow:established,to_server;
+    app-layer-protocol:dnp3;
+    dnp3_func:direct_operate;
+    classtype:attempted-admin;
+    priority:1;
+    sid:9100030;
+    rev:1;
+)
+```
+
+### Rule 5: Large-Volume Modbus Polling (DoS / Data Exfiltration)
+
+```suricata
+# SID 9100040: Excessive Modbus read requests — potential DoS or data exfiltration
+alert tcp any any -> $OT_NETWORK 502 (
+    msg:"OT-ALERT: High-rate Modbus polling from %src% — possible DoS or bulk exfiltration";
+    flow:established,to_server;
+    app-layer-protocol:modbus;
+    modbus:function:read;
+    threshold:type both, track by_src, count 100, seconds 10;
+    classtype:bad-unknown;
+    priority:2;
+    sid:9100040;
+    rev:1;
+)
+```
+
+---
+
+## Step 3: Load and Test Rules
+
+```bash
+# Enable the custom rules file
+echo "rule-files:" >> /etc/suricata/suricata.yaml
+echo "  - ot-protection.rules" >> /etc/suricata/suricata.yaml
+
+# Validate rule syntax before deployment
+sudo suricata -T -c /etc/suricata/suricata.yaml
+# Expected: "Configuration provided was successfully loaded."
+
+# Reload rules without restarting Suricata
+sudo suricatasc -c reload-rules
+```
+
+<CodeLab title="Test Rule Triggering with Modbus Simulation">
+
+```bash
+# Test SID 9100001 (Modbus write from IT network)
+# Run from an IT network host (should trigger the alert rule)
+python3 - <<'EOF'
+from pymodbus.client import ModbusTcpClient
+client = ModbusTcpClient('10.100.0.50', port=502)
+client.connect()
+client.write_register(address=0, value=100, unit=1)
+client.close()
+EOF
+
+# Check Suricata eve.json for the alert
+tail -20 /var/log/suricata/eve.json | python3 -m json.tool | \
+  grep -A5 '"event_type":"alert"'
+
+# Expected:
+# "alert": {
+#   "action": "allowed",  ← still in alert mode, not drop yet
+#   "signature_id": 9100001,
+#   "signature": "OT-ALERT: Modbus write from IT network — boundary violation",
+#   ...
+# }
+```
+
+Once you've confirmed no false positives over 48 hours of monitoring, switch from SID 9100001 (alert) to SID 9100002 (drop). Never deploy drop rules for the first time in a live OT environment without a prior alert-only validation period.
+
+</CodeLab>
+
+---
+
+## Alert → Drop Promotion Process
+
+Promoting a Suricata rule from alert to drop is a change that could interrupt OT traffic. Follow a formal promotion process:
+
+```
+1. Deploy as alert-only for minimum 48 hours in production
+2. Review all triggered alerts — classify as true positive or false positive
+3. If false positives exist, tune the rule (adjust thresholds, add exception conditions)
+4. If false positive rate = 0% after 48 hours, schedule a maintenance window
+5. During maintenance window: replace alert rule with drop rule
+6. Monitor for 30 minutes post-change with ops team on standby
+7. If false positive drop occurs: immediately revert to alert rule
+```
+
+Document this process and each promotion decision in your risk register. An ISA/IEC 62443 auditor will look for evidence that drop rules were validated before deployment.
+
+---
+
+<Pitfall title="Suricata Inline Failure Mode in OT">
+
+If Suricata crashes or becomes unresponsive while in IPS mode with iptables NFQUEUE, all traffic forwarded to NFQueue will be **dropped by default** — the kernel's fail-closed behavior.
+
+For OT environments where availability is paramount, configure fail-open behavior using iptables bypass:
+
+```bash
+# Fail-open: if Suricata queue fills or crashes, packets bypass the queue
+sudo iptables -I FORWARD -j NFQUEUE --queue-num 0 --queue-bypass
+```
+
+With `--queue-bypass`, a Suricata failure causes traffic to flow uninspected rather than stopping. This trades availability for security — acceptable for the IT/OT conduit (where the WireGuard layer still enforces authentication), but document this decision and its tradeoff.
+
+</Pitfall>
+
+---
+
+<Quiz question="A Suricata drop rule (SID 9100002) is blocking Modbus writes from IT network. During a legitimate remote troubleshooting session, a vendor engineer connects from the IT network via the jump server and needs to write a setpoint to PLC-A. The write is blocked. How do you handle this without creating a permanent exception that weakens security?">
+
+<div>
+
+**Time-limited rule suppression during the maintenance window:**
+
+```bash
+# Suppress the drop rule for the vendor's specific IP for 4 hours
+# (the duration of the maintenance window)
+echo "suppress gen_id 1, sig_id 9100002, track by_src, ip 10.0.0.75" >> \
+  /etc/suricata/threshold.conf
+
+# Reload threshold configuration
+sudo suricatasc -c reload-rules
+
+# Schedule automatic removal at end of maintenance window
+at "now + 4 hours" <<EOF
+sed -i '/sig_id 9100002.*10.0.0.75/d' /etc/suricata/threshold.conf
+suricatasc -c reload-rules
+logger -t suricata "Removed temporary suppression for vendor 10.0.0.75"
+EOF
+```
+
+This approach:
+1. Does not modify the rule itself (the rule stays in the ruleset for all other sources)
+2. Has an automatic expiry (no forgotten exceptions)
+3. Is logged (the `at` job is auditable)
+4. Requires a documented change ticket tied to the vendor maintenance window
+
+A permanent exception would be the wrong choice — it means any future attacker who reaches the IT network from the vendor's IP range would also bypass the control.
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+The OT network monitoring stack is complete: Zeek provides behavioral analysis and forensic logging; Suricata enforces inline rules at the IT/OT conduit.
+
+In **Module 5**, we build the final layer — an inline PLC command validator that catches malicious commands at the last point before they reach the physical actuator.

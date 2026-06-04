@@ -1,0 +1,184 @@
+---
+title: "Anatomy of an OT Cyberattack"
+description: "Analyze the kill chain of landmark OT attacks — Stuxnet, Triton/TRISIS, and Ukraine power grid — to understand what inline safety guardrails must detect and prevent."
+module: 5
+moduleTitle: "Physical Safety Guardrails — Inline Detection"
+lesson: 1
+duration: "50 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Learning From Real Attacks
+
+The inline guardrail you'll build in Lessons 2 and 3 must defend against real attack patterns. Before designing it, study the attacks it is defending against — not to understand exploitation techniques, but to understand what anomalous signals each attack produced that an inline system *could have* detected.
+
+Three case studies define the threat landscape for industrial safety systems.
+
+---
+
+## Case Study 1: Stuxnet (2010)
+
+**Target**: Iranian uranium enrichment facility (Natanz). Specifically: Siemens S7-315 PLCs controlling IR-1 centrifuges.
+
+**Kill chain**:
+1. Initial infection via USB drive (air gap bypassed physically)
+2. Lateral movement through Windows machines running Siemens STEP 7 (PLC programming software)
+3. Rootkit installed on the PLC — modified the STEP 7 IDE to show operators normal readings while executing the attack
+4. Attack payload: alternated centrifuge speeds between ~1,410 RPM and ~2 RPM at specific intervals, causing mechanical stress to rotor components over months
+5. Meanwhile, recorded "normal" readings were replayed to SCADA — operators saw nothing wrong
+
+**What an inline guardrail would have detected**:
+- Speed setpoint writes oscillating at programmatically precise intervals (normal operators don't change setpoints this regularly)
+- Setpoint values outside the normal operating band (1,410 RPM was at the upper edge; the rapid drops to 2 RPM were far below minimum operating speed)
+- The PLC responding to sensor reads with values inconsistent with the commanded setpoints (the rootkit was replaying recorded values)
+
+**Lesson**: The attack's most sophisticated element was hiding the anomaly from operators. A system that validates commands *before* they reach the PLC — before the rootkit could intercept and mask them — would have seen the malicious writes regardless of what the PLC reported back.
+
+---
+
+## Case Study 2: Triton/TRISIS (2017)
+
+**Target**: A petrochemical plant in Saudi Arabia (Petro Rabigh, later attributed). Specifically: Schneider Electric Triconex Safety Instrumented Systems (SIS).
+
+**Kill chain**:
+1. IT network compromise (spear phishing), lateral movement to OT network
+2. Discovery of SIS engineering workstation (Triconex TriStation software)
+3. Deployed custom malware (Triton framework) that reprogrammed the SIS controllers
+4. Attack goal: disable the safety interlock system so that a subsequent process attack could cause a physical incident without triggering an automatic safe-state shutdown
+5. The attack partially failed — a bug in the malware caused the SIS to detect the modification and put the plant in a safe state, triggering an investigation
+
+**What an inline guardrail would have detected**:
+- Unexpected reprogramming commands sent to the SIS (Triconex uses a proprietary protocol; any write to a Triconex SIS from a non-TriStation engineering workstation IP should be blocked)
+- Modifications to safety function logic at a time outside any scheduled maintenance window
+- Communication from the SIS engineering workstation to unexpected IP addresses (the malware established C2 communication from the EWS)
+
+**Lesson**: Safety systems are the last line of defense. Attackers target them specifically to remove the final protection before executing a physical attack. The SIS must be treated as the most critical device in the network — not as an afterthought to PLC security.
+
+---
+
+## Case Study 3: Ukraine Power Grid (2015, 2016)
+
+**Target**: Ukrainian electricity distribution companies. 2015 attack cut power to ~230,000 customers. 2016 (Industroyer/Crashoverride) used a modular framework specifically designed for industrial protocols.
+
+**Kill chain (2015)**:
+1. Spear phishing → IT network compromise (6 months dwell time)
+2. Credential theft from SCADA operator workstations
+3. Operators watched attackers log into SCADA remotely and open breakers manually
+4. Simultaneously: denial-of-service call flood to the utilities' customer service lines (to prevent reporting)
+5. Wiper malware deployed to HMI stations to slow recovery
+
+**Kill chain (2016 — Industroyer)**:
+1. Deployed 4 protocol-specific attack modules: IEC 104, IEC 101, IEC 61850, OPC DA
+2. Each module opened circuit breakers by sending valid (but unauthorized) commands in the native protocol
+3. A fifth module targeted a specific protection relay using the SIPROTEC protocol
+
+**What an inline guardrail would have detected**:
+- 2015: SCADA login from an unexpected geographic IP (the attackers used VPN endpoints in Ukraine, but the authentication pattern — after-hours login, high-velocity breaker operations — was anomalous)
+- 2016: Multiple simultaneous open-breaker commands across the grid (legitimate grid operations don't issue dozens of breaker opens in rapid succession)
+- 2016: Protocol modules communicating on IEC 104 from IPs that had never previously used that protocol
+
+**Lesson**: The 2016 attack used protocol-native commands — it didn't need exploits. Defense requires understanding what *normal* protocol usage looks like and alerting or blocking deviation.
+
+---
+
+## Common Threads: What Guardrails Must Catch
+
+Across all three attacks, four anomaly patterns emerge:
+
+| Pattern | Stuxnet | Triton | Ukraine |
+|---|---|---|---|
+| Commands from unexpected source IP | ✓ | ✓ | ✓ |
+| Commands outside normal time window | ✓ | ✓ | ✓ |
+| Command values outside safe operating range | ✓ | — | — |
+| High-velocity or coordinated commands | ✓ | — | ✓ |
+
+An inline guardrail that detects any of these four patterns would have triggered on each attack — providing at minimum an alert that could have prompted operator intervention before the physical consequence.
+
+---
+
+## Designing the Guardrail: Requirements
+
+Based on the case studies, the inline PLC command validator must:
+
+1. **Check source authorization** — reject commands from IPs not in the authorized writer whitelist
+2. **Validate value ranges** — reject commands with values outside the configured safe operating range for each register
+3. **Enforce time windows** — reject commands outside scheduled maintenance windows for write operations
+4. **Detect velocity anomalies** — alert when command rate exceeds the normal polling cadence
+5. **Act before the PLC** — intercept the command before it reaches the PLC, not after the PLC has acted
+
+Requirement 5 is the hardest. The two implementation options have different tradeoffs:
+
+| Option | How It Works | Tradeoff |
+|---|---|---|
+| **Inline proxy** | All PLC traffic routes through a software proxy that validates before forwarding | Adds latency; proxy failure can disrupt control traffic |
+| **Hardware bump-in-the-wire** | Dedicated hardware device intercepts and validates at line rate | Near-zero latency; specialized hardware required |
+
+For this course, we implement the inline proxy model in Python — conceptually equivalent to the hardware approach, and deployable on commodity hardware.
+
+<CodeLab title="Threat Model for the Inline Guardrail">
+
+Before building the guardrail, document its threat model — what can go wrong with the guardrail itself?
+
+```
+Component: Inline PLC Command Validator
+
+Threat 1 (Availability): Guardrail crash stops all PLC communication
+→ Mitigation: Fail-open mode with alert (or bypass relay for SL 3)
+→ Risk: An attacker who crashes the guardrail removes the protection layer
+
+Threat 2 (Integrity): Attacker modifies the guardrail configuration
+   to expand allowed IP list or relax value ranges
+→ Mitigation: Config loaded from Vault (not local filesystem); read-only for runtime
+→ Monitoring: Config hash checked on startup and every 60 seconds
+
+Threat 3 (Bypass): Attacker sends commands through a network path
+   that doesn't route through the guardrail
+→ Mitigation: Network segmentation ensures the guardrail is the only path to PLCs
+→ Monitoring: Zeek conn.log shows any direct PLC connections bypassing the proxy
+
+Threat 4 (Spoofing): Attacker spoofs an authorized IP address
+→ Mitigation: WireGuard tunnel authentication (Module 2) prevents IP spoofing at the network layer
+→ The authorized IP list is meaningful only if WireGuard is deployed
+```
+
+This threat model should be a living document — updated as the guardrail implementation evolves.
+
+</CodeLab>
+
+---
+
+<Pitfall title="The Guardrail Cannot Be the Only Safety Layer">
+
+An inline software guardrail is a cybersecurity control — it operates at the network layer. It complements, but cannot replace, the physical Safety Instrumented System (SIS).
+
+The SIS is engineered to SIL requirements (IEC 61511) and operates independently of the control network. Even if an attacker bypasses the guardrail, a properly engineered SIS should trigger a safe state when process parameters reach dangerous levels.
+
+Never use the cyber guardrail to justify reducing SIS investment or relaxing SIL requirements. Defense in depth means both layers must be present.
+
+</Pitfall>
+
+---
+
+<Quiz question="In the Triton attack, the malware accidentally caused the SIS to detect the modification and safe-state the plant. What two things does this tell you about the attack and about SIS security design?">
+
+<div>
+
+**About the attack**: The attackers did not fully understand the Triconex SIS internals — specifically, the memory protection mechanism that detected the unauthorized firmware write. The partial failure suggests they were working from incomplete reverse engineering. This is consistent with the operational complexity of ICS-specific malware development and suggests that even sophisticated nation-state actors make implementation errors.
+
+**About SIS security design**: The Triconex's memory integrity check (even though it was not specifically a cybersecurity feature) functioned as an unexpected detection mechanism. This demonstrates the value of **integrity verification in safety systems** — a feature designed for engineering reliability also provided security detection. Modern SIS standards (including IEC 62443-4-1 for product development) require that safety systems be designed with cybersecurity in mind from the ground up, not as an afterthought.
+
+The broader lesson: the Triton attackers' goal was to disable the SIS so a subsequent physical attack could proceed undetected. The fact that they were caught during the SIS compromise — not during the subsequent attack — shows that the SIS itself was the more valuable defensive layer. Protecting the SIS from modification is at least as important as protecting the PLCs from misoperation.
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+You understand the anatomy of real OT attacks and what an inline guardrail must detect.
+
+In **Lesson 2**, we build the inline Modbus proxy in Python — a lightweight TCP proxy that validates every Modbus command before forwarding it to the PLC.
