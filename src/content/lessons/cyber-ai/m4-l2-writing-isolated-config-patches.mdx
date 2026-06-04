@@ -1,0 +1,299 @@
+---
+title: "Writing Isolated Config Patches"
+description: "Validate, scope, and test patch proposals before they reach a live system — using static analysis, dry-run simulation, and blast-radius assessment."
+module: 4
+moduleTitle: "Agent C — Patching Agent"
+lesson: 2
+duration: "55 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## The Patch Validation Pipeline
+
+A patch proposal from Agent C is an LLM output. Before any command touches a live system, it passes through three validation stages:
+
+```
+Patch Proposal
+      │
+      ▼
+[1. Structural Validation]   ← Does it match expected command patterns?
+      │
+      ▼
+[2. Blast Radius Assessment] ← What could this break?
+      │
+      ▼
+[3. Dry-Run Simulation]      ← What would this do without applying it?
+      │
+      ▼
+Human Review Gate (for high/critical) or Auto-Apply (for low/medium)
+```
+
+---
+
+## Stage 1: Structural Validation
+
+Validate that every command in `patch_commands` matches a known-safe pattern:
+
+```python
+# validation/structural.py
+import re
+from typing import Optional
+
+# Allowlist of command patterns by platform
+SAFE_PATTERNS = {
+    "linux": [
+        r"^iptables\s+-[ADIRF]\s+\w+(\s+.*)?$",
+        r"^iptables-save\s*>.*$",
+        r"^iptables-restore\s*<.*$",
+        r"^systemctl\s+(start|stop|restart|reload)\s+\w[\w\-]+$",
+        r"^ufw\s+(allow|deny|delete)\s+.*$",
+        r"^passwd\s+-l\s+\w+$",         # Lock account
+        r"^usermod\s+-L\s+\w+$",        # Lock account (alt)
+        r"^fail2ban-client\s+set\s+.*ban.*$",
+    ],
+    "cisco_ios": [
+        r"^ip access-list\s+(extended|standard)\s+\w+$",
+        r"^\s*(deny|permit)\s+ip.*$",
+        r"^interface\s+\w[\w\/\.]+$",
+        r"^\s*ip access-group\s+\w+\s+(in|out)$",
+        r"^copy running-config startup-config$",
+        r"^logging\s+.*$",
+    ],
+}
+
+DANGEROUS_PATTERNS = [
+    r"rm\s+-rf",
+    r"dd\s+if=",
+    r"mkfs\.",
+    r">\s*/dev/sd",
+    r"shutdown\s+-[rh]",
+    r"reload",
+    r"format\s+",
+    r";\s*rm",
+    r"&&\s*rm",
+    r"\|\s*bash",
+    r"\|\s*sh",
+]
+
+def validate_commands(commands: list[str], platform: str) -> tuple[bool, Optional[str]]:
+    """Returns (is_valid, error_message)."""
+    safe = SAFE_PATTERNS.get(platform, [])
+
+    for cmd in commands:
+        stripped = cmd.strip()
+
+        # Check dangerous patterns first
+        for pattern in DANGEROUS_PATTERNS:
+            if re.search(pattern, stripped, re.IGNORECASE):
+                return False, f"Dangerous pattern detected: '{stripped}'"
+
+        # Check against allowlist
+        if safe and not any(re.match(p, stripped) for p in safe):
+            return False, f"Command not in allowlist for {platform}: '{stripped}'"
+
+    return True, None
+```
+
+---
+
+## Stage 2: Blast Radius Assessment
+
+Score how much impact a set of commands could have:
+
+```python
+# validation/blast_radius.py
+from typing import Literal
+
+HIGH_IMPACT_KEYWORDS = [
+    "default", "route", "gateway", "all", "0.0.0.0", "any",
+    "shutdown", "reload", "flush",
+]
+
+MEDIUM_IMPACT_KEYWORDS = [
+    "deny", "drop", "block", "reject", "iptables -F",
+]
+
+def assess_blast_radius(
+    commands: list[str],
+) -> Literal["none", "low", "medium", "high"]:
+    combined = " ".join(commands).lower()
+
+    for kw in HIGH_IMPACT_KEYWORDS:
+        if kw in combined:
+            return "high"
+
+    for kw in MEDIUM_IMPACT_KEYWORDS:
+        if kw in combined:
+            return "medium"
+
+    # Count affected objects
+    if len(commands) > 10:
+        return "medium"
+
+    return "low"
+```
+
+---
+
+## Stage 3: Dry-Run Simulation
+
+For Linux iptables commands, use `--check` to verify rule existence, or `iptables -n -L` to preview the chain state without modification:
+
+```python
+# validation/dry_run.py
+import subprocess
+from typing import Optional
+
+def dry_run_iptables(command: str) -> tuple[bool, str]:
+    """
+    Simulate an iptables command without applying it.
+    Returns (success, output).
+    """
+    # Replace -A (append) with --check to test if the rule is valid
+    check_cmd = command.replace(" -A ", " --check ", 1)
+
+    try:
+        result = subprocess.run(
+            check_cmd.split(),
+            capture_output=True,
+            text=True,
+            timeout=5,
+        )
+        if result.returncode == 0:
+            return True, "Rule valid (already exists or would be accepted)"
+        elif result.returncode == 1:
+            return True, "Rule valid (does not yet exist — would be added)"
+        else:
+            return False, result.stderr.strip()
+    except subprocess.TimeoutExpired:
+        return False, "Dry-run timed out"
+    except FileNotFoundError:
+        return True, "iptables not available in this environment (skipping dry-run)"
+```
+
+<CodeLab title="Dry-Run on Non-Linux Platforms">
+
+For Cisco IOS, dry-run means parsing the commands through a config syntax validator (like `cisco_config_parser` or a vendor SDK) rather than executing them on the device.
+
+For pfSense, use the pfSense REST API's "preview" endpoint if available.
+
+For platforms without dry-run support, document the limitation and require mandatory human approval for all patches.
+
+</CodeLab>
+
+---
+
+## The Full Validation Orchestrator
+
+```python
+# validation/orchestrator.py
+from validation.structural import validate_commands
+from validation.blast_radius import assess_blast_radius
+from validation.dry_run import dry_run_iptables
+from agents.patching import PatchProposal
+
+def validate_patch(proposal: PatchProposal) -> dict:
+    results = {
+        "structural_valid": False,
+        "structural_error": None,
+        "blast_radius": "unknown",
+        "dry_run_results": [],
+        "approved_for_auto_apply": False,
+    }
+
+    # Stage 1: Structural
+    is_valid, err = validate_commands(proposal.patch_commands, proposal.platform)
+    results["structural_valid"] = is_valid
+    results["structural_error"] = err
+
+    if not is_valid:
+        results["approved_for_auto_apply"] = False
+        return results
+
+    # Stage 2: Blast radius
+    radius = assess_blast_radius(proposal.patch_commands)
+    results["blast_radius"] = radius
+
+    # Stage 3: Dry-run (Linux only for now)
+    if proposal.platform == "linux":
+        for cmd in proposal.patch_commands:
+            if "iptables" in cmd:
+                ok, msg = dry_run_iptables(cmd)
+                results["dry_run_results"].append({"command": cmd, "ok": ok, "msg": msg})
+
+    # Auto-apply only if: low blast radius, structurally valid, no dry-run failures
+    dry_run_passed = all(r["ok"] for r in results["dry_run_results"]) if results["dry_run_results"] else True
+    results["approved_for_auto_apply"] = (
+        radius in ("none", "low")
+        and is_valid
+        and dry_run_passed
+        and not proposal.requires_approval
+    )
+
+    return results
+```
+
+---
+
+## Test the Validator
+
+```python
+# test_validation.py
+from agents.patching import PatchProposal
+from validation.orchestrator import validate_patch
+
+safe_patch = PatchProposal(
+    target_host="perimeter-fw01",
+    platform="linux",
+    patch_description="Block attacker IP",
+    patch_commands=[
+        "iptables -A INPUT -s 203.0.113.42 -j DROP",
+        "iptables-save > /etc/iptables/rules.v4",
+    ],
+    rollback_commands=[
+        "iptables -D INPUT -s 203.0.113.42 -j DROP",
+        "iptables-save > /etc/iptables/rules.v4",
+    ],
+    estimated_impact="low",
+    requires_approval=False,
+)
+
+result = validate_patch(safe_patch)
+print(f"Structural valid: {result['structural_valid']}")
+print(f"Blast radius:     {result['blast_radius']}")
+print(f"Auto-apply:       {result['approved_for_auto_apply']}")
+```
+
+---
+
+<Pitfall title="Allowlists vs. Denylists">
+
+The validator uses an allowlist (known-safe patterns) rather than just a denylist (known-dangerous patterns). This is correct for security-critical code.
+
+A denylist approach — block `rm -rf`, allow everything else — will always miss novel attack strings. An allowlist — permit only `iptables -[ADIRF]`, deny everything else — fails closed: unknown commands are rejected by default.
+
+This is the principle of **least privilege** applied to patch validation.
+
+</Pitfall>
+
+---
+
+<Quiz question="Why does the blast radius assessment check for the string '0.0.0.0' and 'any' as high-impact indicators?">
+
+<div>
+
+`0.0.0.0/0` and `any` in firewall rules mean "all traffic" — a rule that matches all sources or all destinations. A mistake in such a rule can block all inbound traffic (taking the system offline) or allow all traffic (removing the firewall entirely).
+
+These patterns are legitimate in some contexts, but they should never be auto-applied without human review. Flagging them as high-impact ensures they always go through the human review gate regardless of other factors.
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+Patch validation is in place. In **Lesson 3**, you'll implement the human-in-the-loop guardrail — the gate that holds high/critical patches for human approval before any command is executed.

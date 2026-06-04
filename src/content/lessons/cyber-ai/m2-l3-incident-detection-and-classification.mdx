@@ -1,0 +1,221 @@
+---
+title: "Incident Detection and Classification"
+description: "Add routing logic to the triage output — suppress noise, queue real incidents for Agent B, and escalate critical events to a human review queue."
+module: 2
+moduleTitle: "Agent A — Triage Agent"
+lesson: 3
+duration: "50 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## After Triage: Three Destinations
+
+Every event that passes through Agent A goes to one of three places:
+
+| Severity | Destination | Why |
+|---|---|---|
+| `noise` | Discard | No action needed; logging for audit only |
+| `low`, `medium` | Incident queue → Agent B | Needs context enrichment |
+| `high`, `critical` | Incident queue → Agent B → human escalation | Immediate attention required |
+
+The routing logic lives in a LangGraph **conditional edge** — the same graph from Module 1, now wired to real code.
+
+---
+
+## Part 1: The Incident Queue
+
+For this course, you'll use an in-memory `asyncio.Queue`. In production, this would be a message broker (Kafka, SQS, Redis Streams).
+
+```python
+# queues.py
+import asyncio
+
+# Bounded queue — apply backpressure if Agent B can't keep up
+incident_queue: asyncio.Queue = asyncio.Queue(maxsize=100)
+escalation_queue: asyncio.Queue = asyncio.Queue(maxsize=20)
+noise_log: list = []  # Audit trail for discarded events
+```
+
+---
+
+## Part 2: The Router
+
+```python
+# routing.py
+from state import IncidentState
+from queues import incident_queue, escalation_queue, noise_log
+import asyncio
+
+async def route_incident(state: IncidentState) -> None:
+    severity = state["severity"]
+
+    if severity == "noise":
+        noise_log.append({
+            "ingested_at": state["ingested_at"],
+            "source": state["source"],
+            "summary": state["triage_summary"],
+        })
+        return
+
+    if severity in ("low", "medium"):
+        await incident_queue.put(state)
+
+    elif severity in ("high", "critical"):
+        await incident_queue.put(state)
+        await escalation_queue.put({
+            "severity": severity,
+            "incident_type": state["incident_type"],
+            "summary": state["triage_summary"],
+            "ingested_at": state["ingested_at"],
+        })
+        print(f"\n🚨 ESCALATED [{severity.upper()}]: {state['triage_summary']}")
+```
+
+---
+
+## Part 3: The Escalation Handler
+
+Critical events need immediate human visibility. The escalation handler simulates notifying an on-call engineer:
+
+```python
+# escalation.py
+import asyncio
+from queues import escalation_queue
+
+async def escalation_handler():
+    """Consume the escalation queue and notify on-call."""
+    while True:
+        incident = await escalation_queue.get()
+        await notify_oncall(incident)
+        escalation_queue.task_done()
+
+async def notify_oncall(incident: dict) -> None:
+    # In production: PagerDuty API, Slack webhook, SMS gateway
+    # Here: print to console with a clear format
+    print(
+        f"\n[ONCALL ALERT]\n"
+        f"  Severity: {incident['severity'].upper()}\n"
+        f"  Type:     {incident['incident_type']}\n"
+        f"  Summary:  {incident['summary']}\n"
+        f"  At:       {incident['ingested_at']}\n"
+        f"  Action:   Review incident queue immediately.\n"
+    )
+```
+
+<CodeLab title="Production Escalation Options">
+
+Real escalation channels:
+
+- **PagerDuty**: `pdpyras` library + Events API v2
+- **Slack**: Incoming Webhooks or `slack_sdk`
+- **OpsGenie**: REST API with alert deduplication
+- **Email**: `smtplib` + SMTP relay
+
+The key principle: the escalation message should be **actionable** — include severity, incident type, summary, and a direct link to the full incident details. Don't send a wall of text.
+
+</CodeLab>
+
+---
+
+## Part 4: Wire It Together
+
+Update the pipeline to route after triaging:
+
+```python
+# ingestion/pipeline.py (updated)
+import asyncio
+from state import IncidentState
+from agents.triage import triage_agent
+from routing import route_incident
+
+async def process_event(event: dict, semaphore: asyncio.Semaphore) -> None:
+    async with semaphore:
+        state = IncidentState(
+            raw_log=event["raw_log"],
+            source=event["source"],
+            ingested_at=event["ingested_at"],
+            severity=None, incident_type=None, triage_summary=None,
+            relevant_docs=None, historical_precedents=None,
+            recommended_action=None, patch_proposal=None,
+            patch_code=None, patch_status=None,
+            escalate=False, error=None,
+        )
+        try:
+            result = await asyncio.to_thread(triage_agent, state)
+        except Exception as exc:
+            result = {**state, "error": str(exc), "escalate": True}
+
+        await route_incident(result)
+
+async def run_pipeline(events_per_second: float = 1.0, max_concurrent: int = 5):
+    from simulator.log_generator import log_stream
+    from escalation import escalation_handler
+
+    semaphore = asyncio.Semaphore(max_concurrent)
+
+    # Run escalation handler as a background task
+    asyncio.create_task(escalation_handler())
+
+    async for event in log_stream(events_per_second):
+        asyncio.create_task(process_event(event, semaphore))
+```
+
+---
+
+## Observability: Metrics
+
+Add a simple metrics counter so you can see what's flowing through:
+
+```python
+# metrics.py
+from collections import Counter
+import time
+
+counters: Counter = Counter()
+start_time = time.time()
+
+def record(severity: str) -> None:
+    counters[severity] += 1
+
+def report() -> str:
+    elapsed = time.time() - start_time
+    total = sum(counters.values())
+    return (
+        f"Uptime: {elapsed:.0f}s | Total events: {total}\n"
+        + "\n".join(f"  {k}: {v}" for k, v in counters.most_common())
+    )
+```
+
+Call `record(result["severity"])` in `process_event` and print `report()` every 30 seconds with a background task.
+
+---
+
+<Pitfall title="Queue Overflow">
+
+The incident queue has `maxsize=100`. If Agent B is slow (e.g., a slow embedding query), the queue fills up and `await incident_queue.put(state)` blocks. This creates **backpressure** — the pipeline slows down to match Agent B's throughput.
+
+That's intentional. Dropping incidents silently would be worse. In production, monitor queue depth as a key metric and scale Agent B horizontally when it stays consistently above 80%.
+
+</Pitfall>
+
+---
+
+<Quiz question="Why should the escalation queue be separate from the incident queue?">
+
+<div>
+
+The incident queue feeds Agent B for documentation enrichment — a process that takes seconds. Critical incidents need to notify a human *immediately*, in parallel, not after waiting in line behind lower-severity events.
+
+Separate queues mean separate consumers with different priorities. The escalation handler is lightweight and fast; the Agent B consumer is slower. Mixing them on one queue would delay human notification.
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+Agent A is complete: it ingests, classifies, routes, and escalates. In **Module 3**, you'll build Agent B — the SecOps RAG agent — which receives incidents from the queue and cross-references them against your internal knowledge base.

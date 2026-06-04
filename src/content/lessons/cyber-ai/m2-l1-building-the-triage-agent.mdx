@@ -1,0 +1,224 @@
+---
+title: "Building the Triage Agent"
+description: "Implement Agent A — an LLM-powered triage agent that classifies incoming log events by severity and incident type using structured outputs."
+module: 2
+moduleTitle: "Agent A — Triage Agent"
+lesson: 1
+duration: "60 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## What the Triage Agent Does
+
+Agent A is the entry point of the Cyber AI system. Every incoming event — a syslog line, an SNMP trap, a netflow record — passes through it. The agent's job is to:
+
+1. Parse the raw event into structured fields
+2. Reason about what the event means
+3. Assign a severity level: `noise`, `low`, `medium`, `high`, or `critical`
+4. Identify the incident type: `brute_force`, `config_drift`, `port_scan`, `data_exfil`, `unknown`
+5. Write a one-sentence triage summary for downstream agents
+
+The output is a populated `IncidentState` — the shared state object from Module 1.
+
+---
+
+## Structured Outputs
+
+The most reliable way to get an LLM to fill a schema is to use **structured outputs** (also called JSON mode or function calling). Instead of asking the model to "output JSON", you define a Pydantic model and tell the API to enforce it.
+
+```python
+# agents/triage.py
+from pydantic import BaseModel, Field
+from typing import Literal
+from langchain_openai import ChatOpenAI
+from langchain_core.prompts import ChatPromptTemplate
+
+class TriageResult(BaseModel):
+    severity: Literal["noise", "low", "medium", "high", "critical"] = Field(
+        description="Severity of the event"
+    )
+    incident_type: Literal[
+        "brute_force", "config_drift", "port_scan", "data_exfil", "unknown"
+    ] = Field(description="Category of the incident")
+    triage_summary: str = Field(
+        description="One sentence explaining what happened and why it matters"
+    )
+```
+
+<CodeLab title="Why Pydantic + Structured Output?">
+
+If you ask an LLM to "output JSON with fields X, Y, Z", it will — most of the time. But it might add extra fields, use the wrong type, or emit invalid JSON when it's confused. Pydantic-backed structured output forces the model to conform to the schema at the API level. You get a fully typed Python object back, not a string to parse.
+
+This is especially important in agentic pipelines: a malformed output from one agent silently breaks the next.
+
+</CodeLab>
+
+---
+
+## The Triage Agent Function
+
+```python
+# agents/triage.py (continued)
+from cyber_ai.state import IncidentState
+
+SYSTEM_PROMPT = """You are a cybersecurity triage analyst.
+You receive raw log events from IT infrastructure and classify them.
+
+Rules:
+- severity "noise": routine activity, no action needed
+- severity "low": anomalous but not urgent (monitor)
+- severity "medium": suspicious activity requiring investigation
+- severity "high": active threat, respond within 1 hour
+- severity "critical": active breach or service-affecting incident
+
+Never include raw log data verbatim in your triage_summary.
+Describe the behavior, not the bytes.
+"""
+
+USER_PROMPT = """Classify this event:
+
+Source: {source}
+Log: {sanitized_log}
+"""
+
+def sanitize_log(raw: str) -> str:
+    """Strip content after common injection keywords."""
+    injection_keywords = ["ignore previous", "disregard", "system:", "assistant:"]
+    lower = raw.lower()
+    for kw in injection_keywords:
+        idx = lower.find(kw)
+        if idx != -1:
+            raw = raw[:idx] + "[REDACTED]"
+            break
+    return raw[:500]  # Hard cap on length
+
+llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
+structured_llm = llm.with_structured_output(TriageResult)
+
+prompt = ChatPromptTemplate.from_messages([
+    ("system", SYSTEM_PROMPT),
+    ("human", USER_PROMPT),
+])
+
+triage_chain = prompt | structured_llm
+
+def triage_agent(state: IncidentState) -> IncidentState:
+    sanitized = sanitize_log(state["raw_log"])
+    result: TriageResult = triage_chain.invoke({
+        "source": state["source"],
+        "sanitized_log": sanitized,
+    })
+    return {
+        **state,
+        "severity": result.severity,
+        "incident_type": result.incident_type,
+        "triage_summary": result.triage_summary,
+    }
+```
+
+---
+
+## The State Schema
+
+Add `state.py` at the project root:
+
+```python
+# state.py
+from typing import TypedDict, Literal, Optional
+
+class IncidentState(TypedDict):
+    raw_log: str
+    source: str
+    ingested_at: str
+    severity: Optional[Literal["noise", "low", "medium", "high", "critical"]]
+    incident_type: Optional[str]
+    triage_summary: Optional[str]
+    relevant_docs: Optional[list[str]]
+    historical_precedents: Optional[list[str]]
+    recommended_action: Optional[str]
+    patch_proposal: Optional[str]
+    patch_code: Optional[str]
+    patch_status: Optional[Literal["proposed", "approved", "applied", "rejected"]]
+    escalate: bool
+    error: Optional[str]
+```
+
+---
+
+## Test the Triage Agent
+
+```python
+# test_triage.py
+from datetime import datetime, timezone
+from agents.triage import triage_agent
+
+test_events = [
+    {
+        "raw_log": "Failed password for root from 203.0.113.42 port 22 ssh2",
+        "source": "syslog",
+        "ingested_at": datetime.now(timezone.utc).isoformat(),
+        "severity": None, "incident_type": None, "triage_summary": None,
+        "relevant_docs": None, "historical_precedents": None,
+        "recommended_action": None, "patch_proposal": None,
+        "patch_code": None, "patch_status": None,
+        "escalate": False, "error": None,
+    },
+    {
+        "raw_log": "SNMP trap: ifOperStatus changed from up to down on GigabitEthernet0/1",
+        "source": "snmp",
+        "ingested_at": datetime.now(timezone.utc).isoformat(),
+        "severity": None, "incident_type": None, "triage_summary": None,
+        "relevant_docs": None, "historical_precedents": None,
+        "recommended_action": None, "patch_proposal": None,
+        "patch_code": None, "patch_status": None,
+        "escalate": False, "error": None,
+    },
+]
+
+for event in test_events:
+    result = triage_agent(event)
+    print(f"Severity: {result['severity']}")
+    print(f"Type:     {result['incident_type']}")
+    print(f"Summary:  {result['triage_summary']}")
+    print("---")
+```
+
+Run it:
+
+```bash
+python test_triage.py
+```
+
+Expected output (will vary slightly):
+```
+Severity: high
+Type:     brute_force
+Summary:  Repeated SSH login failures for root from external IP indicate a brute-force attack.
+---
+Severity: medium
+Type:     config_drift
+Summary:  Network interface went down unexpectedly — may indicate a link failure or unauthorized change.
+---
+```
+
+---
+
+<Quiz question="Why does the `sanitize_log` function cap log length at 500 characters in addition to stripping injection keywords?">
+
+<div>
+
+Length capping prevents **context overflow attacks**: an attacker could craft a very long log entry filled with instructions designed to overwhelm or redirect the LLM. By capping the input, you also control costs — a triage agent processing thousands of events per minute could incur significant token charges if log lines were unbounded.
+
+Defense-in-depth: strip known injection patterns *and* enforce a hard length limit. Both.
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+Agent A can now classify events. In **Lesson 2**, you'll wire it to a real telemetry stream — a simulated log generator — and watch it triage events continuously.

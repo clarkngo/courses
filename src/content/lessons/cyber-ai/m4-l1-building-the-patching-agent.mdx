@@ -1,0 +1,237 @@
+---
+title: "Building the Patching Agent"
+description: "Implement Agent C — it takes Agent B's recommended action and writes a concrete, validated config patch with clear rollback instructions."
+module: 4
+moduleTitle: "Agent C — Patching Agent"
+lesson: 1
+duration: "60 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## What Agent C Does
+
+Agent C is the most dangerous agent in the system — it has the ability to propose changes to live infrastructure. That power comes with strict constraints:
+
+- It writes patches based **only** on the recommended action from Agent B
+- It never applies patches autonomously for high/critical incidents without human approval
+- Every patch includes a rollback command
+- The patch output is validated structurally before it leaves the agent
+
+---
+
+## Patch Schema
+
+```python
+# agents/patching.py
+from pydantic import BaseModel, Field
+from typing import Literal
+
+class PatchProposal(BaseModel):
+    target_host: str = Field(
+        description="Hostname or IP of the device to patch"
+    )
+    platform: Literal["linux", "cisco_ios", "pfsense", "windows"] = Field(
+        description="Operating system or device platform"
+    )
+    patch_description: str = Field(
+        description="Plain-English explanation of what the patch does and why"
+    )
+    patch_commands: list[str] = Field(
+        description="Ordered list of commands to execute"
+    )
+    rollback_commands: list[str] = Field(
+        description="Ordered list of commands to undo the patch"
+    )
+    estimated_impact: Literal["none", "low", "medium", "high"] = Field(
+        description="Expected service impact of applying the patch"
+    )
+    requires_approval: bool = Field(
+        description="True if a human must approve before this patch is applied"
+    )
+```
+
+---
+
+## The Patching Agent Function
+
+```python
+# agents/patching.py (continued)
+from langchain_openai import ChatOpenAI
+from langchain_core.prompts import ChatPromptTemplate
+from state import IncidentState
+
+SYSTEM_PROMPT = """You are a senior network/systems engineer.
+You receive a security incident description and a recommended action.
+You write a precise, minimal configuration patch to remediate the incident.
+
+Rules:
+1. Write only the commands needed — no exploratory or diagnostic commands.
+2. Every patch MUST include rollback commands.
+3. Never use destructive commands (rm -rf, format, reload) unless explicitly in the recommendation.
+4. If the recommended action is ambiguous or unsafe, set requires_approval=True and
+   explain the ambiguity in patch_description.
+5. Set estimated_impact to "high" if any command affects routing, firewall rules, or
+   authentication services.
+"""
+
+USER_PROMPT = """Incident:
+Type: {incident_type}
+Severity: {severity}
+Summary: {triage_summary}
+
+Recommended Action (from SecOps RAG):
+{recommended_action}
+
+Relevant Context:
+{context}
+
+Write the patch proposal.
+"""
+
+llm = ChatOpenAI(model="gpt-4o", temperature=0)  # Use the stronger model for patches
+structured_llm = llm.with_structured_output(PatchProposal)
+prompt = ChatPromptTemplate.from_messages([
+    ("system", SYSTEM_PROMPT),
+    ("human", USER_PROMPT),
+])
+patch_chain = prompt | structured_llm
+
+def patching_agent(state: IncidentState) -> IncidentState:
+    context = "\n".join(state.get("relevant_docs") or [])[:2000]
+
+    try:
+        result: PatchProposal = patch_chain.invoke({
+            "incident_type": state["incident_type"],
+            "severity": state["severity"],
+            "triage_summary": state["triage_summary"],
+            "recommended_action": state["recommended_action"],
+            "context": context,
+        })
+
+        # Serialize patch commands as a formatted string for the state
+        patch_code = "\n".join(f"$ {cmd}" for cmd in result.patch_commands)
+        rollback_code = "\n".join(f"$ {cmd}" for cmd in result.rollback_commands)
+
+        return {
+            **state,
+            "patch_proposal": (
+                f"{result.patch_description}\n\n"
+                f"Target: {result.target_host} ({result.platform})\n"
+                f"Impact: {result.estimated_impact}\n"
+                f"Requires approval: {result.requires_approval}\n\n"
+                f"Patch:\n{patch_code}\n\n"
+                f"Rollback:\n{rollback_code}"
+            ),
+            "patch_code": patch_code,
+            "patch_status": "proposed",
+            "escalate": state["severity"] in ("high", "critical") or result.requires_approval,
+        }
+    except Exception as exc:
+        return {
+            **state,
+            "patch_proposal": "Patch generation failed. Manual remediation required.",
+            "patch_status": "proposed",
+            "error": str(exc),
+            "escalate": True,
+        }
+```
+
+<CodeLab title="Why Use GPT-4o Instead of GPT-4o-mini for Patching?">
+
+Agent A (triage) and Agent B (RAG synthesis) can run on a smaller, faster model because their tasks are classification and summarization — relatively forgiving of small errors.
+
+Agent C writes commands that will be executed on live infrastructure. A wrong iptables flag, a missing interface identifier, a bad subnet mask — these can take down services. The stronger model's improved instruction-following and lower error rate is worth the higher cost for this single agent.
+
+Use the cheapest model that produces acceptable quality, per task.
+
+</CodeLab>
+
+---
+
+## Test the Patching Agent
+
+```python
+# test_patching.py
+from datetime import datetime, timezone
+from agents.patching import patching_agent
+
+test_state = {
+    "raw_log": "Failed password for root from 203.0.113.42 port 22 ssh2",
+    "source": "syslog",
+    "ingested_at": datetime.now(timezone.utc).isoformat(),
+    "severity": "high",
+    "incident_type": "brute_force",
+    "triage_summary": "Repeated SSH login failures for root — brute force in progress.",
+    "relevant_docs": [
+        "iptables -A INPUT -s <SOURCE_IP> -j DROP\niptables-save > /etc/iptables/rules.v4"
+    ],
+    "historical_precedents": ["Block source IP at perimeter firewall."],
+    "recommended_action": (
+        "Block source IP 203.0.113.42 at the perimeter firewall. "
+        "Audit auth.log for successful logins. Rotate credentials if breach confirmed."
+    ),
+    "patch_proposal": None,
+    "patch_code": None,
+    "patch_status": None,
+    "escalate": False,
+    "error": None,
+}
+
+result = patching_agent(test_state)
+print(result["patch_proposal"])
+print(f"\nStatus: {result['patch_status']}")
+print(f"Escalate: {result['escalate']}")
+```
+
+Expected output:
+```
+Block the attacking IP 203.0.113.42 at the INPUT chain to stop ongoing brute force.
+All traffic from this host will be dropped immediately.
+
+Target: perimeter-fw01 (linux)
+Impact: low
+Requires approval: False
+
+Patch:
+$ iptables -A INPUT -s 203.0.113.42 -j DROP
+$ iptables-save > /etc/iptables/rules.v4
+
+Rollback:
+$ iptables -D INPUT -s 203.0.113.42 -j DROP
+$ iptables-save > /etc/iptables/rules.v4
+
+Status: proposed
+Escalate: True
+```
+
+---
+
+<Pitfall title="Never Interpolate External Data Into Shell Commands">
+
+If `raw_log` contained a crafted IP address like `203.0.113.42; rm -rf /`, and you interpolated it directly into an iptables command, you'd get command injection.
+
+Agent C must never use raw log data to fill shell command templates. All parameterization happens through the LLM's structured output — the model extracts and validates the IP, then includes it in `patch_commands`. The LLM acts as a sanitization layer, but you should still validate that each command matches an expected pattern before execution.
+
+</Pitfall>
+
+---
+
+<Quiz question="Why does every PatchProposal include `rollback_commands` as a required field?">
+
+<div>
+
+A patch that breaks something must be undoable in seconds, not minutes. If an iptables rule accidentally blocks legitimate traffic, the on-call engineer needs the exact reversal command immediately — not time spent figuring it out under pressure.
+
+Making `rollback_commands` required in the schema means Agent C cannot produce a valid output without them. It's a structural guardrail: you can't skip rollback instructions by accident.
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+Agent C can generate patches. In **Lesson 2**, you'll explore what happens when the patch involves infrastructure-specific commands — and how to validate patch output before it ever touches a live system.

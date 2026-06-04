@@ -1,0 +1,125 @@
+---
+title: "The Orchestration & Triaging Layer"
+description: "Understand where Cyber AI sits in the enterprise stack, what problems it solves, and why autonomous incident management requires a multi-agent architecture."
+module: 1
+moduleTitle: "Introduction to Cyber AI"
+lesson: 1
+duration: "45 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Where Cyber AI Lives
+
+Enterprise IT stacks are typically divided into three operational layers:
+
+| Layer | Role | Examples |
+|---|---|---|
+| **OT (Operational Technology)** | Physical infrastructure — sensors, PLCs, actuators | SCADA, industrial controllers |
+| **IT (Information Technology)** | Digital infrastructure — networks, servers, applications | SIEM, firewalls, ticketing systems |
+| **Cognitive / AI Layer** | Reasoning, correlation, autonomous response | Cyber AI |
+
+**Cyber AI operates at the IT level as the cognitive brain.** It doesn't replace your SIEM or firewall — it sits above them, consuming their output and deciding what to do next.
+
+Without a cognitive layer, a security team is manually triaging hundreds of alerts per shift. Most alerts are noise. The few real incidents get buried. Response times stretch from minutes to hours.
+
+Cyber AI compresses that loop: ingest telemetry → reason about anomalies → cross-reference documentation → propose or apply a fix → close the loop.
+
+---
+
+## Why Multi-Agent?
+
+A single LLM handling triage, documentation retrieval, and patch generation would be pulling in three directions at once. Each task has different inputs, different tools, and different risk profiles.
+
+**Multi-agent architecture** solves this by decomposing the problem:
+
+```
+Telemetry / Logs
+      │
+      ▼
+┌─────────────┐     anomaly signal     ┌──────────────────┐
+│  Agent A    │ ─────────────────────▶ │   Agent B        │
+│  (Triage)   │                        │   (SecOps RAG)   │
+└─────────────┘                        └──────────────────┘
+                                               │
+                                    context + severity
+                                               │
+                                               ▼
+                                       ┌──────────────────┐
+                                       │   Agent C        │
+                                       │   (Patching)     │
+                                       └──────────────────┘
+                                               │
+                                       patch proposal / apply
+```
+
+Each agent is narrow, testable, and replaceable. Agent A doesn't need to know about runbooks. Agent B doesn't need to write patches. Agent C doesn't need to read raw logs. The **orchestrator** (a LangGraph or AutoGen graph) wires them together and enforces the flow.
+
+---
+
+## The Three Agents
+
+**Agent A — Triage**
+- Monitors system telemetry and logs in real time
+- Classifies events: noise, low, medium, high, critical
+- Emits structured incident signals when a threshold is crossed
+
+**Agent B — SecOps RAG**
+- Receives an incident signal from Agent A
+- Queries an internal knowledge base (equipment manuals, threat models, runbooks)
+- Returns: what this looks like, historical precedents, recommended response
+
+**Agent C — Patching Agent**
+- Receives enriched incident context from Agent B
+- Writes or proposes an isolated config patch
+- Applies it only when human approval is granted (or autonomously, within defined guardrails)
+
+---
+
+## The Technology Stack
+
+| Component | Technology | Role |
+|---|---|---|
+| **Orchestration** | LangGraph or AutoGen | Wire agents into a graph; manage state and routing |
+| **Retrieval** | RAG (vector DB + embedding model) | Ground Agent B in real documentation |
+| **Tool Access** | Model Context Protocol (MCP) | Standardized way for agents to call external tools |
+| **LLM** | Any OpenAI-compatible model | Reasoning backbone for all three agents |
+
+You'll implement each layer across the five modules of this course.
+
+---
+
+## Academic Frame: From Static Prompts to Closed-Loop Reasoning
+
+Early AI applications were **static**: you wrote a prompt, the model responded, you read the output. There was no feedback loop, no memory, no action.
+
+Agentic AI introduces a **closed loop**:
+
+1. **Observe** — agent receives structured input (a log line, an alert, a metric)
+2. **Reason** — LLM reasons about what the input means
+3. **Act** — agent calls a tool or delegates to another agent
+4. **Observe** — the result feeds back into the next reasoning step
+5. **Terminate** — when the goal is achieved or an escalation threshold is hit
+
+The academic challenge isn't building the loop — it's **making it safe**. Autonomous systems that can write and apply configuration patches carry real risk. This course treats guardrails as a first-class design concern throughout, not an afterthought.
+
+---
+
+<Quiz question="What distinguishes the Cyber AI cognitive layer from a traditional SIEM?">
+
+<div>
+
+A SIEM aggregates and correlates events — it produces alerts. Cyber AI consumes those alerts and **reasons about them**: What does this anomaly mean? What does the documentation say? What's the safest response? A SIEM tells you something is wrong; Cyber AI tries to figure out what to do about it.
+
+The key architectural difference is the **closed feedback loop** — Cyber AI can take action and observe the result, iterating until the incident is resolved or escalated.
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+In **Lesson 2**, you'll set up the development environment: Python virtual environment, LangGraph, a vector database, and an MCP server — everything you need to build the three-agent system.

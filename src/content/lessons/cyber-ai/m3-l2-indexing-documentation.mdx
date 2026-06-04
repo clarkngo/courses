@@ -1,0 +1,280 @@
+---
+title: "Indexing Documentation: Manuals, Runbooks, and Threat Models"
+description: "Structure and load three categories of internal documentation into the knowledge base — and learn how metadata filtering improves retrieval precision."
+module: 3
+moduleTitle: "Agent B — SecOps RAG Agent"
+lesson: 2
+duration: "55 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Three Document Categories
+
+Agent B needs three types of knowledge to respond to an incident effectively:
+
+| Category | Purpose | Examples |
+|---|---|---|
+| **Runbooks** | Step-by-step response procedures | "SSH Brute Force Response", "Config Drift Playbook" |
+| **Threat Models** | Attacker techniques and their indicators | MITRE ATT&CK mappings, internal threat intel |
+| **Equipment Manuals** | Vendor-specific commands and configs | Cisco IOS reference, pfSense documentation |
+
+Storing all three in a single collection works — but metadata filtering lets you scope a query to only the category that's relevant for a given incident type.
+
+---
+
+## Updated Document Schema
+
+Add a `doc_type` field to the metadata of every chunk:
+
+```python
+# knowledge_base/loader.py (updated)
+import os
+import chromadb
+from chromadb.utils import embedding_functions
+
+CHROMA_PATH = "./chroma_db"
+COLLECTION_NAME = "secops_kb"
+
+DOC_TYPE_MAP = {
+    "runbook": "runbook",
+    "threat":  "threat_model",
+    "manual":  "equipment_manual",
+}
+
+def _chunk_text(text: str, chunk_size: int = 500, overlap: int = 50) -> list[str]:
+    words = text.split()
+    chunks, i = [], 0
+    while i < len(words):
+        chunks.append(" ".join(words[i : i + chunk_size]))
+        i += chunk_size - overlap
+    return chunks
+
+def _detect_type(filename: str) -> str:
+    lower = filename.lower()
+    for key, val in DOC_TYPE_MAP.items():
+        if key in lower:
+            return val
+    return "general"
+
+def load_documents(docs_dir: str = "./docs") -> None:
+    client = chromadb.PersistentClient(path=CHROMA_PATH)
+    ef = embedding_functions.SentenceTransformerEmbeddingFunction(
+        model_name="all-MiniLM-L6-v2"
+    )
+    collection = client.get_or_create_collection(
+        name=COLLECTION_NAME, embedding_function=ef
+    )
+
+    count = 0
+    for filename in os.listdir(docs_dir):
+        if not filename.endswith((".txt", ".md")):
+            continue
+        doc_type = _detect_type(filename)
+        with open(os.path.join(docs_dir, filename)) as f:
+            raw = f.read()
+        for i, chunk in enumerate(_chunk_text(raw)):
+            collection.upsert(
+                ids=[f"{filename}-{i}"],
+                documents=[chunk],
+                metadatas=[{
+                    "source": filename,
+                    "doc_type": doc_type,
+                    "chunk": i,
+                }],
+            )
+            count += 1
+
+    print(f"Loaded {count} chunks ({docs_dir}).")
+```
+
+---
+
+## Sample Documents
+
+Create these files in `docs/`:
+
+**`docs/threat-model-brute-force.txt`**:
+```
+THREAT MODEL: Credential Brute Force (T1110)
+
+MITRE ATT&CK: T1110 — Brute Force
+Sub-techniques:
+  T1110.001 — Password Guessing
+  T1110.003 — Password Spraying
+
+Attacker Goal: Gain initial access by guessing valid credentials.
+
+Indicators of Compromise:
+- High volume of failed authentication attempts (>10/min from single IP)
+- Attempts across multiple usernames from the same source
+- Attempts at non-business hours from unexpected geographies
+- Successful login immediately following a burst of failures
+
+Common Targets: SSH (22), RDP (3389), VPN portals, web admin panels.
+
+Detection: SIEM rule — "5+ failed logins from same IP within 60s."
+Response: Block IP, audit successful logins, rotate credentials if breach confirmed.
+```
+
+**`docs/manual-cisco-ios.txt`**:
+```
+CISCO IOS — Common Security Commands
+
+Block a source IP (access control list):
+  ip access-list extended BLOCK_ATTACKER
+    deny ip host <ATTACKER_IP> any
+    permit ip any any
+  interface GigabitEthernet0/0
+    ip access-group BLOCK_ATTACKER in
+
+Verify active connections:
+  show ip nat translations
+  show tcp brief
+
+Save configuration:
+  copy running-config startup-config
+
+Show interface status:
+  show interfaces status
+  show interfaces GigabitEthernet0/1
+
+Enable SSH logging:
+  logging buffered debugging
+  terminal monitor
+```
+
+**`docs/threat-model-config-drift.txt`**:
+```
+THREAT MODEL: Configuration Drift / Unauthorized Change (T1562)
+
+MITRE ATT&CK: T1562 — Impair Defenses
+Sub-technique: T1562.004 — Disable or Modify System Firewall
+
+Attacker Goal: Weaken security controls by modifying device configurations.
+
+Indicators of Compromise:
+- SNMP trap: interface state change without approved change ticket
+- Unexpected routing table changes
+- Modified firewall rules not matching CMDB baseline
+- SSH access from new IP to network device
+
+Detection: Compare running config against CMDB baseline on each SNMP trap.
+Response: Revert to known-good config; identify who/what made the change; audit access logs.
+```
+
+---
+
+## Filtered Retrieval
+
+Update the retriever to support optional `doc_type` filtering:
+
+```python
+# knowledge_base/retriever.py (updated)
+import chromadb
+from chromadb.utils import embedding_functions
+from typing import Optional
+
+CHROMA_PATH = "./chroma_db"
+COLLECTION_NAME = "secops_kb"
+
+_collection = None
+
+def _get_collection():
+    global _collection
+    if _collection is None:
+        client = chromadb.PersistentClient(path=CHROMA_PATH)
+        ef = embedding_functions.SentenceTransformerEmbeddingFunction(
+            model_name="all-MiniLM-L6-v2"
+        )
+        _collection = client.get_collection(
+            name=COLLECTION_NAME, embedding_function=ef
+        )
+    return _collection
+
+def retrieve(
+    query: str,
+    n_results: int = 3,
+    doc_type: Optional[str] = None,
+) -> list[dict]:
+    """Return top-n chunks. Optionally filter by doc_type."""
+    collection = _get_collection()
+    where = {"doc_type": doc_type} if doc_type else None
+    results = collection.query(
+        query_texts=[query],
+        n_results=n_results,
+        where=where,
+    )
+    docs = results["documents"][0]
+    metas = results["metadatas"][0]
+    return [{"text": d, "source": m["source"], "doc_type": m["doc_type"]}
+            for d, m in zip(docs, metas)]
+```
+
+---
+
+## Test Filtered Retrieval
+
+```python
+# test_retrieval.py
+from knowledge_base.retriever import retrieve
+
+query = "SSH brute force attack response procedure"
+
+print("=== All doc types ===")
+for r in retrieve(query, n_results=3):
+    print(f"[{r['doc_type']}] {r['source']}: {r['text'][:100]}...")
+
+print("\n=== Runbooks only ===")
+for r in retrieve(query, n_results=2, doc_type="runbook"):
+    print(f"[{r['doc_type']}] {r['source']}: {r['text'][:100]}...")
+
+print("\n=== Threat models only ===")
+for r in retrieve(query, n_results=2, doc_type="threat_model"):
+    print(f"[{r['doc_type']}] {r['source']}: {r['text'][:100]}...")
+```
+
+<CodeLab title="When to Use Filtered Retrieval">
+
+Unfiltered retrieval returns the most semantically similar chunks across all document types. That's fine for general queries.
+
+But when Agent B knows the incident type is `brute_force`, it should pull the brute-force **runbook** (for action steps) AND the brute-force **threat model** (for attacker context) specifically. Unfiltered retrieval might return chunks from a config drift runbook that happen to use similar words — less useful.
+
+Strategy: retrieve 2 runbook chunks + 2 threat model chunks + 1 equipment manual chunk, then assemble them into the prompt in order.
+
+</CodeLab>
+
+---
+
+<Pitfall title="Document Quality Is Retrieval Quality">
+
+If your runbooks are vague ("investigate and resolve"), RAG will retrieve vague content and Agent B will give vague recommendations. The quality of the AI's response is bounded by the quality of the documentation.
+
+Before indexing, audit each document: Does it have specific, actionable steps? Does it name real commands and configs? If not, improve the documentation — not the retrieval algorithm.
+
+</Pitfall>
+
+---
+
+<Quiz question="What is the advantage of storing `doc_type` as metadata in ChromaDB rather than using separate collections for each type?">
+
+<div>
+
+A single collection with metadata filtering gives you flexibility:
+- You can do **unfiltered retrieval** (search everything) when you're not sure which category is relevant
+- You can do **filtered retrieval** (runbooks only, threat models only) when incident type is known
+- You avoid duplicating the embedding model initialization and query logic for multiple collections
+- Adding a new document type means adding a new `doc_type` value, not a new collection and retriever
+
+The tradeoff: ChromaDB's metadata filtering is slightly slower than a separate collection query. At the scale of a security knowledge base (thousands, not millions of documents), this difference is negligible.
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+Knowledge base loaded and indexed. In **Lesson 3**, you'll build the full Agent B function — it receives an incident from the queue, retrieves relevant documents, and uses an LLM to synthesize a recommended action.

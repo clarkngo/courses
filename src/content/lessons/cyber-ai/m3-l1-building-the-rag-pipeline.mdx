@@ -1,0 +1,259 @@
+---
+title: "Building the RAG Pipeline"
+description: "Implement the retrieval backbone for Agent B — embed your knowledge base into ChromaDB and query it with semantic search."
+module: 3
+moduleTitle: "Agent B — SecOps RAG Agent"
+lesson: 1
+duration: "60 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## What RAG Solves
+
+An LLM's training data has a cutoff date. It doesn't know your organization's runbooks, your custom threat models, or your equipment-specific manuals. If Agent B relied solely on the LLM's built-in knowledge, its recommendations would be generic and potentially wrong for your environment.
+
+**Retrieval-Augmented Generation (RAG)** solves this by:
+
+1. Storing your internal documentation in a vector database
+2. At inference time, finding the most relevant documents for the current incident
+3. Including those documents in the LLM prompt as grounding context
+
+The LLM's job changes from "know everything" to "reason over what you're given."
+
+---
+
+## RAG Architecture for Cyber AI
+
+```
+Internal Docs (PDFs, Markdown, text)
+          │
+          ▼
+    [Document Loader]      ← knowledge_base/loader.py
+          │
+    chunk + clean
+          │
+          ▼
+    [Embedding Model]      ← sentence-transformers (local)
+          │
+    vector representation
+          │
+          ▼
+    [ChromaDB Collection]  ← persistent on disk
+          │
+          │  ← at inference time ─────────────────────────────┐
+          │                                                    │
+    [Semantic Search]  ←─ incident context (from Agent A)     │
+          │                                                    │
+    top-k documents                                           │
+          │                                                    │
+          ▼                                                    │
+    [Agent B prompt]  ←────────────────────────────────────────┘
+```
+
+---
+
+## Part 1: Document Loader
+
+```python
+# knowledge_base/loader.py
+import os
+import re
+import chromadb
+from chromadb.utils import embedding_functions
+
+CHROMA_PATH = "./chroma_db"
+COLLECTION_NAME = "secops_kb"
+
+def _chunk_text(text: str, chunk_size: int = 500, overlap: int = 50) -> list[str]:
+    """Split text into overlapping chunks."""
+    words = text.split()
+    chunks = []
+    i = 0
+    while i < len(words):
+        chunk = " ".join(words[i : i + chunk_size])
+        chunks.append(chunk)
+        i += chunk_size - overlap
+    return chunks
+
+def load_documents(docs_dir: str = "./docs") -> None:
+    """Load all .txt and .md files from docs_dir into ChromaDB."""
+    client = chromadb.PersistentClient(path=CHROMA_PATH)
+    ef = embedding_functions.SentenceTransformerEmbeddingFunction(
+        model_name="all-MiniLM-L6-v2"
+    )
+    collection = client.get_or_create_collection(
+        name=COLLECTION_NAME,
+        embedding_function=ef,
+    )
+
+    doc_id = 0
+    for filename in os.listdir(docs_dir):
+        if not filename.endswith((".txt", ".md")):
+            continue
+        filepath = os.path.join(docs_dir, filename)
+        with open(filepath) as f:
+            raw = f.read()
+
+        chunks = _chunk_text(raw)
+        for i, chunk in enumerate(chunks):
+            collection.upsert(
+                ids=[f"{filename}-chunk-{i}"],
+                documents=[chunk],
+                metadatas=[{"source": filename, "chunk": i}],
+            )
+            doc_id += 1
+
+    print(f"Loaded {doc_id} chunks from {docs_dir} into ChromaDB.")
+```
+
+<CodeLab title="Chunk Size and Overlap">
+
+Chunking splits long documents into pieces small enough to fit in a prompt. The tradeoffs:
+
+- **Smaller chunks** → more precise retrieval, but context can be cut off mid-thought
+- **Larger chunks** → more context per result, but you retrieve fewer unique passages
+- **Overlap** → repeated words at chunk boundaries ensure a sentence that straddles a boundary appears in at least one chunk
+
+`500 words / 50 word overlap` is a reasonable starting point for technical documentation. Tune based on your retrieval quality.
+
+</CodeLab>
+
+---
+
+## Part 2: Sample Knowledge Base
+
+Create a `docs/` directory with sample runbooks:
+
+```bash
+mkdir docs
+```
+
+**`docs/brute-force-runbook.txt`**:
+```
+RUNBOOK: SSH Brute Force Response
+
+Trigger: More than 5 failed SSH login attempts from the same IP within 60 seconds.
+
+Immediate Actions:
+1. Block the source IP at the perimeter firewall (iptables or pfSense rule).
+2. Check /var/log/auth.log for successful logins from that IP in the past 24h.
+3. If any successful login found, escalate to CRITICAL and initiate IR procedure.
+4. Notify the SOC lead via PagerDuty.
+
+Config Patch (iptables):
+  iptables -A INPUT -s <SOURCE_IP> -j DROP
+  iptables-save > /etc/iptables/rules.v4
+
+Verify: Confirm no new failed attempts within 5 minutes of applying the rule.
+
+Escalation: If 3 or more IPs are attacking simultaneously, suspect a coordinated campaign — escalate to the incident commander.
+```
+
+**`docs/config-drift-runbook.txt`**:
+```
+RUNBOOK: Configuration Drift Detection
+
+Trigger: SNMP trap indicating interface state change or CPU/memory threshold exceeded.
+
+Immediate Actions:
+1. SSH to the affected host and run `show running-config` (Cisco) or `ip link show` (Linux).
+2. Compare against the last known-good config in your CMDB.
+3. If drift detected, identify the changed lines and the timestamp of the change.
+4. Check the change management system for an approved change at that timestamp.
+
+If Unauthorized:
+- Revert to last known-good config.
+- Block the source of the change (user account or remote IP).
+- Log the incident in the ticketing system.
+
+Escalation: If revert fails or the change affected a critical path (firewall, core routing), escalate immediately.
+```
+
+---
+
+## Part 3: Semantic Query Function
+
+```python
+# knowledge_base/retriever.py
+import chromadb
+from chromadb.utils import embedding_functions
+
+CHROMA_PATH = "./chroma_db"
+COLLECTION_NAME = "secops_kb"
+
+_client = None
+_collection = None
+
+def _get_collection():
+    global _client, _collection
+    if _collection is None:
+        _client = chromadb.PersistentClient(path=CHROMA_PATH)
+        ef = embedding_functions.SentenceTransformerEmbeddingFunction(
+            model_name="all-MiniLM-L6-v2"
+        )
+        _collection = _client.get_collection(
+            name=COLLECTION_NAME, embedding_function=ef
+        )
+    return _collection
+
+def retrieve(query: str, n_results: int = 3) -> list[str]:
+    """Return top-n relevant document chunks for a query."""
+    collection = _get_collection()
+    results = collection.query(query_texts=[query], n_results=n_results)
+    return results["documents"][0]  # List of chunk strings
+```
+
+---
+
+## Test the RAG Pipeline
+
+```bash
+# Load documents first
+python -c "from knowledge_base.loader import load_documents; load_documents()"
+
+# Test retrieval
+python -c "
+from knowledge_base.retriever import retrieve
+chunks = retrieve('SSH login failures from external IP, brute force')
+for i, chunk in enumerate(chunks):
+    print(f'--- Result {i+1} ---')
+    print(chunk[:300])
+    print()
+"
+```
+
+You should see the brute-force runbook content in the top results.
+
+---
+
+<Pitfall title="Stale Knowledge Base">
+
+A RAG system is only as good as its documents. If the runbooks in ChromaDB are a year old, Agent B's recommendations will reflect old procedures.
+
+Build a re-indexing trigger into your pipeline: run `load_documents()` whenever files in `docs/` change (e.g., via a file watcher or a CI step). Use `upsert` (not `add`) so re-indexing is idempotent.
+
+</Pitfall>
+
+---
+
+<Quiz question="Why does Agent B use semantic search (vector embeddings) instead of keyword search to find relevant runbooks?">
+
+<div>
+
+Keyword search requires the query to use the same terms as the document. A log event saying "repeated authentication failures" wouldn't match a runbook that uses "brute force" — even though they describe the same thing.
+
+Semantic search embeds both the query and the documents into a shared vector space where *meaning* is close, not just words. "Authentication failures from external IP" and "SSH brute force attack" end up near each other in that space, so the runbook is retrieved correctly.
+
+This is critical for security documentation, which uses inconsistent terminology across vendors and teams.
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+The retrieval backbone is in place. In **Lesson 2**, you'll load real-world documentation — equipment manuals and threat models — and tune retrieval quality.
