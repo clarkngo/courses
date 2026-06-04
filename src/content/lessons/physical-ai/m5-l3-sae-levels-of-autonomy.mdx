@@ -1,0 +1,127 @@
+---
+title: "SAE Levels of Autonomy"
+description: "The SAE J3016 framework defines six levels of driving automation. Learn what each level means — and why the jump from Level 2 to Level 3 is the hardest."
+module: 5
+moduleTitle: "Autonomous Vehicles"
+lesson: 3
+duration: "15 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## The Problem with "Self-Driving"
+
+"Self-driving car" is a marketing term. It obscures enormous differences in capability and — critically — who is responsible for safety.
+
+A car that keeps you in your lane on a highway is not the same as a car that drives you door-to-door without any human involvement. Both are called "self-driving" in advertising. The difference in engineering, liability, and safety requirements is vast.
+
+In 2014, SAE International published **J3016**, a taxonomy of driving automation that provides precise, shared language for describing exactly how much a vehicle can do without human involvement.
+
+---
+
+## The Six Levels
+
+### Level 0 — No Automation
+The human driver does everything. The vehicle may provide warnings (forward collision alert, lane departure warning) but takes no action. Most cars on the road today.
+
+### Level 1 — Driver Assistance
+The vehicle controls **one** aspect of driving — either steering **or** speed — but not both simultaneously.
+
+Examples: Adaptive Cruise Control (manages speed to follow traffic), Lane Centering Assist (keeps the car in the lane).
+
+The human must monitor the environment at all times and take over immediately.
+
+### Level 2 — Partial Automation
+The vehicle controls **both** steering and speed simultaneously, but the human must monitor the environment and be ready to take over at any moment.
+
+Examples: Tesla Autopilot, GM Super Cruise, Ford BlueCruise, Mercedes-Benz Drive Pilot (on certain roads/conditions).
+
+This is where most advanced driver assistance systems (ADAS) sit today. The name "partial automation" is accurate: the machine drives, but the human supervises.
+
+### Level 3 — Conditional Automation
+The system drives and monitors the environment. The human does **not** need to monitor continuously — but must be available to take over when the system requests.
+
+This is where autonomy begins. The human can look away, check their phone, or talk — as long as they can respond to a handover request in time.
+
+The critical issue: the transition from Level 3 back to human control. How much notice does the driver get? What if they're distracted or asleep?
+
+### Level 4 — High Automation
+The system handles all aspects of driving within a defined **operational design domain (ODD)** — specific geographic areas, weather conditions, or road types. No human takeover capability required within the ODD.
+
+If the system reaches the boundary of the ODD or encounters a situation it can't handle, it brings the vehicle to a minimal risk condition (stops safely) rather than handing control to a human.
+
+Waymo One is a Level 4 system operating within its mapped service area. Human drivers are not required — the car will stop if something goes wrong, not ask a passenger to drive.
+
+### Level 5 — Full Automation
+The system can handle all driving tasks, under all conditions, anywhere. No ODD restrictions.
+
+**No Level 5 system exists.** It is a theoretical endpoint — the "fully autonomous vehicle" of science fiction. The technical challenges (all-weather, all-road, all-scenario autonomy) are not solved and timelines are unknown.
+
+---
+
+## The Crucial Distinction: Monitoring
+
+<CodeLab title="The Monitoring Shift">
+
+The most important dividing line in the SAE framework is between **Level 2 and Level 3** — specifically, who is responsible for monitoring the driving environment.
+
+**Level 2:** The human monitors. The machine drives. The human is responsible for taking over at any moment, with no warning.
+
+**Level 3:** The machine monitors. The machine drives. The human can disengage until the machine requests a handover.
+
+This shift changes everything: liability, driver behavior, certification requirements, and hardware demands. A Level 3 system must be able to detect when it's approaching its operational limits — and must do so reliably, with enough warning time for a human to respond safely.
+
+Most automakers have avoided Level 3 in the US specifically because of the liability complexity. If the machine is monitoring and something goes wrong, who is responsible — the driver or the manufacturer?
+
+</CodeLab>
+
+---
+
+## Why Level 3 Is the Hardest Level
+
+Level 3 creates a uniquely dangerous situation: the human is responsible for takeover, but is actively encouraged not to pay attention.
+
+Studies on human factors consistently show:
+- When people know they don't need to monitor, they stop monitoring within minutes
+- Re-engaging attention after a period of distraction takes 10-40 seconds
+- At highway speeds, 10 seconds of inattention covers 300 meters
+
+A Level 3 system that requires human takeover in 5 seconds creates a dangerous transition for a driver who has been reading for the past 20 minutes.
+
+<Pitfall title="The Tesla Autopilot Misclassification">
+
+Tesla's Autopilot and Full Self-Driving (FSD) features are Level 2 systems — the human must monitor the road at all times.
+
+However, the names "Autopilot" and "Full Self-Driving" have consistently led users to treat these as Level 3 or higher systems, disengaging from monitoring. Multiple fatalities have been attributed to drivers who were not monitoring the road while Autopilot was engaged.
+
+Naming matters. The gap between what a system can do and what users believe it can do is a safety problem that the SAE framework alone cannot solve.
+
+</Pitfall>
+
+---
+
+<Quiz question="What is the key difference between a Level 2 and a Level 3 autonomous vehicle?">
+
+<div>
+
+In a Level 2 system, the human driver must continuously monitor the driving environment and be ready to take over at any moment — even though the car is controlling steering and speed. The human is the fallback.
+
+In a Level 3 system, the car monitors the environment. The human does not need to supervise continuously and can engage in other activities — but must be able to respond to a handover request from the system when it reaches the limits of its capability.
+
+The critical difference is who bears the responsibility for monitoring: the driver (Level 2) or the system (Level 3).
+
+</div>
+</Quiz>
+
+---
+
+## Module 5 Recap
+
+You now understand:
+- The full sensor-to-steering stack of a self-driving car
+- How drones achieve autonomous navigation in 3D space
+- The SAE framework for precisely describing levels of vehicle autonomy
+
+In **Module 6**, we leave vehicles behind and zoom in to the smallest scale of Physical AI: intelligent systems embedded in chips, sensors, and tiny devices at the edge.

@@ -1,0 +1,146 @@
+---
+title: "When Physical AI Fails — Real Incidents"
+description: "Physical AI failures have real consequences. Examining real incidents is the best way to understand the failure modes that matter — and how to prevent them."
+module: 8
+moduleTitle: "Safety, Ethics & the Future"
+lesson: 1
+duration: "22 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Why We Study Failures
+
+Aviation has the safest record of any transportation mode — not despite studying its accidents obsessively, but because of it. Every crash and near-miss is documented, analyzed, and used to improve systems and procedures.
+
+Physical AI needs the same culture. When an autonomous vehicle crashes, a robot injures a worker, or a medical AI misdiagnoses a patient, the question is not "who do we blame?" but "what does this teach us about how to build better systems?"
+
+This lesson examines real Physical AI failures — not to alarm, but to understand.
+
+---
+
+## Case 1: Uber ATG — Tempe, Arizona (2018)
+
+**What happened:**
+An Uber autonomous test vehicle struck and killed Elaine Herzberg as she crossed a road outside a crosswalk at night. A safety operator was in the vehicle but was not monitoring the road at the time of impact. The vehicle was traveling at 43 mph and applied no braking before the collision.
+
+**The technical failure:**
+Post-incident analysis by the NTSB found multiple failure modes:
+- The perception system detected the pedestrian 5.6 seconds before impact but repeatedly misclassified her (as an unknown object, then as a vehicle, then as a bicycle)
+- Each reclassification reset the predicted collision path
+- The system had a built-in 1-second delay on emergency braking to prevent "erratic behavior"
+- By the time the system resolved the classification and would have braked, it was too late
+
+**The organizational failure:**
+Uber had disabled the vehicle's production emergency braking system during testing, relying entirely on the safety operator. The safety operator had not been adequately monitoring the road.
+
+**What it teaches:**
+- Reclassification of detected objects should not reset collision avoidance logic
+- Emergency braking suppression must have strict limits
+- The safety operator is not a reliable last resort without active monitoring protocols
+- Multiple safety system failures can coexist in a single incident
+
+---
+
+## Case 2: Tesla Autopilot — Multiple Fatalities (2016-present)
+
+**Pattern:**
+Multiple fatal crashes have occurred when Tesla's Autopilot was engaged. In several, the vehicle drove into a stationary object (a white truck trailer against a bright sky, a parked police car, a concrete median barrier) that the system failed to detect and brake for.
+
+**Common technical factors:**
+- Reliance on cameras without LiDAR meant certain object detection edge cases (bright reflective objects, unusual geometry) were missed
+- Autopilot was not designed for the situations it was used in (construction zones, intersections, non-highway roads)
+- Users over-trusted the system due to its name and marketing
+
+**Common human factors:**
+- Drivers were not monitoring the road as required by the system's design intent
+- Extended Autopilot use built overconfidence and reduced driver vigilance
+
+**What it teaches:**
+- System names matter: "Autopilot" creates an expectation of full automation that a Level 2 system cannot meet
+- In-cab monitoring (driver attention cameras, steering torque checks) are necessary for Level 2 systems
+- Technology that works 99% of the time can still kill people in the 1%
+
+---
+
+## Case 3: Rogue Robot — South Korea (2023)
+
+**What happened:**
+A robot at a distribution center in South Korea crushed a worker to death. The robot's sensors failed to distinguish the worker from a box of peppers it was moving.
+
+**The failure:**
+The robot's sensor system did not detect a person in its operational envelope and proceeded to move, fatally pinning the worker against a conveyor.
+
+**What it teaches:**
+- Operational safety boundaries must be enforced by multiple independent systems
+- Human workers and robotic systems sharing the same space require layered safety: area scanners, presence sensors, physical barriers, and emergency stop mechanisms — not reliance on a single sensor
+- Worker safety training must include awareness of robot operational zones
+
+---
+
+## Case 4: MCAS — Boeing 737 MAX (2018-2019)
+
+**What happened:**
+Two Boeing 737 MAX aircraft crashed within 5 months, killing 346 people. The cause was the Maneuvering Characteristics Augmentation System (MCAS) — a software system designed to counteract an aerodynamic quirk of the new engine placement.
+
+**The AI dimension:**
+MCAS is not "AI" in the neural network sense, but it is an autonomous control system that takes physical action without pilot input — making it relevant to Physical AI safety.
+
+MCAS relied on a single angle-of-attack sensor. When that sensor gave a faulty reading (in both crashes, it malfunctioned after takeoff), MCAS repeatedly pitched the nose down in an attempt to correct what it incorrectly perceived as a stall. Pilots fought against it but could not override it before the aircraft hit the ground.
+
+**What it teaches:**
+- Safety-critical physical AI systems must not have single points of sensor failure
+- Override mechanisms must be clearly communicated and accessible to operators
+- Hiding system behavior from operators (Boeing did not adequately document MCAS to pilots) eliminates the human safety layer
+- Regulatory oversight of autonomous systems must be adequately resourced
+
+---
+
+## Common Failure Patterns
+
+<CodeLab title="A Taxonomy of Physical AI Failures">
+
+Across incidents, the same failure patterns recur:
+
+**Sensor failure or misclassification**
+A sensor gives wrong data, or the AI misinterprets correct data. The system acts on a false model of reality.
+
+**Distribution shift**
+The system encounters conditions (weather, unusual objects, edge-case scenarios) not well-represented in training. Performance degrades below safe levels.
+
+**Over-reliance on a single system**
+Whether a single sensor, a single model, or a single layer of safety logic — single points of failure are catastrophic in physical systems.
+
+**Human automation complacency**
+Operators or users disengage from monitoring because the system usually works. When it fails, the human is not ready to take over.
+
+**Missing or inadequate override mechanisms**
+When autonomous systems take wrong actions, operators must be able to override quickly and clearly. Obscure or slow override mechanisms eliminate the human safety layer.
+
+**Incentive-driven safety compromise**
+Commercial, schedule, or competitive pressures lead organizations to deploy systems before safety engineering is complete.
+
+</CodeLab>
+
+---
+
+<Quiz question="What is 'automation complacency' and why is it a specific risk for Physical AI systems?">
+
+<div>
+
+Automation complacency is the tendency of human operators to reduce their vigilance and monitoring when a system usually works reliably. The more reliable an automated system is, the more confident operators become — and the less attention they pay.
+
+This is a specific risk for Physical AI because the human operator is often the last safety layer. A Level 2 autonomous vehicle driver who stops monitoring the road, a robot cell operator who stops watching the workspace, a safety officer who stops auditing AI decisions — all represent cases where the human safety net has degraded.
+
+Physical AI systems must be designed with this human tendency in mind: monitoring requirements must be enforced (not just requested), handover times must account for re-engagement latency, and the consequences of inattention must be bounded.
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+Understanding how Physical AI fails informs how we regulate it. In **Lesson 2**, we look at the emerging regulatory landscape, the liability questions these systems raise, and what it means to build trustworthy Physical AI.

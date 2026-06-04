@@ -1,0 +1,134 @@
+---
+title: "Classical Control vs. AI Control"
+description: "Rule-based systems have run machines for decades. Learn when to use classical control, when AI control is better, and why most real systems use both."
+module: 3
+moduleTitle: "Decision-Making & Control"
+lesson: 2
+duration: "17 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Two Philosophies
+
+For most of the 20th century, machines were controlled by explicit, human-written rules. Engineers built mathematical models of the system, designed controllers based on those models, and deployed software that followed deterministic logic.
+
+This approach works. It's why bridges don't fall, aircraft fly, and chemical plants don't explode.
+
+Then AI arrived and offered a different approach: instead of writing rules, train a model on data and let it learn the rules itself.
+
+Both approaches have a place in Physical AI. Understanding when to use each is one of the most important skills in the field.
+
+---
+
+## Classical Control — Strengths and Limits
+
+**Classical control** (also called traditional or model-based control) is built on:
+- An explicit mathematical model of the system being controlled
+- Control laws that specify exactly how to respond to any measured state
+- Stability proofs that guarantee the system won't oscillate, overshoot dangerously, or diverge
+
+**Strengths:**
+- **Predictable** — given the same input, you always get the same output
+- **Verifiable** — stability and safety can be mathematically proven
+- **Interpretable** — engineers can trace exactly why a system behaved the way it did
+- **Fast** — simple control laws execute in microseconds
+- **Mature** — 100+ years of theory, tools, and practitioner expertise
+
+**Limits:**
+- Requires an accurate mathematical model — which is hard to derive for complex systems
+- Struggles with high-dimensional, unstructured environments (roads, hospitals, kitchens)
+- Can't generalize beyond what was anticipated during design
+- Becomes extremely complex when the system has many interacting variables
+
+A PID controller is perfect for maintaining a constant temperature in an oven. It is not sufficient for navigating a city.
+
+---
+
+## AI Control — Strengths and Limits
+
+**AI control** uses machine learning models — particularly deep neural networks — to map sensor inputs directly to control outputs, or to learn planning policies that generalize to novel situations.
+
+**Strengths:**
+- **Handles complexity** — can learn control policies for systems too complex to model mathematically
+- **Generalizes** — can handle novel situations not explicitly anticipated during design
+- **Learns from data** — improves with more experience without manual re-engineering
+- **Perception integration** — seamlessly handles raw sensor inputs (images, point clouds)
+
+**Limits:**
+- **Black box** — difficult to understand why the model produced a given output
+- **Unpredictable edge cases** — may fail unexpectedly in situations underrepresented in training data
+- **Certification problem** — how do you certify an AI system is safe if you can't verify its behavior exhaustively?
+- **Data hungry** — requires large datasets to train reliably
+- **Computationally expensive** — neural network inference requires more hardware than a PID loop
+
+<Pitfall title="The Certification Gap">
+
+Aviation, medical devices, and nuclear power are safety-critical industries with rigorous certification requirements. Every line of safety-critical code must be verified, tested, and certified — a process that takes years and costs millions.
+
+Neural networks cannot currently be certified to the same standard. You can test them extensively, but you can't prove they will behave safely in all situations. This is why AI control is most common in commercial applications (self-driving cars, logistics robots) but faces major regulatory hurdles in aviation and medical devices.
+
+Bridging this gap — building AI systems that are both powerful and certifiably safe — is one of the most important open research problems in physical AI.
+
+</Pitfall>
+
+---
+
+## Hybrid Systems — The Real World
+
+In practice, most sophisticated Physical AI systems combine classical and AI control:
+
+<CodeLab title="Layered Control in a Self-Driving Car">
+
+A modern autonomous vehicle uses a layered approach:
+
+**Classical control layer:**
+- Steering, throttle, and brake controllers (PID-based)
+- Emergency stop logic (rule-based: if TTC < 0.5s, brake to maximum)
+- Lane-keeping within a known, mapped road geometry
+
+**AI control layer:**
+- Perception: deep learning detects pedestrians, vehicles, cyclists from camera/LiDAR
+- Behavior prediction: neural network predicts what other drivers will do
+- Route planning in unstructured or unmapped areas
+
+The classical layer handles low-level actuation with provable stability. The AI layer handles high-level perception and decision-making in complex environments. The classical layer can override the AI layer if safety rules are violated.
+
+This separation of concerns is the dominant architecture in production autonomous vehicles.
+
+</CodeLab>
+
+---
+
+## Imitation Learning — Learning from Humans
+
+One AI control approach worth highlighting: **imitation learning** (also called behavior cloning).
+
+Instead of designing a reward function and running simulation, you simply record expert human operators controlling the system — and train a neural network to imitate their behavior.
+
+**Advantages:** no reward engineering, captures tacit human expertise, produces human-like behavior.
+
+**Disadvantages:** the model can only be as good as its training demonstrations, and distribution shift — when the model encounters situations not covered by the training data — causes failures.
+
+Tesla's original Autopilot and many robotic manipulation systems use imitation learning from human demonstrations.
+
+---
+
+<Quiz question="Why is it difficult to certify AI control systems for safety-critical applications?">
+
+<div>
+
+Classical control systems can be mathematically proven to be stable and safe — engineers can verify the behavior exhaustively using formal methods. Neural networks, by contrast, are black boxes: their behavior is determined by billions of learned parameters in ways that are not humanly interpretable.
+
+You can test a neural network extensively on a large dataset and show it performs well statistically — but you cannot prove it will behave safely in every possible situation. Rare, edge-case inputs may produce catastrophic outputs that were never encountered during testing. This makes certifying AI systems to the standards required by aviation, medical, and nuclear safety authorities extremely challenging.
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+We've covered classical control and neural network control. In **Lesson 3**, we explore the third major AI control paradigm: reinforcement learning — where a machine learns through trial and error in the physical (or simulated) world.

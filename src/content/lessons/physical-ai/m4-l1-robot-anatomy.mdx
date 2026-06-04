@@ -1,0 +1,125 @@
+---
+title: "Robot Anatomy — Actuators, Joints, End-Effectors"
+description: "Understand what makes a robot a robot — the mechanical and electrical components that turn AI decisions into physical motion."
+module: 4
+moduleTitle: "Robotics"
+lesson: 1
+duration: "18 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## What Is a Robot?
+
+A robot is a physically embodied machine that can sense its environment, process information, and take autonomous or semi-autonomous physical action.
+
+That definition covers an enormous range: a robotic arm on an assembly line, a surgical robot, a household vacuum, a Mars rover, and a humanoid robot. What they share is the combination of sensing, computation, and physical actuation.
+
+In this lesson, we focus on the mechanical and electrical building blocks — the physical body that AI inhabits.
+
+---
+
+## Actuators — How Robots Move
+
+An **actuator** converts energy into motion or force. Choosing the right actuator type is one of the most important decisions in robot design.
+
+**Electric motors**
+The most common actuator in modern robots. Electric motors are clean, controllable, and efficient. Two main types:
+
+- **DC motors** — simple, cheap, used in wheels and basic joints
+- **Servo motors** — DC motor + encoder + controller in one package; provides precise position control
+- **Brushless DC motors** — higher efficiency and longevity than brushed motors; used in drones, high-performance robot joints
+
+**Hydraulic actuators**
+Use pressurized fluid to generate very large forces from a compact mechanism. Boston Dynamics' Atlas robot (earlier generations) used hydraulics to achieve powerful, dynamic locomotion. Downside: complex, heavy, requires pumps and fluid management.
+
+**Pneumatic actuators**
+Use compressed air. Fast and lightweight but harder to control precisely. Common in industrial pick-and-place applications.
+
+**Series Elastic Actuators (SEA)**
+A spring in series with a motor. The spring acts as a force sensor and provides compliance — the ability to "give" when pushed. Essential for robots that work near humans, as they're inherently safer than rigid actuators.
+
+---
+
+## Joints — Connecting the Pieces
+
+A joint is the connection between two rigid links of a robot that allows relative motion. Joint types:
+
+**Revolute joint**
+Rotational motion around a single axis. The most common joint type in robot arms. A robot arm with 6 revolute joints has 6 **degrees of freedom (DOF)** — it can reach any position and orientation in its workspace.
+
+**Prismatic joint**
+Linear motion along a single axis. Telescoping mechanisms. Less common than revolute joints.
+
+**Spherical joint**
+Rotation around multiple axes simultaneously. Approximates a ball-and-socket joint (like a human shoulder or hip). Hard to actuate and control; usually implemented as multiple revolute joints.
+
+<CodeLab title="Why 6 DOF?">
+
+To position an end-effector at any arbitrary location AND orientation in 3D space, you need at least **6 degrees of freedom**: 3 for position (X, Y, Z) and 3 for orientation (roll, pitch, yaw).
+
+Most industrial robot arms have exactly 6 joints. Adding more joints creates redundancy — multiple configurations can achieve the same end-effector pose — which is useful for obstacle avoidance and ergonomics.
+
+A human arm has about 7 DOF from shoulder to wrist. Humanoid robot arms typically have 6-7 DOF to approximate this.
+
+</CodeLab>
+
+---
+
+## End-Effectors — The Business End
+
+The **end-effector** is the tool or device attached to the last link of a robot arm — what the robot actually uses to interact with the world.
+
+**Grippers**
+The most common end-effector. Types:
+
+- **Parallel jaw gripper** — two fingers that open and close; simple, reliable, limited to regular shapes
+- **Three-finger gripper** — more adaptable to irregular shapes; more complex
+- **Soft gripper** — silicone or pneumatic fingers that conform to object shape; handles fragile objects without damage
+- **Vacuum gripper** — suction cup; excellent for flat, smooth surfaces; useless for porous or irregular objects
+
+**Tool changers**
+Quick-release mechanisms that allow a robot to swap end-effectors autonomously — switching from a gripper to a welding torch to a screwdriver as the task requires.
+
+**Specialized tools**
+Welding torches, spray guns, deburring tools, surgical instruments — the robot arm becomes a universal mount for any tool.
+
+---
+
+## The Kinematic Chain
+
+A robot arm is a **kinematic chain**: a series of rigid links connected by joints, starting from the base and ending at the end-effector.
+
+**Forward kinematics:** given the joint angles, where is the end-effector?
+**Inverse kinematics:** given a desired end-effector position, what should the joint angles be?
+
+Forward kinematics is straightforward math. Inverse kinematics is harder — there may be multiple solutions (the same hand position can be reached with the elbow up or elbow down), no solution (the target is out of reach), or singularities (configurations where the arm loses a degree of freedom).
+
+<Pitfall title="Singularities — The Dreaded Wrist Flip">
+
+A kinematic singularity is a configuration where the robot loses the ability to move in certain directions. In common 6-DOF robots, this happens when three joint axes align — the robot suddenly requires very high joint velocities to make small end-effector movements.
+
+If a robot's path planning takes it through or near a singularity, the result can be violent, uncontrolled motion as the controller tries to maintain the planned trajectory. Singularity avoidance is a practical concern that every robot programmer encounters.
+
+</Pitfall>
+
+---
+
+<Quiz question="What is the difference between forward kinematics and inverse kinematics?">
+
+<div>
+
+Forward kinematics computes the position and orientation of the end-effector given the joint angles — it's a deterministic calculation with one answer.
+
+Inverse kinematics works in reverse: given a desired end-effector position and orientation, find the joint angles that achieve it. This is harder because there may be multiple valid solutions (elbow up vs. elbow down), no solution (target out of reach), or singularities where the math breaks down. Inverse kinematics is what the robot must solve every time it wants to move to a specific location in space.
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+You understand the mechanical body. In **Lesson 2**, we look at how different types of robots — industrial and collaborative — differ in design philosophy, capability, and the AI that drives them.

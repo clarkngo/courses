@@ -1,0 +1,140 @@
+---
+title: "Regulation, Liability, and Trust"
+description: "Who is responsible when Physical AI causes harm? How should governments regulate autonomous machines? And what does it take for society to actually trust them?"
+module: 8
+moduleTitle: "Safety, Ethics & the Future"
+lesson: 2
+duration: "20 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## The Accountability Gap
+
+When a human driver causes a fatal accident, the legal framework is clear: there is a person who made a decision, and that person can be held responsible.
+
+When an autonomous vehicle causes a fatal accident, the picture is murkier:
+- The software was written by engineers at a company
+- The vehicle was tested and certified by a regulatory body
+- It was sold by a manufacturer and dealer
+- It was operated by a person who may or may not have been monitoring
+- The AI model was trained on data that may have underrepresented the scenario
+
+Who is responsible?
+
+This is not a hypothetical. It is a live legal and policy question being litigated in courts and debated in legislatures worldwide.
+
+---
+
+## The Liability Landscape
+
+**Current US framework:**
+The US does not have a federal autonomous vehicle liability law. Individual states have enacted varying frameworks. In most cases, liability falls primarily on:
+- The manufacturer (product liability) if a design or manufacturing defect caused the failure
+- The operator (negligence) if they failed to supervise appropriately
+
+The 2018 Tempe incident resulted in no criminal charges for the Uber safety operator (ultimately), and Uber settled civil claims. This outcome was controversial and is not settled legal precedent.
+
+**EU Artificial Intelligence Act**
+The EU's AI Act (fully in force from 2026) classifies autonomous vehicles as "high-risk AI systems" subject to mandatory conformity assessments, transparency requirements, and post-market monitoring. Physical AI that can cause harm gets more scrutiny — not less.
+
+**Medical devices**
+FDA clearance (US) or CE marking (EU) is required. Liability for AI-enabled medical devices that cause harm can fall on the manufacturer, the hospital, or the treating physician — depending on whether the device malfunctioned or was used incorrectly.
+
+**Industrial robots**
+OSHA (US) and equivalent bodies regulate workplace safety. Manufacturers are liable for design defects; employers are liable for failure to implement safe working procedures. ISO 10218 and ISO/TS 15066 define the safety standards robots must meet.
+
+---
+
+## The Certification Problem
+
+For traditional safety-critical systems (aircraft, medical devices, nuclear controls), certification requires:
+- Formal specification of the system's required behavior
+- Mathematical proof or exhaustive testing that the specification is met
+- Traceable documentation of every design decision
+
+Neural networks resist this framework:
+- They don't have formal specifications — they have training objectives
+- Their behavior can't be exhaustively tested (the input space is effectively infinite)
+- Their decisions aren't traceable to interpretable rules
+
+This creates a certification gap: regulators know they need to certify AI systems but lack the tools and frameworks to do so to traditional safety standards.
+
+<CodeLab title="Emerging Certification Approaches">
+
+The AI safety certification field is evolving rapidly. Current approaches include:
+
+**Statistical testing:** Run the system on extremely large test datasets and measure error rates. If errors are rare enough and their consequences bounded, accept the system.
+
+**Operational design domain (ODD) limiting:** Certify the system only for a defined operational envelope (specific roads, weather, speed ranges). Mandatory disengagement outside the ODD.
+
+**Formal verification of neural networks:** Emerging research tools can verify properties of small neural networks (e.g., "the output never exceeds X for inputs in range Y"). Not yet scalable to large production models.
+
+**Continuous monitoring:** Post-deployment monitoring of performance and incident rates, with mandatory reporting and response protocols. This is FDA's approach to AI/ML medical devices.
+
+None of these is a complete solution. Physical AI certification remains one of the most active areas of AI policy and safety research.
+
+</CodeLab>
+
+---
+
+## Building Trust
+
+Regulation is necessary but not sufficient. For Physical AI to achieve its potential, the public must trust it. Trust is earned through:
+
+**Demonstrated performance over time**
+Waymo publishes annual safety reports showing its accident and disengagement rates per million miles. These reports allow comparison to human driving and allow observers to track improvement. Transparency builds trust.
+
+**Explainability**
+When a Physical AI system makes a consequential decision (why did it brake? why did it change lanes? why did it flag this tissue as cancerous?), being able to provide a human-understandable explanation increases trust and enables oversight.
+
+**Graceful failure**
+Systems that fail safely — stopping rather than taking uncertain action, asking for human input when uncertain, maintaining a "minimal risk condition" — are more trustworthy than systems that fail unpredictably.
+
+**Inclusive deployment**
+Systems that perform well across diverse populations — different skin tones for medical AI, different body types for robotic interaction, different road conditions for autonomous vehicles — are more trustworthy than systems that work well for some people and poorly for others.
+
+---
+
+## The Equity Dimension
+
+Physical AI deployment has an equity dimension that is easy to overlook.
+
+Early autonomous vehicle deployments are concentrated in affluent, well-mapped urban areas. Rural and low-income communities get the risks (labor displacement) without the benefits (improved mobility).
+
+Agricultural AI trained on data from large commercial farms doesn't work well for smallholder farmers in the developing world.
+
+Robotic surgery is available at major research hospitals. Patients in rural hospitals have no access.
+
+<Pitfall title="Who Benefits?">
+
+Physical AI will likely produce enormous aggregate economic benefits. Whether those benefits are broadly distributed or concentrated in the hands of technology developers and early adopters is a policy choice, not a technical inevitability.
+
+The history of previous general-purpose technologies (electricity, computers, the internet) suggests that without deliberate policy intervention, economic benefits concentrate initially and diffuse slowly. Physical AI may be more concentrated if the required hardware and data infrastructure creates natural monopolies.
+
+This doesn't argue against Physical AI development. It argues for thinking carefully about deployment policy, intellectual property, and access from the beginning — not after the technology has already shaped the market.
+
+</Pitfall>
+
+---
+
+<Quiz question="Why do traditional safety certification approaches struggle with AI-based Physical AI systems?">
+
+<div>
+
+Traditional safety certification requires formal specification of system behavior, exhaustive testing against that specification, and traceable documentation of design decisions. These approaches work for deterministic systems whose behavior can be fully characterized.
+
+Neural networks don't have formal behavioral specifications — they have training objectives and statistical performance. Their behavior on novel inputs can't be predicted from first principles. Their decisions aren't traceable to interpretable rules. And the input space (e.g., all possible road scenes) is effectively infinite, making exhaustive testing impossible.
+
+This gap forces regulators to develop new frameworks — statistical testing, operational design domain limiting, and continuous post-deployment monitoring — that are less certain than traditional certification but are practical for AI-based systems.
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+We've examined the failures and the governance challenges. In the final lesson, we look forward — at the emerging capabilities and trends that will define Physical AI over the next decade.

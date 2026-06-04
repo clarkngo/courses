@@ -1,0 +1,124 @@
+---
+title: "From Perception to Action"
+description: "Once a machine understands its environment, it needs to decide what to do. Learn how Physical AI systems translate perception into motion."
+module: 3
+moduleTitle: "Decision-Making & Control"
+lesson: 1
+duration: "18 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## The Gap Between Knowing and Doing
+
+Perception is hard. But it's only half the problem.
+
+A self-driving car can perfectly detect every pedestrian, lane marking, and traffic sign on the road — and still crash if it doesn't know what to do with that information.
+
+The decision-making and control pipeline is what turns a rich perception of the world into a safe, appropriate physical action.
+
+---
+
+## The Decision Stack
+
+Physical AI systems typically organize their decision-making into layers, each operating at a different timescale:
+
+**Mission planning (minutes to hours)**
+The highest level. What is the overall goal? A delivery drone plans its route from warehouse to destination. A surgical robot is assigned a procedure. A Mars rover is given a science target 500 meters away.
+
+**Behavioral planning (seconds)**
+Given the current environment, what should the system be doing right now? A self-driving car decides: should I follow the car in front, change lanes, or yield to a merging vehicle?
+
+**Motion planning (milliseconds to seconds)**
+Given a behavioral decision, compute a specific trajectory through space. The car decides to change lanes: now plan the exact path to move smoothly from one lane to the other while avoiding all obstacles.
+
+**Control (milliseconds)**
+Execute the planned motion by sending commands to actuators. Turn the steering wheel this many degrees. Apply this much brake force. Rotate this joint to this angle.
+
+---
+
+## Path Planning
+
+Path planning is the process of finding a route from the current state to a goal state that avoids obstacles and satisfies constraints (don't go too fast, don't tilt more than 15 degrees, etc.).
+
+**Grid-based planning**
+The environment is divided into a grid. Each cell is marked as free or occupied. Algorithms like **A*** search find the shortest path through free cells.
+
+Simple and reliable, but computationally expensive for high-resolution grids and doesn't handle continuous motion well.
+
+**Sampling-based planning**
+Algorithms like **RRT (Rapidly-exploring Random Trees)** work by randomly sampling configurations in the space and connecting them into a tree. They're effective for high-dimensional problems (a robot arm with 7 joints has a 7-dimensional configuration space).
+
+**Potential fields**
+The goal exerts an attractive force; obstacles exert repulsive forces. The robot follows the net gradient toward the goal. Elegant and fast, but prone to getting stuck in local minima.
+
+---
+
+## Trajectory Optimization
+
+Path planning finds a feasible route. **Trajectory optimization** refines it: given the planned path, find the smoothest, most energy-efficient way to execute it while respecting the physical limits of the system (maximum acceleration, joint torque limits, etc.).
+
+A planned path might say "move from point A to point B." Trajectory optimization says "move from A to B in 2.3 seconds, accelerating smoothly, keeping joint velocities below their limits, and minimizing jerk so the motion doesn't damage the mechanism."
+
+---
+
+## Reactive vs. Deliberative Control
+
+<CodeLab title="Two Modes of Decision-Making">
+
+**Deliberative control** reasons about the future. It builds a model of the world, simulates possible actions, and chooses the best one. This produces smart, efficient behavior — but takes time.
+
+**Reactive control** responds directly to sensor inputs without building a model. Fast, robust, and hard to fool — but can produce unintelligent behavior in complex situations.
+
+Real physical AI systems use both:
+- Deliberative planning for long-horizon decisions (route, task sequence)
+- Reactive control for immediate hazard avoidance (collision detection, balance recovery)
+
+The challenge is integrating them: when should the reactive system override the deliberative plan? A robot executing a planned motion should stop immediately if a human steps into its path — even if the planner didn't anticipate it.
+
+</CodeLab>
+
+---
+
+## Feedback and Feedforward Control
+
+**Feedforward control** computes the actuator commands needed to execute a motion before measuring the result. It relies entirely on an accurate model of the system.
+
+**Feedback control** (closed-loop) measures the actual result and corrects errors. If the robot arm is 2 degrees off target, apply a corrective command.
+
+Most physical AI systems use both:
+1. Feedforward to get approximately right commands quickly
+2. Feedback to correct the inevitable errors in real time
+
+The most important feedback control algorithm is the **PID controller** (Proportional-Integral-Derivative) — a simple, tunable formula that has been used in everything from thermostats to aircraft for over a century.
+
+<Pitfall title="Model Mismatch — The Hidden Danger">
+
+Every control system is built on a model of the physical system it controls. When that model is wrong — because the robot is carrying an unexpectedly heavy load, because a joint is worn, because the terrain is different from the training environment — the controller makes wrong predictions and produces wrong commands.
+
+Model mismatch is one of the most common causes of physical AI failures in deployment. A system that works perfectly in the lab fails in the field because the real world doesn't match the model.
+
+Robust control design specifically accounts for model uncertainty — assuming the model is slightly wrong and ensuring the system remains stable anyway. Adaptive control goes further, updating the model in real time from sensor data.
+
+</Pitfall>
+
+---
+
+<Quiz question="What is the difference between path planning and trajectory optimization?">
+
+<div>
+
+Path planning finds a feasible route through the environment — a sequence of configurations that gets from start to goal while avoiding obstacles. It doesn't necessarily specify timing or how smoothly the motion should be executed.
+
+Trajectory optimization takes that path and refines it into a specific time-parameterized motion that respects physical constraints: joint speed limits, maximum acceleration, smoothness requirements, and energy efficiency. The result is a trajectory — not just where to go, but exactly how to get there in a physically realizable way.
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+We've seen classical approaches to decision-making and control. In **Lesson 2**, we compare them to AI-based control approaches — and explore when each is the right tool.

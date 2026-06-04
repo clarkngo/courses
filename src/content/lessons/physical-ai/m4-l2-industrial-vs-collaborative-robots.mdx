@@ -1,0 +1,122 @@
+---
+title: "Industrial Robots vs. Collaborative Robots"
+description: "Caged machines versus robots that work beside humans — learn the engineering and AI differences between industrial and collaborative robotics."
+module: 4
+moduleTitle: "Robotics"
+lesson: 2
+duration: "17 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Two Philosophies of Human-Robot Interaction
+
+Industrial robots and collaborative robots (cobots) represent two fundamentally different answers to the same question: how should robots and humans share a workspace?
+
+Industrial robots say: keep humans away. Cobots say: work alongside them.
+
+The difference isn't just engineering — it shapes the AI, the safety systems, the deployment model, and the economics.
+
+---
+
+## Industrial Robots
+
+Industrial robots are the workhorses of modern manufacturing. They've been welding car frames, painting surfaces, and assembling electronics since the 1960s.
+
+**Key characteristics:**
+
+**Speed and power**
+Industrial robots are fast and powerful. A heavy-payload welding robot can move a 500 kg load at 2 m/s. That kind of kinetic energy is lethal to humans in the path.
+
+**Caged and segregated**
+Because they're dangerous, traditional industrial robots operate inside physical cages with interlocked safety doors. When a human enters the cage, the robot must stop. Human and robot never share the workspace simultaneously.
+
+**Repeatability over adaptability**
+Industrial robots are typically programmed for a specific, fixed task — weld these points, every time, in this order. The task doesn't change; the environment is controlled; variation is minimized. AI is optional — many are still pure motion controllers running scripted programs.
+
+**High upfront cost, high throughput**
+A high-end industrial robot cell costs $200,000-$500,000 installed. The economics only work at high production volumes where the cost is amortized over millions of cycles.
+
+---
+
+## Collaborative Robots (Cobots)
+
+Cobots emerged in the 2000s with a different design philosophy: make robots that can work safely beside humans, without cages, in flexible environments.
+
+**Key characteristics:**
+
+**Force limiting**
+Cobots continuously monitor the forces their joints are experiencing. If they detect unexpected contact — a human arm in the path — they stop immediately. ISO/TS 15066 defines the force and pressure limits for human-robot contact that cobots must not exceed.
+
+**Lighter, slower, safer**
+Cobots sacrifice some speed and payload capacity for safety. A typical cobot has a payload of 3-16 kg and moves much slower than an industrial robot. The reduced kinetic energy means contact injuries, if they occur, are minor.
+
+**Easy programming**
+Cobots can often be programmed by hand-guiding: an operator physically moves the robot through the desired motion, and the robot records the trajectory. No coding required. This democratizes robot deployment to small manufacturers without robotics engineers.
+
+**AI integration**
+Cobots increasingly use AI for perception and adaptation:
+- Computer vision to locate parts that aren't in exactly the right position
+- Force feedback to detect when assembly steps are complete
+- Anomaly detection to flag parts that look wrong before assembly
+
+<CodeLab title="The Cobot Market">
+
+The global collaborative robot market is growing at over 30% annually. Key players include Universal Robots (UR), FANUC's CRX series, KUKA's iiwa, and ABB's YuMi.
+
+The typical cobot customer is a small-to-medium manufacturer who can't afford a full industrial robot cell and needs flexibility — the robot might do assembly on Monday and packaging on Friday. Cobots that can be redeployed in hours (versus days for an industrial cell) command a premium for that flexibility.
+
+</CodeLab>
+
+---
+
+## AI in Industrial Robotics
+
+Even traditional industrial robots are getting AI upgrades:
+
+**Vision-guided robotics**
+Cameras and AI perception allow robots to pick parts that aren't precisely positioned — "bin picking," the ability to reach into a bin of randomly oriented parts and grasp one. This was extremely hard with classical computer vision and has only become practical with deep learning.
+
+**Quality inspection**
+AI vision systems inspect parts for defects at camera speed — faster and more consistent than human inspectors. Mounted beside or on the robot arm, they can reject defective parts immediately.
+
+**Predictive maintenance**
+AI monitors motor currents, vibration signatures, and thermal profiles to predict bearing failures and gear wear before they cause downtime.
+
+**Adaptive welding**
+AI adjusts weld parameters in real time based on sensor feedback — compensating for material variation, joint fit-up errors, and thermal distortion.
+
+---
+
+## The Safety Engineering Stack
+
+<Pitfall title="Cobot Safety Is Not Optional">
+
+Cobots are safer than industrial robots but not inherently safe. A cobot carrying a sharp tool or a heavy payload can still injure a human, even if the robot itself stops when it detects contact.
+
+ISO 10218 (robot safety) and ISO/TS 15066 (cobot safety) require a **risk assessment** for every cobot deployment. The assessment considers: payload, end-effector, tool, workspace geometry, and human exposure to determine what safety measures are required.
+
+Simply buying a cobot and deploying it without a risk assessment is both dangerous and non-compliant. Safety is the responsibility of the system integrator and the end user, not just the robot manufacturer.
+
+</Pitfall>
+
+---
+
+<Quiz question="What is the primary safety mechanism that distinguishes a collaborative robot from an industrial robot?">
+
+<div>
+
+Collaborative robots use force limiting — they continuously monitor the forces in their joints and stop immediately if they detect unexpected contact above a safe threshold. This allows them to work alongside humans without physical barriers.
+
+Industrial robots rely on physical segregation: cages, safety fences, and interlocked doors that prevent humans from entering the robot's workspace during operation. The robot itself has no mechanism to detect or respond to human contact safely.
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+Cobots represent the current state of practical robotics. In **Lesson 3**, we look at the most ambitious frontier: humanoid robots — and what's actually possible versus what's still science fiction.

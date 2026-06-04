@@ -1,0 +1,118 @@
+---
+title: "Physical AI in Manufacturing & Logistics"
+description: "Factories and warehouses are Physical AI's most mature market. Learn how intelligent machines are reshaping production and supply chains."
+module: 7
+moduleTitle: "Real-World Applications"
+lesson: 2
+duration: "18 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## The Most AI-Dense Environments on Earth
+
+A modern Amazon fulfillment center contains over 750,000 robots. A semiconductor fab runs hundreds of automated guided vehicles and robotic handlers. A car manufacturing plant has thousands of robotic arms, guided vehicles, and vision systems.
+
+Manufacturing and logistics are where Physical AI has been longest, is most mature, and has the largest installed base. The economic incentives are enormous: labor costs, throughput improvements, quality consistency, and 24/7 operation justify massive investment.
+
+---
+
+## The Manufacturing AI Stack
+
+**Vision-guided quality inspection**
+AI vision systems mounted along production lines inspect every unit at camera speed — detecting surface defects, dimensional errors, assembly mistakes, and contamination that human inspectors would miss or fatigue through.
+
+Modern inspection systems can detect defects smaller than 0.1mm at line speeds of thousands of units per hour. False negative rates (missed defects) in optimized systems are under 0.1%.
+
+**Bin picking**
+One of the hardest practical problems in manufacturing robotics: reach into a bin of randomly oriented parts and grasp one correctly. Requires real-time 3D perception, grasp pose estimation, and collision-free motion planning — all under strict cycle time requirements.
+
+Deep learning-based grasp planning has made bin picking commercially viable over the past decade. Systems from Fanuc, Universal Robots, and startups like Dexterity and Mujin now handle wide part varieties reliably.
+
+**Predictive maintenance**
+AI monitors vibration, current draw, acoustic emissions, and thermal signatures from manufacturing equipment. Anomaly detection models trained on historical failure data can predict bearing failures 2-6 weeks in advance — long enough to schedule maintenance without stopping production.
+
+**Adaptive assembly**
+AI-driven collaborative robots adjust their behavior based on what they sense: locating a component even if it's slightly misplaced, detecting when a snap-fit engagement is complete, adjusting force when a fastener is torqued correctly. This flexibility is what allows cobots to handle the part-to-part variation inevitable in real manufacturing.
+
+---
+
+## Warehouse Automation
+
+**Goods-to-person systems**
+Instead of sending workers to walk the warehouse floor to pick items, automated storage and retrieval systems (AS/RS) bring inventory to workers. AI optimizes storage placement (high-velocity items nearest the picking stations), routing, and workload balancing.
+
+Ocado's robotic warehouses, for example, use a grid of autonomous robots that skitter across a 3D lattice of storage cells — retrieving totes in minutes from a fully automated system.
+
+**Autonomous mobile robots (AMRs)**
+Unlike traditional warehouse robots that follow fixed tracks, AMRs navigate dynamically using onboard sensors and SLAM. They route around obstacles, share space with human workers, and can be redeployed to different tasks by updating their software.
+
+Vendors: Mobile Industrial Robots (MiR), Locus Robotics, 6 River Systems (Shopify). Amazon Robotics (formerly Kiva) operates the largest deployed fleet.
+
+**Robotic picking**
+The hardest warehouse automation problem. Picking individual items from shelves — handling the enormous variety of sizes, shapes, weights, and packaging that appears in a general warehouse — remains partially unsolved. Specialized systems handle specific product categories well; fully general picking is still challenging.
+
+<CodeLab title="The Amazon Picking Challenge">
+
+Amazon ran the Amazon Picking Challenge (later Amazon Robotics Challenge) from 2015-2019 to accelerate research into robotic picking.
+
+Teams had to:
+- Identify items from a shelf of 25 diverse products
+- Plan a grasp that avoids neighboring items
+- Retrieve the item without dropping or damaging it
+- Place it in a shipping bin
+
+Top teams achieved 70-80% success rates. Amazon's own automated picking systems in 2025 handle specific product categories well but still rely on human pickers for the "long tail" of unusual items.
+
+The challenge made robotic grasping and manipulation research more applied and commercially focused — one of the most productive competitions in Physical AI history.
+
+</CodeLab>
+
+---
+
+## Logistics and Last-Mile Delivery
+
+**Autonomous delivery vehicles**
+Nuro (low-speed autonomous delivery vehicles), Starship (sidewalk robots), and Serve Robotics are deploying small autonomous ground vehicles for last-mile delivery in defined service areas.
+
+These systems are simpler than highway autonomous vehicles: lower speeds, defined routes, lighter regulatory burden. They represent a near-term commercial application of autonomous vehicle technology.
+
+**Port and freight automation**
+Container ports are among the most automated logistics environments. Autonomous straddle carriers, automated guided vehicles (AGVs) moving containers, and AI-optimized stacking algorithms maximize throughput in 24/7 operations.
+
+Hamburg Port, Rotterdam Port, and Guangzhou Port operate at high levels of automation — with human operators overseeing fleets of machines rather than operating them directly.
+
+---
+
+## The Labor Displacement Question
+
+<Pitfall title="Automation and Employment">
+
+Manufacturing and logistics automation displaces some jobs and creates others. The economic evidence is mixed: historically, automation has increased aggregate employment by lowering costs and expanding markets — but the transitions are painful for displaced workers.
+
+Physical AI accelerates this dynamic. Warehouses that previously employed 1,000 pickers may employ 200 operators, technicians, and engineers. The jobs that remain require higher skills and pay more — but there are fewer of them, and retraining workers from physical tasks to technical oversight is neither fast nor cheap.
+
+Addressing this transition — through retraining programs, economic policy, and inclusive deployment practices — is as important to the future of Physical AI as the technology itself.
+
+</Pitfall>
+
+---
+
+<Quiz question="What is the key technical challenge that makes robotic picking in general warehouses difficult?">
+
+<div>
+
+Robotic picking must handle enormous variety: thousands of different product types with different shapes, sizes, weights, packaging materials, and surface properties. The robot must identify each item accurately, plan a grasp that works for that specific item (considering how to grip it without dropping or damaging it), execute the motion in a cluttered shelf environment, and complete the cycle in seconds to match human picking rates.
+
+Specialized systems handle defined product categories well. General picking — handling the full variety of items in a typical warehouse — remains challenging because training data and grasp planning strategies that work for one product category often don't transfer to others.
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+From controlled factories to the uncontrolled outdoors — in **Lesson 3**, we explore Physical AI in agriculture and environmental monitoring, where machines are tackling some of the largest-scale challenges facing humanity.

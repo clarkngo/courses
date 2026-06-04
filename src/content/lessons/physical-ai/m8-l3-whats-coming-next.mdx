@@ -1,0 +1,165 @@
+---
+title: "What's Coming Next"
+description: "Foundation models for robots, physical intelligence at scale, and the convergence of AI and the physical world — a grounded look at what the next decade holds."
+module: 8
+moduleTitle: "Safety, Ethics & the Future"
+lesson: 3
+duration: "20 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## The Moment We're In
+
+Physical AI is at an inflection point similar to where software AI was in 2012 — just before deep learning changed everything.
+
+The fundamental capabilities are proven. The economic case is established. The hardware costs are falling rapidly. What's happening now is the hard work of turning demonstrations into deployments, prototypes into products, and research results into systems that work reliably in the real world.
+
+Here's what the next decade looks like.
+
+---
+
+## Foundation Models Come to Robotics
+
+The most important trend in Physical AI is the application of large foundation models — the same category of model behind GPT-4, Claude, and Gemini — to physical systems.
+
+**Large language models as robot brains**
+LLMs can now accept a natural language instruction ("pick up the red cup and put it in the cabinet") and decompose it into a sequence of physical actions. The LLM doesn't control the robot directly — it plans at the task level, calling low-level motion primitives as tools.
+
+This is transformative: it means robots can be directed by humans in natural language, can reason about novel tasks, and can handle instructions that weren't explicitly programmed.
+
+**Vision-language-action models (VLAs)**
+Models like Google DeepMind's RT-2 and π0 (from Physical Intelligence) are trained jointly on internet-scale vision and language data plus robot action data. They can generalize learned behaviors to new objects, new environments, and new task descriptions — a level of generalization that previous robotic systems couldn't approach.
+
+The bet: training on broad internet data about the physical world gives these models "physical common sense" that makes them far more adaptable than task-specific models.
+
+---
+
+## The Data Flywheel
+
+Foundation models need data. Language models were trained on text from the entire internet. What's the equivalent for physical AI?
+
+**Robot learning datasets**
+Open X-Embodiment (Google DeepMind, 2023) aggregated robot learning data from 22 research institutions across 22 robot types — 1 million+ episodes of robot behavior. This cross-embodiment training produced models that generalize across different robot hardware.
+
+**Synthetic data**
+Simulating diverse physical scenarios — millions of environments, object configurations, and task variations — and training on that synthetic data. NVIDIA's Isaac Lab and other simulation platforms are central infrastructure for this.
+
+**Human video**
+Robots can learn from watching humans perform tasks on video — without any robot involvement. Models that extract generalizable manipulation knowledge from human demonstrations represent a potential shortcut to the data problem.
+
+**Real-world fleet data**
+Autonomous vehicle companies operating large fleets collect millions of miles of driving data per day. This data flywheel — more deployment → more data → better models → safer deployment → more trust → more deployment — is the core strategic advantage of companies with operating fleets.
+
+---
+
+## Hardware Convergence
+
+The next decade will see dramatic progress in the physical hardware that AI inhabits:
+
+**Dexterous hands**
+Research groups are making steady progress on multi-finger hands with tactile sensing. Commercial dexterous hands will transform manipulation capability — the bottleneck for many applications that require fine motor skills.
+
+**Improved batteries**
+Solid-state batteries, if they reach commercial scale, could double energy density. A robot or drone that operates for 4 hours instead of 2 changes the economics of many applications.
+
+**Cheaper actuators**
+Electric motor and gearbox costs are falling as demand from EVs drives volume. Better actuators at lower cost directly reduce robot system cost — the primary barrier to widespread deployment.
+
+**Neuromorphic hardware**
+Chips that process information more like biological neural systems — event-driven, extremely energy-efficient. Still mostly in research, but promising for ultra-low-power sensing and reaction.
+
+---
+
+## Near-Term Applications That Will Scale
+
+Some Physical AI applications are close enough to broad commercial deployment that they're worth watching specifically:
+
+**Warehouse robotics**
+The economics are proven. The remaining technical gaps (general picking, handling fragile items) are closing. Expect continued rapid deployment in logistics.
+
+**Agricultural automation**
+Rising labor costs, climate-driven yield pressure, and improving technology are driving adoption. Autonomous tractors, spraying drones, and harvesting robots will be mainstream in large-scale agriculture within 5 years.
+
+**Autonomous trucking (highway)**
+Long-haul highway driving on defined routes is technically simpler than urban driving. Aurora, Waymo Via, and others are approaching commercial operations. Highway autonomous trucking will likely precede urban passenger autonomy at scale.
+
+**Cobots in SME manufacturing**
+Collaborative robots becoming cheaper, easier to deploy, and more capable will expand from large manufacturers to small and medium enterprises — a much larger market.
+
+<CodeLab title="Physical Intelligence — The Next Anthropic?">
+
+Physical Intelligence (π) is a startup founded in 2023 by former researchers from Google, Carnegie Mellon, UC Berkeley, and Stanford. Their goal: build a foundation model for physical AI — the equivalent of GPT-4 for robots.
+
+Their π0 model (2024) demonstrated zero-shot generalization across robot types and tasks that no previous system had approached.
+
+The analogy to language AI is explicit: just as foundation models transformed NLP from task-specific models to general-purpose intelligence, Physical Intelligence believes a similar transition is possible for physical tasks.
+
+Whether this analogy holds — whether the diversity of physical environments and embodiments can be unified under a single model in the way language was — is the central bet of the next chapter of Physical AI.
+
+</CodeLab>
+
+---
+
+## What Physical AI Cannot Do (Yet)
+
+Honest foresight requires acknowledging what's not coming soon:
+
+**General-purpose household robots**
+A robot that does laundry, loads the dishwasher, vacuums, cooks, and helps elderly residents — reliably, safely, cheaply — is not a 5-year product. It's a 15-20 year research program. The dexterity, generalization, and safety requirements are far beyond current capability.
+
+**Full Level 5 autonomous driving**
+Every road, every weather condition, every country. Not solved. Not near-term. The remaining cases are the hardest ones — by definition.
+
+**AI surgeons**
+Autonomous surgical procedures that match or exceed human surgeons in safety and capability across the full scope of surgical practice. Not a near-term reality. AI assistance yes; replacement no.
+
+---
+
+## A Closing Thought
+
+<Pitfall title="The Hype Cycle Is Real">
+
+Every transformative technology goes through a hype cycle: inflated expectations, a trough of disillusionment when early applications underdeliver, then a plateau of productivity when the technology matures and finds its right applications.
+
+Physical AI is in the ascending phase of a new hype cycle, driven by foundation model breakthroughs and humanoid robot demonstrations.
+
+This doesn't mean the technology is overhyped — the long-term potential is real. It means that near-term timelines will likely disappoint, and mid-to-long-term impact will likely be larger than current skeptics predict.
+
+The right frame: Physical AI will transform manufacturing, logistics, agriculture, and healthcare over the next 20 years in ways that are hard to fully anticipate. It will not replace all human labor, nor will it solve every physical problem. It will be a general-purpose technology that amplifies human capability in physical domains — the way software did for information processing.
+
+That's not science fiction. It's engineering.
+
+</Pitfall>
+
+---
+
+<Quiz question="What is a vision-language-action (VLA) model, and why is it significant for the future of Physical AI?">
+
+<div>
+
+A vision-language-action model is a neural network trained jointly on visual data, language data, and robot action data. By training on all three modalities together, the model can accept natural language instructions, interpret visual observations, and produce physical actions — effectively acting as a general-purpose robotic brain.
+
+VLAs are significant because they can generalize in ways that task-specific models cannot. Training on broad internet-scale visual and language data gives them "physical common sense" — knowledge about objects, how they behave, and what actions are appropriate — that allows them to handle novel objects, environments, and instructions without explicit re-training. This is a qualitative shift from previous robotic systems that required extensive task-specific data for each new capability.
+
+</div>
+</Quiz>
+
+---
+
+## Course Complete
+
+You've completed Physical AI. You now understand:
+
+- **What Physical AI is** and why it's different from software AI
+- **How machines sense** — cameras, LiDAR, radar, touch, and motion sensors
+- **How machines decide** — from classical control to reinforcement learning
+- **How robots are built** — actuators, joints, and the challenge of humanoid systems
+- **Autonomous vehicles** — the full stack and the SAE levels of autonomy
+- **Edge AI and TinyML** — why intelligence runs locally, and on what hardware
+- **Real applications** — healthcare, manufacturing, agriculture, and environment
+- **Safety, regulation, and trust** — the failures that teach us, the governance we need, and what's coming next
+
+The physical world is getting smarter. You now understand how.

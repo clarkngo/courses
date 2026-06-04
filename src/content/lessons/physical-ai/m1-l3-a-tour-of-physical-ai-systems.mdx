@@ -1,0 +1,136 @@
+---
+title: "A Tour of Physical AI Systems"
+description: "Meet the machines — from factory arms to surgical robots to autonomous drones — and see how the sense-think-act loop plays out in each one."
+module: 1
+moduleTitle: "What Is Physical AI?"
+lesson: 3
+duration: "18 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Not One Thing — Many Things
+
+"Physical AI" isn't a single product category. It's a family of systems that spans industries, form factors, and capability levels. Understanding the landscape helps you see both the common principles and the unique challenges each domain faces.
+
+Let's take a tour.
+
+---
+
+## Industrial Robots
+
+Industrial robots are the oldest and most widespread form of physical AI. You've seen them in videos of car factories — massive metal arms welding, painting, and assembling parts at inhuman precision and speed.
+
+**What they do well:**
+- Repeat the exact same motion millions of times without fatigue
+- Operate in controlled, predictable environments
+- Handle heavy loads with extreme precision
+
+**Their limitations:**
+Traditional industrial robots are mostly pre-programmed. They follow fixed paths and don't adapt. Add a bolt in the wrong position and the robot will fail — or worse, damage the line.
+
+Modern industrial robots are increasingly AI-driven: they use computer vision to locate parts, adjust grip in real time, and detect defects on the assembly line. The shift from scripted to adaptive is what makes them "Physical AI."
+
+---
+
+## Autonomous Vehicles
+
+Self-driving cars represent the most ambitious and widely publicized Physical AI project in history. Companies have spent hundreds of billions of dollars trying to solve the problem of navigating public roads without a human driver.
+
+The challenge: roads are **open-world environments**. Unlike a factory floor, you can't control what appears on a road. Children, cyclists, construction zones, unusual weather, obscured signs — the system must handle anything.
+
+**Current state (2025):**
+- Waymo operates fully driverless robotaxi services in several U.S. cities
+- Tesla's "Full Self-Driving" requires driver supervision
+- Trucks on fixed highway routes are further along than urban passenger vehicles
+
+The full stack of a self-driving car — cameras, LiDAR, radar, GPS, HD maps, perception models, path planning, and control systems — is one of the most complex Physical AI systems ever built.
+
+---
+
+## Drones and Aerial Robots
+
+Unmanned aerial vehicles (UAVs) range from $30 hobbyist toys to military-grade systems costing millions. What they share: the need to maintain stable flight while navigating and completing tasks.
+
+**Applications:**
+- **Delivery** — Amazon, Wing, and others are building drone delivery networks
+- **Inspection** — power lines, wind turbines, and bridges inspected without human risk
+- **Agriculture** — precision spraying, crop health monitoring
+- **Search and rescue** — finding missing persons in terrain too dangerous for ground teams
+- **Military** — reconnaissance, strike, and electronic warfare
+
+Drones are often the "easiest" physical AI domain because air is a relatively sparse environment — fewer obstacles than ground-level navigation.
+
+---
+
+## Surgical Robots
+
+The da Vinci Surgical System is in over 6,000 hospitals worldwide. It allows a surgeon to perform minimally invasive procedures through tiny incisions using robotic arms that translate the surgeon's hand movements with sub-millimeter precision — filtering out hand tremors in the process.
+
+Surgical robots don't operate autonomously — a human surgeon is always in control. But AI is being added layer by layer:
+- Computer vision to identify tissue types and highlight surgical anatomy
+- Force feedback to prevent applying too much pressure
+- Autonomous suturing for simple, repetitive tasks
+
+The stakes are obvious: a mistake inside a human body is irreversible. Surgical robotics has the highest safety bar of any Physical AI domain.
+
+---
+
+## Warehouse and Logistics Robots
+
+Amazon's fulfillment centers contain hundreds of thousands of robots. Kiva-style robots (now Amazon Robotics) move entire shelving units to human workers instead of having workers walk the warehouse floor.
+
+Newer systems go further:
+- **Picking robots** — grasp individual items from bins (still extremely hard for AI)
+- **Sorting systems** — route packages on conveyor networks autonomously
+- **Last-mile delivery robots** — sidewalk robots delivering packages in dense urban areas
+
+Warehouses are Physical AI's "controlled field" — less chaotic than public roads, but far more dynamic than a factory assembly line.
+
+---
+
+## Humanoid Robots
+
+The newest and most ambitious category. Companies like Figure, Boston Dynamics, 1X, and Tesla (Optimus) are building robots with two legs and two arms, designed to operate in spaces built for humans.
+
+The appeal is obvious: if your robot looks like a human, it can use human tools, navigate human spaces, and perform human jobs without redesigning the environment around it.
+
+The challenge: bipedal locomotion is extraordinarily difficult. Humans have spent 20 years learning to walk. Getting a robot to do it reliably on uneven terrain, recover from pushes, and climb stairs remains an active research frontier.
+
+<CodeLab title="The Useful Robot Test">
+
+A useful heuristic for evaluating Physical AI systems: **what happens when they fail?**
+
+| System | Failure Mode | Consequence |
+|---|---|---|
+| Industrial robot | Misses a weld | Part defect, line stop |
+| Self-driving car | Misses a red light | Collision, injury, death |
+| Drone | Loses GPS lock | Falls, property damage |
+| Surgical robot | Wrong tissue cut | Patient injury |
+| Warehouse robot | Drops a package | Item damage |
+| Humanoid robot | Falls | Property damage, possibly injury |
+
+The consequence of failure determines how much safety engineering is required — and how long it takes to deploy the system commercially.
+
+</CodeLab>
+
+---
+
+<Quiz question="Why are humanoid robots considered one of the hardest problems in Physical AI?">
+
+<div>
+
+Humanoid robots must solve multiple hard problems simultaneously: bipedal locomotion (maintaining balance on two legs across uneven terrain), dexterous manipulation (grasping arbitrary objects), and general-purpose task execution (doing different jobs in unstructured human environments).
+
+Each of these is an unsolved or partially-solved problem on its own. Combining them in a single system that must operate reliably and safely around humans makes humanoid robots one of the most technically ambitious projects in Physical AI.
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+You now have a map of the Physical AI landscape. Starting in **Module 2**, we go deep on the first step of the sense-think-act loop: how machines perceive the physical world through sensors.

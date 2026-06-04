@@ -1,0 +1,135 @@
+---
+title: "AI Chips — GPUs, NPUs, and Microcontrollers"
+description: "The hardware revolution behind Physical AI. Learn what makes AI chips different from ordinary processors — and which chip belongs in which system."
+module: 6
+moduleTitle: "Edge AI & Embedded Systems"
+lesson: 2
+duration: "18 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Why Ordinary CPUs Aren't Enough
+
+A CPU (Central Processing Unit) is the general-purpose brain of a computer. It's designed to run one instruction at a time, very fast, with complex branching logic. CPUs are excellent at sequential tasks.
+
+Neural network inference is not a sequential task. It's an enormous number of simple multiply-and-add operations that can all be done simultaneously — in parallel.
+
+A CPU runs these in sequence, one at a time. An AI accelerator runs thousands or millions in parallel. The speedup is not incremental — it's 100-1000x.
+
+This is why AI chips exist, and why they've become central to Physical AI.
+
+---
+
+## GPUs — The Original AI Accelerator
+
+A **GPU (Graphics Processing Unit)** was originally designed to render video games — a task that requires computing the color of millions of pixels simultaneously. That parallel structure turned out to be exactly what neural network training needed.
+
+The breakthrough came in 2012 when AlexNet, trained on NVIDIA GPUs, won the ImageNet competition by a huge margin and launched the deep learning era. Every major AI breakthrough since has been powered by GPUs.
+
+**For Physical AI:**
+GPUs are used in autonomous vehicles (NVIDIA Drive platform), robotic perception, and anywhere with a large power budget and need for high throughput. A self-driving car's compute stack might contain 2-4 automotive-grade GPUs consuming 50-100W total.
+
+**Limitations at the edge:**
+Consumer/data center GPUs are large and power-hungry (100-400W). Automotive-grade GPUs (NVIDIA Orin: 254 TOPS at 15-60W) are better but still require active cooling and significant power.
+
+---
+
+## NPUs — The Efficient Specialist
+
+An **NPU (Neural Processing Unit)** — also called a neural accelerator, AI engine, or ML accelerator — is a chip designed specifically and only for neural network inference.
+
+Where a GPU is a powerful generalist (graphics + AI + simulation), an NPU is a narrow specialist. It sacrifices general-purpose capability for extreme efficiency at matrix operations — which is all neural network inference requires.
+
+**Efficiency advantages:**
+- Much lower power per inference operation than a GPU
+- Smaller silicon area (fits in phones and tiny edge devices)
+- Hardware optimized for the quantized operations (INT8, INT4) used in edge AI
+
+**Where NPUs appear:**
+- Every modern smartphone (Apple Neural Engine, Qualcomm Hexagon, Google Tensor)
+- Embedded AI cameras and smart sensors
+- Automotive AI compute (Tesla's FSD chip, Mobileye EyeQ)
+- IoT devices with AI capability
+
+<CodeLab title="Apple Silicon — NPU Integration">
+
+Apple's M-series chips integrate a CPU, GPU, and Neural Engine on a single chip with shared memory. The Neural Engine in M4 delivers 38 TOPS (tera-operations per second).
+
+This integration matters for Physical AI: the NPU can process sensor data (images, audio) while the CPU handles logic and communication, all on a chip small enough to fit in a laptop and efficient enough to run on battery.
+
+This architecture — tight integration of CPU, GPU, and neural accelerator — is the template for edge AI hardware across the industry.
+
+</CodeLab>
+
+---
+
+## Microcontrollers — Ultra-Low Power AI
+
+A **microcontroller (MCU)** is a tiny computer — CPU, memory, and peripherals on a single chip — designed to run embedded software with minimal power and cost.
+
+They're in thermostats, medical devices, industrial sensors, consumer electronics. Billions are manufactured each year. They run on milliwatts, cost cents, and fit on a fingernail.
+
+Traditional MCUs couldn't run neural networks — too little memory, too little compute. Then two things happened:
+
+1. **TinyML research** produced models small enough to fit in kilobytes of RAM
+2. **MCU manufacturers** added small neural accelerators to their products
+
+Now microcontrollers like the STM32 series, Nordic nRF, and Raspberry Pi RP2040 can run wake word detection, anomaly detection, gesture recognition, and fall detection locally — with zero cloud connectivity — consuming under 1 milliwatt in sleep mode.
+
+---
+
+## Comparing the Options
+
+| Chip Type | Power | Performance | Cost | Use Case |
+|---|---|---|---|---|
+| CPU only | 5-200W | Low for AI | Low | Control logic, not AI inference |
+| GPU (automotive) | 15-100W | High | High | Autonomous vehicles, complex robots |
+| NPU (embedded) | 0.5-5W | Medium | Medium | Drones, industrial vision, edge cameras |
+| MCU + accelerator | <1W | Low | Very low | Sensors, wearables, simple detection |
+
+---
+
+## The Hardware Race
+
+The AI chip market for Physical AI is one of the fastest-moving in the industry:
+
+**Automotive:** NVIDIA Orin and Thor, Mobileye EyeQ6, Tesla's FSD chip, Qualcomm Snapdragon Ride
+**Robotics:** NVIDIA Jetson series (the dominant platform for research and commercial robots)
+**Industrial edge:** Intel Movidius, Hailo-8, Rockchip NPUs
+**TinyML:** Ambiq Apollo, STMicroelectronics STM32N6, Arm Ethos-U NPU
+
+<Pitfall title="The TOPS Benchmark Trap">
+
+Every AI chip is marketed with a TOPS (Tera-Operations Per Second) number. Bigger is better, right?
+
+Not necessarily. TOPS measures peak theoretical throughput for a specific operation type (usually INT8 matrix multiply). Real-world performance depends on:
+- Memory bandwidth (you can't compute faster than you can load weights)
+- Software stack (compiler quality matters enormously)
+- The specific model architecture being run
+- Thermal throttling under sustained load
+
+Two chips with the same TOPS number can perform 3-5x differently on a real neural network. Always benchmark on your actual model and workload — don't buy on TOPS alone.
+
+</Pitfall>
+
+---
+
+<Quiz question="Why are NPUs more power-efficient than GPUs for neural network inference at the edge?">
+
+<div>
+
+GPUs are general-purpose parallel processors designed for graphics and capable of many types of computation. They carry significant overhead for scheduling, memory management, and flexibility that isn't needed for pure neural network inference.
+
+NPUs are designed specifically and only for neural network inference — particularly the quantized matrix multiply operations that make up the majority of inference computation. By eliminating general-purpose overhead and optimizing hardware dataflows for these specific operations, NPUs achieve dramatically better performance-per-watt for inference tasks.
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+We've covered why AI runs at the edge and what chips make it possible. In **Lesson 3**, we go to the extreme end of edge AI: TinyML — running useful intelligence on devices that cost a dollar and consume less power than a blinking LED.

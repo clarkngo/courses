@@ -1,0 +1,133 @@
+---
+title: "Reinforcement Learning in the Physical World"
+description: "Reinforcement learning taught machines to play games at superhuman levels. Learn how it's being applied — carefully — to real robots."
+module: 3
+moduleTitle: "Decision-Making & Control"
+lesson: 3
+duration: "20 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Learning by Doing
+
+A toddler learning to walk doesn't read a physics textbook. They stand up, fall down, adjust, stand up again, and repeat. Thousands of falls later, they walk confidently — having learned a control policy that no engineer explicitly programmed.
+
+**Reinforcement learning (RL)** is the computational version of this process. An agent interacts with an environment, takes actions, receives rewards (or penalties), and gradually learns which actions lead to good outcomes.
+
+RL has produced some of the most dramatic AI achievements: beating world champions at Go, mastering video games from raw pixels, and solving protein folding problems. Now it's being applied to physical robots — with significant challenges.
+
+---
+
+## The Reinforcement Learning Framework
+
+The core RL setup:
+
+- **Agent** — the AI system making decisions (the robot)
+- **Environment** — the world the agent operates in
+- **State** — the current observation of the environment (sensor readings)
+- **Action** — what the agent can do (motor commands)
+- **Reward** — a scalar signal telling the agent how well it's doing
+- **Policy** — the learned mapping from states to actions
+
+The agent's goal is to learn a policy that maximizes cumulative reward over time.
+
+The reward function is everything. Define it well and the agent learns the right behavior. Define it poorly and the agent learns something technically rewarding but useless or dangerous.
+
+---
+
+## Why Physical RL Is Hard
+
+RL in video games trains by running millions of simulated episodes in hours. In the physical world, three problems make this much harder:
+
+**1. Sample inefficiency**
+A robot learning to walk by physically falling and getting up would need to fall millions of times. At real-world timescales, that takes years and destroys hardware.
+
+**2. Safety during exploration**
+RL agents explore randomly at first — trying random actions to see what the reward signal says. In software, random actions are fine. In the physical world, random robot motions can damage the robot, the environment, or nearby humans.
+
+**3. The sim-to-real gap**
+The solution to sample efficiency is simulation: train the agent in a simulated environment millions of times, then transfer the policy to the real robot. The problem: simulation is always slightly wrong. Real physics, real friction, real motors don't perfectly match the simulation model. Policies that work perfectly in simulation often fail in reality.
+
+---
+
+## Sim-to-Real Transfer
+
+Closing the sim-to-real gap is one of the most active research areas in physical AI.
+
+**Domain randomization**
+Train in simulations with randomized physical parameters — vary the mass of objects, the friction coefficients, the motor delays. If the policy learns to work across a huge range of simulations, some of those variations will overlap with the real world.
+
+**System identification**
+Carefully measure the real robot's physical properties (mass, inertia, friction) and build a simulation that matches them as closely as possible.
+
+**Domain adaptation**
+Fine-tune the simulation-trained policy on a small amount of real-world data — enough to adapt to the specific characteristics of the physical system without requiring millions of real-world episodes.
+
+<CodeLab title="OpenAI's Dexterous Hand — A Landmark in Physical RL">
+
+In 2019, OpenAI trained a robotic hand to solve a Rubik's Cube using reinforcement learning. The policy was trained entirely in simulation using domain randomization across hundreds of physical parameters. It was then deployed directly to the physical robot with no additional training.
+
+The result: the robot hand could manipulate a Rubik's Cube with dexterous multi-finger movements — a task that previously required years of manual engineering.
+
+Key insight: by training across a distribution of simulated environments rather than a single accurate one, the policy learned to be robust to the inevitable mismatch between simulation and reality.
+
+</CodeLab>
+
+---
+
+## Reward Shaping — The Art and Science
+
+The reward function is where human expertise enters RL. A naive reward ("+1 for reaching the goal, 0 otherwise") is too sparse for the agent to learn from — it almost never reaches the goal randomly, so it almost never receives feedback.
+
+**Reward shaping** provides intermediate rewards that guide learning:
+- Reward progress toward the goal, not just reaching it
+- Penalize dangerous states (excessive joint forces, unsafe postures)
+- Add bonus rewards for smooth, efficient motion
+
+<Pitfall title="Reward Hacking">
+
+RL agents are extraordinarily good at finding ways to maximize reward that weren't intended by the reward designer. This is called reward hacking.
+
+A robot trained to maximize speed might flip over (faster than walking if the reward is purely distance-per-time). A robot trained to avoid dropping objects might freeze (you can't drop what you never pick up). A robot trained to complete a task by a certain time might do so destructively.
+
+Every reward function is a hypothesis about what behavior you want. Physical AI engineers spend enormous time designing rewards that elicit the intended behavior and don't create unintended incentives — because in the physical world, reward hacking has physical consequences.
+
+</Pitfall>
+
+---
+
+## Model-Based RL for Physical Systems
+
+Standard RL (model-free RL) learns purely from reward signals without building an internal model of the environment. **Model-based RL** learns a model of the environment — how actions change state — and uses that model for planning.
+
+Model-based RL is significantly more sample-efficient: it can "imagine" the results of actions using the learned model, reducing the number of physical trials needed. This makes it particularly attractive for physical robots.
+
+The tradeoff: the learned model is imperfect. Errors in the model compound during planning ("the Dyna architecture" and similar approaches address this by mixing real and imagined experience).
+
+---
+
+<Quiz question="What is the sim-to-real gap, and why does it matter for physical reinforcement learning?">
+
+<div>
+
+The sim-to-real gap is the difference between the simulated environment used to train an RL policy and the physical environment where the policy is deployed. Because simulation always approximates real physics imperfectly — slightly wrong friction, motor characteristics, object masses — a policy that learns to exploit the specific properties of the simulation may fail when those properties differ in the real world.
+
+It matters because simulation is how RL avoids the sample inefficiency of physical training. If the sim-to-real gap is too large, the simulation speedup is useless. Bridging this gap — through domain randomization, system identification, and domain adaptation — is critical to making physical RL practical.
+
+</div>
+</Quiz>
+
+---
+
+## Module 3 Recap
+
+You now understand the full decision-making stack:
+- **Path planning and control** translate perception into motion
+- **Classical control** is predictable, verifiable, but requires accurate models
+- **AI control** handles complex, unstructured environments but is harder to certify
+- **Reinforcement learning** offers a path to learning physical skills without explicit programming — but faces unique challenges in real-world deployment
+
+In **Module 4**, we apply everything to the most iconic Physical AI system: the robot.

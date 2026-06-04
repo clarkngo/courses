@@ -1,0 +1,139 @@
+---
+title: "Why AI Needs to Run On-Device"
+description: "Not all AI can live in the cloud. Learn why Physical AI demands local intelligence — and what happens when it doesn't."
+module: 6
+moduleTitle: "Edge AI & Embedded Systems"
+lesson: 1
+duration: "15 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## The Cloud AI Assumption
+
+Consumer AI — chatbots, recommendation engines, image search — almost all runs in the cloud. Your phone sends a request to a data center, which processes it with enormous compute and sends back an answer.
+
+This works because consumer AI applications can tolerate:
+- Latency of hundreds of milliseconds to seconds
+- Network connectivity (always-on internet assumed)
+- No privacy constraint on sending data to a server
+
+Physical AI often cannot tolerate any of these assumptions.
+
+---
+
+## The Three Drivers of On-Device AI
+
+**1. Latency**
+
+Physical AI operates in real time. A collision avoidance system on a car must detect an obstacle and initiate braking in under 100 milliseconds. Sending camera frames to a cloud server and waiting for a response adds 50-500ms of round-trip latency — that's 30-300 feet of road at highway speed.
+
+For safety-critical physical systems, cloud latency is not acceptable. The AI must run on the device.
+
+**2. Connectivity**
+
+Physical environments are not reliably connected. Underground mines, rural areas, airspace, underwater vehicles, and disaster zones all have limited or no internet access. A robot that requires cloud connectivity to function is a robot that stops working exactly when you need it most.
+
+For physical AI systems that must operate anywhere, on-device inference is not an option — it's a requirement.
+
+**3. Privacy and Security**
+
+Sending video and sensor streams to the cloud creates significant privacy risks (who else can access the data?) and security vulnerabilities (the communication link can be jammed, intercepted, or spoofed). For applications in healthcare, law enforcement, and military domains, local processing is often legally and operationally required.
+
+---
+
+## What "Edge" Means
+
+The **edge** is any compute node that is not a central data center. It is "at the edge" of the network — close to where the data is generated.
+
+Edge computing exists on a spectrum:
+
+| Level | Example | Typical Compute |
+|---|---|---|
+| Cloud | Data center | Racks of servers, unlimited power |
+| Near-edge | On-premise server | 1-10 kW power budget |
+| Far-edge | In the vehicle/robot | 10-200 W power budget |
+| Tiny edge (TinyML) | Microcontroller | Milliwatts |
+
+Physical AI typically operates at the far-edge: powerful enough to run real neural networks, but severely constrained by size, weight, and power.
+
+---
+
+## The Inference Optimization Problem
+
+Training AI models happens in the cloud with abundant compute. Deploying them at the edge requires optimization — making the model smaller and faster without losing critical accuracy.
+
+**Quantization**
+Replace 32-bit floating point weights with 8-bit integers (or even 4-bit). Reduces model size by 4-8x and speeds up inference significantly. Small accuracy loss, usually acceptable.
+
+**Pruning**
+Remove weights that contribute little to the output. Sparse models can be 50-90% smaller than the original.
+
+**Knowledge distillation**
+Train a small "student" model to mimic the behavior of a large "teacher" model. The student can be 10-100x smaller while retaining most of the teacher's accuracy.
+
+**Model architecture design**
+MobileNet, EfficientNet, YOLO-Nano — entire model families have been designed specifically for edge inference, with accuracy-efficiency tradeoffs calibrated for embedded hardware.
+
+<CodeLab title="A Practical Example: Object Detection on a Drone">
+
+A standard ResNet-50 object detection model:
+- 98 MB model size
+- ~4 billion operations per inference
+- ~50ms inference time on a mobile GPU
+- Far too large for a $30 microcontroller
+
+MobileNet-SSD (same task, designed for edge):
+- 9 MB model size
+- ~300 million operations per inference
+- ~5ms inference time on a mobile GPU
+- Deployable on embedded hardware with a dedicated neural network accelerator
+
+The edge version is 10x smaller and 10x faster — with a modest accuracy reduction that is acceptable for many physical AI applications.
+
+</CodeLab>
+
+---
+
+## The Power Budget Problem
+
+Power is the hardest constraint in far-edge Physical AI.
+
+A drone has perhaps 50-100W total power budget, shared between motors, sensors, communication, and compute. A wearable device might have 1W. A microcontroller-based sensor might have 10 milliwatts.
+
+Every watt of compute power used for AI inference is a watt not available for motors or sensors. In battery-powered systems, it's also a constraint on how long the system can operate.
+
+This is why the field of TinyML — running AI inference on microcontrollers consuming milliwatts — has exploded. It enables always-on AI sensing (keyword detection, anomaly detection, fall detection) without the power cost of a full processor.
+
+<Pitfall title="The Accuracy-Power Tradeoff">
+
+The smaller and lower-power the AI model, the lower its accuracy — in general. There is no free lunch.
+
+The risk in Physical AI: deploying an edge model that is fast and power-efficient but misses detections that matter. A keyword spotter that misses wake words is annoying. A collision avoidance system that misses pedestrians is catastrophic.
+
+The right tradeoff depends on the application. Getting this wrong — prioritizing efficiency over the accuracy level required for safety — is one of the most dangerous design errors in Physical AI.
+
+</Pitfall>
+
+---
+
+<Quiz question="What are the three primary reasons Physical AI systems run inference locally rather than in the cloud?">
+
+<div>
+
+**Latency:** Physical safety systems (collision avoidance, balance control) must respond in milliseconds — faster than any cloud round-trip allows.
+
+**Connectivity:** Physical environments — underground, rural, aerial, underwater — often lack reliable network access. A system that requires cloud connectivity fails exactly when and where connectivity is unavailable.
+
+**Privacy and security:** Transmitting sensor streams (especially video) to cloud servers creates privacy risks and security vulnerabilities. For sensitive applications, local processing is legally and operationally required.
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+In **Lesson 2**, we look at the specialized hardware that makes on-device AI possible — the chips and processors designed specifically to run neural networks efficiently in constrained environments.
