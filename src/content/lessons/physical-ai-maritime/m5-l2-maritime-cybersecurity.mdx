@@ -1,0 +1,221 @@
+---
+title: "Maritime Cybersecurity — Protecting Physical AI at Sea"
+description: "Understand the unique cybersecurity threats facing maritime Physical AI systems — from GPS spoofing to ransomware on autonomous vessels — and the regulatory frameworks requiring cyber resilience."
+module: 5
+moduleTitle: "Safety, Security, and Compliance"
+lesson: 2
+duration: "45 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Why Maritime Cybersecurity Is a Physical Safety Issue
+
+In most industries, a cyberattack causes data loss or service disruption. In maritime, a cyberattack against a Physical AI system can cause:
+
+- **A vessel to run aground** (GPS spoofing sends it off course)
+- **A collision** (disabling collision avoidance sensors)
+- **An environmental disaster** (manipulating tanker cargo management)
+- **Port paralysis** (ransomware on terminal operating systems)
+
+The 2017 **NotPetya ransomware** attack on Maersk, the world's largest shipping company, took down 45,000 PCs, 4,000 servers, and 2,500 applications. The company had to manually re-route vessels and could not process bookings for 10 days. Estimated cost: $300 million.
+
+Cybersecurity for maritime AI is not an IT problem — it is a physical safety and business continuity problem.
+
+---
+
+## The Maritime Attack Surface
+
+Modern vessels and ports are deeply connected:
+
+**Onboard systems exposed to cyber attack:**
+- Electronic Chart Display and Information System (ECDIS) — navigation
+- AIS transponder — vessel identity and position broadcasting
+- GNSS receiver — positioning
+- Bridge management systems — autopilot, engine control
+- Cargo management systems — ballast, loading, fuel
+- Satellite communication systems (VSAT, Iridium) — the internet gateway
+
+**Shore-side attack vectors:**
+- Port Community System APIs
+- Vessel reporting portals
+- Fleet management cloud platforms
+- USB devices brought aboard by crew or suppliers
+- Software updates delivered via satellite link
+
+---
+
+## Key Threat Categories
+
+### 1. GPS / GNSS Spoofing
+
+An attacker broadcasts false GPS signals stronger than the real satellite signals. The receiver locks onto the fake signal and reports a position that may be miles from reality — while the crew and autopilot see nothing unusual.
+
+**Documented incidents:**
+- 2017: 20+ vessels in the Black Sea reported their AIS position as Gelendzhik Airport — a classic spoofing signature
+- 2019: Vessels in the Strait of Hormuz reported sudden position jumps
+- Spoofing attacks have been documented near several conflict zones
+
+**Mitigations:**
+- Multi-constellation GNSS receivers (harder to spoof all simultaneously)
+- GNSS integrity monitoring (statistical tests on received signals)
+- Backup positioning: eLoran, radar coastline matching, star tracker
+- Alert when GNSS position disagrees with dead reckoning by > threshold
+
+### 2. AIS Manipulation
+
+AIS has no authentication — any transmitter can send any MMSI and position. Attackers can:
+- Create phantom vessels that don't exist
+- Make a real vessel appear in a different location
+- Hide a vessel by suppressing its AIS transmission (requires close-range jamming)
+
+This can confuse vessel traffic services and cause COLAV systems to make incorrect decisions.
+
+**Mitigations:**
+- Cross-validate AIS position with radar
+- Flag vessels whose AIS position is inconsistent with their radar track
+- Monitor for MMSI collisions (two vessels with same MMSI — common in spoofing)
+
+### 3. Ransomware and Malware
+
+Ransomware encrypts critical navigation or cargo management systems and demands payment for decryption. On a vessel at sea, options are extremely limited.
+
+**Entry vectors:**
+- Crew USB devices (malware introduced ashore)
+- Software updates via satellite link (supply chain attack)
+- Phishing emails to crew (who have internet access via VSAT)
+- Maintenance laptops connected directly to ship's networks
+
+### 4. Man-in-the-Middle on Satellite Links
+
+Vessel satellite communications can be intercepted or injected. An attacker with the right equipment near a port can:
+- Intercept unencrypted cargo manifests (competitive intelligence)
+- Inject false software updates
+- Eavesdrop on communications between vessel and fleet management systems
+
+---
+
+## Regulatory Framework
+
+**IMO Resolution MSC-FAL.1/Circ.3 (2017):** First IMO guidance on maritime cyber risk management. Required shipping companies to incorporate cyber risk into their Safety Management Systems (SMS) by 2021.
+
+**IACS UR E26 / E27 (2022, mandatory from 2024):** The International Association of Classification Societies' unified requirements for cybersecurity on newbuildings. E26 covers organizational requirements; E27 covers technical requirements for onboard systems.
+
+**Key technical requirements from IACS UR E27:**
+- Network segmentation between IT (crew wifi, admin) and OT (navigation, propulsion) systems
+- Software whitelisting on critical navigation systems
+- Logging of all access to safety-critical systems
+- Remote access only via authenticated, encrypted VPN
+- Patch management procedures for all connected equipment
+
+---
+
+<CodeLab title="IT vs. OT Network Segmentation">
+
+The most important architectural decision for maritime cybersecurity is separating IT (Information Technology) and OT (Operational Technology) networks:
+
+```
+IT Network (crew wifi, email, fleet management)
+    │
+    │ Firewall + data diode
+    │ (data flows one-way: IT → OT only for approved updates)
+    │
+OT Network (navigation, ECDIS, autopilot, engine control)
+    │
+    │ Air gap or hardware firewall
+    │
+Safety Network (COLAV sensors, emergency systems)
+    — no external connections allowed
+```
+
+A data diode is a hardware device that physically allows data to flow in only one direction — monitoring data from OT to IT is permitted, but no commands or updates can flow from IT to OT without explicit approval through a separate, audited channel. This architecture was largely absent on vessels built before 2020 and is now being retrofitted as a regulatory requirement.
+
+</CodeLab>
+
+## Python: Simple AIS Anomaly Detection for Spoofing
+
+Create `ais_spoof_detect.py`:
+
+```python
+import math
+
+def haversine_km(lat1, lon1, lat2, lon2):
+    """Great-circle distance in km between two GPS points."""
+    R = 6371
+    dlat = math.radians(lat2 - lat1)
+    dlon = math.radians(lon2 - lon1)
+    a = math.sin(dlat/2)**2 + math.cos(math.radians(lat1)) * math.cos(math.radians(lat2)) * math.sin(dlon/2)**2
+    return R * 2 * math.atan2(math.sqrt(a), math.sqrt(1-a))
+
+def check_ais_consistency(records):
+    """Flag vessels with physically impossible speeds between consecutive AIS reports."""
+    MAX_SPEED_KNOTS = 40  # max realistic speed for any commercial vessel
+
+    print(f"{'MMSI':<12} {'From':<22} {'To':<22} {'Implied speed (kn)':>20} {'Flag'}")
+    print("-" * 82)
+
+    for mmsi, positions in records.items():
+        for i in range(len(positions) - 1):
+            lat1, lon1, t1 = positions[i]
+            lat2, lon2, t2 = positions[i+1]
+            dist_km   = haversine_km(lat1, lon1, lat2, lon2)
+            hours     = (t2 - t1) / 3600
+            if hours < 1e-6:
+                continue
+            speed_kn  = (dist_km / 1.852) / hours
+            flag      = "⚠️  SPOOFING SUSPECTED" if speed_kn > MAX_SPEED_KNOTS else "✅  OK"
+            from_pos  = f"({lat1:.2f}, {lon1:.2f})"
+            to_pos    = f"({lat2:.2f}, {lon2:.2f})"
+            print(f"{mmsi:<12} {from_pos:<22} {to_pos:<22} {speed_kn:>20.1f} {flag}")
+
+# Sample AIS records: (lat, lon, unix_timestamp)
+records = {
+    "123456789": [
+        (30.68, 32.27, 0),
+        (30.66, 32.25, 300),    # 5 min later, very close → plausible
+        (30.64, 32.22, 600),
+    ],
+    "987654321": [
+        (30.50, 32.00, 0),
+        (44.42, 37.97, 120),    # 2 min later, jumped 2000 km → spoofing!
+    ],
+    "111222333": [
+        (1.28, 103.83, 0),
+        (1.25, 103.81, 600),
+        (1.22, 103.79, 1200),
+    ],
+}
+
+check_ais_consistency(records)
+```
+
+```bash
+python ais_spoof_detect.py
+```
+
+The second vessel jumps from the Suez Canal to the Black Sea in 2 minutes — a physically impossible speed that immediately flags as spoofing. This simple speed-consistency check is a basic but effective first filter in maritime cybersecurity monitoring.
+
+<Pitfall title="Security Through Obscurity Is Not Security">
+
+Some vessel operators assume that because maritime OT systems run proprietary or legacy protocols (NMEA 0183, NMEA 2000, Modbus), attackers won't understand them. This assumption is wrong. These protocols are well-documented, and security researchers have published attack tools for all of them. Real security requires authentication, encryption, network segmentation, and monitoring — not relying on attackers being unfamiliar with your systems. Legacy maritime systems often have no authentication whatsoever: any device on the network can send navigation commands. Replacing or wrapping these systems with authenticated gateways is a critical security improvement.
+
+</Pitfall>
+
+---
+
+<Quiz question="What makes GPS spoofing particularly dangerous for maritime AI compared to a traditional crewed vessel?">
+
+<div>
+
+On a crewed vessel, an experienced navigator may notice that the GPS position disagrees with visual landmarks, chart depth readings, or radar coastline — and override the GPS. Autonomous or AI-assisted systems are more trusting of sensor inputs; if the spoofed GPS is consistent and well-formed, the navigation AI may accept it without suspicion, especially if the system lacks cross-validation against independent positioning sources. The AI will then make route decisions based on a false position, potentially steering into shallow water, a traffic separation scheme, or another vessel, with no human present to catch the error. Maritime AI systems must be designed with explicit GNSS integrity monitoring and independent position verification — they cannot assume the position sensor is trustworthy.
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+In **Lesson 3**, you'll explore the **regulatory and ethical dimensions** of maritime AI — the IMO's MASS framework, liability questions for autonomous vessel accidents, and the human-in-the-loop requirements that govern today's deployments.

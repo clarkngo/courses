@@ -1,0 +1,192 @@
+---
+title: "Autonomous Navigation — How Vessels Find Their Way"
+description: "Understand the navigation stack of an autonomous vessel — GPS, GNSS, dead reckoning, path planning, and how AI improves on traditional autopilots."
+module: 3
+moduleTitle: "Autonomous Navigation Systems"
+lesson: 1
+duration: "40 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Navigation: More Than Following a Chart
+
+Traditional autopilots follow a pre-set course using compass heading and rudder feedback. They don't perceive the environment — they just correct for drift. An autonomous navigation system must do far more:
+
+1. **Know where it is** — with enough accuracy to safely transit shipping lanes and enter ports
+2. **Know where it's going** — a route optimized for fuel, weather, and traffic
+3. **Know what's around it** — using sensor fusion from Module 2
+4. **Plan how to get there safely** — avoiding obstacles, complying with COLREGs
+5. **Execute and monitor** — send commands to propulsion and steering, monitor for anomalies
+
+Each of these steps involves different algorithms. Together they form the **autonomous navigation stack**.
+
+---
+
+## Step 1: Position — GNSS and Dead Reckoning
+
+**GNSS (Global Navigation Satellite System)** is the umbrella term for satellite positioning systems:
+
+| System | Operator | Coverage |
+|---|---|---|
+| GPS | USA | Global |
+| GLONASS | Russia | Global |
+| Galileo | EU | Global |
+| BeiDou | China | Global, emphasis on Asia |
+
+Modern maritime receivers use all four systems simultaneously, achieving **2–5 meter accuracy** under open sky. Differential GNSS (DGNSS) using shore-based reference stations improves this to **< 1 meter** in coastal waters.
+
+**Dead reckoning** fills gaps when GNSS is unavailable (jamming, satellite outage, tunnels under bridges):
+
+```
+New position = Last known position
+             + Speed × Time elapsed
+             + Heading corrections from IMU
+```
+
+Dead reckoning accumulates error over time. The IMU's gyroscope drift adds uncertainty every minute. An autonomous vessel must detect when its position estimate has degraded beyond acceptable limits and respond — slow down, alert operator, anchor if safe.
+
+---
+
+## Step 2: Route Planning
+
+A voyage route is a sequence of **waypoints** with associated speeds and headings. AI-enhanced route planning optimizes across multiple objectives:
+
+| Objective | Naive Autopilot | AI Route Planner |
+|---|---|---|
+| Fuel use | Constant speed | Speed profile adapted to currents and weather |
+| Weather | Fixed route | Dynamic rerouting around storms |
+| Traffic | Ignores other vessels | Routes around congested TSS zones |
+| ETA | Fixed | Predicted and dynamically adjusted |
+| Emissions | Not considered | Carbon intensity tracking with CII compliance |
+
+**Weather routing AI** (StormGeo, Météo-France Routing, Weathernews) uses numerical weather prediction (NWP) models combined with vessel performance models to find the optimal route. The vessel performance model — called a **digital twin** — predicts fuel consumption and structural loads for a given speed, heading, and sea state. We cover digital twins in Module 4.
+
+---
+
+## Step 3: Path Following and Autopilot
+
+Once a route is planned, the vessel must follow it. This is the job of the **autopilot** — a control system that adjusts the rudder to maintain heading and cross-track error (distance from the planned track).
+
+**PID Controller (Proportional-Integral-Derivative):**
+
+The most common autopilot algorithm. It computes a rudder command based on:
+
+```
+rudder = Kp × error + Ki × ∫error dt + Kd × d(error)/dt
+```
+
+- **Kp** corrects proportionally to current heading error
+- **Ki** corrects accumulated steady-state error (current or wind pushing the vessel)
+- **Kd** dampens overshoot (prevents the vessel from overcorrecting and oscillating)
+
+**AI-enhanced control:** Modern systems use **Model Predictive Control (MPC)** or reinforcement learning to account for wave disturbances, varying current, and the vessel's own dynamics — outperforming PID especially in rough seas and narrow channels.
+
+---
+
+## Python: Simulating a Simple Heading Controller
+
+Create `heading_control.py`:
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Simulate vessel heading control with a PID autopilot
+dt = 0.5          # seconds per step
+steps = 200
+target_heading = 180.0  # degrees (due south)
+
+# PID gains (tuned for a slow-moving vessel)
+Kp, Ki, Kd = 1.2, 0.05, 0.8
+
+heading       = 90.0   # start heading due east
+heading_rate  = 0.0    # degrees/sec
+integral      = 0.0
+prev_error    = 0.0
+
+headings  = []
+rudders   = []
+
+for _ in range(steps):
+    error    = target_heading - heading
+    # Normalize to [-180, 180]
+    error    = (error + 180) % 360 - 180
+
+    integral += error * dt
+    derivative = (error - prev_error) / dt
+    prev_error = error
+
+    rudder = np.clip(Kp * error + Ki * integral + Kd * derivative, -35, 35)
+
+    # Simple vessel dynamics: heading rate responds to rudder with inertia
+    heading_rate += (rudder * 0.05 - heading_rate * 0.3) * dt
+    heading = (heading + heading_rate * dt) % 360
+
+    headings.append(heading)
+    rudders.append(rudder)
+
+plt.figure(figsize=(10, 4))
+plt.subplot(1, 2, 1)
+plt.plot(headings, label="Heading")
+plt.axhline(target_heading, color="r", linestyle="--", label="Target")
+plt.xlabel("Time step"); plt.ylabel("Heading (°)"); plt.legend()
+plt.title("Vessel Heading (PID Autopilot)")
+
+plt.subplot(1, 2, 2)
+plt.plot(rudders, color="orange")
+plt.xlabel("Time step"); plt.ylabel("Rudder angle (°)")
+plt.title("Rudder Command")
+
+plt.tight_layout()
+plt.savefig("heading_control.png", dpi=150)
+print("Chart saved to heading_control.png")
+```
+
+```bash
+python heading_control.py
+```
+
+You'll see the heading converge on 180° while the rudder angle oscillates then settles. Increasing Kd reduces oscillation; increasing Ki eliminates steady-state offset — these are the fundamental tuning trade-offs in any feedback control system.
+
+---
+
+<CodeLab title="Levels of Autonomy at Sea">
+
+The Maritime Autonomous Surface Ship (MASS) regulatory framework (IMO MSC 1/Circ.1638) defines four degrees of autonomy:
+
+| Degree | Description | Human Role |
+|---|---|---|
+| **1** | Ship with automated processes and decision support | Seafarers on board |
+| **2** | Remotely controlled ship with seafarers on board | Remote operator primary; crew as backup |
+| **3** | Remotely controlled ship without seafarers on board | Remote operator only |
+| **4** | Fully autonomous ship | No human intervention required |
+
+Most commercial deployments today are **Degree 1 or 2**. Degree 4 remains a research target for the 2030s. Understanding which degree your system targets determines the safety case you need to build.
+
+</CodeLab>
+
+<Pitfall title="GNSS Jamming and Spoofing Are Real Threats">
+
+Near conflict zones and in some ports, GPS jamming and spoofing incidents are common. In spoofing, a vessel's GNSS receiver is fed false signals that report a position miles from reality. Without independent position verification (radar, lidar-based coastline matching, or eLoran backup), an autonomous system following spoofed GPS could sail into shallow water or collide with another vessel. Robust autonomous navigation must include GNSS integrity monitoring and fallback positioning methods.
+
+</Pitfall>
+
+---
+
+<Quiz question="What is dead reckoning and why does it accumulate error over time?">
+
+<div>
+
+Dead reckoning estimates current position by integrating speed and heading from the last known position. Each step's error — from imperfect speed measurement, gyroscope drift, and unaccounted currents — adds to all previous errors. Over a 30-minute GNSS outage at 15 knots, a vessel relying only on dead reckoning might have a position error of hundreds of meters, which is unacceptable in congested waters. This is why autonomous navigation systems monitor dead reckoning confidence intervals and either slow the vessel or alert an operator when uncertainty grows too large.
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+In **Lesson 2**, you'll tackle **collision avoidance (COLAV)** — how an autonomous vessel detects another ship on a collision course, computes the legally required maneuver under COLREGs, and executes it.

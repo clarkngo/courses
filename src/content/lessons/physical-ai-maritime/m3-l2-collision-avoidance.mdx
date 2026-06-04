@@ -1,0 +1,189 @@
+---
+title: "Collision Avoidance — COLREGs and AI Decision-Making"
+description: "Learn how autonomous vessels detect collision risks, compute legally compliant maneuvers under COLREGs, and execute them — with a Python closest-point-of-approach simulator."
+module: 3
+moduleTitle: "Autonomous Navigation Systems"
+lesson: 2
+duration: "50 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## The Collision Avoidance Problem
+
+Every minute, thousands of vessels are on converging courses. Most resolve harmlessly — either the ships pass at safe distance, or one gives way. But when they don't, the consequences are severe: the 2001 sinking of the bulk carrier MV Rocknes (270 m, 23 lives lost) and dozens of incidents since then trace to failures in collision avoidance.
+
+An autonomous system must:
+1. **Detect** all vessels in the vicinity
+2. **Compute** whether any pose a collision risk
+3. **Determine** who has right of way under COLREGs
+4. **Plan** a compliant avoiding maneuver
+5. **Execute** it with enough time margin
+
+---
+
+## Key COLREGs Rules for AI
+
+COLREGs (Convention on the International Regulations for Preventing Collisions at Sea) define the rules. Here are the ones that drive most COLAV algorithm design:
+
+| Rule | Description |
+|---|---|
+| **Rule 8** | Action to avoid collision must be taken in ample time, be large and readily apparent |
+| **Rule 13** | Overtaking vessel gives way to the vessel being overtaken |
+| **Rule 14** | Head-on: both vessels alter course to starboard (right) |
+| **Rule 15** | Crossing: vessel with the other to its **starboard** gives way |
+| **Rule 16** | Give-way vessel takes early, substantial action |
+| **Rule 17** | Stand-on vessel maintains course and speed; may act only if give-way fails |
+| **Rule 18** | Power-driven vessels give way to: sailing vessels, fishing vessels, vessels restricted in ability to maneuver |
+
+The AI must classify each encounter (head-on, overtaking, crossing) and determine the own-ship role (give-way or stand-on) before computing a maneuver.
+
+---
+
+## Closest Point of Approach (CPA)
+
+**CPA** is the closest distance two vessels will reach if both maintain current course and speed. **TCPA** is the time until that closest point.
+
+If CPA < safety threshold AND TCPA is positive and small → collision risk exists → action required.
+
+### Python: CPA Calculator
+
+Create `cpa_calculator.py`:
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+
+def compute_cpa(own_pos, own_vel, tgt_pos, tgt_vel):
+    """
+    Compute Closest Point of Approach (CPA) and Time to CPA (TCPA).
+    All positions in meters (x east, y north), velocities in m/s.
+    Returns (cpa_distance_m, tcpa_seconds).
+    """
+    rel_pos = np.array(tgt_pos) - np.array(own_pos)
+    rel_vel = np.array(tgt_vel) - np.array(own_vel)
+
+    speed_sq = np.dot(rel_vel, rel_vel)
+    if speed_sq < 1e-6:
+        return np.linalg.norm(rel_pos), 0.0  # vessels stationary relative to each other
+
+    tcpa = -np.dot(rel_pos, rel_vel) / speed_sq
+    if tcpa < 0:
+        tcpa = 0  # already past CPA
+
+    cpa_pos = rel_pos + rel_vel * tcpa
+    cpa_dist = np.linalg.norm(cpa_pos)
+    return cpa_dist, tcpa
+
+def heading_vel(heading_deg, speed_ms):
+    """Convert heading (degrees, 0=North) and speed to velocity vector (x east, y north)."""
+    rad = np.radians(90 - heading_deg)  # convert nav heading to math angle
+    return np.array([speed_ms * np.cos(rad), speed_ms * np.sin(rad)])
+
+# --- Scenario: Crossing encounter ---
+# Own ship heading north at 8 knots (4.1 m/s)
+own_pos = [0, 0]
+own_vel = heading_vel(0, 4.1)
+
+# Target ship heading west at 6 knots (3.1 m/s), 2 km ahead and 1 km to the right
+tgt_pos = [1000, 2000]
+tgt_vel = heading_vel(270, 3.1)
+
+cpa, tcpa = compute_cpa(own_pos, own_vel, tgt_pos, tgt_vel)
+print(f"CPA: {cpa:.0f} m")
+print(f"TCPA: {tcpa:.0f} s ({tcpa/60:.1f} min)")
+
+SAFE_CPA = 500  # meters
+if cpa < SAFE_CPA and tcpa > 0:
+    print(f"⚠️  COLLISION RISK: CPA {cpa:.0f} m < safe distance {SAFE_CPA} m")
+    print("   Target is to our STARBOARD → we are give-way vessel (COLREGs Rule 15)")
+    print("   Action: Alter course to STARBOARD (turn right)")
+else:
+    print("✅  No collision risk detected")
+
+# --- Visualize ---
+fig, ax = plt.subplots(figsize=(8, 8))
+t_max = max(tcpa + 300, 600)
+t_range = np.linspace(0, t_max, 300)
+
+own_track = np.array([np.array(own_pos) + np.array(own_vel) * t for t in t_range])
+tgt_track = np.array([np.array(tgt_pos) + np.array(tgt_vel) * t for t in t_range])
+
+ax.plot(own_track[:, 0], own_track[:, 1], "b-", label="Own ship track")
+ax.plot(tgt_track[:, 0], tgt_track[:, 1], "r-", label="Target track")
+ax.plot(*own_pos, "bs", markersize=10)
+ax.plot(*tgt_pos, "rs", markersize=10)
+
+cpa_own = np.array(own_pos) + np.array(own_vel) * tcpa
+cpa_tgt = np.array(tgt_pos) + np.array(tgt_vel) * tcpa
+ax.annotate("", xy=cpa_tgt, xytext=cpa_own,
+            arrowprops=dict(arrowstyle="<->", color="purple", lw=2))
+ax.text((cpa_own[0] + cpa_tgt[0]) / 2 + 50,
+        (cpa_own[1] + cpa_tgt[1]) / 2, f"CPA={cpa:.0f} m", color="purple")
+
+ax.set_xlabel("East (m)"); ax.set_ylabel("North (m)")
+ax.legend(); ax.set_aspect("equal"); ax.grid(True)
+ax.set_title("Crossing Encounter — CPA Analysis")
+plt.tight_layout()
+plt.savefig("cpa_encounter.png", dpi=150)
+print("Chart saved to cpa_encounter.png")
+```
+
+```bash
+python cpa_calculator.py
+```
+
+The output will flag a collision risk, identify the COLREGs rule, and suggest a starboard turn. The chart shows both vessel tracks with the CPA distance annotated.
+
+---
+
+## From CPA to Maneuver Planning
+
+Detecting a risk is step one. Computing the right avoiding maneuver is harder:
+
+**Velocity Obstacle (VO):** Projects the target's "cone of dangerous velocities" into the own-ship's velocity space. Any velocity inside the cone leads to collision. The own-ship picks a velocity outside the cone — subject to COLREGs constraints.
+
+**Potential Fields:** Treats other vessels and obstacles as repulsive force fields, and the waypoint as an attractive field. The resulting force vector determines course changes.
+
+**COLREGS-aware planners:** Explicitly encode COLREGs rules as constraints. The planner searches for a maneuver that is: (a) safe (avoids collision), (b) COLREGs-compliant (correct giving-way behavior), (c) efficient (minimal deviation from planned route).
+
+Research systems from NTNU (Norwegian University of Science and Technology) and Rolls-Royce Marine have demonstrated all three approaches in simulation and open-water trials.
+
+---
+
+<CodeLab title="Multi-Vessel Encounters">
+
+Real collision avoidance is rarely a simple two-vessel problem. A vessel entering the Singapore Strait at peak hours may simultaneously track 40+ vessels on converging or crossing paths. Multi-vessel COLAV must:
+
+- Prioritize encounters by risk (lowest CPA and TCPA first)
+- Ensure the maneuver to avoid vessel A does not create a new conflict with vessel B
+- Handle cases where the COLREGs assign different roles in different simultaneous encounters
+
+This is a combinatorial optimization problem. Modern systems use **Monte Carlo Tree Search (MCTS)** or **multi-objective genetic algorithms** to find globally safe maneuvers across all simultaneous conflicts.
+
+</CodeLab>
+
+<Pitfall title="The Stand-On Rule Creates a Deadlock Risk">
+
+COLREGs Rule 17 says the stand-on vessel should maintain course and speed, waiting for the give-way vessel to act. But if both vessels' AI systems classify themselves as stand-on (e.g., due to ambiguous geometry or sensor disagreement), neither takes evasive action. This is a known failure mode called the "protocol deadlock." Real COLAV systems implement a timeout: if CPA is still below threshold with T seconds to go, the stand-on vessel takes action regardless. The timeout T must be calibrated per vessel type — a supertanker needs more time than a ferry. This is not in COLREGs; it requires a documented design decision.
+
+</Pitfall>
+
+---
+
+<Quiz question="What is TCPA and why does its sign matter for collision risk assessment?">
+
+<div>
+
+TCPA (Time to Closest Point of Approach) is how long until two vessels reach their minimum separation distance, assuming current courses and speeds. A positive TCPA means the closest point is in the future — the vessels are still converging, and there is time to act. A negative TCPA means the CPA has already been passed — the vessels are now diverging, so there is no current collision risk even if CPA distance is small. A COLAV system should only trigger alerts when both CPA is below the safety threshold AND TCPA is positive and within a configurable time horizon (e.g., 0–20 minutes).
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+In **Lesson 3**, you'll look at **AI-assisted docking** — one of the most technically demanding maneuvers in maritime, where GPS accuracy is insufficient and the AI must rely on lidar, cameras, and precise thruster control to berth safely.

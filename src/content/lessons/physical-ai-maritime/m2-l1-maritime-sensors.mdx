@@ -1,0 +1,150 @@
+---
+title: "Maritime Sensors — Radar, Lidar, Camera, and Sonar"
+description: "Understand the sensors that give a vessel its digital eyes and ears — how each works, what it's good for, and where it fails."
+module: 2
+moduleTitle: "Sensors and Perception at Sea"
+lesson: 1
+duration: "40 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Why Sensors Are the Foundation
+
+A Physical AI system is only as good as the data flowing into it. Before any AI model can detect obstacles, estimate sea state, or track nearby vessels, sensors must convert the physical world into digital signals. In maritime, no single sensor covers all conditions — understanding each sensor's strengths and blind spots is critical.
+
+---
+
+## Radar (Radio Detection and Ranging)
+
+**How it works:** A rotating antenna emits microwave pulses. The time for each pulse to return after bouncing off an object determines range; the antenna's bearing at that moment gives direction.
+
+**Marine radar bands:**
+
+| Band | Frequency | Typical Use |
+|---|---|---|
+| **X-band** | 9–10 GHz | Short range, high resolution — collision avoidance |
+| **S-band** | 2–4 GHz | Longer range, penetrates rain — weather and open-ocean use |
+
+**Strengths:**
+- Works in darkness, fog, rain, and spray
+- 360° coverage, ranges up to 96 nm on X-band
+- Measures relative velocity via Doppler (on modern radars)
+- Mature technology — every commercial vessel carries at least two radars
+
+**Limitations:**
+- Poor resolution on small objects (buoys, small fishing boats, debris)
+- Blind spots close to the vessel (usually < 50 m)
+- Cannot read text or classify objects by appearance
+- Sea clutter — waves return echoes that obscure real targets
+
+---
+
+## Lidar (Light Detection and Ranging)
+
+**How it works:** A laser fires rapid pulses and measures the return time to build a precise 3D point cloud of the environment.
+
+**Maritime lidar challenges vs. automotive:**
+
+| Factor | Road | Sea |
+|---|---|---|
+| Atmospheric conditions | Mostly clear | Salt spray, fog, rain degrade signal |
+| Surface reflectivity | Asphalt, road markings | Highly variable — calm water absorbs lidar |
+| Range needed | 100–200 m | 500 m+ for collision avoidance at speed |
+| Moving platform | Stable | 6 degrees of freedom pitch/roll/heave |
+
+Despite the challenges, solid-state lidar from manufacturers like Ouster and Velodyne is increasingly deployed on ferries and ASVs for close-range object detection (< 200 m), particularly in confined waters and during docking.
+
+---
+
+## Cameras (Electro-Optical)
+
+**Types used in maritime:**
+
+- **Visible-spectrum cameras** — standard video for situational awareness and lookout assistance
+- **Infrared / thermal cameras** — detect heat signatures at night; find people in water, other vessels, and engine exhaust
+- **Multispectral cameras** — used on satellites and UAVs for ocean monitoring (algae, oil spills, ice)
+
+**AI use on camera feeds:**
+- Object detection and classification (vessel type, small craft, buoys, debris)
+- Horizon tracking for pitch/roll estimation
+- Wake analysis to infer vessel speed
+- Crew safety monitoring (man-overboard detection)
+
+**Limitations:**
+- Useless in dense fog (lidar and radar still work)
+- High data volume requires onboard GPU processing
+- Require training data representative of real maritime conditions (spray, glare, night)
+
+---
+
+## Sonar (Sound Navigation and Ranging)
+
+**How it works:** Acoustic pulses travel through water and return echoes from objects, seafloor features, and biological life. Light barely penetrates seawater; sound travels well.
+
+**Types:**
+
+| Sonar Type | Use |
+|---|---|
+| **Echo sounder** | Measures water depth (bathymetry) — standard on every vessel |
+| **Side-scan sonar** | Maps seafloor topology; finds wrecks and cables |
+| **Multibeam sonar** | High-resolution 3D seafloor mapping |
+| **Forward-looking sonar** | Detects obstacles ahead of the hull in shallow water |
+| **Passive sonar** | Listens for sound (submarines, marine mammals, distant vessels) |
+
+Sonar is essential for AUV navigation. Surface vessels use it primarily for depth safety and port approach in shallow water.
+
+---
+
+## IMU — Inertial Measurement Unit
+
+Every vessel motion affects sensor data. A camera mounted on a ship pitching in 5-meter swells sees a constantly changing horizon. An IMU corrects for this:
+
+- **Accelerometers** measure linear acceleration (surge, sway, heave)
+- **Gyroscopes** measure rotation rates (roll, pitch, yaw)
+- **Magnetometers** provide compass heading
+
+Modern IMUs can be as small as a chip. They are fused with GPS to maintain accurate position and attitude even when GPS briefly drops out — a technique called **dead reckoning**.
+
+---
+
+<CodeLab title="Sensor Coverage Matrix">
+
+| Condition | Radar | Lidar | Camera | Sonar | AIS |
+|---|---|---|---|---|---|
+| Clear daylight | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Night | ✅ | ✅ | ⚠️ (IR only) | ✅ | ✅ |
+| Dense fog | ✅ | ⚠️ | ❌ | ✅ | ✅ |
+| Heavy rain | ⚠️ | ⚠️ | ❌ | ✅ | ✅ |
+| Underwater objects | ❌ | ❌ | ❌ | ✅ | ❌ |
+| Non-AIS vessels | ✅ | ✅ | ✅ | ✅ | ❌ |
+| Object classification | ❌ | ⚠️ | ✅ | ⚠️ | ⚠️ |
+
+No single sensor provides complete coverage. This is why sensor fusion — the topic of Lesson 2 — is not optional.
+
+</CodeLab>
+
+<Pitfall title="Over-Reliance on AIS">
+
+Many early maritime AI prototypes used AIS as their primary collision avoidance data source — it's cheap, easy to parse, and widely available. But AIS only covers vessels required to carry it (commercial vessels > 300 GT). The leading causes of maritime collisions are **fishing vessels, small craft, and debris** — none of which appear in AIS. Any collision avoidance system that relies solely on AIS will fail the moment it matters most.
+
+</Pitfall>
+
+---
+
+<Quiz question="Why can't a maritime AI system rely on cameras alone for all-weather obstacle detection?">
+
+<div>
+
+Cameras require light and clear atmospheric conditions. Dense sea fog — common in coastal shipping lanes — completely blocks visible-spectrum cameras. Rain and spray further degrade image quality and can obscure critical objects. In these conditions, radar penetrates fog and rain, lidar works at shorter ranges, and sonar detects submerged hazards. A camera-only system would be effectively blind in the conditions where maritime accidents are most likely to occur. Robust systems layer cameras with radar and lidar so that losing one sensor doesn't leave the AI blind.
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+In **Lesson 2**, you'll learn how data from these different sensors is merged into one coherent picture through **sensor fusion** — the key technology that makes physical maritime AI actually work.

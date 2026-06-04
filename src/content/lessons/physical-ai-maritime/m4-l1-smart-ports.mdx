@@ -1,0 +1,171 @@
+---
+title: "Smart Ports — AI for Port Operations"
+description: "Discover how the world's leading ports use AI to coordinate vessel arrivals, crane operations, yard management, and gate systems — turning a chaotic physical environment into a data-driven ecosystem."
+module: 4
+moduleTitle: "Port and Fleet Intelligence"
+lesson: 1
+duration: "40 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## The Port as a Physical AI System
+
+A major container port like Rotterdam, Singapore, or Shanghai handles millions of containers per year. Each container moves through a chain of physical operations:
+
+```
+Vessel arrival → Pilotage → Berthing → Crane discharge
+→ Yard transfer → Stacking crane → Gate inspection
+→ Truck departure (or rail/barge transfer)
+```
+
+Every step has physical AI:
+
+- **Vessel arrival:** AI predicts arrival time within minutes by analyzing vessel speed, weather, and AIS history
+- **Berth scheduling:** Optimization algorithms assign berths to minimize vessel idle time
+- **Crane operations:** Automated Ship-to-Shore (STS) cranes move containers 24/7 without operators
+- **Yard management:** Automated Stacking Cranes (ASCs) stack containers in a 3D grid
+- **Gate systems:** Computer vision reads truck plates and container IDs in under 2 seconds
+
+---
+
+## Vessel Traffic Services (VTS)
+
+Before a vessel enters port, it interacts with **VTS** — the maritime equivalent of air traffic control. Radar stations, AIS aggregators, and camera feeds give VTS operators visibility of every vessel in the approach zone.
+
+AI augments VTS in several ways:
+- **ETA prediction:** Machine learning models predict vessel arrival times from historical AIS data, accounting for vessel type, cargo, and weather
+- **Conflict detection:** Automated alerts when two vessels' predicted paths conflict in the fairway
+- **Resource scheduling:** AI feeds ETA predictions into berth scheduling and crane allocation systems
+- **Traffic simulation:** What-if modeling to evaluate port expansion scenarios
+
+---
+
+## Berth Scheduling Optimization
+
+Assigning vessels to berths is a constrained optimization problem:
+
+**Inputs:**
+- Vessel ETAs and their uncertainty
+- Vessel size (length, beam, draft) → determines eligible berths
+- Cargo type (containers, bulk, liquid) → determines terminal
+- Crane productivity rates
+- Tidal windows (draft-restricted vessels)
+
+**Objective:** Minimize total vessel waiting time + maximize crane utilization + meet customer SLAs
+
+**Formulation:** This is a variant of the **Berth Allocation Problem (BAP)** — NP-hard in the general case. Real ports use:
+- **Mixed-Integer Linear Programming (MILP)** for offline planning (24–48h horizons)
+- **Rolling horizon heuristics** for real-time reoptimization as ETAs change
+- **Reinforcement learning** is emerging for dynamic reoptimization
+
+---
+
+## Python: Simple Berth Scheduling Simulation
+
+Create `berth_scheduler.py`:
+
+```python
+from dataclasses import dataclass, field
+from typing import List
+import heapq
+
+@dataclass(order=True)
+class Vessel:
+    eta: float          # hours from now
+    name: str = field(compare=False)
+    handling_time: float = field(compare=False)  # hours at berth
+
+BERTHS = 3  # available berths
+
+def schedule_vessels(vessels: List[Vessel]) -> None:
+    vessels_sorted = sorted(vessels)  # sort by ETA
+
+    # Min-heap of (time_berth_free, berth_id)
+    berth_free = [(0.0, i) for i in range(BERTHS)]
+    heapq.heapify(berth_free)
+
+    print(f"{'Vessel':<15} {'ETA (h)':>8} {'Berth start (h)':>16} {'Berth end (h)':>14} {'Wait (h)':>9}")
+    print("-" * 65)
+
+    total_wait = 0.0
+    for vessel in vessels_sorted:
+        free_time, berth_id = heapq.heappop(berth_free)
+        start = max(vessel.eta, free_time)
+        end   = start + vessel.handling_time
+        wait  = start - vessel.eta
+        total_wait += wait
+        print(f"{vessel.name:<15} {vessel.eta:>8.1f} {start:>16.1f} {end:>14.1f} {wait:>9.1f}")
+        heapq.heappush(berth_free, (end, berth_id))
+
+    print(f"\nTotal waiting time: {total_wait:.1f} h  |  Avg per vessel: {total_wait/len(vessels):.2f} h")
+
+vessels = [
+    Vessel(eta=0.5,  name="EVER GIVEN",    handling_time=18.0),
+    Vessel(eta=1.0,  name="MSC OSCAR",     handling_time=12.0),
+    Vessel(eta=1.5,  name="CMA CGM MARCO", handling_time=8.0),
+    Vessel(eta=2.0,  name="NORDIC DIANA",  handling_time=6.0),
+    Vessel(eta=3.0,  name="YANG MING",     handling_time=14.0),
+    Vessel(eta=4.5,  name="ZIM INTEGRATED",handling_time=10.0),
+    Vessel(eta=5.0,  name="OOCL HONG KONG",handling_time=16.0),
+]
+
+schedule_vessels(vessels)
+```
+
+```bash
+python berth_scheduler.py
+```
+
+You'll see a schedule assigning each vessel to the earliest available berth. The greedy algorithm minimizes waiting by always assigning to whichever berth frees up first. In production, MILP solvers like PuLP or Google OR-Tools handle constraints like vessel size, tidal windows, and customer priority.
+
+---
+
+## Automated Cranes and Yard Systems
+
+**Automated Ship-to-Shore (ASTS) cranes:** Computer vision systems guide spreaders to pick containers from vessel bays with millimeter precision. A camera on the spreader feeds real-time position corrections to servo motors. The Port of Rotterdam's Maasvlakte 2 terminal has operated fully automated cranes since 2014.
+
+**Automated Stacking Cranes (ASC):** Rail-mounted cranes in the yard stack containers 4–5 high. AI planners determine the optimal stacking position for each container based on its departure vessel and departure time — minimizing reshuffles, which waste crane time and delay operations.
+
+**AGVs (Automated Guided Vehicles):** Driverless vehicles transport containers between quay cranes and the yard. In Qingdao Port, 2,000+ AGVs operate continuously, coordinated by a central AI traffic management system.
+
+---
+
+<CodeLab title="Port Community System (PCS)">
+
+A Port Community System is the central data platform connecting all port stakeholders:
+
+- Shipping lines (vessel schedules, manifest data)
+- Terminal operators (berth and crane data)
+- Customs authorities (cargo declarations)
+- Trucking companies (gate appointments, truck ETAs)
+- Freight forwarders (cargo status)
+
+Modern PCS platforms (PortBase, SMDG, CargoX) expose APIs that AI applications consume to build predictive services — ETA forecasting, disruption alerts, carbon reporting. Understanding the PCS data model is essential for building port AI applications.
+
+</CodeLab>
+
+<Pitfall title="Automation Creates Skill Atrophy">
+
+Fully automated container terminals are extremely efficient — but the workforce that remains needs entirely different skills. When an automated crane fails, there may be no one on site who understands the mechanical system well enough to diagnose it quickly. Port operators transitioning to automation must invest heavily in technician training, remote diagnostic capabilities, and documented escalation paths. AI and automation don't eliminate the need for human expertise — they change what expertise is needed, and require careful workforce transition planning.
+
+</Pitfall>
+
+---
+
+<Quiz question="Why is the Berth Allocation Problem considered NP-hard, and how do ports handle this in practice?">
+
+<div>
+
+The Berth Allocation Problem is NP-hard because it involves simultaneously assigning vessels to berths and time slots, subject to multiple constraints (vessel size, draft, cargo type, crane availability, tidal windows), with an objective to minimize total waiting time across all vessels. The number of possible assignments grows exponentially with the number of vessels and berths, making exhaustive search impractical. In practice, ports use a combination of Mixed-Integer Linear Programming for 24–48 hour advance planning (where the problem size is manageable with commercial solvers), and rolling-horizon greedy heuristics for real-time reoptimization as vessel ETAs change — trading optimality for speed when decisions must be made in seconds.
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+In **Lesson 2**, you'll look at **predictive maintenance** for vessels and port equipment — how AI uses sensor streams to detect equipment degradation before it causes a failure, and how to build a simple anomaly detector in Python.

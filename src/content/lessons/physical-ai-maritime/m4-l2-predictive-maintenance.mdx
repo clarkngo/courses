@@ -1,0 +1,204 @@
+---
+title: "Predictive Maintenance for Maritime Equipment"
+description: "Use sensor time-series data and anomaly detection to predict equipment failures before they happen — with a Python simulation of engine vibration monitoring."
+module: 4
+moduleTitle: "Port and Fleet Intelligence"
+lesson: 2
+duration: "50 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## From Reactive to Predictive
+
+Maritime equipment maintenance has historically followed one of two models:
+
+| Model | Description | Problem |
+|---|---|---|
+| **Reactive** | Fix it when it breaks | Unexpected failures at sea; expensive emergency repairs |
+| **Preventive** | Replace parts on a schedule | Replaces components that still have life; expensive and wasteful |
+| **Predictive (PdM)** | Monitor condition; act only when degradation detected | Reduces unplanned downtime by 30–50%; catches failures preventive maintenance misses |
+
+AI-powered predictive maintenance is the fastest-growing segment of maritime digitalization. The economic case is clear: a main engine failure in the North Atlantic can cost $500,000+ in emergency towing and charter penalties, plus risk to crew.
+
+---
+
+## What Gets Monitored
+
+**Main propulsion:**
+- Engine vibration (accelerometers on cylinder blocks)
+- Exhaust gas temperatures per cylinder (thermocouple)
+- Fuel injection pressure and timing
+- Turbocharger speed and exhaust back-pressure
+
+**Auxiliary systems:**
+- Lubricating oil particle count (quantifies bearing wear)
+- Cooling water temperature differentials
+- Generator vibration and electrical harmonics
+
+**Hull:**
+- Strain gauges on structural frames
+- Corrosion sensors in ballast tanks
+- Hull-mounted accelerometers for fatigue cycle counting
+
+**Port equipment:**
+- Crane wire tension and elongation
+- Drive motor current draw (tracks bearing wear)
+- Spreader hinge pin strain
+
+---
+
+## The AI Approach: Anomaly Detection
+
+Rather than building a model that predicts failure directly (which requires large labeled datasets of "equipment that failed in this specific way"), most maritime PdM systems use **anomaly detection** — learning the normal operating signature and flagging deviations.
+
+**Why anomaly detection fits maritime PdM:**
+1. Failures are rare — you don't have thousands of examples of each failure mode
+2. Normal operating conditions are well-characterized and repeatable
+3. Anomalies in the normal signature reliably precede failure, even if the specific failure mechanism varies
+
+Common approaches:
+- **Statistical control charts** (CUSUM, EWMA) — flag when sensor readings exceed control limits
+- **Isolation Forest** — tree-based ensemble that learns the normal distribution of multivariate sensor data
+- **Autoencoder neural networks** — learn to reconstruct normal sensor readings; high reconstruction error = anomaly
+- **LSTM-based forecasting** — predict next sensor value; large prediction error = anomaly
+
+---
+
+## Python: Engine Vibration Anomaly Detection
+
+Install dependencies:
+
+```bash
+pip install numpy pandas scikit-learn matplotlib
+```
+
+Create `vibration_anomaly.py`:
+
+```python
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.ensemble import IsolationForest
+
+rng = np.random.default_rng(42)
+n_normal = 500
+n_anomaly = 30
+
+# Normal engine vibration: mean ~2.5 mm/s RMS, slight variation with RPM
+rpm_normal      = rng.uniform(80, 100, n_normal)          # engine RPM
+vibration_normal = 2.5 + 0.01 * (rpm_normal - 90) + rng.normal(0, 0.15, n_normal)
+temp_normal      = 180 + 0.5 * (rpm_normal - 90) + rng.normal(0, 3, n_normal)
+
+# Anomalous readings: vibration spikes (early bearing failure)
+rpm_anomaly      = rng.uniform(80, 100, n_anomaly)
+vibration_anomaly = rng.uniform(4.5, 7.0, n_anomaly)     # significantly elevated
+temp_anomaly      = 180 + 0.5 * (rpm_anomaly - 90) + rng.normal(0, 3, n_anomaly)
+
+# Combine
+X = np.vstack([
+    np.column_stack([rpm_normal,   vibration_normal, temp_normal]),
+    np.column_stack([rpm_anomaly,  vibration_anomaly, temp_anomaly]),
+])
+labels_true = np.array([1] * n_normal + [-1] * n_anomaly)  # 1=normal, -1=anomaly
+
+# Train Isolation Forest on combined data (unsupervised — no labels used)
+clf = IsolationForest(contamination=0.05, random_state=42)
+preds = clf.fit_predict(X)
+
+df = pd.DataFrame(X, columns=["RPM", "Vibration_mmps", "ExhaustTemp_C"])
+df["true_label"]  = labels_true
+df["predicted"]   = preds  # 1=normal, -1=anomaly
+
+true_anomalies     = df[df["true_label"] == -1]
+detected_anomalies = df[df["predicted"] == -1]
+
+print(f"True anomalies:     {len(true_anomalies)}")
+print(f"Detected anomalies: {len(detected_anomalies)}")
+correct = df[(df["true_label"] == -1) & (df["predicted"] == -1)]
+print(f"Correctly detected: {len(correct)}")
+
+# Plot
+fig, axes = plt.subplots(1, 2, figsize=(12, 5))
+
+ax = axes[0]
+normal_pts = df[df["predicted"] == 1]
+anomaly_pts = df[df["predicted"] == -1]
+ax.scatter(normal_pts["RPM"],  normal_pts["Vibration_mmps"],  c="steelblue", alpha=0.4, label="Normal", s=20)
+ax.scatter(anomaly_pts["RPM"], anomaly_pts["Vibration_mmps"], c="red",       alpha=0.8, label="Anomaly", s=40, marker="x")
+ax.set_xlabel("RPM"); ax.set_ylabel("Vibration (mm/s RMS)")
+ax.set_title("Isolation Forest: Engine Vibration Anomaly Detection")
+ax.legend(); ax.grid(True)
+
+ax = axes[1]
+ax.scatter(normal_pts["ExhaustTemp_C"],  normal_pts["Vibration_mmps"],  c="steelblue", alpha=0.4, s=20)
+ax.scatter(anomaly_pts["ExhaustTemp_C"], anomaly_pts["Vibration_mmps"], c="red",       alpha=0.8, s=40, marker="x")
+ax.set_xlabel("Exhaust Temp (°C)"); ax.set_ylabel("Vibration (mm/s RMS)")
+ax.set_title("Anomaly Distribution: Vibration vs. Temperature")
+ax.grid(True)
+
+plt.tight_layout()
+plt.savefig("vibration_anomaly.png", dpi=150)
+print("Chart saved to vibration_anomaly.png")
+```
+
+```bash
+python vibration_anomaly.py
+```
+
+The Isolation Forest flags high-vibration readings as anomalies — these would trigger a maintenance alert before the bearing failure becomes catastrophic. In production, you'd additionally feed time-series features (rolling mean, variance over the past 24 hours) to improve detection of gradual degradation.
+
+---
+
+## Integrating with Fleet Management
+
+Production PdM systems don't just run models — they integrate into fleet management workflows:
+
+```
+Sensor → Edge device (ship) → Satellite uplink → Shore data platform
+    → Anomaly detection model → Alert if threshold exceeded
+    → Maintenance engineer review → Work order created
+    → Port engineer pre-positions parts for arrival
+```
+
+Companies like **Wärtsilä Voyage**, **ABB Ability™ Marine Advisory System**, and **Kongsberg K-IMS** offer end-to-end platforms covering data ingestion, model inference, alert routing, and work order management.
+
+---
+
+<CodeLab title="Oil Analysis: The Gold Standard">
+
+Lubricating oil analysis remains the most reliable PdM method for marine engines. A sample taken from the sump and analyzed ashore reveals:
+
+- **Iron, chromium, copper particles** — identify which components are wearing (crankshaft, cylinder liners, bearings)
+- **Water content** — indicates cooling water leakage into the oil
+- **Viscosity change** — indicates fuel dilution or oxidation
+- **Total Base Number (TBN)** — measures remaining acid-neutralizing capacity
+
+AI systems trained on oil analysis databases can predict, from a single sample, which component is failing and how many operating hours remain. This is Physical AI at the molecular level.
+
+</CodeLab>
+
+<Pitfall title="False Alarms Erode Trust Faster Than Missed Faults">
+
+A PdM system that generates too many false alarms trains engineers to ignore alerts. Once engineers start dismissing anomaly notifications routinely, the system loses all value — the real failure that slips through goes unnoticed because the team assumed it was another false positive. Tuning the detection threshold is not just a technical optimization; it determines whether the system gets used at all. Start conservative (fewer alerts, higher threshold) and build trust before tightening the threshold to catch subtler degradation.
+
+</Pitfall>
+
+---
+
+<Quiz question="Why is anomaly detection preferred over failure classification for maritime predictive maintenance?">
+
+<div>
+
+Failure classification requires a labeled training dataset with many examples of each specific failure mode — which is extremely difficult to collect in maritime because individual failure events are rare, costly, and rarely captured with complete sensor records. Anomaly detection only requires examples of normal operation, which are abundant (vessels run normally 99%+ of the time). The approach then flags any deviation from the learned normal signature, regardless of which specific failure mode is developing. This makes it practically deployable with available data, and it catches novel failure modes that weren't in any training set — a critical advantage for aging machinery that may fail in unexpected ways.
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+In **Lesson 3**, you'll explore **digital twins** — virtual replicas of vessels and port systems that enable AI to simulate, optimize, and predict outcomes before acting in the physical world.
