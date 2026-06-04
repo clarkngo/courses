@@ -1,0 +1,81 @@
+---
+title: "History and Evolution of Digital Twins"
+description: "From NASA spacecraft to smart factories — trace the 60-year journey that made digital twins possible."
+module: 1
+moduleTitle: "Digital Twins From the Ground Up"
+lesson: 2
+duration: "12 min"
+---
+
+import Quiz from '@components/Quiz.astro';
+
+## It Started With Apollo
+
+The concept of a digital twin predates the term by decades. During the Apollo program in the 1960s, NASA maintained physical replicas of spacecraft on the ground — used for mission planning, troubleshooting, and crew training. When Apollo 13 suffered an oxygen tank failure in 1970, ground teams used these physical models to simulate and test solutions before radioing instructions to the crew.
+
+These physical replicas were the original twins. The goal was identical: mirror the state of a remote asset to understand it, predict it, and intervene.
+
+---
+
+## The Term Is Coined
+
+In 2002, Dr. Michael Grieves at the University of Michigan formally described the concept in a product lifecycle management course. He called it the **"Mirrored Spaces Model"** — a physical product, its virtual counterpart, and the data connection between them.
+
+The term "digital twin" was later popularized by NASA technologist John Vickers in a 2010 roadmap document. By then, the idea had moved from physical mockups to software simulation.
+
+---
+
+## Three Generations of Twins
+
+**Generation 1: Digital Shadow (2000s)**
+Data flows one way — from physical to digital. Sensors report state; the model observes. No feedback loop. Useful for monitoring, not prediction.
+
+**Generation 2: Digital Twin (2010s)**
+Bidirectional data flow. The simulation can influence the physical asset — updating control parameters, issuing alerts, adjusting setpoints. Predictive maintenance becomes possible.
+
+**Generation 3: Autonomous Digital Twin (emerging)**
+The twin can act autonomously. It detects anomalies, runs simulations, determines the optimal response, and issues commands to the physical system — with humans in the loop for high-stakes decisions.
+
+---
+
+## The Industrial IoT Catalyst
+
+The 2010s saw an explosion of industrial IoT deployments. Manufacturers embedded sensors in machinery at scale. The data existed. What was missing was a framework for using it intelligently.
+
+Digital twins provided that framework:
+- Raw sensor streams became inputs to physics models
+- Physics models became predictive engines
+- Predictive engines became maintenance schedulers
+
+Companies like GE, Siemens, and PTC commercialized the pattern. GE's Predix platform built digital twins of jet engines, each receiving data from thousands of onboard sensors per flight.
+
+---
+
+## Where It Stands Today
+
+Modern digital twin platforms combine:
+- **Real-time data ingestion** via MQTT and Kafka
+- **Physics simulation** via NVIDIA Omniverse and Ansys
+- **AI/ML layers** for anomaly detection and failure prediction
+- **Cloud orchestration** for managing fleets of twins at scale
+
+A single automotive manufacturer may run digital twins of every robot on every production line simultaneously — tens of thousands of parallel simulations, continuously synchronized with the factory floor.
+
+---
+
+<Quiz question="What is the key difference between a 'digital shadow' and a true 'digital twin'?">
+
+<div>
+
+A digital shadow has one-way data flow: sensors report to the model, but the model doesn't influence the physical asset. It's a monitoring tool.
+
+A digital twin has bidirectional data flow: it ingests sensor data *and* can send commands or alerts back to the physical system. This feedback loop is what enables predictive maintenance, closed-loop control, and autonomous operation.
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+In **Lesson 3**, we'll map out the full architecture of a digital twin system — the layers, components, and data flows that make the physics-backed mirror work.

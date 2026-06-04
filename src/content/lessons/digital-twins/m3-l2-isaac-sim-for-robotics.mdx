@@ -1,0 +1,119 @@
+---
+title: "Isaac Sim: Robotics Digital Twins"
+description: "NVIDIA Isaac Sim extends Omniverse specifically for robotics — sensor simulation, ROS integration, and physics-accurate robot models."
+module: 3
+moduleTitle: "Physics Simulation with NVIDIA Omniverse and Isaac Sim"
+lesson: 2
+duration: "15 min"
+---
+
+import Quiz from '@components/Quiz.astro';
+
+## What Isaac Sim Adds
+
+NVIDIA Isaac Sim is Omniverse with a robotics specialization layer. On top of Omniverse's general physics simulation, Isaac Sim provides:
+
+- **Robot description import** — load URDF/MJCF robot models directly from manufacturer specs
+- **Synthetic sensor simulation** — virtual cameras, LiDAR, depth sensors, IMUs that emit realistic (and optionally noisy) data
+- **ROS/ROS2 bridge** — direct integration with the Robot Operating System ecosystem
+- **Articulation controller API** — programmatic control of robot joints at the physics level
+- **Domain randomization** — vary physics parameters (friction, mass, lighting) to train robust ML models
+
+For digital twin purposes, the most important capability is the articulation physics and sensor simulation.
+
+---
+
+## Robot Models in Isaac Sim
+
+Isaac Sim imports robot descriptions from standard formats:
+
+**URDF (Unified Robot Description Format)** — XML-based format describing robot kinematics:
+```xml
+<joint name="joint2" type="revolute">
+  <parent link="upper_arm"/>
+  <child link="forearm"/>
+  <axis xyz="0 1 0"/>
+  <limit lower="-2.094" upper="2.094"
+         effort="150" velocity="3.14"/>
+</joint>
+```
+
+When you load a URDF into Isaac Sim, it creates a physically accurate articulated robot — correct mass distribution, joint limits, and kinematic constraints. The digital twin's robot model is mechanically identical to the physical robot.
+
+---
+
+## Synthetic Sensor Simulation
+
+A critical feature for digital twins: Isaac Sim can simulate the *sensors themselves*, not just the robot geometry.
+
+**Camera simulation** — rendered with RTX ray tracing, producing images that match real camera optics including:
+- Lens distortion
+- Depth of field
+- Motion blur at high joint velocities
+- Specular reflections from metal surfaces
+
+**LiDAR simulation** — ray-cast point clouds with configurable beam patterns, range noise, and return intensity models.
+
+**IMU simulation** — 6-DOF accelerometer and gyroscope readings computed from simulated rigid body motion, with configurable noise profiles.
+
+This sensor fidelity enables training perception models in simulation that transfer to real hardware — and validating that the twin's virtual sensors would see what the physical sensors see.
+
+---
+
+## The ROS Bridge
+
+Most industrial robots run ROS (Robot Operating System) for control. Isaac Sim's ROS bridge makes integration straightforward:
+
+```
+Physical Robot                    Isaac Sim Digital Twin
+ROS topic: /joint_states    →     ROS bridge → Articulation update
+ROS topic: /camera/image    →     Comparison with virtual camera
+ROS service: /move_to_pose  →     Twin validates trajectory before execution
+```
+
+The twin subscribes to the same ROS topics as any other ROS node. When the physical robot publishes joint state updates, the twin receives and applies them — maintaining synchronization through the existing ROS infrastructure.
+
+---
+
+## Validating Physical Movements Against the Model
+
+This is the core of the physics-backed mirror. For every physical robot action:
+
+1. Physical robot executes a movement
+2. Joint encoders report actual positions and torques via ROS
+3. Twin applies the same command to the simulated robot
+4. Twin computes expected torques from the physics model
+5. Compare: `actual_torque` vs `expected_torque`
+
+If actual torque is significantly higher than expected, something is wrong — increased friction, payload mismatch, mechanical wear, or an obstruction. The twin flags the anomaly before it becomes a failure.
+
+```python
+def check_torque_anomaly(joint_id, actual_torque, expected_torque, threshold=0.15):
+    deviation = abs(actual_torque - expected_torque) / expected_torque
+    if deviation > threshold:
+        return MaintenanceAlert(
+            joint=joint_id,
+            deviation_pct=deviation * 100,
+            message=f"Torque deviation {deviation*100:.1f}% — inspect joint {joint_id}"
+        )
+    return None
+```
+
+---
+
+<Quiz question="Why does Isaac Sim simulate sensors (cameras, LiDAR, IMUs) rather than just the robot geometry?">
+
+<div>
+
+Geometry tells you where parts are. Sensors tell you what the system *observes* — and what the physical sensors would see depends on optics, noise characteristics, and environment interactions.
+
+By simulating sensors with physical fidelity, the twin can validate whether what the virtual sensor sees matches what the real sensor sees. Discrepancies reveal calibration drift, sensor degradation, or environmental changes. It also enables training ML perception models in simulation that transfer to the real robot without a domain gap.
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+In **Lesson 3**, we'll look at how to calibrate and maintain the physics model over time — keeping the twin accurate as the physical asset ages, wears, and changes.

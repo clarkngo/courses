@@ -1,0 +1,109 @@
+---
+title: "Digital Twin Architecture"
+description: "Map the full system — from physical sensors to simulation engine to predictive dashboard."
+module: 1
+moduleTitle: "Digital Twins From the Ground Up"
+lesson: 3
+duration: "15 min"
+---
+
+import Quiz from '@components/Quiz.astro';
+
+## The Four Layers
+
+Every digital twin system, regardless of industry or scale, is built from four layers stacked on top of each other.
+
+```
+┌─────────────────────────────────┐
+│  4. Application Layer           │  Dashboards, alerts, autonomous control
+├─────────────────────────────────┤
+│  3. Analytics & AI Layer        │  Anomaly detection, failure prediction
+├─────────────────────────────────┤
+│  2. Simulation Layer            │  Physics models, virtual environment
+├─────────────────────────────────┤
+│  1. Data Ingestion Layer        │  Sensors, telemetry, MQTT/Kafka streams
+└─────────────────────────────────┘
+        ↕ (bidirectional)
+┌─────────────────────────────────┐
+│  Physical Asset                 │  Robot, turbine, vehicle, facility
+└─────────────────────────────────┘
+```
+
+---
+
+## Layer 1: Data Ingestion
+
+The foundation. Sensors attached to the physical asset emit readings continuously — joint angles, torque, temperature, vibration, current draw. These readings are transported to the twin via:
+
+- **MQTT** — lightweight publish/subscribe protocol designed for constrained IoT devices
+- **Kafka** — high-throughput message streaming for industrial-scale telemetry
+- **OPC-UA** — the industrial automation standard for factory equipment
+
+Data arrives at the ingestion layer, is timestamped, validated, and routed to the simulation layer.
+
+---
+
+## Layer 2: Simulation
+
+The core of the twin. A physics engine maintains a virtual model of the asset that:
+
+- Receives sensor readings as inputs
+- Updates internal state variables (position, velocity, temperature, stress)
+- Computes what the system *should* be doing given those inputs
+- Flags discrepancies between expected and observed behavior
+
+For robotics, NVIDIA Isaac Sim provides GPU-accelerated rigid-body dynamics. For fluid systems, Ansys or OpenFOAM handle computational fluid dynamics. The choice of simulator depends on the physics domain.
+
+---
+
+## Layer 3: Analytics and AI
+
+Raw simulation data is fed into ML models that identify patterns invisible to rule-based systems:
+
+- **Anomaly detection** — "This vibration signature deviates from the normal distribution by 4.2 sigma"
+- **Remaining useful life (RUL) estimation** — "Based on current degradation rate, this bearing has 340 operating hours remaining"
+- **Root cause analysis** — "The thermal anomaly in motor 3 is correlated with the spike in joint 2 torque from last Tuesday"
+
+This layer transforms data into actionable intelligence.
+
+---
+
+## Layer 4: Application
+
+The interface between the twin and human operators (or autonomous systems):
+
+- **Dashboards** — real-time visualization of twin state and health metrics
+- **Alert systems** — maintenance tickets triggered by predicted failures
+- **Simulation workbenches** — engineers run what-if scenarios ("what happens if we increase line speed by 15%?")
+- **Autonomous control loops** — the twin issues commands directly to the physical asset
+
+---
+
+## Data Flows in Practice
+
+The arrow between twin and asset runs both ways:
+
+**Physical → Twin:** Sensor readings flow up through MQTT/Kafka into the simulation layer, updating twin state in near-real-time.
+
+**Twin → Physical:** Alerts, updated control parameters, and maintenance commands flow back down to the asset or to operators who act on the asset.
+
+This bidirectional loop is what distinguishes a true digital twin from a monitoring dashboard.
+
+---
+
+<Quiz question="Why does the data flow between a digital twin and its physical asset need to be bidirectional?">
+
+<div>
+
+One-way flow (physical → twin) gives you a monitoring tool: you can observe the asset's state but can't influence it. That's a digital shadow, not a twin.
+
+Bidirectional flow enables the twin to act: issuing maintenance alerts, updating control parameters, or commanding the physical asset directly. The feedback loop is what makes predictive maintenance and autonomous operation possible.
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+Module 2 dives into the data ingestion layer in depth — how MQTT and Kafka work, why the choice between them matters, and how to design a telemetry pipeline that can handle industrial-scale sensor data.

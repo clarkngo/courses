@@ -1,0 +1,83 @@
+---
+title: "Digital Twins in Industry"
+description: "Real deployments across manufacturing, energy, aerospace, and smart cities — what works, what's hard, and what it costs."
+module: 6
+moduleTitle: "Digital Twins in Practice"
+lesson: 1
+duration: "15 min"
+---
+
+import Quiz from '@components/Quiz.astro';
+
+## Manufacturing: The Proving Ground
+
+Manufacturing was the first industry to deploy digital twins at scale, and it remains the reference implementation.
+
+**BMW Group — Virtual Factory**
+BMW runs digital twins of its entire production system before physically constructing new plants. The virtual factory simulates robot placement, conveyor routing, and human-robot collaboration zones — finding bottlenecks and safety conflicts in simulation before the first bolt is tightened. Estimated savings: €6 billion in production ramp-up costs across new model launches.
+
+**Bosch — Tool Condition Monitoring**
+Bosch uses digital twins of CNC machining centers to predict tool wear. Each cutting tool has a digital twin that tracks forces, vibration, and thermal signatures. When wear reaches a predicted threshold, the system schedules tool replacement — reducing scrap from worn tools by 30% and tool inventory by 15%.
+
+**Siemens — Amberg Electronics Plant**
+The Amberg facility runs digital twins of its entire surface-mount PCB production line. Real-time quality data from optical inspection stations feeds back into production parameters automatically. First-pass yield (boards that pass inspection without rework) exceeds 99.9988%.
+
+---
+
+## Energy: Wind and Grid
+
+**GE Digital — Wind Turbine Twins**
+Each GE wind turbine in a fleet has a digital twin that ingests ~400 sensor signals at 10Hz. The twin models aerodynamic performance, gearbox wear, and blade fatigue simultaneously. Predictive maintenance from these twins has reduced turbine downtime by up to 20% — on a fleet of thousands of turbines, that translates to hundreds of millions of dollars in recovered energy production annually.
+
+**National Grid (UK) — Power Grid Twin**
+National Grid operates a real-time twin of the UK transmission network. The twin runs N-1 contingency analysis continuously — simulating what happens if any single element fails — and pre-positions reactive power compensation to maintain stability. This enables the grid to operate with higher renewable penetration (intermittent generation) while maintaining frequency stability.
+
+---
+
+## Aerospace: Fleet Digital Twins
+
+**Airbus — Aircraft Structural Twin**
+Each Airbus A350 has a structural digital twin that accumulates load data from strain gauges throughout the airframe across every flight cycle. The twin computes cumulative fatigue at hundreds of structural locations — replacing fixed inspection intervals with condition-based intervals. Aircraft with light-duty routes go longer between inspections; aircraft flying harsh routes get early inspection scheduling.
+
+**Rolls-Royce — Engine Health Monitoring**
+Rolls-Royce's TotalCare program maintains digital twins of every engine in its fleet. In-flight telemetry is transmitted via satellite to a monitoring center where each engine's twin runs continuously. Fuel burn anomalies that would otherwise go unnoticed until an A-check inspection are detected within hours of first appearance.
+
+---
+
+## Smart Cities: Urban-Scale Twins
+
+**Singapore — Virtual Singapore**
+The entire city-state has a digital twin — buildings, roads, utilities, and topography — at 1:1 scale. Use cases include solar potential analysis (which rooftop should get panels?), line-of-sight planning for emergency communications, and flood modeling for extreme weather preparation. Built on Esri's CityEngine platform with real-time feeds from IoT sensors throughout the city.
+
+**Las Vegas — Autonomous Vehicle Integration**
+Las Vegas operates a digital twin of downtown streets to manage autonomous vehicle routing, traffic signal optimization, and emergency vehicle coordination. When an ambulance is dispatched, the twin pre-optimizes traffic signals along the predicted route — reducing response times by an average of 2.3 minutes.
+
+---
+
+## Common Deployment Patterns
+
+Across industries, successful digital twin deployments share structural similarities:
+
+1. **Start narrow** — a single machine or production line, not an entire factory
+2. **Prove ROI on one use case** — predictive maintenance is the most defensible first use case because ROI is directly measurable (maintenance cost reduction, downtime reduction)
+3. **Build the data infrastructure first** — most projects fail not because of simulation technology but because sensor data is poorly timestamped, poorly labeled, or simply unavailable
+4. **Invest in calibration** — a twin that's never been validated against the physical asset is not a twin, it's a model
+
+---
+
+<Quiz question="Why do most successful digital twin deployments start with a single machine rather than an entire facility?">
+
+<div>
+
+A facility-scale twin introduces every challenge simultaneously — sensor integration, data pipelines, model calibration, CMMS integration, operator training — and makes it impossible to diagnose what's failing when things go wrong.
+
+Starting with a single machine lets teams validate each layer in isolation: does the sensor data arrive correctly? Does the physics model match observed behavior? Are the anomaly alerts actionable? Once each layer works for one machine, it can be replicated across the fleet. The single-machine pilot is also where ROI data is gathered — making the business case for the full deployment.
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+In **Lesson 2**, we'll examine the open research problems in digital twin technology — the unsolved challenges that are driving academic and industrial research today.

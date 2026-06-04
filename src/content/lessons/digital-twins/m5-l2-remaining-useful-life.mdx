@@ -1,0 +1,166 @@
+---
+title: "Predicting Remaining Useful Life"
+description: "From 'something is wrong' to 'you have 72 hours' — the models that translate degradation signals into actionable maintenance windows."
+module: 5
+moduleTitle: "Predictive Maintenance and Anomaly Detection"
+lesson: 2
+duration: "15 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Quiz from '@components/Quiz.astro';
+
+## From Detection to Prediction
+
+Anomaly detection answers: *"Is something wrong?"*
+
+Remaining Useful Life (RUL) estimation answers: *"How long until it fails?"*
+
+The distinction matters for operations. "Something is wrong" triggers investigation. "You have 72 hours" enables scheduling — maintenance can be planned for the next shift change, avoiding unplanned downtime.
+
+This is the core economic value of predictive maintenance: converting failures (unpredictable, expensive) into scheduled maintenance events (predictable, cheap).
+
+---
+
+## Degradation Models
+
+RUL estimation requires a **degradation model** — a mathematical description of how a component degrades over time. Three levels of sophistication:
+
+**1. Physics-based degradation models**
+Derive the failure mechanism from first principles. Paris' law for crack growth in metals:
+
+```
+da/dN = C · (ΔK)^m
+```
+
+Where `a` is crack size, `N` is load cycles, `ΔK` is stress intensity range, and `C`, `m` are material constants.
+
+Advantages: interpretable, no training data needed. Limitations: requires deep domain knowledge, sensitive to parameter uncertainty.
+
+**2. Data-driven models**
+Learn the degradation pattern from historical run-to-failure data. No physics knowledge required — but requires a dataset of components that were run until they failed.
+
+Common approaches: LSTM networks, survival analysis, gradient boosted trees.
+
+**3. Hybrid models**
+Use physics to define the degradation structure; use data to estimate parameters. Best of both worlds — physically consistent predictions with data-driven calibration.
+
+---
+
+## A Simple RUL Estimator
+
+For a bearing showing increasing torque residuals (a classic wear signature), a linear degradation model:
+
+```python
+import numpy as np
+from dataclasses import dataclass
+from datetime import datetime, timedelta
+
+@dataclass
+class RULEstimate:
+    current_health: float   # 1.0 = new, 0.0 = failed
+    rul_hours: float
+    confidence_interval: tuple  # (lower, upper) hours
+
+class LinearDegradationRUL:
+    def __init__(self, failure_threshold=0.2, window_hours=24):
+        self.history = []   # (timestamp, health_index)
+        self.failure_threshold = failure_threshold
+        self.window_hours = window_hours
+
+    def update(self, timestamp: datetime, health_index: float):
+        self.history.append((timestamp, health_index))
+        # Keep only recent window
+        cutoff = timestamp - timedelta(hours=self.window_hours)
+        self.history = [(t, h) for t, h in self.history if t >= cutoff]
+
+    def estimate(self) -> RULEstimate:
+        if len(self.history) < 10:
+            return None
+
+        times = np.array([(t - self.history[0][0]).total_seconds() / 3600
+                          for t, _ in self.history])
+        healths = np.array([h for _, h in self.history])
+
+        # Fit linear trend
+        coeffs = np.polyfit(times, healths, 1)
+        slope, intercept = coeffs
+
+        if slope >= 0:  # not degrading
+            return None
+
+        current_health = np.polyval(coeffs, times[-1])
+        hours_to_failure = (self.failure_threshold - current_health) / slope
+
+        # 95% prediction interval using residual std
+        predicted = np.polyval(coeffs, times)
+        residual_std = np.std(healths - predicted)
+        ci_width = 1.96 * residual_std / abs(slope)
+
+        return RULEstimate(
+            current_health=current_health,
+            rul_hours=hours_to_failure,
+            confidence_interval=(hours_to_failure - ci_width,
+                                  hours_to_failure + ci_width)
+        )
+```
+
+---
+
+## Health Index Construction
+
+Raw sensor readings must be transformed into a scalar **health index** — a single number ranging from 1.0 (healthy) to 0.0 (failed).
+
+For a robot joint bearing, a health index built from multiple indicators:
+
+```python
+def compute_health_index(torque_residual_rms, vibration_rms, temperature_delta):
+    # Normalize each indicator against established thresholds
+    h_torque = 1.0 - min(torque_residual_rms / TORQUE_FAILURE_THRESHOLD, 1.0)
+    h_vibration = 1.0 - min(vibration_rms / VIBRATION_FAILURE_THRESHOLD, 1.0)
+    h_temperature = 1.0 - min(temperature_delta / TEMP_FAILURE_THRESHOLD, 1.0)
+
+    # Weighted combination
+    return 0.5 * h_torque + 0.3 * h_vibration + 0.2 * h_temperature
+```
+
+The weights reflect domain knowledge about which indicators are most predictive for this failure mode.
+
+---
+
+## Integrating RUL Into Operations
+
+RUL estimates feed directly into maintenance scheduling systems:
+
+```
+RUL estimate: 72 ± 18 hours
+Current time: Monday 09:00
+Next scheduled maintenance window: Wednesday 02:00 (41 hours)
+
+Decision logic:
+  Lower bound: 72 - 18 = 54 hours → Wednesday 15:00
+  Next window is within lower bound → SCHEDULE for Wednesday 02:00
+  
+  If lower bound < next window → ESCALATE to emergency maintenance
+```
+
+The digital twin doesn't just detect the problem — it generates the maintenance ticket, attaches the RUL estimate with confidence bounds, and recommends the action. Human operators review and approve.
+
+---
+
+<Quiz question="Why do RUL predictions include a confidence interval rather than a single point estimate?">
+
+<div>
+
+A point estimate ("fails in exactly 72 hours") implies precision that the model doesn't have. Degradation rates vary with operating conditions, load cycles, and environmental factors that the model may not fully capture.
+
+A confidence interval communicates the range of plausible outcomes, enabling risk-based decisions: if the lower bound (54 hours) is before the next maintenance window (72 hours away), escalate to emergency maintenance. If the lower bound is comfortably past the next window, schedule normally. The interval is the input to the decision, not just context.
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+In **Lesson 3**, we'll look at the full predictive maintenance workflow — how alerts, RUL estimates, and work orders flow through a real industrial maintenance management system.
