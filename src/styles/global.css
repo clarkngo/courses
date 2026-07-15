@@ -70,6 +70,36 @@
     @apply mt-3 pl-4 border-l-2 border-quiz-border text-gray-700 text-sm leading-relaxed;
   }
 
+  /* Multi-question quiz (multiple choice) */
+  .quiz-mc-list {
+    @apply flex flex-col gap-6;
+  }
+  .quiz-mc-item {
+    @apply flex flex-col gap-2;
+  }
+  .quiz-mc-question {
+    @apply text-gray-800 font-medium text-sm;
+  }
+  .quiz-mc-options {
+    @apply flex flex-col gap-2;
+  }
+  .quiz-mc-option {
+    @apply text-left text-sm px-3 py-2 rounded-lg border border-gray-300 bg-white
+           text-gray-700 hover:bg-gray-50 transition-colors duration-150;
+  }
+  .quiz-mc-item[data-answered] .quiz-mc-option {
+    @apply cursor-default hover:bg-white;
+  }
+  .quiz-mc-option.is-correct {
+    @apply border-green-600 bg-green-50 text-green-800 font-semibold;
+  }
+  .quiz-mc-option.is-incorrect {
+    @apply border-red-500 bg-red-50 text-red-700;
+  }
+  .quiz-mc-explanation {
+    @apply mt-1 pl-4 border-l-2 border-quiz-border text-gray-700 text-sm leading-relaxed;
+  }
+
   /* ── Sidebar nav items ───────────────────────────── */
   .nav-lesson {
     @apply flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-600
