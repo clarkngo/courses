@@ -1,0 +1,71 @@
+---
+export interface Props {
+  steps: { title: string; subtitle?: string }[];
+  colors?: string[];
+  label: string;
+}
+
+const {
+  steps,
+  colors = ['#1d4ed8', '#2563eb', '#3b82f6'],
+  label,
+} = Astro.props;
+
+const width = 720;
+const height = 420;
+const centerX = width / 2;
+const centerY = height / 2;
+const radius = 150;
+const nodeR = 52;
+
+const n = steps.length;
+const positions = steps.map((_, i) => {
+  const angle = -Math.PI / 2 + (i * 2 * Math.PI) / n;
+  return {
+    x: centerX + radius * Math.cos(angle),
+    y: centerY + radius * Math.sin(angle),
+  };
+});
+
+const arrows = positions.map((from, i) => {
+  const to = positions[(i + 1) % n];
+  const dx = to.x - from.x;
+  const dy = to.y - from.y;
+  const dist = Math.sqrt(dx * dx + dy * dy);
+  const ux = dx / dist;
+  const uy = dy / dist;
+  return {
+    x1: from.x + ux * nodeR,
+    y1: from.y + uy * nodeR,
+    x2: to.x - ux * (nodeR + 8),
+    y2: to.y - uy * (nodeR + 8),
+  };
+});
+---
+
+<svg viewBox={`0 0 ${width} ${height}`} xmlns="http://www.w3.org/2000/svg" role="img" aria-label={label}>
+  <defs>
+    <marker id="loop-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill={colors[0]} />
+    </marker>
+  </defs>
+  <circle cx={centerX} cy={centerY} r={radius} fill="none" stroke="#dbeafe" stroke-width="2" stroke-dasharray="4 6" />
+  <g font-family="system-ui, sans-serif">
+    {arrows.map((a) => (
+      <line x1={a.x1} y1={a.y1} x2={a.x2} y2={a.y2} stroke={colors[0]} stroke-width="3" marker-end="url(#loop-arrow)" />
+    ))}
+    {positions.map((p, i) => (
+      <>
+        <circle cx={p.x} cy={p.y} r={nodeR} fill={colors[i % colors.length]} />
+        <text x={p.x} y={p.y - (steps[i].subtitle ? 6 : 0)} text-anchor="middle" fill="white" font-size="15" font-weight="700">
+          {steps[i].title}
+        </text>
+        {steps[i].subtitle && (
+          <text x={p.x} y={p.y + 14} text-anchor="middle" fill="#dbeafe" font-size="11">
+            {steps[i].subtitle}
+          </text>
+        )}
+      </>
+    ))}
+  </g>
+</svg>
