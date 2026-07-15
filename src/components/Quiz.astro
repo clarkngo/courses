@@ -1,16 +1,75 @@
 ---
-export interface Props {
+export interface QuizQuestion {
   question: string;
+  options: string[];
+  correctIndex: number;
+  explanation: string;
 }
-const { question } = Astro.props;
+
+export interface Props {
+  question?: string;
+  questions?: QuizQuestion[];
+}
+
+const { question, questions } = Astro.props;
 ---
-<div class="learning-block quiz">
-  <div class="learning-block-title">🧠 Knowledge Check</div>
-  <p class="text-gray-800 font-medium text-sm mb-3">{question}</p>
-  <details>
-    <summary>Reveal Answer &amp; Explanation</summary>
-    <div>
-      <slot />
+{questions && questions.length > 0 ? (
+  <div class="learning-block quiz">
+    <div class="learning-block-title">🧠 Knowledge Check</div>
+    <div class="quiz-mc-list">
+      {questions.map((q, qIndex) => (
+        <div class="quiz-mc-item" data-correct-index={q.correctIndex}>
+          <p class="quiz-mc-question">{qIndex + 1}. {q.question}</p>
+          <div class="quiz-mc-options">
+            {q.options.map((option, oIndex) => (
+              <button type="button" class="quiz-mc-option" data-index={oIndex}>
+                {option}
+              </button>
+            ))}
+          </div>
+          <p class="quiz-mc-explanation" hidden>{q.explanation}</p>
+        </div>
+      ))}
     </div>
-  </details>
-</div>
+  </div>
+) : (
+  <div class="learning-block quiz">
+    <div class="learning-block-title">🧠 Knowledge Check</div>
+    <p class="text-gray-800 font-medium text-sm mb-3">{question}</p>
+    <details>
+      <summary>Reveal Answer &amp; Explanation</summary>
+      <div>
+        <slot />
+      </div>
+    </details>
+  </div>
+)}
+
+<script>
+  function initQuizItem(item: Element) {
+    const correctIndex = Number(item.getAttribute('data-correct-index'));
+    const options = Array.from(item.querySelectorAll<HTMLButtonElement>('.quiz-mc-option'));
+    const explanation = item.querySelector<HTMLElement>('.quiz-mc-explanation');
+
+    options.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        if (item.hasAttribute('data-answered')) return;
+        item.setAttribute('data-answered', 'true');
+
+        const chosenIndex = Number(btn.getAttribute('data-index'));
+        options.forEach((opt) => {
+          const optIndex = Number(opt.getAttribute('data-index'));
+          if (optIndex === correctIndex) {
+            opt.classList.add('is-correct');
+          } else if (optIndex === chosenIndex) {
+            opt.classList.add('is-incorrect');
+          }
+        });
+
+        if (explanation) explanation.hidden = false;
+      });
+    });
+  }
+
+  document.querySelectorAll('.quiz-mc-item').forEach(initQuizItem);
+</script>
