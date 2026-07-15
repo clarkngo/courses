@@ -1,0 +1,96 @@
+---
+title: "Why a 2-Minute User Test Changes Everything"
+description: "Trade projects with a partner, watch them use it cold, and collect one rose and one thorn."
+module: 3
+moduleTitle: "Day 3 — Ship It"
+lesson: 1
+duration: "45 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Recap: Two Days, Two Lenses
+
+Day 1 gave you the loop. Day 2 gave you the PM and UX lenses — who it's for, what it must do well, and three habits that make it usable. Today adds the most important lens of all: **someone else's eyes.**
+
+Here's the thing nobody tells you until they've built something: **you cannot see your own project the way a stranger sees it.** You already know where every button is and what it's supposed to do. A first-time user doesn't. The gap between those two experiences is exactly what today fixes.
+
+---
+
+## The Feedback Loop
+
+<svg viewBox="0 0 700 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Feedback loop: trade with a partner, they use it cold for two minutes, they give one rose and one thorn, you make one real change.">
+  <defs>
+    <marker id="arrow2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1d4ed8" />
+    </marker>
+  </defs>
+  <g font-family="system-ui, sans-serif">
+    <rect x="15" y="110" width="150" height="80" rx="12" fill="#1d4ed8" />
+    <text x="90" y="145" text-anchor="middle" fill="white" font-size="13" font-weight="700">Trade with</text>
+    <text x="90" y="163" text-anchor="middle" fill="white" font-size="13" font-weight="700">a partner</text>
+
+    <path d="M165,150 L200,150" stroke="#1d4ed8" stroke-width="2.5" marker-end="url(#arrow2)" />
+
+    <rect x="200" y="110" width="150" height="80" rx="12" fill="#2563eb" />
+    <text x="275" y="138" text-anchor="middle" fill="white" font-size="12" font-weight="700">They use it cold</text>
+    <text x="275" y="156" text-anchor="middle" fill="white" font-size="12" font-weight="700">for 2 minutes</text>
+    <text x="275" y="174" text-anchor="middle" fill="#dbeafe" font-size="10">no explanation from you</text>
+
+    <path d="M350,150 L385,150" stroke="#1d4ed8" stroke-width="2.5" marker-end="url(#arrow2)" />
+
+    <rect x="385" y="90" width="150" height="50" rx="10" fill="#f43f5e" />
+    <text x="460" y="120" text-anchor="middle" fill="white" font-size="13" font-weight="700">🌹 One rose</text>
+    <rect x="385" y="160" width="150" height="50" rx="10" fill="#78716c" />
+    <text x="460" y="190" text-anchor="middle" fill="white" font-size="13" font-weight="700">🥀 One thorn</text>
+
+    <path d="M535,150 L570,150" stroke="#1d4ed8" stroke-width="2.5" marker-end="url(#arrow2)" />
+
+    <rect x="570" y="110" width="115" height="80" rx="12" fill="#1d4ed8" />
+    <text x="627" y="140" text-anchor="middle" fill="white" font-size="12" font-weight="700">You make</text>
+    <text x="627" y="158" text-anchor="middle" fill="white" font-size="12" font-weight="700">one real</text>
+    <text x="627" y="176" text-anchor="middle" fill="white" font-size="12" font-weight="700">change</text>
+  </g>
+</svg>
+
+**Rose** — what worked. Be specific: not "I liked it," but "the button color made it obvious what to click first."
+
+**Thorn** — what confused them. Also specific: not "it's fine," but "I didn't know I could click on the aircraft image."
+
+A rose without a thorn is just a compliment. A thorn without a rose feels like criticism. You need both to actually know what to keep and what to fix.
+
+<Pitfall title="Defending Your Build During Testing">
+
+When your partner hits a confusing spot, the instinct is to jump in and explain: *"Oh, you're supposed to click there first."* Don't. If you have to explain it, that's the thorn — write it down instead of talking them through it. The two minutes only teach you something if you stay silent and just watch.
+
+</Pitfall>
+
+---
+
+## Today's Test
+
+Pick whichever project from this week you want to improve — Day 1's boarding pass, Day 2's aircraft quiz, or something new. Trade with a partner:
+
+1. Hand them your project with **zero explanation**
+2. They use it cold for **2 minutes**, out loud if possible (narrating what they're thinking helps you both)
+3. They give you **one rose** and **one thorn**
+4. Switch — now you test theirs the same way
+
+Write both pieces of feedback down. You'll use them in the next lesson.
+
+<Quiz question="Your partner tests your quiz and says, 'I liked the colors, and I didn't realize I had to click the plane picture to answer — I thought it was just decoration.' Which part is the rose, and which is the thorn, and what should you do with each?">
+<div>
+
+**The colors are the rose (keep it) — the unclear clickable plane image is the thorn (that's your next fix).**
+
+The rose tells you something is already working, so you don't need to touch it. The thorn tells you exactly where clarity or feedback is missing — in this case, the image doesn't look clickable, so hierarchy or a hover state could fix it. In the next lesson, that thorn becomes your one real change.
+
+</div>
+</Quiz>
+
+---
+
+## Up Next
+
+Turn that thorn into a fix — one honest iteration, guided entirely by what someone else actually experienced.

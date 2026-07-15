@@ -1,0 +1,97 @@
+---
+title: "Think Like a Product Manager"
+description: "Before you write a single prompt, answer two questions that separate a focused build from a scattered one."
+module: 2
+moduleTitle: "Day 2 — Think Like a Builder"
+lesson: 1
+duration: "40 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Recap: The Loop, One Day Later
+
+Yesterday you learned the vibe coding loop — Describe, Build, Test, Refine, Repeat — and used it to build your boarding-pass page. Today that loop doesn't change. What changes is what happens **before** you type your first prompt.
+
+### Warm-Up: Prompt Challenge
+
+Quick round — in 60 seconds, rewrite this vague prompt using yesterday's template so it's specific enough to actually build:
+
+> *"Make an app about airplanes."*
+
+Compare with your neighbor. Whoever's version has the most specific "who it's for" and "styled like" wins bragging rights.
+
+---
+
+## The Two Questions That Matter Most
+
+Every strong build starts before Gemini ever sees a prompt. Ask yourself two questions:
+
+<svg viewBox="0 0 700 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Two questions funnel into one focused build: Who is this for, and what is the one thing it must do well, with everything else labeled as optional polish.">
+  <g font-family="system-ui, sans-serif">
+    <rect x="20" y="20" width="300" height="90" rx="14" fill="#eff6ff" stroke="#1d4ed8" stroke-width="2" />
+    <text x="170" y="55" text-anchor="middle" font-size="15" font-weight="700" fill="#1e3a8a">Who is this for?</text>
+    <text x="170" y="78" text-anchor="middle" font-size="11" fill="#1e40af">a classmate? a stranger? yourself?</text>
+
+    <rect x="380" y="20" width="300" height="90" rx="14" fill="#eff6ff" stroke="#1d4ed8" stroke-width="2" />
+    <text x="530" y="55" text-anchor="middle" font-size="15" font-weight="700" fill="#1e3a8a">What's the ONE thing</text>
+    <text x="530" y="75" text-anchor="middle" font-size="15" font-weight="700" fill="#1e3a8a">it must do well?</text>
+    <text x="530" y="98" text-anchor="middle" font-size="11" fill="#1e40af">not five things — one</text>
+
+    <path d="M170,110 L170,150 L350,150" fill="none" stroke="#1d4ed8" stroke-width="2.5" />
+    <path d="M530,110 L530,150 L350,150" fill="none" stroke="#1d4ed8" stroke-width="2.5" />
+    <path d="M350,150 L350,180" fill="none" stroke="#1d4ed8" stroke-width="2.5" marker-end="url(#arrowdown)" />
+
+    <defs>
+      <marker id="arrowdown" viewBox="0 0 10 10" refX="5" refY="8" markerWidth="6" markerHeight="6" orient="auto">
+        <path d="M0,0 L10,0 L5,10 z" fill="#1d4ed8" />
+      </marker>
+    </defs>
+
+    <rect x="160" y="190" width="380" height="60" rx="30" fill="#1d4ed8" />
+    <text x="350" y="215" text-anchor="middle" font-size="14" font-weight="700" fill="white">A focused build</text>
+    <text x="350" y="234" text-anchor="middle" font-size="11" fill="#dbeafe">everything else is optional polish</text>
+  </g>
+</svg>
+
+**Who is this for?** Not "everyone" — a real person or type of person. A new classmate. A nervous first-time flyer. Yourself, six months from now.
+
+**What's the ONE thing it has to do well?** Not five things. One. If your quiz app does one thing brilliantly — matches someone to an aircraft — and nothing else, that's a stronger build than an app that half-does five different things.
+
+> Everything past those two answers — colors, animations, extra features — is optional polish. Nice to have, not required.
+
+---
+
+## Why This Changes Your Prompt
+
+Compare these two prompts for the same rough idea:
+
+| Without the PM lens | With the PM lens |
+|---|---|
+| "Build a quiz about airplanes" | "Build a 5-question quiz that matches a first-time flyer to one of four aircraft personality types, based on how they'd want to travel" |
+| Vague target, vague outcome | Specific audience, specific single job |
+
+The second prompt is longer, but it's not more complicated — it's more *focused*. Gemini has a clear target to build toward, and you have a clear target to test against.
+
+<Pitfall title="Designing for 'Everyone'">
+
+"Everyone" is not an audience. If you try to build something for everyone, you'll end up compromising on all of it — too simple for the people who wanted depth, too complex for the people who wanted speed. Pick one real person in your head (even a made-up one) and build for them specifically. It's easier to widen a focused build later than to sharpen a vague one.
+
+</Pitfall>
+
+<Quiz question="You want to build a 'flight planning helper.' Using today's lens, what should you decide before you write your first prompt?">
+<div>
+
+**Who specifically it's for, and the one job it must do well — before anything else.**
+
+"Flight planning helper" could mean a dozen different apps: a checklist for student pilots, a route-distance calculator for hobbyists, a packing list for frequent flyers. None of those are wrong — but trying to build all of them at once produces something that does none of them well. Pick one person and one job, and the rest of your build gets dramatically easier.
+
+</div>
+</Quiz>
+
+---
+
+## Up Next
+
+Next: three simple UX habits — clarity, feedback, and hierarchy — that make whatever you build today easier to actually use.
