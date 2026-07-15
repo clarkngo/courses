@@ -6,15 +6,26 @@ A self-paced course platform built with [Astro](https://astro.build), Tailwind C
 
 | Course | Status |
 |---|---|
+| Physical AI | ✅ Available |
+| Digital Twins | ✅ Available |
+| Physical AI with Maritime | ✅ Available |
 | Impact of AI for First Responders | ✅ Available |
-| AWS Certification Guide: From Zero to Certified | ✅ Available |
-| Physical AI | 🔒 Coming Soon |
-| Digital Twins | 🔒 Coming Soon |
-| Secure Agentic AI | 🔒 Coming Soon |
+| Secure Agentic AI | ✅ Available |
+| Cyber AI | ✅ Available |
 | AI & LLM Skills | 🔒 Coming Soon |
 | Web Development | 🔒 Coming Soon |
 | Data & Python | 🔒 Coming Soon |
 | Soft Skills & Career | 🔒 Coming Soon |
+| AWS Certification Guide: From Zero to Certified | ✅ Available |
+| Strategic Digital Transformation in Global Business | ✅ Available |
+| Programming with TypeScript & JavaScript | ✅ Available |
+| Information Systems | ✅ Available |
+| IT for Managers | ✅ Available |
+| IT/OT Security: The Zero-Trust Defense | ✅ Available |
+| Programming for Computing | ✅ Available |
+| MEAN Full Stack Development | ✅ Available |
+| Introduction to Hydraulic Hose and Fittings | ✅ Available |
+| Vibe Coding for Future Aviators | ✅ Available |
 
 ## Stack
 
