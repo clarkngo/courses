@@ -1,0 +1,80 @@
+---
+title: "Three UX Basics: Clarity, Feedback, Hierarchy"
+description: "Three simple habits that make any build easier to use — plus your choice point for today's project."
+module: 2
+moduleTitle: "Day 2 — Think Like a Builder"
+lesson: 2
+duration: "15 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Three Habits, Not a Design Degree
+
+You don't need to study design to build something that feels good to use. Three habits cover most of it:
+
+<svg viewBox="0 0 700 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Three UX basics arranged as a triangle: Clarity, Feedback, and Hierarchy, each with a short explanation.">
+  <g font-family="system-ui, sans-serif">
+    <circle cx="350" cy="70" r="60" fill="#1d4ed8" />
+    <text x="350" y="63" text-anchor="middle" fill="white" font-size="16" font-weight="700">Clarity</text>
+    <text x="350" y="84" text-anchor="middle" fill="#dbeafe" font-size="10">one clear main action</text>
+
+    <circle cx="170" cy="250" r="60" fill="#2563eb" />
+    <text x="170" y="243" text-anchor="middle" fill="white" font-size="16" font-weight="700">Feedback</text>
+    <text x="170" y="264" text-anchor="middle" fill="#dbeafe" font-size="10">something visibly happens</text>
+
+    <circle cx="530" cy="250" r="60" fill="#3b82f6" />
+    <text x="530" y="243" text-anchor="middle" fill="white" font-size="16" font-weight="700">Hierarchy</text>
+    <text x="530" y="264" text-anchor="middle" fill="#dbeafe" font-size="10">size &amp; color show what matters</text>
+
+    <line x1="350" y1="130" x2="200" y2="195" stroke="#93c5fd" stroke-width="2.5" />
+    <line x1="350" y1="130" x2="500" y2="195" stroke="#93c5fd" stroke-width="2.5" />
+    <line x1="230" y1="250" x2="470" y2="250" stroke="#93c5fd" stroke-width="2.5" />
+  </g>
+</svg>
+
+**Clarity** — there's one clear main action, not six competing buttons. Someone landing on your page for the first time should know instantly what to do.
+
+**Feedback** — something visibly happens when you click. A color change, a message, an animation. Silence after a click makes people think it's broken, even when it worked.
+
+**Hierarchy** — size and color show what matters most. Your main button should look more important than a small footer link, because it *is* more important.
+
+<Pitfall title="Every Button the Same Size and Color">
+
+If every element on the page is the same size, weight, and color, nothing stands out — including the one action you actually want people to take. Pick your single most important action and make it visually louder (bigger, bolder, brighter) than everything else. That's hierarchy doing its job.
+
+</Pitfall>
+
+---
+
+## See It Applied
+
+Your instructor will pull up yesterday's boarding-pass demo and run it through this lens live — pointing out one thing that's already clear, one place that's missing feedback, and one fix that improves hierarchy. Then they'll prompt Gemini for that one fix, live, so you can see the before and after.
+
+---
+
+## Choice Point
+
+Before you start building, decide:
+
+- **Iterate** yesterday's project — apply today's PM + UX lens to what already exists, and save it as the next version number (for example, `maria_day1_v1.html` becomes `maria_day2_v2.html`)
+- **Start fresh** with a new project, applying the lens from the very beginning — version resets to v1 under a new file name
+
+Today's build is themed: **"Which aircraft matches your flying style?"** — a short quiz that matches the person taking it to one of a few aircraft personality types. If you're iterating yesterday's project instead, that's completely fine — just make sure your PM answers (who it's for, the one thing it does well) are clear before you touch Gemini.
+
+<Quiz question="You liked yesterday's boarding-pass page and want to keep working on it today instead of starting the aircraft quiz. What's the correct choice, and what should the filename look like?">
+<div>
+
+**That's a valid choice — iterate — and the filename bumps to today's version, keeping the same name and day-1 origin visible in the trail.**
+
+If your file was `maria_day1_v1.html`, today's save becomes `maria_day2_v2.html`. The important part isn't which project you choose — it's applying today's PM and UX lens to it, and never overwriting yesterday's saved version.
+
+</div>
+</Quiz>
+
+---
+
+## Up Next
+
+Time to build — with today's PM and UX lens guiding every prompt you write.

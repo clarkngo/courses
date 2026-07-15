@@ -1,0 +1,118 @@
+---
+title: "The Vibe Coding Loop & Prompt Template"
+description: "Learn the five-step loop behind every project you'll build this week, and a fill-in-the-blank template that turns an idea into a working prompt."
+module: 1
+moduleTitle: "Day 1 — Learn the Loop"
+lesson: 2
+duration: "40 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## The Vibe Coding Loop
+
+Every project you build this week — today's boarding pass page, tomorrow's quiz, Friday's final build — runs through the same five-step loop. Learn it once, reuse it forever.
+
+<svg viewBox="0 0 720 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The vibe coding loop: Describe, Build, Test, Refine, Repeat, arranged in a circle with arrows connecting each step back to the next.">
+  <defs>
+    <marker id="arrow1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1d4ed8" />
+    </marker>
+  </defs>
+  <circle cx="360" cy="210" r="150" fill="none" stroke="#dbeafe" stroke-width="2" stroke-dasharray="4 6" />
+  <g font-family="system-ui, sans-serif">
+    <circle cx="360" cy="50" r="52" fill="#1d4ed8" />
+    <text x="360" y="44" text-anchor="middle" fill="white" font-size="15" font-weight="700">1. Describe</text>
+    <text x="360" y="64" text-anchor="middle" fill="#dbeafe" font-size="11">say what you want</text>
+
+    <circle cx="565" cy="150" r="52" fill="#2563eb" />
+    <text x="565" y="144" text-anchor="middle" fill="white" font-size="15" font-weight="700">2. Build</text>
+    <text x="565" y="164" text-anchor="middle" fill="#dbeafe" font-size="11">Gemini writes it</text>
+
+    <circle cx="490" cy="345" r="52" fill="#3b82f6" />
+    <text x="490" y="339" text-anchor="middle" fill="white" font-size="15" font-weight="700">3. Test</text>
+    <text x="490" y="359" text-anchor="middle" fill="#dbeafe" font-size="11">click it yourself</text>
+
+    <circle cx="230" cy="345" r="52" fill="#3b82f6" />
+    <text x="230" y="339" text-anchor="middle" fill="white" font-size="15" font-weight="700">4. Refine</text>
+    <text x="230" y="359" text-anchor="middle" fill="#dbeafe" font-size="11">ask for one fix</text>
+
+    <circle cx="155" cy="150" r="52" fill="#2563eb" />
+    <text x="155" y="144" text-anchor="middle" fill="white" font-size="15" font-weight="700">5. Repeat</text>
+    <text x="155" y="164" text-anchor="middle" fill="#dbeafe" font-size="11">until it feels right</text>
+
+    <path d="M 405 65 A 150 150 0 0 1 540 105" fill="none" stroke="#1d4ed8" stroke-width="3" marker-end="url(#arrow1)" />
+    <path d="M 555 198 A 150 150 0 0 1 515 300" fill="none" stroke="#1d4ed8" stroke-width="3" marker-end="url(#arrow1)" />
+    <path d="M 445 368 A 150 150 0 0 1 275 368" fill="none" stroke="#1d4ed8" stroke-width="3" marker-end="url(#arrow1)" />
+    <path d="M 205 300 A 150 150 0 0 1 165 198" fill="none" stroke="#1d4ed8" stroke-width="3" marker-end="url(#arrow1)" />
+    <path d="M 180 105 A 150 150 0 0 1 315 65" fill="none" stroke="#1d4ed8" stroke-width="3" marker-end="url(#arrow1)" />
+  </g>
+</svg>
+
+**Describe** what you want in plain English. **Build** — Gemini writes real code and shows you a live preview. **Test** it yourself: click every button, try to break it. **Refine** by asking Gemini for one specific fix or addition. **Repeat** the Test → Refine cycle until it feels right — usually three or four laps, not one.
+
+The loop never really ends. Even the projects you "finish" on Friday could keep looping forever. You just decide when to stop.
+
+---
+
+## The Prompt Template
+
+A blank prompt box is intimidating. A fill-in-the-blank sentence isn't. Use this template every time you start something new this week:
+
+<CodeLab title="Fill-in-the-Blank Prompt Template">
+
+```
+Build a [thing] that does [core feature], for [who it's for],
+styled like [vibe/mood]. Make [X] happen when I [click/type/etc.].
+```
+
+**Today's example** — a personal boarding-pass profile page:
+
+```
+Build a boarding-pass-style webpage that shows my name, home
+airport, dream destination, and a fun personal fact, for
+someone meeting new classmates for the first time, styled like
+a sleek airline check-in display with a navy and gold color
+scheme. Make a small paper-airplane icon animate across the
+screen when I click "Check In."
+```
+
+Notice every blank is filled with something *specific* — not "make it cool," but "navy and gold," not "something happens," but "a paper-airplane icon animates across the screen." Specific blanks produce specific code. Vague blanks produce Gemini's best guess, which is rarely what you pictured.
+
+</CodeLab>
+
+<Pitfall title="The Kitchen-Sink Prompt">
+
+New builders often try to describe *everything* in one giant first prompt — five features, three animations, a color scheme, and a login system. Gemini will attempt all of it, and when something's off, you won't know which part broke it.
+
+Start with the template as written — one core feature, one interaction. Add the second feature as a *refine* step, once the first one is working. One change per loop keeps you in control.
+
+</Pitfall>
+
+---
+
+## Watch the Loop in Action
+
+Your instructor will now build the boarding-pass page live in Gemini Canvas, narrating each step of the loop out loud — including the moments where the first attempt doesn't look right and needs a refine pass. Watch for:
+
+- How specific the opening prompt is
+- What the instructor types when something looks wrong (a *refine*, not a full re-describe)
+- How many loops it takes before the page feels "done for now"
+
+<Quiz question="Gemini's first attempt at your boarding-pass page puts your name in the wrong spot and the colors look off. What's the vibe-coding move?">
+<div>
+
+**Refine with one specific fix — don't start over with a whole new prompt.**
+
+Something like: *"Move my name to the top center, and change the background to navy blue instead of gray."* That's a Refine step: it names exactly what's wrong and exactly what you want instead. Retyping the entire original prompt from scratch throws away a build that was already 90% right, and gives Gemini no signal about what specifically needs to change.
+
+</div>
+</Quiz>
+
+---
+
+## Up Next
+
+Time to run the loop yourself — you'll spend the rest of today building and iterating your own boarding-pass page from scratch.

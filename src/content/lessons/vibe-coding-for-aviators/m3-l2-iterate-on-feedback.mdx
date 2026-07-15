@@ -1,0 +1,73 @@
+---
+title: "Iterate: Turning Feedback Into a Better Build"
+description: "Make one real change based on your partner's thorn, then use any remaining time to polish."
+module: 3
+moduleTitle: "Day 3 — Ship It"
+lesson: 2
+duration: "90 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## From Thorn to Prompt
+
+You have real, specific feedback in hand. Now turn the thorn into a Refine prompt using everything you've learned this week — the loop, the UX basics, and specificity.
+
+<CodeLab title="Turning a Thorn Into a Fix">
+
+Say your thorn was: *"I didn't realize I had to click the plane picture to answer."*
+
+That's a **hierarchy** and **feedback** problem — the clickable element doesn't look clickable, and nothing signals it's interactive. A strong refine prompt names both the problem and the fix:
+
+```
+The aircraft images are clickable but don't look like it.
+Add a visible border and a slight scale-up effect when I hover
+over each one, so it's obvious they're buttons, not just
+pictures.
+```
+
+Compare that to a vague version — *"make it more obvious"* — which gives Gemini nothing concrete to act on. Name the exact UX problem (looks like decoration, not a button) and the exact fix (hover state, visible border).
+
+</CodeLab>
+
+Make this one change. Test it. If you have a second round of feedback in mind, or your partner has more to say, you can loop again — but the goal for today is **one honest, real change**, not a rebuild.
+
+<Pitfall title="Ignoring the Thorn Because You Like It the Way It Is">
+
+It's tempting to dismiss a thorn as "they just didn't get it." Sometimes that's true — but more often, if one person got confused, others would too. Trust the thorn even when it stings a little. That's the entire point of testing with someone other than yourself: catching what you're too close to see.
+
+</Pitfall>
+
+---
+
+## Break (10 min)
+
+---
+
+## Final Polish
+
+With your one real change made, use the remaining time to polish anything else you want — this is optional, not required:
+
+- Revisit clarity, feedback, and hierarchy one more time
+- Clean up colors or spacing
+- Add a small detail that makes the project feel finished
+
+If you'd rather keep testing with more classmates and gathering more roses and thorns instead of polishing alone, that's a great use of the time too.
+
+<Quiz question="You made your one real change based on your partner's thorn, and you have 20 minutes left before the demo fair. What's the best use of that time?">
+<div>
+
+**Either polish what already works, or get a second round of quick feedback — both are valid, neither is required.**
+
+There's no single correct answer here; the point of Day 3 is that you've already done the important work — you listened to real feedback and acted on it. Extra time is a bonus for polish or more testing, not a requirement to add new features. A small, working, tested project beats a large, half-finished one every time.
+
+</div>
+</Quiz>
+
+---
+
+## Up Next
+
+The demo fair — where you pitch your favorite project from the week and show off what changed because someone else's feedback pushed you to fix it.
