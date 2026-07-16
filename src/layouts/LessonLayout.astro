@@ -64,11 +64,20 @@ const base = import.meta.env.BASE_URL;
           <span>›</span>
           <span class="text-gray-800 font-semibold truncate">{title}</span>
         </div>
-        {duration && (
-          <span class="text-xs font-medium text-gray-400 bg-gray-100 px-2.5 py-1 rounded-full flex-shrink-0 ml-4">
-            ⏱ {duration}
-          </span>
-        )}
+        <div class="flex items-center gap-3 flex-shrink-0 ml-4">
+          {duration && (
+            <span class="text-xs font-medium text-gray-400 bg-gray-100 px-2.5 py-1 rounded-full">
+              ⏱ {duration}
+            </span>
+          )}
+          <button
+            type="button"
+            data-search-open
+            class="flex items-center gap-2 text-sm text-gray-400 hover:text-gray-600 border border-gray-200 rounded-lg px-3 py-1.5 transition-colors"
+          >
+            🔍 <kbd class="text-xs bg-gray-100 border border-gray-200 rounded px-1.5 py-0.5 hidden sm:inline">⌘K</kbd>
+          </button>
+        </div>
       </header>
 
       <!-- Lesson body -->

@@ -40,10 +40,19 @@ const lessonSlug = firstLesson?.slug.replace(courseSlug + '/', '');
   <div class="min-h-screen bg-gray-50">
 
     <!-- Nav -->
-    <nav class="bg-white border-b border-gray-200 px-6 py-3 flex items-center gap-3 sticky top-0 z-10">
-      <a href={base} class="text-sm text-gray-500 hover:text-brand-600 transition-colors">← All Courses</a>
-      <span class="text-gray-300">›</span>
-      <span class="text-sm font-semibold text-gray-800">{course.data.title}</span>
+    <nav class="bg-white border-b border-gray-200 px-6 py-3 flex items-center justify-between sticky top-0 z-10">
+      <div class="flex items-center gap-3 min-w-0">
+        <a href={base} class="text-sm text-gray-500 hover:text-brand-600 transition-colors flex-shrink-0">← All Courses</a>
+        <span class="text-gray-300 flex-shrink-0">›</span>
+        <span class="text-sm font-semibold text-gray-800 truncate">{course.data.title}</span>
+      </div>
+      <button
+        type="button"
+        data-search-open
+        class="flex items-center gap-2 text-sm text-gray-400 hover:text-gray-600 border border-gray-200 rounded-lg px-3 py-1.5 transition-colors flex-shrink-0 ml-4"
+      >
+        🔍 <kbd class="text-xs bg-gray-100 border border-gray-200 rounded px-1.5 py-0.5 hidden sm:inline">⌘K</kbd>
+      </button>
     </nav>
 
     <!-- Hero -->
