@@ -29,8 +29,17 @@ const totalCount = courses.length;
         <div class="w-8 h-8 rounded-lg bg-brand-600 flex items-center justify-center text-white font-bold text-sm">C</div>
         <span class="font-bold text-gray-900">Clark's Courses</span>
       </div>
-      <div class="text-sm text-gray-500">
-        {availableCount} of {totalCount} courses available
+      <div class="flex items-center gap-4">
+        <button
+          type="button"
+          data-search-open
+          class="flex items-center gap-2 text-sm text-gray-400 hover:text-gray-600 border border-gray-200 rounded-lg px-3 py-1.5 transition-colors"
+        >
+          🔍 Search <kbd class="text-xs bg-gray-100 border border-gray-200 rounded px-1.5 py-0.5">⌘K</kbd>
+        </button>
+        <div class="text-sm text-gray-500">
+          {availableCount} of {totalCount} courses available
+        </div>
       </div>
     </nav>
 
