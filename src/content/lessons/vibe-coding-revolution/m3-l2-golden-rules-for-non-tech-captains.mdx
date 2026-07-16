@@ -1,0 +1,60 @@
+---
+title: "Golden Rules for Non-Tech Captains"
+description: "Be specific, take small steps, and treat bugs as normal — three habits that make the loop work."
+module: 3
+moduleTitle: "The Secret Loop"
+lesson: 2
+duration: "12 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## 🎯 Rule 1: Be Specific
+
+Vague descriptions get vague apps back. The fix is simple: describe the exact pieces you want, not just the general vibe.
+
+| Vague | Specific |
+|---|---|
+| "Make a cool app." | "Make a daily planner with 3 checkable boxes and a funny quote at the bottom." |
+| "Build me a quiz thing." | "Build a 5-question multiple-choice quiz that shows my score at the end." |
+
+The specific version gives the AI actual pieces to build. The vague version forces it to guess — and guesses are where mismatches between what you pictured and what you got come from.
+
+---
+
+## 🪜 Rule 2: Take Small Steps
+
+Don't ask for a fully functional social network in one go. Build a single page first. Then add a button. Then add a feature.
+
+Small steps aren't slower — they're actually faster, because you catch problems early, before they're buried under five more features built on top of them. Each small step is also a natural checkpoint in the loop: describe, test, refine, then move to the next piece.
+
+---
+
+## 🐛 Rule 3: Bugs Are Normal
+
+If something breaks, don't panic. This is expected, not a sign you did something wrong. Just tell the Copilot exactly what's wrong:
+
+> "The red button doesn't work when I click it. Fix it please."
+
+That's the whole template: **what's broken** + **when it happens** + **ask for a fix**. The AI will apologize and correct itself — no special debugging vocabulary required from you.
+
+<Pitfall title="Staying Silent When Something Feels Off">
+The most common way beginners stall out isn't a hard bug — it's *not saying anything* when a result feels slightly wrong, because they assume they're missing some technical reason it "has to" be that way. It doesn't. If it looks wrong or feels off, say so, in plain language. That feedback is exactly what keeps the loop moving.
+</Pitfall>
+
+<Quiz question="You click a button in your app and nothing happens. What's the best message to send the Copilot?">
+<div>
+
+**Something concrete like: 'The submit button doesn't work when I click it. Fix it please.'**
+
+Naming the exact element and the exact behavior you expected gives the AI everything it needs to find and fix the problem — far more useful than something vague like 'it's broken.'
+
+</div>
+</Quiz>
+
+---
+
+## ⏭️ Up Next
+
+You know the loop and the ground rules. Time to actually fly: Module 4 is your first real build.

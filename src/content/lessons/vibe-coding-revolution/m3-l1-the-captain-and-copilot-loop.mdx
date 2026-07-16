@@ -1,0 +1,65 @@
+---
+title: "The Captain & Copilot Loop"
+description: "The four-step loop behind every vibe coding session, walked through with a real example."
+module: 3
+moduleTitle: "The Secret Loop"
+lesson: 1
+duration: "15 min"
+---
+
+import Quiz from '@components/Quiz.astro';
+
+## 🔁 Vibe Coding Is a Conversation
+
+Here's the part beginners get wrong most often: they think vibe coding is *one prompt, then walk away*. It isn't. You work together with the AI in a loop — describe, test, refine, repeat — and the app gets better with every exchange.
+
+| Step | What happens |
+|---|---|
+| **1. Describe** (The Spark) | Tell the AI what you want to build |
+| **2. Test** (The Takeoff) | Run the app. Click the buttons. What works? What feels off? |
+| **3. Refine** (The Adjustment) | Tell the AI exactly how to improve it |
+| **4. Repeat** | Watch your app get better with every exchange |
+
+---
+
+## 🧮 Walking Through the Loop
+
+Let's make this concrete with one example, start to finish.
+
+**Step 1 — Describe:**
+> "Make me a simple flight fuel calculator with a clean blue theme."
+
+The AI writes the working app: input fields for distance and burn rate, a calculate button, a result showing total fuel needed, styled in blue.
+
+**Step 2 — Test:**
+You open it. You type in some numbers, hit calculate — it works. But you notice two things: nothing tells you if the button was actually clicked, and there's no warning if the fuel amount looks dangerously low.
+
+**Step 3 — Refine:**
+> "That's great! Now make the button turn green when clicked, and add a warning if the fuel is too low."
+
+**Step 4 — Repeat:**
+The AI updates the app. You test again. Maybe the warning threshold is wrong, so you refine again: *"Make the warning trigger under 50 gallons, not 10."* Loop again. Each pass, the app gets closer to what you actually pictured.
+
+Nothing about this loop requires you to know *how* the button color changes in code, or *how* the warning logic gets written. You only ever describe outcomes and react to what you see.
+
+---
+
+## 🎯 Why the Loop Matters
+
+The loop is the whole method. There's no separate "advanced" technique waiting for you later — professionals doing this at a much bigger scale are running the exact same four steps, just with bigger ideas and more rounds of refinement.
+
+<Quiz question="You describe an app, and the first version isn't quite right — a button doesn't do what you expected. What's the correct next move in the loop?">
+<div>
+
+**Refine: tell the AI specifically what's wrong and what you want instead, then test again.**
+
+The first version is rarely the final version, and that's normal — it's not a sign you did something wrong. Refining based on what you noticed during testing is step 3 of the loop, not a detour from it.
+
+</div>
+</Quiz>
+
+---
+
+## ⏭️ Up Next
+
+Now that you know the loop, here are the ground rules that make it actually work smoothly — including exactly what to do when something breaks.
