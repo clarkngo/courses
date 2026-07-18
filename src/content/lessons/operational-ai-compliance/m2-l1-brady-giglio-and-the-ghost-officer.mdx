@@ -1,0 +1,91 @@
+---
+title: "Brady, Giglio, and the Ghost Officer"
+description: "Two Supreme Court cases explain exactly why an AI-invented detail in a signed report can end a case — and follow the officer who signed it into every future trial."
+module: 2
+moduleTitle: "The US Legal Landscape & Constitutional Guardrails"
+lesson: 1
+duration: "16 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Two Cases Every Officer Should Be Able to Explain
+
+You don't need a law degree for this course. You need to understand two Supreme Court decisions well enough to see why they turn an AI hallucination in a report into a career-length problem, not a one-case problem.
+
+### Brady v. Maryland (1963)
+
+**The rule:** The prosecution must disclose to the defense any evidence that is favorable to the accused and material to guilt or punishment — including evidence that undermines the reliability of the state's own case.
+
+**How it applies here:** If an incident report contains AI-generated content that the signing officer did not personally verify — an action, a quote, an observation the officer didn't actually witness — that is itself a fact about the reliability of the state's evidence. It is arguably Brady material the moment the prosecutor's office becomes aware an AI tool touched the narrative, whether or not any specific line turns out to be wrong.
+
+### Giglio v. United States (1972)
+
+**The rule:** Giglio extends Brady specifically to **impeachment evidence** — anything that could be used to attack the credibility of a government witness, including a testifying officer.
+
+**How it applies here:** This is the sharper edge. Giglio doesn't require proof that a report is factually wrong. It only requires that the *defense could use the fact* to attack the officer's credibility on the stand. If a defense attorney can show that an officer signed a report under penalty of perjury without being able to personally confirm every detail an AI tool inserted, that is textbook impeachment material — a reason for a jury to doubt everything else that officer testifies to, in this case and in every future case where that officer is a witness.
+
+This is why prosecutor's offices across the country maintain what are commonly called **"Brady/Giglio lists"** — internal records of officers whose past conduct or testimony creates a standing credibility problem the office is obligated to disclose to future defense counsel. An officer does not want to be the reason a new line item gets added to that list.
+
+---
+
+## The Ghost Officer
+
+Put the two doctrines together and you get the specific failure mode this course exists to prevent — sometimes called the **Ghost Officer** problem: an AI-invented version of the reporting officer, appearing inside their own signed narrative, doing or saying things the real officer never did or said.
+
+The Ghost Officer isn't a hypothetical. It's the exact scenario the King County Prosecuting Attorney's Office cited when it rejected AI-assisted narratives — including a documented case where an AI-assisted draft referenced an officer who was not present at the scene at all. (Full directive in [Module 2, Lesson 2](/operational-ai-compliance/lessons/m2-l2-the-kcpao-directive).)
+
+Once a Ghost Officer detail is in a signed report:
+
+- It's a **potential Brady disclosure** the moment the prosecutor's office learns AI touched the draft.
+- It's a **Giglio impeachment vector** the moment defense counsel can show the officer couldn't have personally verified it.
+- It follows the *officer*, not just the case — because Giglio exposure attaches to the witness's credibility across every future case, not only the one where the error occurred.
+
+<CodeLab title="Trace the Exposure">
+
+An officer signs a report drafted with AI assistance from body-worn camera audio. The report includes a direct quote from a suspect that the officer does not personally recall hearing. Months later, at trial, defense counsel obtains the department's AI tool procurement records and asks the officer on cross-examination whether they personally verified every quote in the report before signing it.
+
+Walk through each step:
+
+1. What is the Brady question here — what favorable-to-the-defense fact exists, and who has to disclose it?
+2. What is the Giglio question — separate from whether the quote is accurate, what does the *inability to verify it* do to the officer's credibility?
+3. Does this exposure end when the case ends? Why or why not?
+
+---
+
+**Answers:**
+
+1. **Brady:** The fact that an AI tool generated a quote the officer cannot independently confirm is favorable-to-the-defense information about the reliability of the state's evidence. The prosecutor's office has a disclosure obligation once this is known — independent of whether the quote turns out to be accurate.
+2. **Giglio:** The credibility harm doesn't depend on the quote being wrong. It depends on the officer having sworn to a document's accuracy without being able to personally stand behind every line in it. That gap — sworn certification versus actual personal knowledge — is the impeachment material.
+3. **It does not end with the case.** Giglio exposure is about the officer's credibility as a witness, which is relevant in every future case where that officer testifies. A prosecutor's office that becomes aware of this kind of gap may be obligated to disclose it to defense counsel in unrelated future cases too.
+
+</CodeLab>
+
+<Pitfall title="'I Fixed the Draft Before I Signed It' Is Not a Defense">
+
+Editing an AI draft down to something that sounds right is not the same as personally verifying it against your own memory or your BWC footage. Defense counsel's question on cross-examination will not be "did you edit this." It will be **"did you personally witness or recall every fact in this report, independent of what a piece of software told you happened."**
+
+If the honest answer is no, the edit didn't fix the exposure. It just made the exposure harder to spot until trial.
+
+</Pitfall>
+
+<Quiz question="A record manager reviewing a signed report notices a direct quote attributed to a witness that reads as unusually polished and complete compared to the officer's typical writing style. The officer confirms they used an AI drafting tool and 'cleaned it up' before signing. What is the correct next step for the record manager?">
+
+<div>
+
+**Flag the report and route it to command staff / the prosecutor liaison before it enters the disclosure file — don't just accept the officer's after-the-fact assurance.**
+
+The record manager's job here isn't to decide whether the quote is accurate. It's to recognize that an AI-assisted, unverified quote in a signed report is a live Brady/Giglio issue regardless of how confident the officer is. Style-inconsistency is often the only visible signal a record manager gets that AI touched a narrative — which is exactly why record managers, not just officers, need to know how to recognize it.
+
+Passing the report forward without flagging it risks the report entering the evidentiary record with an undisclosed AI-authorship issue — the precise scenario the KCPAO directive was written to prevent.
+
+</div>
+</Quiz>
+
+---
+
+## Up Next
+
+The KCPAO directive isn't a general concern about AI — it's a specific, named policy from a specific office. **Lesson 2** covers exactly what it says, who wrote it, and what it does and does not prohibit.

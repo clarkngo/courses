@@ -1,0 +1,75 @@
+---
+title: "CJIS and the Consumer Chatbot Trap"
+description: "The single most common way officers accidentally commit a severe policy violation: pasting criminal history data into an open-web AI chatbot."
+module: 4
+moduleTitle: "Operating Inside the City of Seattle AI Framework"
+lesson: 2
+duration: "14 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## What CJIS Actually Governs
+
+The FBI's **Criminal Justice Information Services (CJIS) Security Policy** sets the baseline security and access requirements for any system that stores, processes, or transmits Criminal Justice Information (CJI) — criminal history record information, biometric data, case records, and related data. Any system touching CJI must meet CJIS requirements: encryption standards, access controls, audit logging, personnel screening, and a formal agreement governing how the data is handled.
+
+This is not optional and not something an individual officer can waive by using good judgment. It's a floor set by federal policy, and it applies regardless of how convenient a non-compliant tool might be.
+
+---
+
+## Where This Goes Wrong
+
+Consumer AI chatbots — the free or personal-subscription tier of general-purpose AI tools available on the open web — are built for general public use. They are not CJIS-compliant systems. Using one has nothing to do with whether the AI itself is a well-built product; it's about the data-handling agreement (or absence of one) governing what happens to anything typed into it.
+
+**This is where good intentions create the most serious violations in this course.** An officer trying to work efficiently — summarizing a case file, drafting an email about a suspect, getting help organizing notes about a person's criminal history — pastes real case data into a consumer chatbot to save time. At that moment:
+
+- CJI has left a CJIS-compliant, department-controlled environment.
+- It has entered a third-party system with no CJIS agreement, and typically no contractual guarantee about data retention, training use, or who can access it.
+- This has happened **regardless of whether the officer's underlying intent (organizing notes, saving time) was compliant AI-as-Auditor-style use.** The task type doesn't matter once the data itself has left an approved environment.
+
+This is a distinct failure mode from the KCPAO's narrative-generation objection in Module 2. It's not about whether AI wrote your report — it's about **where your data went**, and it can happen even when an officer is doing something as innocuous-sounding as "just organizing my notes."
+
+<CodeLab title="Spot the Violation">
+
+Rate each scenario: **compliant**, **violation**, or **needs more information**.
+
+1. An officer uses the department's city-approved, CJIS-compliant records tool to run a checklist QA pass on their own already-written narrative.
+2. A detective, working from home on a personal laptop, pastes a suspect's criminal history summary into a free consumer AI chatbot to help draft an internal memo faster.
+3. A records manager uses a city-IT-provisioned AI tool, procured under the Infrastructure & Compliance pillar from Module 4 Lesson 1, to check case files for missing redactions before public disclosure.
+4. An officer asks a general-purpose AI chatbot a hypothetical, fully anonymized policy question — "what are typical elements of reasonable suspicion for a vehicle stop" — with no actual case details included.
+
+---
+
+**Answers:**
+
+1. **Compliant.** Approved tool, no CJI leaving a governed environment, AI-as-Auditor use only.
+2. **Violation — and a serious one.** Real criminal history data, on a personal device, entering a non-CJIS-compliant consumer tool. This combines a data-handling violation with an access-control violation (personal device, off-network).
+3. **Compliant**, assuming the tool was in fact procured and reviewed as described — this is the model outcome of the City's governance process from Lesson 1.
+4. **Compliant, if — and only if — it is genuinely anonymized with zero case-specific details.** This is the narrowest safe use of a general-purpose tool: pure legal/policy knowledge questions with no CJI. Officers should treat this category cautiously, because it's easy to drift from a hypothetical into referencing real details without realizing it.
+
+</CodeLab>
+
+<Pitfall title="'I Only Used the Free Version for a Second, No Harm Done'">
+
+There is no safe-harbor exception for brief exposure. Once CJI is transmitted to a non-CJIS-compliant system, the violation exists at the point of transmission — it does not depend on whether the tool "kept" the data, whether anyone else saw it, or how long it was there. Treat any criminal history detail, case number, suspect name tied to charges, or biometric reference as something that never leaves an approved, department-controlled system, full stop.
+
+</Pitfall>
+
+<Quiz question="A short-staffed detective, under deadline pressure, wants to use an AI tool to quickly summarize a lengthy interview transcript before a supervisor meeting. What is the compliant way to do this, based on this lesson and Module 4 Lesson 1?">
+
+<div>
+
+**Use only a city-approved, CJIS-compliant tool procured through the department's governed process — never a personal or open-web consumer AI tool — regardless of the deadline pressure.**
+
+Time pressure changes nothing about the underlying data-handling requirement. The compliant path is: check whether the department has an approved, CJIS-compliant AI tool for this kind of task (per the Infrastructure & Compliance pillar in Module 4 Lesson 1); if one exists, use it. If none exists, the detective should raise this as a capability gap to command staff rather than solving it personally with an unapproved consumer tool. "I was under deadline pressure" does not convert a CJIS violation into a permitted shortcut — and using an unapproved tool creates exactly the kind of undocumented, unreviewable AI use this entire course is built to prevent.
+
+</div>
+</Quiz>
+
+---
+
+## Up Next
+
+You now know what's prohibited (Module 2), what the independent data actually shows (Module 3), and where the governance and data lines sit (Module 4). **Module 5** puts it all together into the actual step-by-step workflow you're allowed to use.

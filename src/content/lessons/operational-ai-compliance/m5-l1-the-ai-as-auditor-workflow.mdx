@@ -1,0 +1,104 @@
+---
+title: "The AI-as-Auditor Workflow"
+description: "A compliant, step-by-step procedure: how an approved tool checks a human-written narrative for compliance gaps without writing a single line of prose."
+module: 5
+moduleTitle: "The Operational Workflow (AI-as-Auditor)"
+lesson: 1
+duration: "17 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## One Rule Governs Every Step
+
+Every step in this workflow obeys the same constraint, restated from [Module 1](/operational-ai-compliance/lessons/m1-l1-course-overview-and-syllabus):
+
+> **The tool may ask questions about text a human already wrote. It may never generate the text itself.**
+
+If a step in your department's process violates that rule, it is not this workflow — no matter what it's called internally.
+
+---
+
+## The Five-Step Compliant Workflow
+
+### Step 1 — The Officer Writes the Narrative, Unaided
+
+The officer writes their own account of the incident, in their own words, from memory and BWC review, exactly as they would without any AI tool in the loop. No AI touches this step. This is the one non-negotiable anchor of the entire workflow — it's what keeps every subsequent step on the right side of the KCPAO directive.
+
+*(Transcription tools that convert the officer's own dictated words to text, with no summarization or rewriting, are acceptable here — the officer is still the author of every word.)*
+
+### Step 2 — The Narrative Passes Through an Approved Compliance-Check Tool
+
+The officer or record manager runs the completed, human-written narrative through a **city-approved, CJIS-compliant analytical tool** — for illustration, a structured checklist environment inside a records-management platform such as **Mark 43** (used here as a representative example of the *category* of tool, not a specific claim about any vendor's current feature set your agency should verify independently).
+
+The tool's job is narrow: compare the narrative's content against a defined policy or legal checklist and flag gaps. For example:
+
+- *"Does this narrative explicitly list the specific, articulable facts establishing reasonable suspicion for the stop?"*
+- *"Does this narrative document the timing of any Miranda warning relative to the start of custodial questioning?"*
+- *"Does this narrative address each required element under the department's use-of-force reporting policy?"*
+
+**Critically: the tool outputs a question or a flag, never a sentence to insert into the report.**
+
+### Step 3 — The Officer Resolves Every Flag in Their Own Words
+
+For each flag, the officer goes back to their own memory and BWC footage and writes the missing information themselves, in their own words. The tool identified a gap; it did not fill it.
+
+### Step 4 — A Human Reviewer Confirms the Resolution
+
+A supervisor or record manager reviews the flagged items and the officer's additions — not to re-run the AI check, but to confirm a human being actually closed each gap with substantive, verifiable content rather than a token phrase added just to clear the flag.
+
+### Step 5 — Final Human Sign-Off
+
+The officer certifies the completed narrative under penalty of perjury, exactly as they would with no AI tool involved at any stage — because from an evidentiary standpoint, no AI tool contributed a word of the narrative. It only asked questions about words the officer already wrote.
+
+---
+
+<CodeLab title="Run the Workflow on a Real Scenario">
+
+**Scenario:** An officer completes a narrative for a vehicle stop that led to a search and an arrest. They run it through the department's approved compliance-check tool.
+
+**Flags returned:**
+1. "No specific facts identified establishing reasonable suspicion for the initial stop."
+2. "Search of vehicle described, but consent or legal basis for search not explicitly stated."
+3. "Suspect statement included; timing relative to Miranda warning not documented."
+
+Walk through what happens next at each step of the workflow above. Who acts on each flag, and what should they produce?
+
+---
+
+**Answer:**
+
+The officer receives all three flags and returns to their own memory and BWC footage — not the tool — to resolve each one:
+
+1. They add the specific observations that led to the stop (e.g., a specific traffic violation, dispatch information, a be-on-the-lookout match) in their own words.
+2. They add the legal basis for the search — consent given, a search incident to arrest, probable cause — as they recall and can support it, in their own words.
+3. They add the specific time the Miranda warning was given relative to when the suspect made the statement, verified against BWC timestamps.
+
+A supervisor then reviews all three additions to confirm they're substantive and verifiable — not simply reworded to satisfy the tool — before the officer signs. **At no point did the tool write any of these three additions.** It only asked the questions that prompted the officer to write them.
+
+</CodeLab>
+
+<Pitfall title="Letting the Tool's Question Become the Tool's Sentence">
+
+The riskiest failure mode in this workflow isn't malicious — it's convenience creep. An officer, faced with a flag, is tempted to ask the same tool (or a different AI tool) "okay, so what should I write here?" and paste in whatever it suggests. The instant that happens, the workflow has silently become AI-as-Author again, just with an extra step in front of it. **The compliance-check tool's output is a question directed at the officer's memory, never a fill-in-the-blank answer.** If a tool ever offers suggested wording, that suggestion must not enter the signed report — the officer's own independently-recalled words do.
+
+</Pitfall>
+
+<Quiz question="A supervisor reviewing a flagged narrative notices that an officer's response to a compliance flag reads almost identically to boilerplate legal language, rather than the officer's usual writing style. What should the supervisor do?">
+
+<div>
+
+**Ask the officer directly how they resolved the flag, and confirm it reflects their own independent recollection rather than AI-suggested wording — this is a strong signal the workflow may have drifted into AI-as-Author at step 3.**
+
+Step 3 of the workflow requires the officer to resolve flags in their own words, from their own memory and footage review. Boilerplate-sounding language is one of the few visible signals — similar to the style-inconsistency signal in Module 2 — that an officer may have asked an AI tool to suggest or generate the resolving text, rather than writing it themselves. If that's what happened, the narrative has re-entered AI-as-Author territory and creates the exact Brady/Giglio and KCPAO exposure this entire course is built to prevent, even though the front half of the process (steps 1 and 2) was fully compliant. The supervisor's job here is exactly the same instinct trained in Module 2: don't wave through fluency, verify authorship.
+
+</div>
+</Quiz>
+
+---
+
+## Up Next
+
+You've now covered the law, the data, the governance framework, and the compliant workflow. **Module 6** puts all of it under pressure with three realistic, high-stakes scenarios — the kind of gray-area calls that actually show up on a night shift.

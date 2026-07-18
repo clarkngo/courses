@@ -1,0 +1,87 @@
+---
+title: "The Seattle AI Framework"
+description: "The City of Seattle isn't anti-AI — it's building a governance structure for it. Here's what the 2025-2026 AI Plan actually asks of city departments, including public safety."
+module: 4
+moduleTitle: "Operating Inside the City of Seattle AI Framework"
+lesson: 1
+duration: "13 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## A Different Kind of Policy Than the KCPAO Directive
+
+[Module 2](/operational-ai-compliance/lessons/m2-l2-the-kcpao-directive) covered a *prohibition*: the county prosecutor's office refusing to accept a specific category of AI output. This module covers something structurally different: the **City of Seattle's own governance framework for how it adopts AI at all**, of which public safety is one part.
+
+**Primary sources:**
+- [City of Seattle 2025–2026 AI Plan (PDF)](https://www.seattle.gov/documents/Departments/Tech/Privacy/AI/City%20of%20Seattle%202025-2026%20AI%20Plan.pdf)
+- [Seattle IT — Responsible AI Program](https://www.seattle.gov/tech/data-privacy/the-citys-responsible-use-of-artificial-intelligence)
+
+---
+
+## The Four Pillars
+
+The City's 2025–2026 AI Plan is organized around four pillars, and officers and record managers should be able to place any given AI tool or initiative under one of them:
+
+1. **Data Excellence** — improving data governance and quality as a precondition for any AI use, not an afterthought.
+2. **Infrastructure & Compliance** — secure, scalable systems built to updated legal and privacy standards, rather than AI bolted onto legacy infrastructure.
+3. **Workforce Upskilling** — a structured, three-phase training initiative: citywide introductory training, deeper workshops on data science integration, and — directly relevant to this course — **partnerships with universities and technology companies to build developer-level curriculum for advanced projects.**
+4. **Partnerships** — collaboration with academia, nonprofits, and the public, emphasizing transparency and public trust, and evaluating AI pilots on both impact and cost-effectiveness.
+
+**This course exists inside pillar 3.** A university-delivered short course for patrol officers, record managers, and command staff on AI compliance is a direct instance of the "workforce upskilling through academic partnership" priority the City's own plan describes — not an initiative operating alongside or against city policy.
+
+---
+
+## Why This Matters Operationally
+
+Understanding the framework changes how officers should read any new AI tool that shows up in their department:
+
+- **A city-approved tool has gone through a governance and procurement review** aligned to these four pillars — data handling, security, compliance, and documented purpose.
+- **A tool an officer finds and starts using on their own has gone through none of that** — no matter how well it works in a demo.
+
+The City's plan explicitly frames AI adoption as something that happens through "approved procurement channels with AI-specific considerations" — not through individual staff discretion. That single distinction is the dividing line for the rest of this module.
+
+<CodeLab title="Which Pillar, Which Risk?">
+
+Sort each scenario by which pillar of the City's AI Plan it falls under, and identify whether it represents compliant or non-compliant use:
+
+1. Command staff requests bias-audit and data-handling documentation from a vendor before approving a new records tool.
+2. A records manager attends a university-led workshop on AI data governance, arranged through the department's training unit.
+3. An officer, without checking with IT or command staff, starts using a personal AI app on their phone to help organize case notes.
+4. The department partners with a local university to build custom training for supervisors on evaluating AI vendor claims.
+
+---
+
+**Answers:**
+
+1. **Infrastructure & Compliance — compliant.** This is exactly the procurement-review behavior the plan calls for.
+2. **Workforce Upskilling — compliant.** This is a direct instance of the university-partnership training model the plan describes.
+3. **Not aligned to any pillar — non-compliant.** No governance review, no data-handling assessment, no institutional visibility into what happens to case data inside a personal app. This is the exact failure mode covered in [Lesson 2](/operational-ai-compliance/lessons/m4-l2-cjis-and-the-consumer-chatbot-trap).
+4. **Workforce Upskilling / Partnerships — compliant.** This is, structurally, this course.
+
+</CodeLab>
+
+<Pitfall title="'The City Wants Us Using AI' Is Not a Blank Check">
+
+Some officers will hear about the City's AI Plan and conclude it authorizes broad, individual discretion to adopt AI tools. It does the opposite: it establishes a **governed, reviewed pathway** for AI adoption specifically because ungoverned adoption creates data, privacy, and compliance risk the City is trying to avoid. "The City supports AI" and "I can use any AI tool I want" are not the same statement — and conflating them is how officers end up in the scenario covered next, in Lesson 2.
+
+</Pitfall>
+
+<Quiz question="A patrol officer wants to use a new AI note-organization app they found, arguing that 'the City's AI Plan says Seattle is embracing AI, so this should be fine.' What's the flaw in that reasoning?">
+
+<div>
+
+**The AI Plan describes a governed adoption process — approved procurement channels, documented data handling, and formal partnerships — not individual discretion to adopt any AI tool.**
+
+The City's 2025–2026 AI Plan's four pillars (Data Excellence, Infrastructure & Compliance, Workforce Upskilling, Partnerships) all describe institutional, reviewed processes. None of them describe or authorize an individual officer independently selecting and using an unvetted consumer AI app on department data. Citing the plan's general enthusiasm for AI to justify an ungoverned individual tool choice inverts the plan's actual structure — the plan exists specifically to prevent that kind of uncoordinated adoption, not to bless it.
+
+</div>
+</Quiz>
+
+---
+
+## Up Next
+
+**Lesson 2** covers the hardest line in this module: the difference between a city-approved, CJIS-compliant environment and the serious policy violation of pasting criminal history or case data into an open consumer chatbot.
