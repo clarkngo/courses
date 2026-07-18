@@ -36,13 +36,31 @@ function lessonHref(fullSlug: string) {
 }
 ---
 
-<aside class="w-72 flex-shrink-0 h-screen overflow-y-auto bg-white border-r border-gray-200 flex flex-col">
+<!-- Mobile backdrop -->
+<div id="sidebar-backdrop" class="hidden fixed inset-0 bg-black/40 z-30 md:hidden"></div>
+
+<aside
+  id="course-sidebar"
+  class="w-72 max-w-[85vw] flex-shrink-0 h-screen overflow-y-auto bg-white border-r border-gray-200 flex flex-col
+         fixed inset-y-0 left-0 z-40 -translate-x-full transition-transform duration-200 ease-in-out
+         md:static md:z-auto md:translate-x-0"
+>
 
   <!-- Course header -->
   <div class="px-5 py-5 border-b border-gray-100">
-    <a href={base} class="text-xs text-gray-400 hover:text-brand-600 transition-colors block mb-3">
-      ← All Courses
-    </a>
+    <div class="flex items-center justify-between mb-3">
+      <a href={base} class="text-xs text-gray-400 hover:text-brand-600 transition-colors">
+        ← All Courses
+      </a>
+      <button
+        type="button"
+        id="sidebar-close"
+        class="md:hidden -mr-1.5 p-1.5 text-gray-400 hover:text-gray-700 rounded-lg hover:bg-gray-100"
+        aria-label="Close menu"
+      >
+        ✕
+      </button>
+    </div>
     <a href={`${base}${courseSlug}/`} class="flex items-center gap-2 group">
       <div
         class="w-8 h-8 rounded-lg flex items-center justify-center text-white font-bold text-sm flex-shrink-0"
@@ -140,4 +158,36 @@ function lessonHref(fullSlug: string) {
   const label = document.getElementById('progress-label');
   if (bar) bar.style.width = `${pct}%`;
   if (label) label.textContent = `${pct}%`;
+</script>
+
+<script>
+  const sidebar = document.getElementById('course-sidebar');
+  const backdrop = document.getElementById('sidebar-backdrop');
+  const toggleBtn = document.getElementById('sidebar-toggle');
+  const closeBtn = document.getElementById('sidebar-close');
+
+  function openSidebar() {
+    sidebar?.classList.remove('-translate-x-full');
+    backdrop?.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeSidebar() {
+    sidebar?.classList.add('-translate-x-full');
+    backdrop?.classList.add('hidden');
+    document.body.style.overflow = '';
+  }
+
+  toggleBtn?.addEventListener('click', openSidebar);
+  closeBtn?.addEventListener('click', closeSidebar);
+  backdrop?.addEventListener('click', closeSidebar);
+
+  sidebar?.querySelectorAll('a').forEach((a) => {
+    a.addEventListener('click', () => {
+      if (window.innerWidth < 768) closeSidebar();
+    });
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeSidebar();
+  });
 </script>

@@ -24,51 +24,51 @@ const totalCount = courses.length;
   <div class="min-h-screen bg-gray-50">
 
     <!-- ── Nav ──────────────────────────────────────── -->
-    <nav class="bg-white border-b border-gray-200 px-6 py-3 flex items-center justify-between sticky top-0 z-10">
-      <div class="flex items-center gap-2">
-        <div class="w-8 h-8 rounded-lg bg-brand-600 flex items-center justify-center text-white font-bold text-sm">C</div>
-        <span class="font-bold text-gray-900">Clark's Courses</span>
+    <nav class="bg-white border-b border-gray-200 px-4 sm:px-6 py-3 flex items-center justify-between sticky top-0 z-10 gap-2">
+      <div class="flex items-center gap-2 min-w-0">
+        <div class="w-8 h-8 rounded-lg bg-brand-600 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">C</div>
+        <span class="font-bold text-gray-900 truncate">Clark's Courses</span>
       </div>
-      <div class="flex items-center gap-4">
+      <div class="flex items-center gap-2 sm:gap-4 flex-shrink-0">
         <button
           type="button"
           data-search-open
-          class="flex items-center gap-2 text-sm text-gray-400 hover:text-gray-600 border border-gray-200 rounded-lg px-3 py-1.5 transition-colors"
+          class="flex items-center gap-2 text-sm text-gray-400 hover:text-gray-600 border border-gray-200 rounded-lg px-2.5 sm:px-3 py-1.5 transition-colors"
         >
-          🔍 Search <kbd class="text-xs bg-gray-100 border border-gray-200 rounded px-1.5 py-0.5">⌘K</kbd>
+          🔍 <span class="hidden sm:inline">Search</span> <kbd class="hidden sm:inline text-xs bg-gray-100 border border-gray-200 rounded px-1.5 py-0.5">⌘K</kbd>
         </button>
-        <div class="text-sm text-gray-500">
+        <div class="hidden sm:block text-sm text-gray-500 whitespace-nowrap">
           {availableCount} of {totalCount} courses available
         </div>
       </div>
     </nav>
 
     <!-- ── Hero ─────────────────────────────────────── -->
-    <section class="bg-gradient-to-br from-brand-700 via-brand-600 to-brand-500 text-white px-6 py-20">
+    <section class="bg-gradient-to-br from-brand-700 via-brand-600 to-brand-500 text-white px-4 sm:px-6 py-14 sm:py-20">
       <div class="max-w-4xl mx-auto text-center">
         <p class="text-brand-200 text-sm font-semibold uppercase tracking-widest mb-4">
           Learn at your own pace
         </p>
-        <h1 class="text-4xl sm:text-5xl font-bold mb-5 leading-tight">
+        <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold mb-5 leading-tight">
           Skills That Move the World Forward
         </h1>
-        <p class="text-brand-100 text-lg max-w-2xl mx-auto mb-8 leading-relaxed">
+        <p class="text-brand-100 text-base sm:text-lg max-w-2xl mx-auto mb-8 leading-relaxed">
           Practical short courses on AI, technology, and the skills that matter —
           built for complete beginners, taught with real-world examples.
         </p>
-        <div class="flex flex-wrap justify-center gap-3">
-          <span class="bg-white/20 text-white text-sm font-medium px-4 py-1.5 rounded-full">🤖 Physical AI</span>
-          <span class="bg-white/20 text-white text-sm font-medium px-4 py-1.5 rounded-full">🚨 First Responders</span>
-          <span class="bg-white/20 text-white text-sm font-medium px-4 py-1.5 rounded-full">🛡️ Secure AI</span>
-          <span class="bg-white/20 text-white text-sm font-medium px-4 py-1.5 rounded-full">💻 Web Dev</span>
-          <span class="bg-white/20 text-white text-sm font-medium px-4 py-1.5 rounded-full">🧠 LLMs</span>
+        <div class="flex flex-wrap justify-center gap-2 sm:gap-3">
+          <span class="bg-white/20 text-white text-xs sm:text-sm font-medium px-3 sm:px-4 py-1 sm:py-1.5 rounded-full">🤖 Physical AI</span>
+          <span class="bg-white/20 text-white text-xs sm:text-sm font-medium px-3 sm:px-4 py-1 sm:py-1.5 rounded-full">🚨 First Responders</span>
+          <span class="bg-white/20 text-white text-xs sm:text-sm font-medium px-3 sm:px-4 py-1 sm:py-1.5 rounded-full">🛡️ Secure AI</span>
+          <span class="bg-white/20 text-white text-xs sm:text-sm font-medium px-3 sm:px-4 py-1 sm:py-1.5 rounded-full">💻 Web Dev</span>
+          <span class="bg-white/20 text-white text-xs sm:text-sm font-medium px-3 sm:px-4 py-1 sm:py-1.5 rounded-full">🧠 LLMs</span>
         </div>
       </div>
     </section>
 
     <!-- ── Course Catalog ────────────────────────────── -->
-    <section class="max-w-6xl mx-auto px-6 py-16">
-      <div class="flex items-end justify-between mb-10">
+    <section class="max-w-6xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+      <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-8 sm:mb-10">
         <div>
           <h2 class="text-2xl font-bold text-gray-900">All Courses</h2>
           <p class="text-gray-500 mt-1">{totalCount} courses · built for complete beginners</p>
