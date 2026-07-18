@@ -56,24 +56,32 @@ const base = import.meta.env.BASE_URL;
     <main class="flex-1 overflow-y-auto">
 
       <!-- Top bar -->
-      <header class="sticky top-0 z-10 bg-white border-b border-gray-200 px-8 py-3 flex items-center justify-between">
+      <header class="sticky top-0 z-10 bg-white border-b border-gray-200 px-4 sm:px-6 md:px-8 py-3 flex items-center justify-between gap-2">
         <div class="flex items-center gap-2 text-sm text-gray-500 min-w-0">
-          <a href={base} class="hover:text-brand-600 font-medium flex-shrink-0">Home</a>
-          <span>›</span>
-          <a href={`${base}${courseSlug}/`} class="hover:text-brand-600 flex-shrink-0 truncate max-w-[120px]">{courseTitle}</a>
-          <span>›</span>
+          <button
+            type="button"
+            id="sidebar-toggle"
+            class="md:hidden -ml-1.5 flex-shrink-0 p-1.5 text-gray-500 hover:text-gray-800 rounded-lg hover:bg-gray-100"
+            aria-label="Open lesson menu"
+          >
+            <span class="text-lg leading-none">☰</span>
+          </button>
+          <a href={base} class="hidden sm:inline hover:text-brand-600 font-medium flex-shrink-0">Home</a>
+          <span class="hidden sm:inline">›</span>
+          <a href={`${base}${courseSlug}/`} class="hidden sm:inline hover:text-brand-600 flex-shrink-0 truncate max-w-[120px]">{courseTitle}</a>
+          <span class="hidden sm:inline">›</span>
           <span class="text-gray-800 font-semibold truncate">{title}</span>
         </div>
-        <div class="flex items-center gap-3 flex-shrink-0 ml-4">
+        <div class="flex items-center gap-2 sm:gap-3 flex-shrink-0 ml-2">
           {duration && (
-            <span class="text-xs font-medium text-gray-400 bg-gray-100 px-2.5 py-1 rounded-full">
+            <span class="hidden sm:inline-block text-xs font-medium text-gray-400 bg-gray-100 px-2.5 py-1 rounded-full">
               ⏱ {duration}
             </span>
           )}
           <button
             type="button"
             data-search-open
-            class="flex items-center gap-2 text-sm text-gray-400 hover:text-gray-600 border border-gray-200 rounded-lg px-3 py-1.5 transition-colors"
+            class="flex items-center gap-2 text-sm text-gray-400 hover:text-gray-600 border border-gray-200 rounded-lg px-2.5 sm:px-3 py-1.5 transition-colors"
           >
             🔍 <kbd class="text-xs bg-gray-100 border border-gray-200 rounded px-1.5 py-0.5 hidden sm:inline">⌘K</kbd>
           </button>
@@ -81,7 +89,7 @@ const base = import.meta.env.BASE_URL;
       </header>
 
       <!-- Lesson body -->
-      <article class="max-w-3xl mx-auto px-8 py-12">
+      <article class="max-w-3xl mx-auto px-4 sm:px-6 md:px-8 py-8 md:py-12">
         <!-- Module badge -->
         <div class="mb-4">
           <span
@@ -93,9 +101,9 @@ const base = import.meta.env.BASE_URL;
         </div>
 
         <!-- Title -->
-        <h1 class="text-4xl font-bold text-gray-900 mb-3 leading-tight">{title}</h1>
+        <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-3 leading-tight">{title}</h1>
         {description && (
-          <p class="text-lg text-gray-500 mb-8 leading-relaxed">{description}</p>
+          <p class="text-base sm:text-lg text-gray-500 mb-8 leading-relaxed">{description}</p>
         )}
 
         <!-- YouTube embed -->
@@ -111,16 +119,16 @@ const base = import.meta.env.BASE_URL;
         </div>
 
         <!-- Prev / Next navigation -->
-        <div class="mt-16 pt-8 border-t border-gray-200 flex items-center justify-between gap-4">
+        <div class="mt-16 pt-8 border-t border-gray-200 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
           <div id="prev-lesson-nav" class="flex-1"></div>
           <button
             id="complete-btn"
             data-slug={slug}
-            class="btn-primary flex-shrink-0"
+            class="btn-primary flex-shrink-0 w-full sm:w-auto justify-center"
           >
             ✅ Mark as Complete
           </button>
-          <div id="next-lesson-nav" class="flex-1 flex justify-end"></div>
+          <div id="next-lesson-nav" class="flex-1 flex sm:justify-end"></div>
         </div>
       </article>
     </main>
@@ -203,11 +211,11 @@ const base = import.meta.env.BASE_URL;
 
   if (prev) {
     document.getElementById('prev-lesson-nav').innerHTML =
-      `<a href="${lessonHref(prev.slug)}" class="btn-ghost text-sm">← ${prev.title}</a>`;
+      `<a href="${lessonHref(prev.slug)}" class="btn-ghost text-sm w-full sm:w-auto justify-center">← ${prev.title}</a>`;
   }
   if (next) {
     document.getElementById('next-lesson-nav').innerHTML =
-      `<a href="${lessonHref(next.slug)}" class="btn-primary text-sm">${next.title} →</a>`;
+      `<a href="${lessonHref(next.slug)}" class="btn-primary text-sm w-full sm:w-auto justify-center">${next.title} →</a>`;
   }
 
   // Restore all sidebar states
