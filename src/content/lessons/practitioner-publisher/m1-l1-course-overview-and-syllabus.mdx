@@ -1,0 +1,122 @@
+---
+title: "Course Overview & Syllabus"
+description: "Why institutions are quietly rewriting the hiring rubric for practitioner faculty — and how to build the public content funnel that gets you on the short list."
+module: 1
+moduleTitle: "The Practitioner-Publisher Shift"
+lesson: 1
+duration: "12 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import LoopDiagram from '@components/LoopDiagram.astro';
+
+## Who This Course Is For
+
+This course is written for people who already do the work, not people who want to talk about it in the abstract:
+
+- **Industry practitioners** — engineers, analysts, operators, and specialists who have deep domain expertise but no academic appointment
+- **Open-source maintainers and technical writers** — people already publishing code, docs, or tutorials with no institutional home for that work
+- **Community moderators and workshop facilitators** — people already running Slack groups, meetups, or study sessions who've never connected that activity to a teaching career
+- **Existing adjunct or affiliate faculty** — people already teaching who want to know why their enrollment numbers depend more on what they post in July than what they lecture in September
+
+If you've ever built something public — a channel, a repo, a newsletter, a community — and wondered whether it could become a formal teaching credential instead of a side project, this course is your syllabus for that conversion.
+
+---
+
+## The Hiring Model Is Changing Underneath You
+
+For decades, adjunct and affiliate hiring in technical fields followed one script: an institution posts a position, a practitioner applies with a résumé and industry experience, a committee interviews, a contract gets signed, and *then* course material gets built — visible only to the students who enroll.
+
+That script is being replaced, not because institutions decided content marketing is trendy, but because the economics of building an audience *before* you're hired are strictly better than building one *after*:
+
+| | The Industry Professional (legacy model) | The Practitioner-Publisher (emerging model) |
+|---|---|---|
+| **Why hired** | Résumé and industry experience | Public content portfolio *plus* industry experience |
+| **When material is built** | After contract signed | Already battle-tested — views, forks, stars — before day one |
+| **Who the audience is** | Registered students only | Existing subscribers/followers *plus* enrolled students |
+| **What happens to a repo** | Optional, rarely maintained | The canonical, living lab environment |
+| **What happens after the semester** | Content disappears into an LMS | Content keeps compounding — old videos keep attracting new learners |
+| **Curriculum update cycle** | 6–12 months through committee | Iterate a module in days, based on what the public audience actually asks |
+
+Neither column is a moral judgment on individual instructors — plenty of excellent teachers built careers entirely in the left column. But the right column is where enrollment pipelines, hiring committees, and B2B/corporate-training partners are increasingly looking first, because it comes with something the left column can't: **proof of demand before the institution spends a dollar on it.**
+
+<Pitfall title={`"This Is Just Content Marketing With Extra Steps"`}>
+
+It's tempting to dismiss this model as marketing dressed up in academic language. That's a mistake for one specific reason: the stages of this funnel map cleanly onto **Kolb's experiential learning cycle** — concrete experience, reflective observation, abstract conceptualization, active experimentation (Kolb, 1984) — not onto a sales funnel borrowed wholesale from e-commerce.
+
+A YouTube video is concrete experience. A GitHub repo is active experimentation. A community hub is reflective observation with peers. A workshop is abstract conceptualization under time pressure. The reason this model converts isn't persuasion — it's that each stage does a different, real piece of the learning cycle's job. Module 2 goes into this in depth, with the actual citation.
+
+</Pitfall>
+
+---
+
+## The Six-Stage Funnel, At a Glance
+
+Every module in this course maps to one stage of a six-stage progression, from free public discovery to a paid, credentialed outcome:
+
+<LoopDiagram
+  label="The six-stage practitioner-publisher funnel"
+  steps={[
+    { title: "YouTube", subtitle: "Discovery" },
+    { title: "GitHub", subtitle: "Doing" },
+    { title: "Community", subtitle: "Retention" },
+    { title: "Seminar", subtitle: "Taste-test" },
+    { title: "Workshop", subtitle: "Conversion" },
+    { title: "Open edX", subtitle: "Credential" },
+  ]}
+  colors={["#0d9488", "#0891b2", "#0369a1", "#4338ca", "#7c3aed", "#a21caf"]}
+/>
+
+This isn't a one-way funnel. It's a loop: students who complete the formal credential become the guest speakers, workshop mentors, and testimonials that feed the next round of public content. Module 6 covers that feedback loop and how it changes your capstone plan.
+
+---
+
+## Course Objectives
+
+By the end of this course, you will be able to:
+
+1. **Explain the learning-theory basis for each funnel stage** — not just the marketing pitch, but the underlying research on experiential learning, situated learning, and community of practice that makes it work.
+2. **Evaluate claims about content and community ROI critically** — distinguish a peer-reviewed finding from a vendor's marketing statistic, and know which one your funnel plan should actually rely on.
+3. **Design a realistic, stage-by-stage content plan** for your own domain expertise, with honest conversion-rate assumptions at each stage.
+4. **Understand the institutional economics** — contingent faculty trends, IP ownership questions, and performance-based compensation models — that shape what this deal looks like for you specifically.
+5. **Build a capstone funnel plan** and stress-test it against the most common ways these plans fail in practice.
+
+---
+
+## The Line We Keep Returning To
+
+Every module in this course returns to one sentence:
+
+> **Your public content is not marketing for your teaching. It *is* your teaching — happening in public, before anyone enrolls.**
+
+A tutorial video, a maintained repo, or a moderated study group is not a funnel trick bolted onto real education. Each one is doing real instructional work — Kolb's concrete experience, active experimentation, and reflective observation, respectively — for an audience that hasn't paid tuition yet. The institution's job, in this model, isn't to create the learning from scratch. It's to recognize learning that's already happening and wrap it in assessment, credit, and credential.
+
+<CodeLab title="Inventory Your Existing Public Footprint">
+
+Before Module 2, take stock of what you already have, even if it doesn't feel like "content" yet:
+
+1. Any video, live stream, or recorded talk you've published publicly — even unlisted or low-view — that explains something you know
+2. Any code repository, template, or tool you've made public, regardless of star count
+3. Any Slack, Discord, forum, or mailing list where you already answer questions in your domain
+4. Any talk, lunch-and-learn, or informal training session you've ever given, even once
+
+Keep this list. Module 6's capstone will ask you to map each item to a specific funnel stage — and to be honest about which stages are empty.
+
+</CodeLab>
+
+<Quiz question="A hiring committee is comparing two candidates for an adjunct position: Candidate A has ten years of industry experience and no public content. Candidate B has five years of industry experience, a GitHub repo with 40 stars, and a YouTube series with 8,000 total views. According to the model in this lesson, what's the most accurate way to frame the difference between them?">
+
+<div>
+
+**Candidate B brings pre-validated material and an existing, if modest, audience — Candidate A's expertise is real but institutionally unproven at scale until the institution builds a course around it from zero.** This isn't a claim that Candidate B is the better teacher, or that industry-only experience is worthless — Candidate A may well be excellent in the classroom. It's a narrower, structural claim: Candidate B's course material has already been through one round of public "reflective observation and active experimentation" (people used the repo, watched the videos, asked questions), which is information a hiring committee doesn't have for Candidate A's material at all. That's why the practitioner-publisher model changes what gets weighed in hiring — not by replacing domain expertise, but by adding a second, independent signal alongside it.
+
+</div>
+</Quiz>
+
+---
+
+## Up Next
+
+**Module 2** starts at the top of the funnel: why an 18-second YouTube video with zero production budget can outperform a polished course trailer, and what the actual research on short-form video retention says about why.
