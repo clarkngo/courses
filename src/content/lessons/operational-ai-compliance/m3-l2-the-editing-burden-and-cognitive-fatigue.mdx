@@ -1,0 +1,80 @@
+---
+title: "The Editing Burden and Cognitive Fatigue"
+description: "AI drafting doesn't eliminate the work — it moves it from writing to hyper-vigilant editing. That shift has a well-documented human cost."
+module: 3
+moduleTitle: "Breaking the Hype with Independent Data"
+lesson: 2
+duration: "13 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## The Labor Doesn't Disappear — It Changes Shape
+
+[Lesson 1](/operational-ai-compliance/lessons/m3-l1-demolishing-the-60-second-myth) established that AI-assisted drafting doesn't produce a measurable time savings. This lesson explains *why*, operationally: the work doesn't vanish, it moves — from **composing** a narrative to **auditing** one you didn't write, under a standard where you're personally certifying every word of it.
+
+Those are not equivalent tasks, and treating them as interchangeable is where departments get into trouble.
+
+---
+
+## Writing vs. Verifying: Different Cognitive Jobs
+
+**Writing from memory** is a generative task. An officer recalls what happened and produces an account at roughly the speed of recall. Errors in this process tend to be errors of *omission* — leaving something out — which a supervisor reviewing the report can usually catch by asking "did you cover X?"
+
+**Verifying an AI draft** is a detection task. The officer has to read a document that sounds fluent and plausible — AI-generated text is specifically optimized to sound coherent — and catch the specific words, quotes, or actions that are subtly wrong, invented, or misattributed. This is a fundamentally harder problem than it sounds like, for a well-documented reason:
+
+### Automation Complacency and Vigilance Decrement
+
+Human factors research on automated systems — going back to foundational vigilance studies and continuing through decades of research on automation oversight in aviation, medicine, and other high-stakes fields — consistently finds two related effects:
+
+- **Automation complacency**: when a tool is usually right, humans' scrutiny of its output degrades over time, because sustained skepticism toward a generally-reliable system is cognitively expensive to maintain.
+- **Vigilance decrement**: the ability to detect rare, subtle errors in a stream of otherwise-normal output declines the longer a person has to sustain that detection task — exactly the task of proofreading AI report drafts against memory and footage, incident after incident, shift after shift.
+
+Put together: the more reliable an AI drafting tool *seems*, the harder it becomes for a tired officer at the end of a shift to catch the one sentence it got wrong — which is precisely the sentence that becomes a Ghost Officer problem in court.
+
+---
+
+<CodeLab title="Two Officers, Same Tool, Different Risk">
+
+**Officer A** has used an AI drafting tool for eight months. It's rarely wrong. They've come to trust it. Tonight, after a long, low-incident shift, the tool drafts a report for a routine call. Officer A skims it, it "looks right," and signs.
+
+**Officer B** is new to the tool. They've been told explicitly that every quote and every specific action must be checked against BWC footage line by line, regardless of how the draft reads. Tonight, after the same long shift, they check anyway — slower, more deliberately, cross-referencing the footage timestamp by timestamp.
+
+1. Which officer is at higher risk of a Ghost Officer error, and why — even though Officer A has more experience with the tool?
+2. What does this suggest about how agencies should train officers on AI-assisted tools over time, not just at rollout?
+
+---
+
+**Answers:**
+
+1. **Officer A is at higher risk**, precisely because of automation complacency. Experience with a tool that is "usually right" erodes the habit of full verification — the opposite of what you'd expect from "more experience." Officer B's newness, paired with an explicit verification procedure, is actually the safer posture.
+2. **Verification discipline needs to be reinforced on an ongoing basis, not just taught once at rollout.** Training that assumes officers will stay as vigilant six months in as they were on day one is training that ignores a well-established human factors finding. Agencies should build in periodic re-training or spot-audits specifically targeting experienced users, not just new adopters.
+
+</CodeLab>
+
+<Pitfall title="Treating 'Review Time' as Wasted Overhead">
+
+A department that adopts an AI drafting tool and then pressures officers to move quickly through the review step — because "the AI already did the hard part" — is manufacturing the exact conditions for a Ghost Officer error. The review step is not overhead layered on top of the real work. Given the null result in the Adams et al. data, the review step effectively *is* the real work now. Treating it as something to rush through defeats the only safeguard standing between an AI hallucination and a signed, certified report.
+
+</Pitfall>
+
+<Quiz question="A shift supervisor notices officers using an AI drafting tool are turning in reports slightly faster than the department's baseline, and takes this as evidence the tool is working as advertised, contradicting the research in this course. What is the most likely alternative explanation, based on this lesson?">
+
+<div>
+
+**The officers may be exhibiting automation complacency — spending less time on verification, not writing faster with equal thoroughness.**
+
+A faster turn-in time is consistent with two very different underlying behaviors: genuinely more efficient work, or reduced scrutiny during the review step. Given the Adams et al. (2024) finding that AI assistance did not produce a significant time reduction in a controlled, pre-registered trial, a supervisor observing faster turn-in times in the field should treat automation complacency — not genuine efficiency — as the more evidence-consistent explanation, and should audit a sample of those reports against BWC footage rather than treating faster turnaround as a success metric on its own.
+
+Faster is not automatically safer. In this specific context, faster is a signal to check more closely, not less.
+
+</div>
+</Quiz>
+
+---
+
+## Up Next
+
+Even for the tasks AI genuinely can help with, officers need to know *which systems* they're allowed to use it in. **Module 4** covers the City of Seattle's own AI governance framework — and the hard line around consumer chatbots and criminal justice data.

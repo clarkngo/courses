@@ -1,0 +1,74 @@
+---
+title: "Red Team Assessment: Three Scenarios"
+description: "Three realistic, high-pressure gray-area scenarios. Each has a compliant answer and three that lead to a sustained policy violation or a dropped case."
+module: 6
+moduleTitle: "Assessment: Red Team Quiz Scenarios"
+lesson: 1
+duration: "20 min"
+---
+
+import Quiz from '@components/Quiz.astro';
+import Pitfall from '@components/Pitfall.astro';
+
+## How to Use This Assessment
+
+These three scenarios are deliberately hard. Each one is built the way a real internal-affairs review or a defense cross-examination would build it: a reasonable-sounding shortcut, taken under real operational pressure, that turns out to create exactly the exposure this course has spent five modules explaining.
+
+Read each scenario fully before choosing. The wrong answers are not absurd — they're the choices an exhausted, well-intentioned officer or supervisor might actually make.
+
+<Pitfall title="Before You Start">
+
+None of these scenarios have a "just don't use AI at all" answer available as the safe default. That's intentional. The compliant answer in every scenario still involves AI — just used correctly, inside the AI-as-Auditor model from [Module 5](/operational-ai-compliance/lessons/m5-l1-the-ai-as-auditor-workflow). "Avoid the tool entirely" is not the lesson of this course; "know exactly which use is safe" is.
+
+</Pitfall>
+
+<Quiz questions={[
+  {
+    question: "It's 3 a.m. on a short-staffed night shift. An officer responds to a large, chaotic party disturbance with over a dozen people, multiple overlapping voices, and loud music captured on 45 minutes of BWC audio. The officer is exhausted and still has two more calls holding. They use an AI tool to parse the audio, and it returns a full draft narrative describing the scene, including a quote it attributes to 'a female subject in a red jacket.' The officer skims the draft, it reads coherently, and signs it to move to the next call. What is the compliance failure here, and what should the officer have done instead?",
+    options: [
+      "There is no failure — using AI to keep pace with call volume on a short-staffed shift is a reasonable, department-endorsed efficiency measure, and the officer reviewed the draft before signing.",
+      "The failure is using an AI tool that generated full narrative prose from ambiguous, multi-voice audio at all — this is precisely the Draft One/Code Four pattern the KCPAO directive rejects, and a coherent-sounding draft is not the same as a verified one; the officer should have written the narrative themselves and used an approved tool only to check it against a checklist afterward.",
+      "The only failure is not double-checking the name of the person in the red jacket; everything else about the process was acceptable given the time pressure.",
+      "The failure is that the officer should have delayed responding to the next two calls until the report was perfect, regardless of the operational cost."
+    ],
+    correctIndex: 1,
+    explanation: "This is the Ghost Officer scenario in its most realistic form. Time pressure and call volume do not change the underlying legal exposure: an AI tool generated narrative prose — including a specific, unverified attributed quote — from a genuinely ambiguous, high-noise, multi-voice recording, and the officer signed it after only a skim. That is exactly the failure mode the KCPAO memo cites (an AI tool inserting content the officer cannot personally verify) and exactly the pattern that creates Brady exposure (the narrative's reliability is itself now a disclosable issue) and Giglio exposure (the officer certified accuracy they did not actually verify). Chaotic, high-noise, multi-voice scenes are the highest-hallucination-risk category described in this course, precisely because attribution across overlapping voices is where AI tools fail most often — meaning this was the worst possible scenario to skim rather than verify. The compliant path was the AI-as-Auditor workflow from Module 5: write the narrative from memory and BWC review, then use an approved checklist tool to catch gaps — never let a tool draft the paragraph in the first place. Being short-staffed is a real operational constraint, but it is a staffing and workload problem for command staff to solve, not a justification that converts a compliance violation into an acceptable shortcut."
+  },
+  {
+    question: "A records manager is preparing a use-of-force report for public disclosure under a records request. To save time, they use a free, consumer-grade AI chatbot on their personal laptop to help redact sensitive information and summarize the incident for the disclosure log, since the department's approved tool is undergoing maintenance that day. The chatbot output looks accurate and appropriately redacted. What is the correct assessment of this choice?",
+    options: [
+      "This is fully compliant — the records manager only used AI for redaction and summarization, not narrative generation, so it falls outside the KCPAO directive's scope entirely.",
+      "This is a violation, but only because the summary might contain errors; if the records manager double-checks the AI's redactions carefully, the underlying tool choice becomes acceptable.",
+      "This is a serious violation independent of task type or accuracy: real case data, including a use-of-force incident subject to disclosure, was transmitted to a non-CJIS-compliant consumer tool on a personal device — the temporary unavailability of the approved tool does not authorize routing around CJIS requirements.",
+      "This is acceptable specifically because it was a one-time, temporary workaround due to a system outage, and temporary workarounds are exempt from CJIS requirements."
+    ],
+    correctIndex: 2,
+    explanation: "This scenario is designed to look like the 'safe' AI-as-Auditor use case (no narrative generation, just checking/summarizing existing content) while actually being a severe CJIS violation for an entirely different reason: the data itself left a governed environment. CJIS Security Policy attaches to any system that stores, processes, or transmits Criminal Justice Information — it does not matter that the task was redaction and summarization rather than narrative drafting, and it does not matter that the output looked accurate. A free consumer AI chatbot has no CJIS agreement, no guaranteed data handling controls, and no audit trail the department controls — and a personal laptop compounds this with an access-control violation. A temporary outage of the approved tool is a staffing/IT-escalation problem to raise with command staff (consistent with the City's governed-procurement model from Module 4), not a justification for transmitting real disclosure-bound case data to an unapproved system. There is no 'one-time exception' provision in CJIS for convenience — the violation exists at the moment of transmission, regardless of duration, intent, or output quality."
+  },
+  {
+    question: "A patrol sergeant reviewing a batch of reports notices that several officers on the same squad have started writing narratives that read as unusually structured and formulaic — each one hitting the same checklist-style points in the same order (reasonable suspicion factors, search basis, Miranda timing) using near-identical phrasing across different officers and different incidents. When asked, the officers say they're using the department's newly approved compliance-check tool 'to make sure we don't miss anything,' and that the tool 'basically tells us what sentence to add.' What should the sergeant conclude and do?",
+    options: [
+      "Nothing further is needed — the officers are correctly using the approved AI-as-Auditor tool from Module 5, and consistent phrasing across reports is actually a sign the tool is working well and standardizing quality.",
+      "The sergeant should conclude the workflow has drifted from AI-as-Auditor to AI-as-Author: officers describing the tool as telling them 'what sentence to add,' combined with near-identical phrasing across unrelated incidents, indicates the tool's flags are being resolved with AI-suggested or template wording rather than each officer's own independently recalled account — this needs to be corrected immediately, and command staff should be notified.",
+      "The sergeant should discipline the officers for using AI at all, since any AI involvement in report writing is prohibited under the KCPAO directive regardless of how it's used.",
+      "The sergeant should conclude this is acceptable as long as the underlying facts in each report are independently true, even if the wording was suggested by the tool, since accuracy is what ultimately matters in court."
+    ],
+    correctIndex: 1,
+    explanation: "This scenario tests whether officers (and supervisors) can recognize compliance drift within a tool that was approved and compliant at rollout. The AI-as-Auditor model in Module 5 is compliant specifically because the tool only asks questions — the officer must resolve every flag using their own independently recalled words. The phrase 'basically tells us what sentence to add' is a direct admission that the tool has moved from flagging gaps to supplying wording, and the near-identical phrasing across unrelated incidents and officers is strong corroborating evidence of exactly that: real independent recollections don't converge on identical sentence structure across different events. This re-creates the same Brady/Giglio exposure Module 2 describes, and it also violates the KCPAO directive's core objection (unverified content entering a certified narrative) — even though the tool in question was, at rollout, a fully approved and compliant system. Option 1 is wrong because it mistakes a red flag for a quality signal; option 3 overcorrects by banning a genuinely compliant tool category; option 4 is the most dangerous trap, because 'the facts are true' does not resolve the Giglio problem — the issue is whether the officer can truthfully swear the account is their own verified recollection, not whether it happens to be factually accurate. The sergeant's correct move is to treat this as a workflow-integrity failure, correct the immediate practice, and escalate to command staff so the tool's use policy and training can be reinforced across the squad."
+  }
+]} />
+
+---
+
+## Course Complete
+
+You've now covered:
+
+- **Module 1** — the line between AI-as-Author (prohibited) and AI-as-Auditor (the model this course teaches)
+- **Module 2** — how Brady v. Maryland and Giglio v. United States turn a single unverified AI detail into career-length exposure for the officer who signs the report
+- **Module 3** — why the vendor "60-second report" claim doesn't survive a peer-reviewed randomized controlled trial, and where the labor actually goes instead
+- **Module 4** — how the City of Seattle's own AI Plan governs adoption, and why consumer chatbots are a CJIS violation regardless of the task
+- **Module 5** — the actual five-step compliant workflow, and how it silently breaks if a tool's questions become its answers
+- **Module 6** — three realistic scenarios showing exactly how these principles hold up under real operational pressure
+
+The rule has not changed since Module 1: **AI may check whether you said what needs to be said. AI may never say it for you.**

@@ -1,0 +1,92 @@
+---
+title: "The KCPAO Directive"
+description: "What Chief Deputy Prosecutor Daniel J. Clark's memo actually says, what it prohibits, and why it stops short of banning AI outright."
+module: 2
+moduleTitle: "The US Legal Landscape & Constitutional Guardrails"
+lesson: 2
+duration: "14 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## The Memo
+
+In September 2024, the **King County Prosecuting Attorney's Office (KCPAO)** sent a memo to police chiefs across King County. It was written by **Chief Deputy Prosecutor Daniel J. Clark**, and its subject was the use of Axon's "Draft One" AI report-writing product.
+
+**Primary source:** [KCPAO memo to police chiefs re: Axon Draft One (PCE, Sept. 20, 2024)](https://pceinc.org/wp-content/uploads/2025/01/20240920-Email-to-Police-Chiefs-re-Axon-Draft-One-King-County-Prosecuting-Attorney-Dan-Clark.pdf)
+
+The memo's position, as reported by [GeekWire](https://www.geekwire.com/2024/internal-memo-dont-use-ai-for-police-reports-prosecutor-tells-seattle-area-law-enforcement/) and the [Electronic Frontier Foundation](https://www.eff.org/deeplinks/2024/10/prosecutors-washington-state-warn-police-dont-use-gen-ai-write-reports), is direct: **the KCPAO will not accept any police narrative produced with the assistance of AI.**
+
+---
+
+## The Specific Reasons Cited
+
+This wasn't a generic technology objection. Clark's memo laid out concrete, technical reasons Draft One specifically fails the evidentiary bar:
+
+1. **No retained draft history.** The tool does not preserve what it originally generated versus what the officer subsequently edited or added — so there is no record of what the AI invented versus what the human corrected.
+2. **Unrecorded judgment calls.** The tool independently decides which portions of body-worn camera audio are "unintelligible" and works around them, without flagging that decision to the officer or documenting it.
+3. **Hallucinations, large and small.** The tool has documented errors of varying severity, and does not track or report its own error rate.
+4. **A documented real-world failure.** Clark's memo cites an actual case in which prosecutors caught an AI-assisted draft referencing an officer who was not present at the scene — this is the "Ghost Officer" failure from [Lesson 1](/operational-ai-compliance/lessons/m2-l1-brady-giglio-and-the-ghost-officer), not a hypothetical.
+5. **Perjury exposure sits with the officer, not the vendor.** Officers are required to certify the narrative as accurate under penalty of perjury — but the memo's point is that some AI-introduced errors are subtle enough that they will be missed in a normal review pass, meaning the officer certifies accuracy they cannot actually vouch for.
+
+---
+
+## What It Does Not Say
+
+Read the memo's own language carefully, because officers and command staff both tend to overcorrect here. Clark's stated position, per the same reporting, was:
+
+> "AI continues to develop and we are hopeful that we will reach a point in the near future where these reports can be relied on. For now, our office has made the decision not to accept any police narratives that were produced with the assistance of AI."
+
+Two things follow from that framing:
+
+- **This is a narrative-generation prohibition, not a blanket AI prohibition.** The directive targets tools that draft prose describing what happened. It says nothing about tools that check human-written prose against a checklist, transcribe audio to text without summarizing or interpreting it, or manage records without generating new narrative content.
+- **It is stated as a current, reviewable position** — not a permanent one. That's a reason for agencies to keep documentation current, not a reason to treat the directive as temporary or safe to route around.
+
+This is exactly the distinction that makes [Module 5's AI-as-Auditor workflow](/operational-ai-compliance/lessons/m5-l1-the-ai-as-auditor-workflow) compliant: it never asks a tool to generate a sentence of narrative.
+
+<CodeLab title="Sort the Tools">
+
+For each tool description below, decide: does this fall inside the KCPAO directive's prohibition, or outside it?
+
+1. A tool that transcribes BWC audio to a verbatim text file, with no summarization or narrative construction.
+2. A tool that reads an officer's already-written narrative and highlights any sentence containing a direct quote, prompting the officer to confirm they personally verified it.
+3. A tool that listens to BWC audio and produces a full first-draft paragraph describing the stop, which the officer then edits.
+4. A tool that compares an officer's narrative against a use-of-force policy checklist and flags missing required elements, without suggesting replacement text.
+
+---
+
+**Answers:**
+
+1. **Outside the prohibition.** Verbatim transcription creates no new narrative content — it's a record of what was actually said, not an interpretation of it.
+2. **Outside the prohibition.** This tool never generates prose; it only checks the officer's own words and prompts human verification.
+3. **Inside the prohibition.** This is exactly the Draft One / Code Four pattern the KCPAO rejected — AI-generated narrative prose entering the report, regardless of subsequent officer editing.
+4. **Outside the prohibition.** This is the model for [Module 5](/operational-ai-compliance/lessons/m5-l1-the-ai-as-auditor-workflow) — analytical QA against a policy standard, with zero generated prose.
+
+</CodeLab>
+
+<Pitfall title="Assuming 'Other Counties Haven't Said This' Means It's Safe There">
+
+The KCPAO directive is a King County policy. An agency operating partly or occasionally in other counties should not assume the absence of a formal written directive elsewhere means AI-generated narratives are safe to use there. Brady and Giglio are federal constitutional doctrines — they apply everywhere, with or without a county-specific memo restating them. The KCPAO memo is notable because it wrote the risk down explicitly and early; it did not invent a risk that only exists in King County.
+
+</Pitfall>
+
+<Quiz question="Command staff at a department outside King County are considering adopting Axon Draft One, reasoning that their county prosecutor's office hasn't issued a directive like KCPAO's. What is the strongest counter-argument, based on this lesson?">
+
+<div>
+
+**The absence of a written directive doesn't mean the underlying legal risk (Brady/Giglio exposure from unverifiable AI-generated content) is absent — it may just mean no prosecutor's office in that county has documented it yet.**
+
+Brady v. Maryland and Giglio v. United States are constitutional obligations that apply in every jurisdiction, not policies specific to King County. The KCPAO memo is significant because it was an early, explicit, written recognition of a risk that exists everywhere AI-generated narrative content enters a signed, certified report. A department in a different county adopting the same tool takes on the same Ghost Officer risk — it just may not find out about it until a defense attorney raises it at trial, rather than being warned in advance by a prosecutor's memo.
+
+The safer inference for command staff: treat the KCPAO directive as documentation of a general legal exposure, not a jurisdiction-specific rule that doesn't apply to them.
+
+</div>
+</Quiz>
+
+---
+
+## Up Next
+
+Vendors selling AI report tools lead with one number: how many seconds it takes to generate a draft. **Module 3** puts that number up against a peer-reviewed randomized controlled trial — and the trial disagrees.

@@ -1,0 +1,96 @@
+---
+title: "Demolishing the 60-Second Myth"
+description: "Vendors promise reports in under a minute. A pre-registered randomized controlled trial says AI assistance doesn't save time at all — here's the actual data."
+module: 3
+moduleTitle: "Breaking the Hype with Independent Data"
+lesson: 1
+duration: "15 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## The Pitch You've Heard
+
+"Generate a full incident report from your body-worn camera audio in under 60 seconds." Every AI report-writing vendor's marketing leads with a version of this claim. It's a compelling pitch to a department that is short-staffed and buried in paperwork.
+
+It's also, according to the best independent evidence available, not true.
+
+---
+
+## The Study
+
+**Adams, I. T., Barter, M., McLean, K., Boehme, H. M., & Geary Jr, I. A. (2024). "No man's hand: artificial intelligence does not improve police report writing speed." *Journal of Experimental Criminology.***
+
+- **DOI / publisher record:** [10.1007/s11292-024-09644-7](https://link.springer.com/article/10.1007/s11292-024-09644-7)
+- **Open-access preprint:** [CrimRxiv](https://www.crimrxiv.com/pub/nxbmzp2j)
+
+This is not a vendor white paper or an op-ed. It's a **pre-registered randomized controlled trial** — the design standard for isolating a genuine causal effect from noise, expectation, and selection bias — conducted inside the patrol division of a real, mid-sized police department.
+
+**Design:**
+- Individual-report-level analysis: **n = 755 reports**, written by **n = 85 officers**
+- A second, independent check: a difference-in-differences analysis of report duration over a full year, **n = 6,084 reports**
+
+**Finding:** AI assistance did **not** produce a statistically significant reduction in the time it took officers to write reports. The full-year difference-in-differences analysis — a much larger and more robust check — confirmed the null result. The authors' own conclusion is blunt: the results "contradict marketing expectations" for this technology.
+
+---
+
+## Why the Marketing Claim and the Data Diverge
+
+The vendor demo timing a single "generate" button click captures only one moment in the workflow: the AI producing a draft. It does not capture what happens next — and what happens next is where the time actually goes.
+
+<CodeLab title="Where Does the Time Actually Go?">
+
+An officer using an AI report tool goes through this sequence for a single incident:
+
+1. Upload/process BWC audio (~1–2 minutes, often automatic)
+2. AI generates draft (~30–60 seconds — this is the number in the marketing)
+3. Officer reads the full draft against memory and BWC footage line by line
+4. Officer corrects hallucinated details, unclear attributions, and missing required elements
+5. Officer re-reads the corrected version before certifying and signing
+
+Which of these steps does the vendor's "60 seconds" claim actually measure? Which steps does it omit — and why might step 3 and 4 take *longer*, not less time, than writing the report from scratch?
+
+---
+
+**Answer:**
+
+The marketing claim measures only **step 2**. Steps 3, 4, and 5 — verifying a document you didn't personally compose, against your own memory and footage, closely enough to certify it under penalty of perjury — are a fundamentally different and often slower cognitive task than drafting your own account in your own words. Writing from memory lets an officer move at the speed of recall. Auditing someone else's (or something else's) draft for hidden errors requires sustained, line-by-line scrutiny — which is slower, not faster, especially for anything beyond the simplest calls. The Adams et al. result is exactly what you'd expect once you count every step, not just the demo step.
+
+</CodeLab>
+
+---
+
+## Why This Matters for Procurement and Policy
+
+This isn't just an academic curiosity for command staff evaluating a vendor contract. It changes the entire cost-benefit case for adopting a narrative-generation tool:
+
+- **The efficiency case for AI-as-Author doesn't hold up** under controlled measurement. Whatever a department pays for the tool, "your officers will get their evenings back" is not a claim the best available evidence supports.
+- **The KCPAO directive and the Adams et al. finding point the same direction.** The county's legal objection was never balanced against a real efficiency gain — because the efficiency gain the vendors advertise doesn't appear to exist.
+- **This reframes the AI-as-Auditor case in Module 5** as the stronger value proposition: not "save time drafting," but "catch compliance gaps a rushed human reviewer might miss" — a claim that doesn't require overturning a peer-reviewed null result to be true.
+
+<Pitfall title="'Our Department's Pilot Felt Faster'">
+
+Anecdotal impressions from a short pilot are exactly the kind of evidence a pre-registered RCT is designed to correct for. Novelty effects, small sample sizes, and the Hawthorne effect (people work differently when they know they're being observed or evaluated) all push pilot data toward looking better than a tool performs at scale over time.
+
+The Adams et al. design specifically controls for this with its second, full-year difference-in-differences check — and the result held. **A department's own short pilot impression is not stronger evidence than a controlled trial that already tested for exactly that bias.**
+
+</Pitfall>
+
+<Quiz question="A vendor's sales representative tells command staff: 'Our tool cuts report writing time by more than half — we've seen it in dozens of departments.' What is the strongest, most specific response grounded in this lesson?">
+
+<div>
+
+**Ask for the vendor's claim to be evaluated the way Adams et al. (2024) evaluated it — pre-registered, randomized, and measured end-to-end (including review and correction time) rather than only the draft-generation step.**
+
+"We've seen it in dozens of departments" is an anecdotal, non-randomized claim with no stated methodology — exactly the kind of evidence a controlled trial is designed to be more reliable than. The specific, defensible response is not "AI never helps" (overclaiming in the other direction) — it's that the *best currently available peer-reviewed evidence*, using a rigorous randomized design across 755 reports and a full-year, 6,084-report robustness check, found no significant time savings. Any vendor claim that contradicts that finding should come with its own comparably rigorous data before it drives a procurement decision — not just testimonials.
+
+</div>
+</Quiz>
+
+---
+
+## Up Next
+
+If AI drafting doesn't save writing time, what does it change about an officer's actual workload? **Lesson 2** looks at where the labor really moves — and why that shift has a cost the marketing never mentions.

@@ -1,0 +1,92 @@
+---
+title: "Course Overview & Syllabus"
+description: "Who this course is for, what it covers, and the one line every module keeps returning to: AI can check your work, it cannot write it."
+module: 1
+moduleTitle: "Course Overview & Syllabus"
+lesson: 1
+duration: "10 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Who This Course Is For
+
+This course is built for three roles inside a municipal law enforcement agency, and it teaches each of them differently:
+
+- **Patrol Officers** — who need a bright line for what they can and cannot let an AI tool touch on their own reports
+- **Record Managers** — who review, certify, and disclose reports, and who are the last checkpoint before a document becomes part of the evidentiary record
+- **Command Staff** — who set agency policy, approve procurement, and answer to both the city and the county prosecutor's office when something goes wrong
+
+If you supervise, review, or personally author incident narratives, this course is written for your job specifically — not as a generic "AI in policing" survey.
+
+---
+
+## Why This Course Exists Right Now
+
+Two things are true at the same time in King County, and this course exists in the gap between them:
+
+1. The **King County Prosecuting Attorney's Office (KCPAO)**, under Chief Deputy Prosecutor Daniel J. Clark, has told law enforcement partners in writing that it **will not accept** incident narratives produced with the assistance of generative AI tools like Axon Draft One — full detail in [Module 2](/operational-ai-compliance/lessons/m2-l2-the-kcpao-directive).
+2. The **City of Seattle's 2025–2026 AI Plan** actively directs city departments toward AI adoption — specifically workforce upskilling and university partnerships — for tasks like data integration, privacy compliance, and municipal policy work. Full detail in [Module 4](/operational-ai-compliance/lessons/m4-l1-the-seattle-ai-framework).
+
+Those two positions are not in conflict. They describe two different jobs AI can do:
+
+| | AI-as-Author | AI-as-Auditor |
+|---|---|---|
+| **What it does** | Generates new narrative prose from audio/video | Checks *already-written, human-authored* text against a policy or evidentiary checklist |
+| **KCPAO position** | Rejected — the reports "will not be accepted" | Not addressed by the directive — no prose is generated |
+| **Where it fits this course** | Explicitly out of scope, and actively discouraged | The entire operational model taught in [Module 5](/operational-ai-compliance/lessons/m5-l1-the-ai-as-auditor-workflow) |
+
+This course teaches you to operate entirely on the right side of that table.
+
+---
+
+## Course Objectives
+
+By the end of this course, you will be able to:
+
+1. **Explain, in legal terms, why AI-authored narrative text creates prosecution risk** — specifically how it can create Brady and Giglio exposure for the officer who signs the report.
+2. **State the KCPAO's directive accurately** and know what specifically it prohibits (and does not prohibit).
+3. **Cite the actual research** on whether AI report-writing tools save time — and correct vendor claims that don't hold up.
+4. **Identify which digital tools are safe to use** (transcription, structured-checklist QA) versus which cross into prohibited territory (narrative generation, pasting case data into consumer chatbots).
+5. **Walk through a compliant, AI-as-Auditor workflow** step by step, using tools that check an officer's own words rather than replacing them.
+6. **Recognize gray-area scenarios** — short-staffed shifts, ambiguous audio, time pressure — and make the compliant call under realistic operational pressure.
+
+---
+
+## The Line We Keep Returning To
+
+Every module in this course will return to one sentence. Learn it now:
+
+> **AI may check whether you said what needs to be said. AI may never say it for you.**
+
+Transcription is fine. Spell-check is fine. A checklist tool that asks "did your narrative document the specific, articulable facts supporting reasonable suspicion?" is fine — it doesn't write a word of your report. A tool that drafts the paragraph describing the stop, the search, or the suspect's statements is not fine, regardless of how good the vendor's demo looks.
+
+<Pitfall title="This Is Not a Ban on AI">
+
+Officers sometimes hear "the county won't accept AI reports" and conclude the department is anti-technology. That's the wrong takeaway, and it's not what either the KCPAO directive or the Seattle AI Plan says.
+
+The KCPAO objects to a **specific failure mode**: AI systems generating prose about events, statements, and observations that the officer did not personally verify word-for-word before signing. The City of Seattle, in the same policy window, is actively funding AI upskilling for other work.
+
+**The skill this course builds is discrimination, not avoidance** — knowing exactly which AI use case you're looking at before you touch the tool.
+
+</Pitfall>
+
+<CodeLab title="Map Your Own Agency's Tools">
+
+Before Module 2, take an inventory. For every digital tool your agency currently uses that touches incident reports, evidence, or case data, answer:
+
+1. Does this tool generate new narrative text, or does it check text that a human already wrote?
+2. If it generates text, whose words end up in the signed report — yours, or the vendor's model's?
+3. Has your agency's records division or command staff formally reviewed this tool against the KCPAO directive?
+
+Keep your answers. Module 5 will ask you to apply the AI-as-Auditor framework to this same list.
+
+</CodeLab>
+
+---
+
+## Up Next
+
+**Module 2** goes straight to the legal mechanics: why a single AI-invented detail in a signed report can trigger Brady and Giglio obligations that follow an officer for the rest of their career — testifying in this case and every case after it.
