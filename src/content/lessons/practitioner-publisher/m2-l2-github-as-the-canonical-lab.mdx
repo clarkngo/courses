@@ -1,0 +1,84 @@
+---
+title: "GitHub as the Canonical Lab"
+description: "Watching a video and doing the work are different cognitive acts. Kolb's experiential learning cycle explains why the repo — not the video — is where transfer actually happens, and a 2025 labor-economics paper explains why maintaining one pays off even before you're hired."
+module: 2
+moduleTitle: "Stage 1 & 2 — Discovery to Doing"
+lesson: 2
+duration: "15 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## From Watching to Doing
+
+A viewer who finishes your video has done exactly one thing: watched. They have not written code, configured a tool, or made a decision under real constraints. If your funnel stops at YouTube, you've built an audience of spectators — which is fine for reach, but it isn't yet instructional transfer.
+
+**Kolb, D. A. (1984). *Experiential Learning: Experience as the Source of Learning and Development.* Prentice-Hall, Englewood Cliffs, NJ.**
+
+Kolb's model describes learning as a four-stage cycle, and the stage names map directly onto this course's funnel:
+
+| Kolb's stage | What it requires | Funnel stage |
+|---|---|---|
+| Concrete Experience | Encountering the thing directly | YouTube (watching a real workflow) |
+| Reflective Observation | Thinking about what happened, ideally with others | Community Hub (Module 3) |
+| Abstract Conceptualization | Forming a general principle from the experience | Seminar (Module 4) |
+| Active Experimentation | Testing the principle by doing something new | **GitHub (this lesson)** |
+
+A learner can enter this cycle at any point, but a *complete* pass through it requires all four stages. A video-only funnel gives learners stage one and stops. The repository is where stage four — active experimentation, the stage most directly tied to retained, transferable skill — actually happens.
+
+---
+
+## Why the Repo, Specifically
+
+A GitHub repository does something a video cannot: it puts the learner in a state where they must make decisions, hit errors, and resolve them, using material you've already scoped and de-risked. That's the functional definition of a lab environment, and it's also the reason "watch the video, then read the README" outperforms "watch a longer video that tries to cover everything."
+
+<Pitfall title="Treating the Repo as Documentation, Not a Lab">
+
+A common mistake is publishing a repo that's really just a static code dump — accurate, but with no path for a learner to *do* anything with it beyond reading. That skips Kolb's active-experimentation stage entirely; it's concrete experience twice (watch the video, then read the code) with no experimentation stage at all.
+
+A working lab repo needs, at minimum: something the learner runs themselves, at least one deliberate task or exercise with a checkable outcome, and enough scaffolding that a learner who gets it wrong can tell *that* they got it wrong. If your repo doesn't produce an error message or a visibly wrong result when someone does it incorrectly, it isn't functioning as a lab.
+
+</Pitfall>
+
+---
+
+## The Institutional Payoff: What the Repo Signals Before Anyone Reads It
+
+There's a second, independent reason to maintain a public repository, separate from its instructional value: it functions as a credible labor-market signal, and there's now direct empirical evidence for this.
+
+**Abou El-Komboz, L., & Goldbeck, M. (2025). "Career Concerns as a Public Good: The Role of Signaling for Open Source Software Development." *Labour Economics*, 97.**
+
+- **Publisher record:** [ScienceDirect](https://www.sciencedirect.com/science/article/abs/pii/S0927537125001241)
+- **Open-access working paper version:** [ifo Institute](https://www.ifo.de/DocDL/wp-2024-405_goldbeck_carreer%20concerns.pdf) · [EconStor](https://www.econstor.eu/handle/10419/282189)
+
+The authors tracked open-source contribution activity for roughly 22,900 developers on GitHub and used a difference-in-differences design comparing developers who changed jobs against developers who relocated for unrelated reasons. **Finding:** contribution activity rose by approximately 16% during active job-search periods, and that increase was concentrated specifically in contributions that maximize *external visibility* and use *high labor-market-value languages* — not necessarily the contributions of most direct use to the immediate community.
+
+In plain terms: hiring markets already treat sustained, visible open-source activity as a credible signal of competence, separate from formal credentials — and practitioners already behave as if they know this, timing their most visible contributions to job searches. A repository built to teach a course, maintained on a regular cadence, produces the same signal continuously rather than only during a job search.
+
+<CodeLab title="Turn Your Video Topic Into a Lab Exercise">
+
+Take the hyper-specific topic you identified in Lesson 1's exercise and convert it into a minimal lab:
+
+1. Write the exact task the learner has to complete — one sentence, one verifiable outcome (not "understand X," but "produce output Y" or "get command Z to succeed")
+2. Include one deliberate failure point — a step that goes wrong if a prerequisite is skipped, with an error message the learner will actually see
+3. Add a short "if you're stuck" section that names the specific error text, not a generic troubleshooting FAQ
+4. Commit it publicly, even with a single star. The Abou El-Komboz & Goldbeck finding is about sustained visible activity, not initial popularity — the signal compounds with consistency, not with a single high-star repo.
+
+</CodeLab>
+
+<Quiz question="Two practitioners both publish tutorial videos on the same topic. Practitioner A links to a static gist with the finished code. Practitioner B links to a repo with a broken starter file and instructions to fix it. Which one, according to Kolb's cycle, more completely closes the experiential learning loop — and why?">
+
+<div>
+
+**Practitioner B.** A static, already-working gist only supports concrete experience (watching/reading a finished artifact) — the learner never has to test a hypothesis or resolve an error, so active experimentation never occurs. Practitioner B's broken starter file forces the learner to form a hypothesis about the fix (abstract conceptualization, informed by the video) and test it directly (active experimentation), which is the specific stage of Kolb's cycle most associated with retained, transferable skill rather than passive recognition.
+
+</div>
+</Quiz>
+
+---
+
+## Up Next
+
+A learner who's watched your video and worked through your repo is now two stages deep into the learning cycle — and two stages deep into your funnel. **Module 3** covers what happens next: the community hub that turns a one-time visitor into a retained, self-sustaining audience, and what the research on communities of practice says about why that retention actually works.

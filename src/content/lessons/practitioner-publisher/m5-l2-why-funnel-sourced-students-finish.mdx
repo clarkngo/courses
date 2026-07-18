@@ -1,0 +1,77 @@
+---
+title: "Why Funnel-Sourced Students Finish"
+description: "A funnel-sourced student picked your course after watching your videos, using your repo, and paying for your workshop — three self-selected choices before they ever enrolled. Self-determination theory explains why that history predicts completion better than a cold admissions file does."
+module: 5
+moduleTitle: "Stage 6 — From Content to Credential"
+lesson: 2
+duration: "13 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Two Students, Same Course, Different Histories
+
+Picture two students enrolled in the same formal Open edX certificate. Student A found the department through a course catalog search, applied, and was admitted — no prior contact with the material or the instructor. Student B watched four of your YouTube videos over six months, worked through your GitHub repo twice, attended a free seminar, and paid for a workshop before enrolling in the exact same certificate.
+
+Both are now, formally, enrolled students. Their probability of finishing is not the same — and there's a well-established psychological theory that explains why, not just an intuition that it should be true.
+
+---
+
+## The Theory: Autonomous Motivation Predicts Persistence
+
+**Deci, E. L., & Ryan, R. M. (2000). "The 'What' and 'Why' of Goal Pursuits: Human Needs and the Self-Determination of Behavior." *Psychological Inquiry*, 11(4), 227–268.**
+
+- **DOI:** [10.1207/S15327965PLI1104_01](https://www.tandfonline.com/doi/abs/10.1207/S15327965PLI1104_01)
+
+Self-determination theory distinguishes **autonomous motivation** (engaging in an activity because it aligns with your own goals and interests) from **controlled motivation** (engaging because of external pressure — a requirement, a deadline, someone else's expectation). Deci and Ryan's decades of research, synthesized in this paper, consistently find that autonomous motivation predicts greater persistence, better performance, and higher psychological well-being during sustained effort than controlled motivation does — because it's sustained by an internal reason to keep going rather than an external one that can lapse the moment supervision or pressure does.
+
+Student B's path through your funnel — four videos watched voluntarily, a repo worked through twice, a seminar attended, a workshop paid for out of pocket — is a long chain of *autonomously chosen* engagement with no external requirement attached to any of it. By the time they enroll, they've already demonstrated, repeatedly and at their own cost, that this material aligns with something they actually want. Student A's admission, by contrast, tells you nothing about whether their motivation is autonomous or controlled — parental expectation, a job requirement, or general prestige-seeking are all just as consistent with a cold application as genuine interest is.
+
+---
+
+## What This Means for How You Read Your Own Completion Data
+
+<Pitfall title="Crediting the Curriculum for What the Funnel Actually Did">
+
+It's tempting, when a workshop-to-certificate pipeline shows strong completion, to conclude the curriculum itself is unusually good. Self-determination theory suggests a more precise — and more useful — explanation: **the funnel is pre-filtering for autonomous motivation before the curriculum ever has to do any work.** Students who make it to Open edX through Modules 2–5 have already self-selected through four or five voluntary, costly steps. A cold-admitted student, dropped straight into the same curriculum with the same materials, is a different test of the material's intrinsic quality — one your funnel-sourced completion numbers don't actually measure.
+
+This matters practically: if you report your certificate's completion rate to a dean or a partner without noting that most of your enrollees are funnel-sourced, you risk the number being misread as evidence the curriculum works for *any* admitted student, when what you've actually shown is that it works well for students who arrived already autonomously motivated.
+
+</Pitfall>
+
+---
+
+## Designing the Funnel to Protect This Effect
+
+If autonomous motivation is the real driver, the practical implication is to protect the funnel stages that generate it, not shortcut them:
+
+1. **Don't skip stages to move students to Open edX faster.** A student who jumps straight from one video to enrollment, bypassing the repo, community, and workshop stages, hasn't accumulated the same chain of self-selected engagement — and shouldn't be assumed to complete at the same rate as one who did.
+2. **Keep early stages genuinely opt-in and low-pressure.** Autonomous motivation is specifically undermined by external pressure (Deci & Ryan, 2000); a funnel that nags, pressures, or guilt-trips viewers into the next stage is working against the exact mechanism that makes funnel-sourced students complete at higher rates in the first place.
+3. **Report completion data segmented by funnel origin.** Separating "completed the full seminar-and-workshop path before enrolling" from "enrolled directly" gives you (and anyone you report to) an honest read on what the curriculum does versus what pre-enrollment self-selection does.
+
+<CodeLab title="Segment Your Own Completion Data">
+
+If you already have any enrollment data — even from a single past workshop-to-course pipeline — do this before writing Module 6's capstone:
+
+1. Split past enrollees into "arrived via the funnel" (watched content, used the repo, attended a seminar or workshop first) versus "arrived cold" (direct application, no prior contact)
+2. Compare completion rates between the two groups, even with a small sample
+3. If you don't have this data yet, build the tracking now — a simple enrollment-form question ("how did you first hear about this course, and what did you do before enrolling?") is enough to start segmenting honestly from your very first cohort
+
+</CodeLab>
+
+<Quiz question="A colleague argues: 'Our certificate has an 80% completion rate, so our curriculum design must be excellent — we should roll it out to a much larger, openly-advertised cold-admissions cohort next semester.' What does self-determination theory suggest about this reasoning?">
+
+<div>
+
+**The 80% figure may be measuring the strength of the funnel's self-selection more than the curriculum's intrinsic quality, and scaling to a cold-admissions cohort removes the exact mechanism — autonomously chosen, voluntary pre-engagement — that self-determination theory identifies as the likely driver of high persistence.** This isn't an argument that the curriculum is bad, or that scaling is a mistake — it's that the 80% number, on its own, isn't strong evidence either way about how a cold-admitted cohort will perform, because that cohort hasn't been through the same chain of autonomous, self-selected engagement. The evidence-grounded response is to expect a lower completion rate for a cold cohort by default, and to treat any drop not as curriculum failure but as the funnel effect becoming visible once it's removed.
+
+</div>
+</Quiz>
+
+---
+
+## Up Next
+
+You now understand every stage of the funnel and the research behind why each one works. **Module 6** covers the institutional side of this deal — compensation, intellectual property, and the contingent-faculty economics you're actually walking into — before your capstone: red-teaming your own funnel plan.
