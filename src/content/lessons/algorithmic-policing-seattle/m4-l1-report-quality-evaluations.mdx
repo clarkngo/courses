@@ -1,0 +1,59 @@
+---
+title: "Report Quality Evaluations"
+description: "What independent research actually found when it tested AI-assisted police report writing against its own marketing claims: reduced factual accuracy, more complex language, and zero statistically significant time savings."
+module: 4
+moduleTitle: "Criminological Research"
+lesson: 1
+duration: "13 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Independent Research, Not Vendor Data
+
+Everything in this lesson comes from independent evaluation, not vendor-supplied performance claims — a distinction this course has flagged before (see [Operational Advantages](/algorithmic-policing-seattle/lessons/m3-l1-operational-advantages) and [Tactile AI](/algorithmic-policing-seattle/lessons/m2-l3-tactile-ai)) and one that matters most of all when the technology in question generates the actual language of an incident narrative. The American Civil Liberties Union's review of studies on AI-assisted police report tools surfaces three specific, measured findings that directly contradict the standard vendor pitch for these products.
+
+If your department has a sister policy course on this exact subject — Seattle's own **Operational AI Compliance & Supervisory Accountability** course — this lesson is the evidence base that course's KCPAO-directive discussion draws on. The two are meant to be read together: that course teaches the compliance line ("AI may check, never author"); this lesson explains *why* the underlying research supports drawing that line where it's drawn.
+
+---
+
+## Three Findings
+
+**Reduced factual accuracy.** AI-drafted narratives, evaluated against source material (body-worn camera audio/video and officer testimony), showed a measurable drop in factual accuracy compared to fully human-authored reports — the generative step introduces errors, omissions, or invented details that a purely human draft, working directly from the same source material, did not produce at the same rate.
+
+**Increased syllable count and grade-level complexity.** Counterintuitively, AI-assisted reports were not simpler or more readable — independent linguistic analysis found *increased* syllable complexity and grade-reading-level scores compared to officer-authored baselines. A report that is harder to read is harder for a supervisor, a prosecutor, or a defense attorney to accurately parse — working against the transparency an incident report is supposed to provide.
+
+**Zero statistically significant time savings.** The headline vendor claim for these tools is almost always speed — reports drafted in under a minute, dramatic reductions in time-on-task. Rigorous, controlled measurement (a pre-registered randomized design, evaluating end-to-end time including the human review and correction step, not just initial draft generation) found **no statistically significant time savings** at all once the full workflow was measured.
+
+---
+
+## Why the Time-Savings Finding Is the Most Important One
+
+Of the three findings, the time-savings result deserves the most attention from leadership specifically because it's the one procurement decisions are usually made on. A tool that's slightly less accurate but dramatically faster might still be a defensible trade-off for some use cases. A tool that is **both less accurate and not actually faster once the full workflow is measured** has no remaining efficiency argument to justify the accuracy cost.
+
+This is also a direct, concrete instance of the pattern named in [Operational Advantages](/algorithmic-policing-seattle/lessons/m3-l1-operational-advantages): a headline efficiency number (draft generation in under a minute) measures a narrow process step, while the outcome that actually matters to a department (total time from incident to a reviewed, accurate, signed report) is a different — and in this case, unmoved — number.
+
+<Pitfall title="A Fast Draft Is Not a Fast Report">
+
+If the review and correction step is where accuracy problems get caught — and it has to be, given the reduced-accuracy finding above — then a fast initial draft that requires more careful, more time-consuming review doesn't actually save net time. It may even cost time relative to a human-authored draft that a reviewer trusts more by default. Any efficiency argument for an AI drafting tool needs to account for the full pipeline, not the generation step in isolation — exactly what the controlled research measured, and exactly what found no net savings.
+
+</Pitfall>
+
+<Quiz question="A department is comparing two report-writing improvements: Tool A (an AI drafting assistant that generates initial narrative text) and Tool B (an AI checklist tool that verifies a human-written narrative covers required elements, without generating any narrative text itself). Based on this lesson's findings, which should be presumed lower-risk pending its own independent evaluation?">
+
+<div>
+
+**Tool B — because it doesn't generate narrative text, it isn't exposed to the specific findings in this lesson (reduced factual accuracy, increased complexity) which are specifically about generative drafting, not verification-only tools.**
+
+The research findings in this lesson are about what happens when a generative model produces the narrative prose itself. A checklist-style verification tool that only checks whether a human-authored narrative covers required elements — without generating any of the narrative's actual content — isn't doing the same task, and isn't automatically subject to the same accuracy or readability problems. This mirrors the AI-as-Auditor vs. AI-as-Author distinction: it's still worth independently evaluating Tool B on its own merits, but it doesn't inherit this lesson's specific findings the way a generative drafting tool does.
+
+</div>
+
+</Quiz>
+
+---
+
+## Up Next
+
+Report-quality research examines AI applied to writing about events that already happened. The next lesson looks at the opposite direction — AI used to predict where crime will happen next: [Forecasting Models](/algorithmic-policing-seattle/lessons/m4-l2-forecasting-models).

@@ -1,0 +1,69 @@
+---
+title: "Legislative Evolution"
+description: "Three legislative moments — 2013, 2017, and 2025 — that built Seattle's surveillance and AI governance regime one layer at a time, each one responding to the gaps the last one left open."
+module: 1
+moduleTitle: "Regulatory Framework"
+lesson: 3
+duration: "14 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Reading the Timeline as a Sequence, Not a Single Law
+
+It's tempting to treat "Seattle's surveillance ordinance" as one fixed rule. It isn't. It's three distinct legislative acts, each one written to close a specific gap the previous one left open. Understanding the sequence — not just the current end state — matters because it tells you *how* this kind of policy actually gets built: reactively, incrementally, and usually after a specific controversy exposed the gap.
+
+| Year | Instrument | What It Actually Did |
+|---|---|---|
+| **2013** | Ordinance 124142 | First requirement that city departments disclose surveillance technology acquisitions and get council authorization |
+| **2017** | SMC 14.18 | Replaced the 2013 framework with a much more detailed regime: mandatory Surveillance Impact Reports, privacy and civil liberties assessments, and a formal community review step |
+| **2025** | POL-211 AI Policy | Extended the surveillance-technology governance model to AI systems specifically, including generative AI, addressing gaps the surveillance ordinance didn't anticipate |
+
+---
+
+## 2013: Ordinance 124142 — Disclosure as the First Fix
+
+Seattle's original surveillance ordinance was a direct response to city departments acquiring surveillance capability — mesh network infrastructure, drones — with functionally no public disclosure or council vote before the fact. The 2013 ordinance's core fix was procedural: **before a department can acquire surveillance technology, the City Council has to know about it and approve it.**
+
+That was a meaningful first step, but it was thin. It set a disclosure gate without specifying what information had to go into that disclosure, without a standard privacy-impact methodology, and without an ongoing review mechanism once a technology was already in use.
+
+---
+
+## 2017: SMC 14.18 — From Disclosure to Structured Review
+
+SMC 14.18 rewrote the regime from "tell the council" into a structured, repeatable evaluation process. This is the ordinance still doing the operational work in Seattle today, and its core innovation is the **Surveillance Impact Report (SIR)** — covered in full in the next lesson — a standardized document every surveillance technology has to produce before deployment, covering data collection, retention, sharing, and equity impact.
+
+The practical shift from 2013 to 2017: a technology no longer just needs a *disclosed* acquisition — it needs a *documented case* that survives a defined review pathway involving privacy staff, civil liberties assessment, and a community body before Council will approve it.
+
+---
+
+## 2025: POL-211 — AI as Its Own Category
+
+By the 2020s, the SMC 14.18 surveillance framework was doing real work, but it was written around a specific mental model: *sensors and data collection systems* — cameras, license plate readers, cell-site simulators. Generative and predictive AI don't fit that model cleanly. A large language model summarizing a report, or a classifier flagging a bias crime, isn't "collecting" data the way a camera is — but it raises its own distinct risks: hallucination, bias amplification, and accountability gaps when a model's reasoning can't be fully audited.
+
+The 2025 AI Policy is Seattle's attempt to close that specific gap — governing the AI layer directly, rather than trying to stretch the surveillance-technology definition to cover it after the fact.
+
+<Pitfall title="Don't Assume the Newest Rule Replaced the Old Ones">
+
+POL-211 did not repeal SMC 14.18, and SMC 14.18 did not repeal the 2013 ordinance's underlying disclosure principle. These layer on top of each other. A tool that is both a data-collection surveillance system *and* an AI-driven analysis layer — a real-time crime center integrating camera feeds with an AI classifier, for example — may need to satisfy obligations under more than one instrument at once. Treating this as "the 2025 policy is the current rule" and ignoring the earlier layers is a common and costly misreading.
+
+</Pitfall>
+
+<Quiz question="A department is evaluating a new AI classifier that runs on top of an already-approved camera network. Someone on the review team argues that because the camera network already went through Surveillance Impact Report review under SMC 14.18, the new AI layer doesn't need separate review under POL-211. Is that correct?">
+
+<div>
+
+**No — the AI layer is a distinct governed instrument under the 2025 policy and generally requires its own review, even if the underlying data source was already approved.**
+
+The legislative history matters here: POL-211 exists specifically because SMC 14.18's Surveillance Impact Report framework was built around data-collection systems, not the analytical/generative layer that can now sit on top of them. An AI classifier introduces its own distinct risks — bias amplification, hallucination, auditability — that a camera-network SIR was never designed to evaluate. Treating prior surveillance-technology approval as sufficient for a new AI layer skips exactly the gap the 2025 policy was written to close.
+
+</div>
+
+</Quiz>
+
+---
+
+## Up Next
+
+Legislative Evolution tells you *what* rules exist and *when* they arrived. The next lesson, [Review Process](/algorithmic-policing-seattle/lessons/m1-l4-review-process), walks through *how* a tool actually moves through them — the Surveillance Impact Report, privacy and civil liberties assessments, and the Community Surveillance Working Group step by step.

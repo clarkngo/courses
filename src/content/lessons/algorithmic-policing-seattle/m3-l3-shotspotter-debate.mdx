@@ -1,0 +1,63 @@
+---
+title: "The ShotSpotter Debate"
+description: "The single most instructive case in Seattle's algorithmic policing history: a gunshot detection system dropped from a surveillance expansion after evidence of ineffective homicide reduction, workload inflation, and sustained community opposition."
+module: 3
+moduleTitle: "Impact Analysis"
+lesson: 3
+duration: "15 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Why This Is the Course's Central Case Study
+
+Every risk category from the previous lesson — and every evaluation question from Operational Advantages — converges in one real, documented decision: Seattle Mayor Bruce Harrell **dropped ShotSpotter (acoustic gunshot detection) from a broader surveillance technology expansion**, even as other elements of that expansion — including CCTV and Real-Time Crime Center components — moved forward. That split decision is the most instructive single data point in this course, because it shows a live example of leadership actually discriminating between tools rather than approving or rejecting a technology category wholesale.
+
+---
+
+## What ShotSpotter Was Supposed to Do
+
+Acoustic gunshot detection systems use networks of microphone sensors to detect and geolocate probable gunfire in real time, alerting dispatch faster than relying on 911 calls alone — the core pitch being faster officer response to shooting scenes, and by extension, better outcomes for victims and stronger evidence collection at the scene.
+
+---
+
+## Three Documented Problems
+
+**Ineffective homicide reduction.** The core outcome claim — that faster acoustic detection meaningfully reduces homicide or shooting rates — has not held up well across cities that deployed similar systems. Detecting a gunshot faster does not, on its own, change whether a shooting is fatal in the seconds before detection even completes, and multiple cities' experience did not show the reduction in gun violence outcomes the technology was procured to deliver.
+
+**Workload inflation from false alarms.** Acoustic sensors struggle to reliably distinguish gunfire from other loud, sharp sounds — fireworks, vehicle backfire, construction — generating a substantial volume of false positive dispatches. Every false alarm still consumes officer response time and creates an unnecessary, sometimes tense, deployment to a scene where no shooting occurred. This is directly documented in police leadership's own account: multiple police chiefs have been publicly critical of ShotSpotter's real-world performance, and a number of cities have pulled out of their contracts specifically citing this pattern.
+
+**Intense community opposition.** Because acoustic sensor placement concentrates coverage in specific neighborhoods, the system reproduces the same disparate-siting concern from the Systemic Drawbacks lesson — with the added dimension that a high false-alarm rate means those neighborhoods absorb a disproportionate share of unnecessary, sometimes high-tension police responses. Community pushback on this specific pattern was sustained and significant enough to be a documented factor in the decision to drop the system.
+
+---
+
+## The Split Decision, and Why It's the Right Model
+
+Seattle nixed the gunshot detection system specifically — while other elements of its surveillance and integrated-systems expansion (Module 2) continued. That's the outcome this whole course is built to produce: not a blanket "AI in policing is good" or "AI in policing is bad" conclusion, but a **tool-by-tool evaluation against actual evidence**, where a technology with a poor track record on its own core outcome claim gets dropped even while adjacent, better-performing technologies proceed.
+
+The irony worth naming directly: Seattle's press coverage of this decision noted that even as ShotSpotter was dropped, the city's *overall* surveillance footprint still increased through the other approved elements — a reminder that "we rejected one flawed tool" is not the same claim as "we reduced overall surveillance," and shouldn't be represented as such in public communication.
+
+<Pitfall title="Don't Let One Good Decision Stand In for Systemic Review">
+
+Dropping ShotSpotter was the right call on the evidence, but it's a single decision, made about a single technology, at a single point in time. It does not substitute for the ongoing review process from Module 1 — new gunshot detection vendors, or new claims about improved acoustic accuracy, would still need to go through Surveillance Impact Report and community review before any future reconsideration, not be waved through on the reputational credit of a past good decision on a different (or even the same) technology.
+
+</Pitfall>
+
+<Quiz question="A vendor approaches Seattle PD with a new acoustic gunshot detection product, claiming their false-positive rate is 'dramatically lower' than the system dropped in this lesson, and asks for expedited procurement given the city's known interest in the underlying use case. What is the correct response, based on this lesson?">
+
+<div>
+
+**Require the full standard review process — Surveillance Impact Report, Privacy and Civil Liberties Assessments, and Community Surveillance Working Group review from Module 1 — with independent verification of the false-positive claim, rather than expediting based on the vendor's own assertion.**
+
+The prior decision to drop ShotSpotter was grounded in documented, independently observed outcomes (homicide-reduction data, false-alarm rates reported by other departments, community opposition) — not a category-wide ban on acoustic detection technology. A new vendor's unverified claim of improvement doesn't satisfy that same evidentiary bar, and the specific harms identified in this lesson (community impact from false alarms, disparate siting) apply regardless of vendor. Expedited procurement based on a marketing claim would repeat the exact evaluation gap this case study is meant to teach against.
+
+</div>
+
+</Quiz>
+
+---
+
+## Up Next
+
+Module 3 established what the evidence says about operational value and structural risk, using ShotSpotter as the central test case. Module 4 turns to the broader research literature: [Report Quality Evaluations](/algorithmic-policing-seattle/lessons/m4-l1-report-quality-evaluations) — independent findings on whether AI-assisted tools actually deliver on their core claims.

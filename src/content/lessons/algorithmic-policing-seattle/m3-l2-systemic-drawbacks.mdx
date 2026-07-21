@@ -1,0 +1,63 @@
+---
+title: "Systemic Drawbacks"
+description: "Four structural risks that don't show up in a single bad incident but compound quietly over time: feedback loops, codified bias, generative AI hallucination, and continuous spatial surveillance."
+module: 3
+moduleTitle: "Impact Analysis"
+lesson: 2
+duration: "15 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Why "Systemic" Is the Right Word
+
+The drawbacks in this lesson are deliberately not framed as individual failures — a single wrong flag, one bad report. They're **systemic**: risks that compound through the normal, correct operation of a system over time, which makes them harder to catch than a one-off error and harder to fix with a single patch. Each of the four risks below can be present even when every individual output looks reasonable in isolation.
+
+---
+
+## Self-Fulfilling Feedback Loops
+
+Predictive and pattern-detection tools (see [Forecasting Models](/algorithmic-policing-seattle/lessons/m4-l2-forecasting-models)) are typically trained on historical enforcement data — where officers were previously deployed, where prior stops and arrests occurred. If a neighborhood was historically over-policed, the historical data reflects that over-policing as "high crime activity," the model learns to direct more attention there, more enforcement activity is generated there as a result, and the next training cycle's data confirms the original pattern. The loop reinforces itself using data the system itself helped generate — not because the underlying crime rate actually differs, but because the model's own prior outputs shaped where officers were sent to look.
+
+---
+
+## Codified Racial and Economic Bias
+
+Feedback loops are one mechanism for bias amplification; codification is the broader category. Historical policing data reflects historical policing patterns — including documented disparities in stops, searches, and arrests by race and neighborhood economic status. A model trained on that data doesn't need an explicit racial variable to reproduce racial disparity: proxies (zip code, prior-contact history, even certain narrative language patterns) can carry the same signal. The risk is that a tool marketed as "neutral" or "data-driven" can quietly **encode and formalize** disparities that existed informally in prior human decision-making — making them harder to see and contest because they now arrive wrapped in the appearance of algorithmic objectivity.
+
+---
+
+## Generative AI Hallucinations
+
+Distinct from bias, hallucination is a reliability failure: a generative AI system producing confident, plausible-sounding output that is factually wrong — inventing a detail, a citation, or a pattern that doesn't actually exist in the underlying data. This is the central concern behind the KCPAO's rejection of AI-drafted incident narratives (covered in depth in the companion course on report-writing compliance) and it applies just as directly to any generative component inside the tools in this course — a summarization layer, a natural-language query interface over case data, or an AI-assisted report tool. A hallucinated detail in a policing context isn't a cosmetic error; it can become a fabricated fact inside an investigative or evidentiary record.
+
+---
+
+## Continuous Spatial Surveillance
+
+The Integrated Systems covered in Module 2 — CCTV networks, ALPRs, the Real-Time Crime Center — create a capability distinct from any single tool's individual risk: **persistent, aggregated tracking of movement through public space**, for anyone who passes through covered areas, regardless of suspicion. This is the drawback most directly tied to the civil liberties concern from Module 1's review process — not that any single camera is misused, but that the cumulative, integrated network makes it possible to reconstruct a person's movements over time in a way no individual sensor was ever reviewed to permit on its own.
+
+<Pitfall title="These Four Risks Compound With Each Other">
+
+Treating these as four independent line items understates the danger. A feedback loop (risk 1) that concentrates enforcement in specific neighborhoods generates more data from those neighborhoods, which a biased model (risk 2) can further amplify, which a generative summarization layer (risk 3) can then confidently misdescribe in a way no one catches, all while continuous spatial tracking (risk 4) means the affected population has no practical way to avoid contact with the system in the first place. Evaluating these four risks only in isolation — a checklist exercise — misses how they interact in a real, integrated deployment.
+
+</Pitfall>
+
+<Quiz question="A department argues that its predictive deployment tool can't be biased because it doesn't use race as an input variable. Based on this lesson, is that argument sound?">
+
+<div>
+
+**No — the absence of an explicit race variable doesn't prevent codified bias, because proxy variables (zip code, prior-contact history, certain narrative patterns) trained on historically disparate enforcement data can carry the same signal indirectly.**
+
+This is the core mechanism described under "Codified Racial and Economic Bias" above: a model doesn't need direct access to a protected characteristic to reproduce disparities associated with it, if the training data itself reflects historical enforcement patterns correlated with that characteristic. Auditing for bias requires testing model outputs against outcomes by protected group, not just checking whether a protected-characteristic field was included as an input.
+
+</div>
+
+</Quiz>
+
+---
+
+## Up Next
+
+These four risks are structural and apply broadly. The next lesson puts them to work on a single, concrete, heavily documented case: [ShotSpotter Debate](/algorithmic-policing-seattle/lessons/m3-l3-shotspotter-debate) — the gunshot detection system Seattle ultimately dropped.

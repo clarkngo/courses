@@ -1,0 +1,63 @@
+---
+title: "Integrated Systems"
+description: "The Fusus-powered Real-Time Crime Center as the point where CCTV networks, automated license plate readers, and every other data feed in this module converge into a single operational picture."
+module: 2
+moduleTitle: "Technical Implementations"
+lesson: 4
+duration: "14 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Where the Other Three Categories Converge
+
+Operational, Accountability, and Tactile AI (the previous three lessons) are each a single tool doing a single job. **Integrated Systems** are different: they're platforms that pull multiple data feeds and analytical layers together into one operational view. In Seattle, the anchor for this category is the **Real-Time Crime Center (RTCC)**, built on Fusus platform infrastructure.
+
+This is the category where the stakes from Module 1's review process (SIRs, Privacy and Civil Liberties Assessments, CSWG review) compound rather than apply once — because an integrated system doesn't introduce one new data source, it aggregates several that may each carry their own separate approval history.
+
+---
+
+## The Real-Time Crime Center
+
+The RTCC is a physical and technical operations hub that gives analysts a live, aggregated view across multiple surveillance and data feeds during an active incident — pulling together camera footage, license plate reads, and other integrated inputs to support real-time situational awareness for responding officers. Seattle's public reporting on the RTCC describes it as delivering early operational results in support of public safety response, alongside continued attention from oversight bodies given the surveillance-technology master list obligations covered in Module 1.
+
+The core components feeding the RTCC:
+
+| Component | Function |
+|---|---|
+| **Fusus platform** | The integration layer that ingests and correlates multiple camera and sensor feeds into one interface |
+| **CCTV camera networks** | Fixed public-space cameras, reviewed and disclosed under Seattle's Public Space Cameras program |
+| **Automated License Plate Readers (ALPRs)** | Fixed or mobile readers that log plate numbers, times, and locations, searchable against watchlists or investigative queries |
+
+---
+
+## Why Integration Changes the Risk Calculus
+
+Each individual component — a single camera network, a single ALPR deployment — went through its own Surveillance Impact Report and review process under SMC 14.18 (Module 1). But **integration creates capability that the individual approvals may not have contemplated**. A camera network approved for a specific use case, once fed into an RTCC alongside ALPR data and analytic tooling, can support a much broader range of queries — tracking a vehicle's movement across multiple camera zones and plate reads in combination — than either component's original SIR may have described in isolation.
+
+This is precisely the concern Seattle's **Master List of Surveillance Technologies** exists to make visible: not just what individual tools exist, but what the combined surveillance footprint actually adds up to when systems are integrated rather than siloed.
+
+<Pitfall title="An Integrated System's Capability Can Exceed the Sum of Its Approved Parts">
+
+If a review process only ever evaluates each data source individually — "this camera network was approved, this ALPR deployment was approved" — it can miss the capability created by combining them. A civil liberties assessment of the ALPR system alone might not have considered vehicle tracking across a citywide camera network, because that capability didn't exist until the RTCC integration layer was built. Any new integration point between previously separate systems is a meaningful trigger for re-review, not just a technical wiring project.
+
+</Pitfall>
+
+<Quiz question="Seattle PD proposes adding a new data feed — a private business's camera network, offered voluntarily — into the existing Fusus-based Real-Time Crime Center. The business's camera system itself isn't city-owned or city-operated. Does this integration still fall under the Module 1 review framework?">
+
+<div>
+
+**Yes — integrating a new feed into the RTCC's aggregated capability is itself a surveillance-technology decision by the department, regardless of who owns the originating camera, and it should go through Surveillance Impact Report and civil liberties review before deployment.**
+
+The relevant question under SMC 14.18 isn't who owns the camera — it's what new capability the department gains by integrating the feed. Adding a private network's footage into an already-integrated system with license plate and multi-camera correlation expands what the RTCC as a whole can do, which is exactly the kind of capability expansion this lesson's core lesson warns against approving quietly. Treating it as "not our technology" because the camera itself is privately owned would sidestep the review the integration itself triggers.
+
+</div>
+
+</Quiz>
+
+---
+
+## Up Next
+
+Module 2 has covered what's actually deployed. Module 3 asks the harder question: [Operational Advantages](/algorithmic-policing-seattle/lessons/m3-l1-operational-advantages) — what does the evidence say these systems actually deliver, and at what cost?

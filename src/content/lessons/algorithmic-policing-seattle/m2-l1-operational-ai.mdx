@@ -1,0 +1,68 @@
+---
+title: "Operational AI"
+description: "Bias crime identification as the flagship case for AI embedded directly in day-to-day policing work — how NLP classification runs, and why human-in-the-loop verification is the feature that makes it defensible."
+module: 2
+moduleTitle: "Technical Implementations"
+lesson: 1
+duration: "13 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## What "Operational AI" Means in This Course
+
+Module 2 sorts Seattle's AI deployments into four functional categories, not by vendor or product name. **Operational AI** is the category of tools that sit directly inside a case's day-to-day workflow — reading, classifying, or flagging content as part of how a case gets handled, not auditing it after the fact (that's Module 2's next category, Accountability AI) and not training officers (Tactile AI, Lesson 3).
+
+The flagship example in Seattle is the **Bias Crime Identifier**.
+
+---
+
+## The Bias Crime Identifier
+
+Bias crimes — offenses motivated by the victim's protected characteristic — are historically undercounted because identifying bias motivation requires reading and correctly interpreting free-text narrative, not just checking a structured offense code. Seattle's approach pairs its Real-Time Crime Center work with an **NLP (natural language processing) system trained to extract and classify potential bias-crime indicators from incident narratives** — flagging cases where language, context, or symbols in the reported narrative suggest a bias motivation that a structured code alone would miss.
+
+This matters operationally in a specific way: it doesn't replace the detective's judgment about whether a crime is bias-motivated. It **surfaces candidates for review** that might otherwise be missed in the volume of daily incident narratives — a triage function, not a determination function.
+
+---
+
+## How the NLP Layer Actually Works
+
+At a functional level, the classifier does two things:
+
+1. **Extraction** — pulling structured signals (slurs, symbols, references to protected characteristics, patterns of targeting) out of unstructured narrative text.
+2. **Classification** — scoring or flagging the extracted content against known bias-crime indicator patterns, then routing flagged cases to a human reviewer.
+
+Neither step finalizes a bias-crime designation. That's a deliberate design choice, not an accident — and it's the most important thing to understand about this category of tool.
+
+---
+
+## Human-in-the-Loop Verification Is the Load-Bearing Design Choice
+
+The reason the Bias Crime Identifier is a defensible use of AI — where other tools in this course (see [ShotSpotter Debate](/algorithmic-policing-seattle/lessons/m3-l3-shotspotter-debate) and [Report Quality Evaluations](/algorithmic-policing-seattle/lessons/m4-l1-report-quality-evaluations)) run into serious trouble — is that its output is **advisory, not dispositive**. A flagged narrative goes to a human reviewer who makes the actual determination. The AI's job is recall (don't miss candidates), not precision (don't be the final word).
+
+This is the same distinction the sibling course on report-writing compliance teaches as "AI-as-Auditor, not AI-as-Author": the system checks and surfaces, a human decides and signs. Operational AI tools that keep this boundary intact are the tools that survive scrutiny. Tools that quietly let AI output become the final answer — without a human genuinely re-examining the underlying evidence — are the tools that generate the accountability failures covered later in this course.
+
+<Pitfall title="Human-in-the-Loop Only Works If the Human Actually Looks">
+
+A human-in-the-loop step is not automatically a safeguard. If the reviewing officer treats a low AI confidence score as "probably nothing" and moves on without reading the underlying narrative themselves, the human step becomes a rubber stamp — the exact automation-complacency failure mode documented in AI-assisted report review research (see [Report Quality Evaluations](/algorithmic-policing-seattle/lessons/m4-l1-report-quality-evaluations)). A human-in-the-loop design is only as strong as the review discipline actually applied at that checkpoint — that's a training and supervision commitment, not something the software guarantees on its own.
+
+</Pitfall>
+
+<Quiz question="A vendor proposes upgrading the Bias Crime Identifier so that narratives scoring above a high confidence threshold are automatically coded as bias crimes in the record system, skipping human review to 'save detective time on the obvious cases.' Should command staff approve this change?">
+
+<div>
+
+**No — this removes the human-in-the-loop verification step that is the actual basis for treating this tool as an operational aid rather than a determination-making system, and it should not be approved without a separate, full review process of its own.**
+
+Confidence scores are a measure of pattern-match strength, not ground truth — a narrative can score high on language-pattern indicators while still requiring human context (relationship history, prior incidents, credible alternative explanations) to correctly determine bias motivation. Automating the "obvious" cases quietly converts an advisory tool into a dispositive one, which is precisely the shift that would require this change to go through its own Surveillance Impact Report and civil liberties review under the framework from Module 1 — not a quiet configuration change.
+
+</div>
+
+</Quiz>
+
+---
+
+## Up Next
+
+Operational AI reads and flags cases in progress. The next lesson turns to a different job entirely: [Accountability AI](/algorithmic-policing-seattle/lessons/m2-l2-accountability-ai) — using AI not on live cases, but on the historical record of police accountability itself.

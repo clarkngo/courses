@@ -1,0 +1,57 @@
+---
+title: "Structural Transitions"
+description: "What actually changed when Seattle's 13-year federal consent decree ended: expanded local Office of Inspector General authority and a new Sentinel Event Review process taking over oversight functions federal monitors used to perform."
+module: 5
+moduleTitle: "Oversight and Reform"
+lesson: 1
+duration: "13 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Thirteen Years of Federal Supervision, Then a Handoff
+
+Seattle Police Department operated under a federal consent decree for thirteen years — direct federal court oversight of use-of-force policy, bias-free policing practices, and department accountability systems, following a Department of Justice investigation. That consent decree has now been lifted, formally ending direct federal supervision. This is not, on its own, a reduction in oversight — but it is a **structural transition**, and structural transitions are exactly the moments where oversight gaps open if the local replacement mechanisms aren't already fully built and funded.
+
+This lesson matters for this course specifically because everything in Modules 1 through 4 — the ordinance regime, the technical deployments, the impact evidence, the research findings — was built and reviewed *during* the consent decree years, inside an environment with an active federal backstop. Understanding what replaces that backstop is essential to evaluating whether the same rigor holds going forward.
+
+---
+
+## What Actually Replaces Federal Oversight
+
+Two local mechanisms carry forward the oversight function the federal monitor used to perform:
+
+**Office of Inspector General (OIG) local authority expansion.** Seattle's Office of Inspector General for Public Safety — the civilian body responsible for auditing SPD policy, practice, and systemic patterns (distinct from OPA, which investigates individual complaints, covered in [Accountability AI](/algorithmic-policing-seattle/lessons/m2-l2-accountability-ai)) — has taken on expanded local authority to fill functions the federal monitor previously performed, including systemic audits of policy compliance and outcome patterns.
+
+**Sentinel Event Review process.** Borrowed from a model used in aviation and medical safety systems, a Sentinel Event Review examines serious incidents not to assign individual blame, but to identify the *systemic* conditions that allowed the incident to occur — the same distinction this course drew in [Systemic Drawbacks](/algorithmic-policing-seattle/lessons/m3-l2-systemic-drawbacks) between a one-off failure and a structural risk. Applied to algorithmic policing specifically, a Sentinel Event Review of an AI-related incident — a bad predictive flag, a hallucinated report detail, a false ShotSpotter-style dispatch — would ask what about the surrounding system made that outcome possible, not just whether the individual output was wrong.
+
+---
+
+## Why This Matters for Algorithmic Policing Specifically
+
+Every AI and surveillance tool covered in this course was deployed and reviewed under a regime that included federal oversight as a backstop — even when the federal monitor wasn't reviewing AI tools directly, its presence shaped the broader accountability culture the local ordinance regime (Module 1) operated within. The consent decree's end means the **local mechanisms now carry that weight alone**: OIG's expanded authority and the Sentinel Event Review process are not supplementary oversight anymore — for the algorithmic policing systems in this course, they're now the primary systemic check.
+
+<Pitfall title="A Lifted Consent Decree Is Not a Finding That the Job Is Finished">
+
+It's tempting to read "federal supervision ended" as "the oversight problem is solved." That's not what a consent decree lifting means — it means a court found the department met specific compliance benchmarks sufficient to exit direct supervision, not that every accountability question is permanently resolved. The local structures inheriting this responsibility — OIG and Sentinel Event Review — are relatively new in this expanded role. Command staff should treat this transition as a period requiring *more* active engagement with local oversight bodies, not less, precisely because the federal backstop that used to catch a systemic gap is no longer there by default.
+
+</Pitfall>
+
+<Quiz question="Six months after the consent decree lifts, an AI-driven forecasting tool (Module 4) is linked to a pattern of disproportionate patrol deployment in one neighborhood. Under the new oversight structure, what is the appropriate mechanism to examine this, and why not simply wait for the next federal review?">
+
+<div>
+
+**A Sentinel Event Review, conducted through the OIG's expanded local authority — because there is no longer a federal review cycle to wait for, and the Sentinel Event Review model is specifically designed to examine systemic causes (like a biased forecasting model's feedback loop) rather than just the individual deployment decisions.**
+
+Since federal supervision has ended, "wait for the next federal review" is no longer a mechanism that exists — the local OIG and Sentinel Event Review process are what the department now relies on for exactly this kind of systemic pattern investigation. A Sentinel Event Review is particularly well suited here because the concern isn't one officer's decision, it's whether the forecasting tool's training data and feedback loop (see [Systemic Drawbacks](/algorithmic-policing-seattle/lessons/m3-l2-systemic-drawbacks)) produced the disparate pattern — a systemic question, not an individual one.
+
+</div>
+
+</Quiz>
+
+---
+
+## Up Next
+
+Structural transitions describe *who* watches these systems now. The course's final lesson turns to *what specific changes* are being recommended to close remaining gaps: [Strategic Recommendations](/algorithmic-policing-seattle/lessons/m5-l2-strategic-recommendations).
