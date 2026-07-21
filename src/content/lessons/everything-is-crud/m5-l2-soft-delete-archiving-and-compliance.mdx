@@ -1,0 +1,77 @@
+---
+title: "Soft Delete, Archiving, and the Compliance Angle"
+description: "Why 'delete' is often a legal and records-retention question in disguise — right-to-erasure requests, retention schedules, and the difference between deleting and archiving."
+module: 5
+moduleTitle: "Delete — The Verb You Can't Fully Take Back"
+lesson: 2
+duration: "12 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Archiving Is Not the Same as Deleting
+
+It's easy to treat "delete" and "archive" as roughly the same idea — both get something out of the main view. They answer different questions:
+
+- **Delete** asks: should this data continue to exist at all?
+- **Archive** asks: should this data stay easy to find, or move somewhere less visible while still existing?
+
+An old, closed project might be **archived** — moved out of the active project list, still fully intact, still reportable on, just not cluttering the main view. That same project being **deleted** is a much bigger decision, because it removes the ability to answer questions about it later. Conflating the two in a spec ("archive old projects" being built as "delete old projects") is a quiet but consequential misunderstanding.
+
+---
+
+## Retention Schedules: Delete Isn't Always the User's Choice
+
+Some data has to be kept for a minimum length of time regardless of what a user wants — financial transaction records, tax-relevant documents, certain employment records — because a regulation says so. Other data has to be deleted, or at least de-identified, after a maximum length of time for the same reason. This means a well-run system often needs a **retention schedule**: a rule that says how long each type of record must be kept, and what happens automatically once that period ends.
+
+| Data type | Typical driver | What it implies |
+|---|---|---|
+| Financial transaction records | Tax and audit regulations | Must be kept a minimum number of years, even if a user asks to delete their account |
+| Marketing consent / contact data | Privacy regulations (opt-out requests) | Must be deletable or anonymizable on request, often within a defined time window |
+| Support ticket history | Business preference | Usually a judgment call, not a legal requirement |
+
+A feature that lets a user "delete everything" needs to know, in advance, which of their data is actually eligible to go, and which is legally required to stick around in some form.
+
+<Pitfall title="'Delete My Account' Often Means 'Delete Most of My Account'">
+
+A literal, total delete-on-request feature can accidentally violate a retention requirement if it isn't scoped carefully. The realistic version of most "delete my data" features is closer to: delete or anonymize what's allowed to go, retain what's legally required, and be transparent with the user about which is which. This is a case where the honest, compliant answer is more nuanced than the button's label suggests — and that nuance belongs in the spec, not left for engineering to guess at.
+
+</Pitfall>
+
+---
+
+## Anonymization: A Middle Path
+
+Between "keep the record exactly as-is" and "delete it entirely" sits **anonymization** — keeping the data (for analytics, audit, or legal reasons) but stripping out what identifies a specific person. An order history might be legally required for tax purposes, but the customer's name and contact details can sometimes be replaced with a generic placeholder once they're no longer needed to look up the person. This satisfies both the retention requirement and much of the spirit of a deletion request.
+
+---
+
+## Why "Cascading Delete" Gets More Sensitive Here
+
+The previous lesson introduced cascade, block, and orphan as the three outcomes when a deleted record has other data attached to it. Compliance raises the stakes on this choice: if a user's right-to-erasure request cascades and deletes a shared document that a *different* user still needs, that's not just a bug — it may be a real harm to someone who wasn't part of the original request at all. This is a strong argument for "block" or "anonymize" over "cascade" whenever deleted data might still matter to someone else.
+
+---
+
+## A Checklist for Any Delete-Adjacent Feature
+
+- [ ] Is this actually a delete (data stops existing), or is "archive" the more accurate word for what's needed?
+- [ ] Does any part of this data have a minimum retention requirement that overrides the user's request?
+- [ ] Could anonymizing the record satisfy the request instead of fully deleting it?
+- [ ] If this record is shared with or referenced by someone else, does deleting it affect them too?
+
+<Quiz question="A customer submits a 'delete my account' request. The account has three years of order history, which the company is legally required to retain for tax purposes for seven years. What's the right way to describe what actually happens?">
+<div>
+
+**The account and personally identifying details (name, contact info, saved payment methods) are deleted or anonymized, but the underlying order and transaction records are retained in an anonymized form for the remainder of the legally required retention period — and the customer should be told this plainly, not given a button that implies total, immediate erasure.**
+
+This is the retention-versus-deletion tension the lesson describes directly: the customer's request is legitimate, but a literal "delete everything" would violate a legal retention requirement the company doesn't get to waive on request. Anonymization is the standard middle path — it satisfies the spirit of the erasure request (no personally identifying data remains linked to the records) while keeping the company compliant with its retention obligation. The failure mode to avoid is a delete button that silently does less than it implies, or a legal violation from doing more than it's allowed to.
+
+</div>
+</Quiz>
+
+---
+
+## Up Next
+
+The capstone module puts all four verbs together — you'll take one real feature and map it across Create, Read, Update, and Delete at once, the way an experienced product reviewer would.

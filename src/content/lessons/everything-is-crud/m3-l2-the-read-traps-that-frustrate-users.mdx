@@ -1,0 +1,85 @@
+---
+title: "The Read Traps That Frustrate Users"
+description: "Recognizable Read failure modes — stale data, over-exposed lists, and search that doesn't find what users expect — and the questions that catch each one early."
+module: 3
+moduleTitle: "Read — Finding and Showing Data Back"
+lesson: 2
+duration: "12 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Read Bugs Are Trust Bugs
+
+A broken Create is annoying. A broken Read erodes trust — a customer who sees the wrong balance on their account, or a dashboard that contradicts the report someone else pulled five minutes earlier, starts to doubt everything else the system tells them. This lesson covers the three most common ways Read goes wrong in practice.
+
+---
+
+## Trap 1: Stale Data
+
+"Stale" means the screen shows an answer that used to be true. This happens for a boring, structural reason: showing data instantly is often cheaper when the system keeps a separate, pre-computed copy of it instead of recalculating from scratch every time. That copy can fall behind.
+
+- A dashboard showing "42 open tickets" that was actually computed an hour ago.
+- A product page showing "In Stock" for an item that sold out four minutes ago.
+- A cached search result that doesn't include a record created thirty seconds ago.
+
+None of these are necessarily bugs — sometimes a slightly-stale number is an acceptable, deliberate trade-off for speed. The mistake is not *having* stale data; it's not deciding, on purpose, how stale is acceptable for a given screen, and not telling the user when data might be behind (a timestamp like "as of 2:15 PM" solves more trust problems than it seems like it should).
+
+<Pitfall title="Silence About Staleness Reads as a Bug, Even When It Isn't">
+
+Users don't get upset that data is occasionally a few minutes old. They get upset when the system *pretends* the data is live and turns out to be wrong. If a screen can be stale, saying so (a small "updated 5 minutes ago" label) turns a trust problem into a non-issue.
+
+</Pitfall>
+
+---
+
+## Trap 2: Over-Exposed Lists
+
+The opposite of a permission gap from the previous lesson: a list screen that technically checks permissions correctly, but returns *too much* by design. Common shapes:
+
+- A search box that lets any logged-in user query across the entire customer database, when it should be scoped to their own accounts or team.
+- An admin screen, originally built for a five-person internal team, later opened up to a much larger group without re-checking whether everything on it was still appropriate for that wider audience.
+- An export or "download all" button that dumps far more data than the on-screen list ever showed, bypassing whatever filtering the visible list applied.
+
+The common thread: the visible screen looks fine, but a less-visible path (an API, an export, a search parameter) reaches further than the intended scope. When reviewing a Read feature, it's worth asking specifically about every way to get the data out — not just the default view.
+
+---
+
+## Trap 3: Search and Filter That Don't Match Expectations
+
+"Just add a search bar" hides several real decisions:
+
+| Decision | Example question |
+|---|---|
+| **Match type** | Does searching "Jon" find "Jonathan"? Is it case-sensitive? |
+| **Fields searched** | Does it search names only, or also emails, notes, tags? |
+| **Empty results** | Does "no results" look different from "still loading"? |
+| **Filter combinations** | If a user filters by status *and* date, are the two combined with AND or OR? |
+
+Users build a mental model of how search works from a handful of early tries, and a search box that behaves inconsistently (finds "Jon" but not "jon," searches names but silently ignores an email search) reads as broken even when it's technically working as coded.
+
+---
+
+## A Checklist for Reviewing Any Read Spec
+
+- [ ] Could this data be stale, and if so, is that acceptable — and shown to the user?
+- [ ] Is there any path (export, API, broader search) that reaches more data than the main screen implies?
+- [ ] What does "no results" look like, and is it distinguishable from "still loading" or "error"?
+- [ ] If there's a filter or search, what's the exact matching behavior a user should expect?
+
+<Quiz question="A user reports: 'The dashboard said I had 12 unread messages, but when I opened my inbox, there were only 9.' What's the most likely explanation, and what's the underlying fix?">
+<div>
+
+**Most likely, the dashboard count is a stale, pre-computed number that hadn't updated since three messages were read elsewhere — the underlying fix is deciding an acceptable staleness window and, ideally, showing when the count was last refreshed.**
+
+This is a textbook stale-data trap: the dashboard count and the inbox list are two different reads of what should be the same underlying fact, computed at different times. The "fix" isn't necessarily to make everything instantly live everywhere — that can be expensive — but to make a deliberate choice about acceptable delay for this specific number, and to be transparent about it (e.g., refreshing the count when the dashboard is viewed, or labeling it "as of a few minutes ago") so the mismatch doesn't read as broken.
+
+</div>
+</Quiz>
+
+---
+
+## Up Next
+
+Module 4 moves to **Update** — the riskiest of the four verbs, because it's the one where two people can collide.

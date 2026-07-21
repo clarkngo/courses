@@ -1,0 +1,94 @@
+---
+title: "Update: Changing What Already Exists"
+description: "Why Update is the riskiest of the four verbs — the difference between full and partial updates, and what it means to change a record that other parts of the system already depend on."
+module: 4
+moduleTitle: "Update — Changing What Already Exists"
+lesson: 1
+duration: "12 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Why Update Is Different From Create
+
+Create brings something new into the world, with no history to protect. Update changes something that already exists — which means there's a "before" that other parts of the system, and other people, may already be relying on. An Update can:
+
+- Break something else that assumed the old value was still true (a report, an integration, another user's in-progress work)
+- Erase information that had value even after it changed (what was the price *before* it changed?)
+- Happen at the exact same moment someone else is also changing the same thing (covered in the next lesson)
+
+This is why Update is generally the most expensive of the four verbs to get right, even though "let users edit their profile" sounds like the simplest possible feature request.
+
+---
+
+## Full Replace vs. Partial Update
+
+There are two different ways to change a record, and specs often don't distinguish between them:
+
+| | Full replace | Partial update |
+|---|---|---|
+| **What happens** | The entire record is overwritten with new data | Only the specific fields that changed are touched |
+| **Risk** | A field the user didn't mean to touch can get wiped out if the form didn't include it | Requires knowing exactly which fields the user intended to change |
+| **Example** | Re-submitting an entire profile form, including fields the screen didn't show | Editing just the "shipping address" field on an order |
+
+The dangerous version is a full replace built on an incomplete form: if a settings screen only shows five of a user's eight profile fields, and saving that screen overwrites the *entire* record, the other three fields can silently revert to blank. This is a real, recurring class of bug — and it's invisible until someone notices data has "disappeared."
+
+<Pitfall title="A Form That Doesn't Show a Field Can Still Delete It">
+
+If an Update operation replaces a whole record rather than changing only the submitted fields, any field left off the form is at risk of being wiped out, not just left alone. When reviewing an edit screen, ask specifically: does saving this form touch *only* the fields shown, or everything on the underlying record?
+
+</Pitfall>
+
+---
+
+## What Gets Lost When You Update
+
+Every Update, by definition, overwrites an old value with a new one. The product question is: **should the old value be kept anywhere?**
+
+- A price change on a product — should the system remember what the price *used to be*, for past orders that were placed at the old price?
+- A status change on a support ticket — should there be a visible history of every status it passed through, or just the current one?
+- A name correction on a customer record — does anything reference the old name (a printed invoice, an email already sent) that shouldn't retroactively change?
+
+Systems that keep no history of changes are simpler to build but harder to audit, harder to debug ("when did this change, and to what?"), and sometimes non-compliant with recordkeeping requirements in regulated industries. Deciding whether an Update needs a history trail is a product and compliance decision, not just a technical one.
+
+---
+
+## Update and Dependent Data
+
+A record rarely exists in isolation. Changing it can ripple outward:
+
+- Changing a customer's plan tier might need to recalculate their bill.
+- Changing an employee's manager might need to update reporting-line permissions.
+- Changing a product's category might break a saved filter that assumed the old category.
+
+When reviewing an Update feature, it's worth asking: **what else in the system reads this field, and does it need to be told this changed?** A spec that only describes the field being edited, without naming what depends on it, is usually missing real work.
+
+<CodeLab title="Trace an Update's Ripple Effect">
+
+Take the "update" screen you identified in Module 1 (an edit button or settings page). Answer:
+
+1. Is this a full replace or a partial update — does saving touch only the visible fields, or the whole record?
+2. Is the old value kept anywhere after the change, or is it gone for good?
+3. Name one other part of the system (a report, a bill, another screen) that might depend on the value you just changed.
+
+Keep your answers — Module 6's capstone reuses this same screen.
+
+</CodeLab>
+
+<Quiz question="A settings page lets users update their email address. A stakeholder says, 'This should be simple — it's just one field.' What's the strongest follow-up question?">
+<div>
+
+**"Does anything in the system use the old email as an identifier — like a login, an integration, or a place other users reference this person by email — that would break if it silently changed?"**
+
+Email often looks like "just a field" but frequently doubles as an identifier other parts of a system rely on: it might be the username for login, the key an external integration matches records by, or how a teammate's shared document references the person. Changing it isn't just an Update to one field — it can be a change to *identity* that ripples into systems the settings page never shows. This is exactly the "what else depends on this" question the lesson raises before treating any Update as simple.
+
+</div>
+</Quiz>
+
+---
+
+## Up Next
+
+The next lesson covers what happens when two people try to update the same thing at the same time — and why "who wins" is a question every Update feature eventually has to answer.
