@@ -1,0 +1,73 @@
+---
+title: "Closing the Loop With Living Documentation"
+description: "Why the workflow isn't finished until the outcome is written back somewhere findable — a real changelog format, a routing table, and the meta-example of asking an agent to maintain its own knowledge base."
+module: 4
+moduleTitle: "The Spec-Driven Workflow Loop"
+lesson: 2
+duration: "11 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Confirmed Isn't the Same as Closed
+
+Module 4's first lesson ended at "confirm" — the batch matches the verified reference. But confirming a change is correct in the moment doesn't help the next session, or a teammate three weeks from now, unless the outcome gets written down somewhere it can actually be found again. The loop isn't closed until it is.
+
+---
+
+## A Real Changelog Format
+
+One project's root `CHANGELOG.md` uses a simple, consistent entry format, newest first:
+
+```markdown
+## YYYY-MM-DD
+
+### [tag] Short title
+- Bullet with specific detail
+- Another bullet if needed
+```
+
+With a fixed tag vocabulary — `[feature]`, `[bug]`, `[ux]`, `[refactor]` — and an explicit rule for bug entries: include the **symptom**, the **root cause**, and the **fix**, not just "fixed a bug." That structure exists because "fixed a bug" tells a future reader nothing; "objectives reset on refresh because `saveState()` was called before `loadState()` completed" tells them exactly what to check if something similar happens again.
+
+The same project routes detailed entries to per-area changelog files (one per top-level folder) and keeps only a one-line summary in the root file — the routing table from Module 2's instructions-file lesson is what makes that automatic instead of a judgment call every time.
+
+---
+
+## The Meta-Example: Asking for the Habit Itself
+
+The most interesting entry in this project's own lessons-learned notes isn't about a bug — it's about how the living-documentation habit came to exist at all:
+
+> "Should Claude also update the lessons-learned files when a new bug/fix/pattern is discovered, the same way it updates the changelog?"
+
+That single question — framing a new desired behavior as an analogy to an existing one the agent already follows — is what turned "update the changelog" into a standing, permanent habit covering a second document (lessons-learned) as well. The general pattern is worth naming on its own: **"should you also do X the same way you do Y?"** is a more effective way to introduce a new standing behavior than "always remember to do X," because it anchors the new rule in something already proven to work, rather than asking the agent (or a person) to hold a brand-new instruction in mind indefinitely.
+
+The result, concretely: what used to be a one-time snapshot of decisions became a document that grows automatically, every session, without a separate reminder each time.
+
+---
+
+## What Goes Where
+
+Putting this course's documents together: the **instructions file** (Module 2) holds the current, standing rule. The **changelog** records *what changed and when*. The **lessons-learned** (or equivalent knowledge base) records *why* — the reasoning, the root cause, the pattern — categorized so it can be searched later by topic rather than by date. A rule earns a permanent place in the instructions file specifically because a *pattern* in the lessons-learned repeated enough times to justify becoming a standing check — the same escalation path from Module 2's "you said it twice" signal.
+
+<Pitfall title="A Changelog That Just Says 'Updated Stuff' Isn't Closing Anything">
+
+An entry like "fixed some bugs" or "updated the docs" satisfies the letter of "keep a changelog" while providing none of its value. If you can't summarize what changed in one specific sentence — naming the file, the symptom, or the decision — the entry isn't done yet, the same way a spec with a vague quality word in it isn't done yet. Write every entry as if the reader has zero context, because eventually they will.
+
+</Pitfall>
+
+<Quiz question="A team's changelog has an entry reading: '## 2026-06-01 — [bug] Fixed login issue.' What's missing, and why does it matter?">
+<div>
+
+**It's missing the symptom, root cause, and specific fix — without those, the entry can't help anyone diagnose a similar problem later, which is the entire point of writing it down instead of just fixing it and moving on.**
+
+"Fixed login issue" tells a future reader that something was wrong with login and now it isn't — it gives them no way to recognize whether a new bug they're seeing is the same root cause resurfacing, or how it was actually resolved if they need to apply the same fix elsewhere. A useful entry names what happened (e.g., "session token expired mid-request, causing a 401 on page two of the form"), why it happened, and what specifically changed to fix it — following the same discipline this course's earlier lessons apply to specs and acceptance criteria: replace vague summary language with specific, checkable detail.
+
+</div>
+</Quiz>
+
+---
+
+## Up Next
+
+The capstone in Module 5 asks you to write all three artifacts — an instructions-file section, a quantified spec, and a workflow checklist — for the real recurring task you've been building toward since Module 1.

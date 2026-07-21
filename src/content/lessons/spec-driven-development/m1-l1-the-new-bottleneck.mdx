@@ -1,0 +1,90 @@
+---
+title: "The New Bottleneck: From Writing Code to Writing Intent"
+description: "Course overview: why AI coding agents shifted the real constraint from typing speed to specification quality, and the three artifacts this course teaches you to write."
+module: 1
+moduleTitle: "Why Spec-Driven, Why Now"
+lesson: 1
+duration: "10 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Who This Course Is For
+
+This course is for **product managers and engineering leads** who now direct AI coding agents to build real, shipped work — not toy demos. If you've handed an agent a task and gotten back something subtly wrong, three times over, because the agent guessed at what you meant, this course is about closing that gap permanently rather than re-explaining yourself every session.
+
+You don't need to write code yourself to take this course. You need to get good at writing the documents that tell someone — human or agent — exactly what "done" looks like.
+
+---
+
+## Why This Course Exists Right Now
+
+For most of software history, the bottleneck was implementation: someone had to sit down and type the code. AI coding agents collapsed that bottleneck. An agent can now scaffold a feature, follow a template across a dozen files, and update its own documentation, in minutes.
+
+What didn't go away is the cost of ambiguity. An agent that can build fast will build the *wrong* thing fast if your instructions leave room to guess. The constraint moved from "can we build it" to "did we specify it precisely enough that the agent didn't have to guess." That's not a smaller problem than writing code — for many teams it's now the bigger one.
+
+---
+
+## Three Artifacts, One Discipline
+
+This course is built around three concrete documents, not abstract principles:
+
+1. **The instructions file** (`CLAUDE.md`, `AGENTS.md`, or equivalent) — the standing operating contract an agent reads at the start of every session: conventions, verification habits, routing rules.
+2. **The spec (PRD)** — the document for one piece of work, precise enough that an agent can execute it without a follow-up question.
+3. **The verify-before-batch workflow** — the loop that catches a wrong interpretation on file one, before it's repeated across files two through ten.
+
+Every module works from real examples pulled from a working project's actual `CLAUDE.md`, changelog, and lessons-learned files — not hypothetical templates.
+
+---
+
+## Course Objectives
+
+By the end of this course, you will be able to:
+
+1. **Write an instructions file** that captures standing conventions and verification habits, and know what to leave out of it.
+2. **Turn a vague request into an executable spec** — quantified, referencing a canonical example, with acceptance criteria an agent can check itself.
+3. **Run the plan → verify-one → batch → confirm loop** so a wrong interpretation costs you one file, not ten.
+4. **Close the loop** by feeding outcomes back into living documentation, so the next session (or the next person) doesn't repeat the same correction.
+
+---
+
+## The Line We Keep Returning To
+
+> **An agent that builds fast on an ambiguous spec doesn't save you time — it just moves the correction to after the work is done, instead of before.**
+
+Every module in this course is about paying that cost earlier and once, in a document, instead of later and repeatedly, in corrections.
+
+<Pitfall title="More Words Is Not the Same as More Precision">
+
+It's tempting to think a longer, more detailed-sounding spec is automatically a better one. It isn't. A spec that says "make the terminology section comprehensive and well-organized" is longer than one that says "15–22 glossary terms, each expandable, with a search box" — but the second one is the one an agent can execute without guessing, because it's quantified and checkable. Precision, not length, is the goal of every artifact in this course.
+
+</Pitfall>
+
+<CodeLab title="Name Your Running Example">
+
+Before Module 2, pick one real, recurring task from your own work — a feature type you (or your team) asks an AI agent to build more than once. Examples: "add a new client project page," "generate a new lab activity," "add a new integration." Write down:
+
+1. What the task is, in one sentence
+2. The last time an agent got part of it wrong, and what specifically was ambiguous in the request that led to it
+
+Keep this — every module from here asks you to apply that module's technique to this same example, and the capstone in Module 5 asks you to write all three artifacts for it.
+
+</CodeLab>
+
+<Quiz question="A team lead says: 'Our agent keeps building things slightly wrong, so we just review more carefully after.' Based on this lesson, what's the more accurate framing of the problem?">
+<div>
+
+**Reviewing more carefully after the fact treats the symptom, not the cause — the fix belongs in the spec, before the agent starts, not in the review, after it's done.**
+
+The lesson's core claim is that AI agents moved the bottleneck from typing speed to specification precision. Catching wrong output after the fact still costs the same correction cycle — the agent already spent time building the wrong thing, and the reviewer still has to catch it. The teams that get real leverage from AI agents invest in exactly this course's three artifacts (instructions file, spec, verify-before-batch loop) so ambiguity gets removed before the agent starts, not found afterward.
+
+</div>
+</Quiz>
+
+---
+
+## Up Next
+
+Module 2 opens the first artifact: the instructions file. You'll see a real, in-production `CLAUDE.md` — the sections it actually contains, why each one is there, and what deliberately isn't in it.

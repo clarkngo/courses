@@ -1,0 +1,62 @@
+---
+title: "Capstone: Write All Three Artifacts"
+description: "Apply the full framework to one real, recurring task: an instructions-file section, a quantified spec with checkable acceptance criteria, and a verify-before-batch workflow."
+module: 5
+moduleTitle: "Capstone"
+lesson: 1
+duration: "20 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Bringing It Together
+
+Every module so far has asked you to apply one technique to the same recurring task you named back in Module 1. This capstone asks for all three artifacts at once, for that task — the same way a real team would actually use them: not as separate exercises, but as one connected system where each document makes the next one work.
+
+As a reminder of what each artifact is for:
+
+- The **instructions file** section holds the standing rule — the thing you'd otherwise repeat every session.
+- The **spec** makes this one task deterministic — quantified, referencing a canonical example, with acceptance criteria that don't require judgment to check.
+- The **workflow** is how you hand the spec to an agent without a wrong first guess turning into ten wrong files.
+
+---
+
+## The Line We Keep Returning To
+
+> **An agent that builds fast on an ambiguous spec doesn't save you time — it just moves the correction to after the work is done, instead of before.**
+
+Everything in this course is about paying that cost once, in writing, instead of repeatedly, in corrections.
+
+<CodeLab title="Capstone: Your Recurring Task, Fully Specified">
+
+Using the task you've carried through this course, produce all three documents. Keep each one short — a paragraph or a short list is enough; the goal is precision, not length.
+
+**1. Instructions-file section**
+Write the standing rule(s) an agent should follow every time this task comes up — a behavioral rule, a verification checklist, or a routing rule from Module 2. Include one line of reasoning for each rule, so someone can judge an edge case it doesn't explicitly cover.
+
+**2. The spec**
+Write the spec for one instance of this task. Find every vague quality word in your current mental version ("good," "comprehensive," "clean") and replace it with either a number/range or a named canonical reference — a real file, page, or example the agent should copy the structure of.
+
+**3. The workflow**
+Name the smallest first unit you'd apply this spec to, what you'd specifically check before batching the rest, and where the outcome gets recorded once it's confirmed (which changelog or knowledge-base file, and in what format).
+
+If you get stuck on any of the three, that's useful information — it usually means the task itself needs to be scoped smaller before it's ready to hand to an agent at all.
+
+</CodeLab>
+
+<Quiz question="After finishing the capstone, a colleague asks: 'Why does this need three separate documents instead of one long, thorough prompt?' What's the best answer, based on this course?">
+<div>
+
+**Each document solves a different failure mode, and a single prompt can't hold all three roles at once: the instructions file prevents repeating standing rules every session, the spec removes ambiguity from one specific piece of work, and the workflow catches a wrong interpretation before it's repeated across many files — collapsing them into one prompt means losing whichever role gets crowded out.**
+
+A single long prompt tends to mix standing conventions (which should persist across every future session) with task-specific detail (which is only relevant this one time) with process (how to hand off and verify the work) — and because nothing distinguishes the three, the standing conventions get re-typed every time, the task-specific detail gets buried in prose instead of being checkable, and there's no explicit point at which a first attempt gets verified before being applied broadly. Splitting them mirrors why this course covers them as three separate artifacts rather than "write a really good prompt": each has a different lifespan and a different job.
+
+</div>
+</Quiz>
+
+---
+
+## Course Complete
+
+You've now built the three-part discipline this course is centered on: a standing instructions file that grows only when a real gap shows up twice, a spec precise enough that an agent can't reasonably guess wrong, and a workflow that catches a bad guess on file one instead of file ten. Apply it to the next real task in front of you — that's where it actually pays off.

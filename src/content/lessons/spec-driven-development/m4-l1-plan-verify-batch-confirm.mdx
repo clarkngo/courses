@@ -1,0 +1,86 @@
+---
+title: "Plan → Verify One → Batch → Confirm"
+description: "The workflow loop that catches a wrong interpretation on the first file instead of the tenth — when to use plan mode, and when it's overhead."
+module: 4
+moduleTitle: "The Spec-Driven Workflow Loop"
+lesson: 1
+duration: "11 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Even a Good Spec Gets Misread Once
+
+Modules 2 and 3 covered the two documents. This module covers what happens the moment you actually hand one to an agent — because even a precise, quantified spec can still be misinterpreted on the first attempt. The workflow's job is to make sure that first misinterpretation costs you one file, not ten.
+
+---
+
+## Verify on One Before You Batch
+
+The single highest-leverage habit in this whole course is also the simplest: when a change needs to be applied across many files, apply it to **one** first, confirm it's exactly right, and only then say "do the rest."
+
+A real project's workflow notes describe the pattern plainly:
+
+> "Make a change on the reference file first, confirm it's correct, then say 'do it for the rest.' Batching before verification means 10 wrong files instead of 1. The verification step costs almost nothing."
+
+This is why the sequence matters more than the individual steps: "apply to Lab 01 → verify → do it for labs 02–10" turns a possible ten-file mistake into, at worst, a one-file mistake plus a quick correction. The cost of checking one file is nearly zero; the cost of un-doing nine wrong ones is not.
+
+---
+
+## Plan Mode: For Ambiguous Scope, Not Every Task
+
+Before touching code at all, there's a lighter-weight gate: explicitly asking to plan first, rather than implement immediately. This earns its keep specifically when:
+
+- The scope isn't fully clear yet
+- The change touches many files at once
+- A structural decision is being made that's expensive to undo later (a folder name, a schema, a public interface)
+
+It does **not** earn its keep for a small, well-understood change — a CSS tweak, a typo fix, bumping a threshold. Treating every single change as worthy of a planning pass is its own kind of overhead; the discipline is knowing which category a given task falls into *before* you start, not defaulting to one mode always.
+
+---
+
+## Confirm, Then Move On
+
+The loop closes with an explicit confirmation step — not a silent assumption that the batch went fine. This doesn't need to be elaborate. Short, direct responses are enough to keep momentum: a one-line "looks good, do the rest" carries just as much information as a paragraph would, and is faster to give.
+
+The full loop, end to end:
+
+1. **Plan** — only if scope is genuinely unclear or the change is structural.
+2. **Verify one** — apply the spec to a single reference case.
+3. **Batch** — apply the confirmed pattern to the remaining cases.
+4. **Confirm** — a short, explicit check that the batch matches the verified reference.
+
+<Pitfall title="Skipping Straight to Batch Feels Faster and Almost Never Is">
+
+The instinct to say "just do all ten now" instead of "do one, let me check" feels like it saves a round trip. It only saves time when the first attempt happens to be right — and if your spec had any ambiguity at all, the odds of that are lower than they feel in the moment. The round trip to verify one file is nearly free; discovering the same mistake nine times over is not.
+
+</Pitfall>
+
+<CodeLab title="Apply the Loop to Your Recurring Task">
+
+Using the same task from earlier modules, write out what "verify one" would concretely mean for it. Specifically:
+
+1. What's the smallest possible unit you could apply the change to first (one file, one record, one screen)?
+2. What would you actually check before saying "do the rest" — name the specific things you'd look at, not just "make sure it's right"?
+
+If your task genuinely can't be broken into a small first unit, that's worth noting — it may mean the task needs to be scoped smaller before it's handed to an agent at all.
+
+</CodeLab>
+
+<Quiz question="An engineering lead needs the same refactor applied across 40 files with an identical pattern. They're confident the pattern is simple and want to save time. What does this lesson recommend?">
+<div>
+
+**Apply the refactor to one file first, confirm it's exactly right, and only then batch the remaining 39 — confidence in the pattern's simplicity doesn't remove the value of the check, because the check costs almost nothing and a wrong pattern across 40 files costs far more to unwind than across one.**
+
+The lesson's point isn't that verify-one is only needed when you're unsure — it's that the check is so cheap relative to the downside that skipping it is rarely worth the marginal time saved, even when the change feels simple. "Simple and I'm confident" is exactly the situation where a subtle miss (a variable name that's slightly different in file 12, an edge case only present in three of the forty files) is most likely to go unnoticed until it's already been applied everywhere.
+
+</div>
+</Quiz>
+
+---
+
+## Up Next
+
+The final lesson in this module covers what happens after the batch is confirmed: how the outcome gets written back into your living documentation, so the next session — or the next person — inherits the correction instead of repeating it.

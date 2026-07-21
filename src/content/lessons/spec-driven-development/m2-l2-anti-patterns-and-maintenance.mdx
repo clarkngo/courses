@@ -1,0 +1,59 @@
+---
+title: "Anti-Patterns and Maintenance"
+description: "The signal that tells you when to add a new rule to your instructions file, the anti-pattern of letting it rot, and a real example of a checklist that was born from a repeated bug."
+module: 2
+moduleTitle: "The Instructions File"
+lesson: 2
+duration: "10 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## The Signal: You Said It Twice
+
+The single clearest sign that something belongs in your instructions file is that **you've already given the same correction more than once.** If you find yourself typing a near-identical instruction in a second session that you already gave in a first, that's not a coincidence — it's a gap in the standing contract.
+
+One real project's lessons-learned notes capture this directly:
+
+> "When you find yourself giving Claude the same instruction twice across sessions, that's a signal to add it to CLAUDE.md."
+
+This turns instructions-file maintenance from a scheduled chore into an event-driven habit: it updates exactly when a real gap shows up, not on a calendar.
+
+---
+
+## A Real Example: A Checklist Born From Repeated Bugs
+
+The same project's `CLAUDE.md` contains a "JS State Pattern Checklist" — six specific checks to run after adding any interactive state variable: does `saveState` serialize it, does `loadState` restore it, is the UI re-rendered after load, does initialization order guarantee `loadState` runs before anything calls `saveState`, are default-active elements seeded correctly, does a badge count match the underlying array length.
+
+That checklist didn't appear from a template. It accumulated one bug at a time — a changelog entry like *"objectives overlay no longer resets on refresh; `checkReflectionLock()` was missing after `loadState()`"* is exactly the kind of recurring root cause that, once it shows up a second time in a different file, gets promoted from a one-off fix into a permanent checklist item. The instructions file is downstream of the bug history, not a guess made in advance of it.
+
+---
+
+## Two Anti-Patterns to Watch For
+
+**Letting it rot.** An instructions file that hasn't changed in months, on an actively developed project, usually means real corrections are happening in chat instead of being captured — which guarantees they'll be repeated. If you can't remember the last time you added a line to it, that's worth checking, not a sign it's complete.
+
+**Overloading it with one-off notes.** The opposite failure: treating the instructions file as a dumping ground for every observation from every session, including things that were only true once. This is why a separate living-knowledge-base — a lessons-learned folder, categorized by topic (bug fixes, feature patterns, UX decisions, prompting techniques, workflow habits) — matters as much as the instructions file itself. The instructions file holds the *current, standing* rule; the knowledge base holds the *history and reasoning* behind it. Mixing the two makes the instructions file bloated and the history hard to search.
+
+<Pitfall title="A Rule Without a Reason Can't Be Judged at the Edges">
+
+"Always require 100% completion on interactive checklists" is a rule. But without the reasoning behind it — that partial-completion thresholds kept getting silently loosened during debugging, defeating the point of the checklist — an agent (or a new team member) has no way to judge whether an exception is reasonable in a new situation. Where possible, a rule in an instructions file should carry a one-line reason, not just an instruction. The reason is what lets someone extend the rule correctly to a case it doesn't explicitly cover.
+
+</Pitfall>
+
+<Quiz question="Two months into a project, an engineering lead notices the instructions file hasn't changed since week one, even though the team has corrected the agent's behavior in chat several times on similar issues. What does this suggest?">
+<div>
+
+**The corrections are being repeated instead of captured — each one is being fixed in the moment but not promoted into the standing instructions file, so the same class of mistake keeps recurring.**
+
+The lesson's core signal is: if you've given the same correction more than once, that's evidence the instructions file has a gap. A file that hasn't grown despite repeated, similar corrections in chat is a sign that the team is absorbing the cost of re-explaining instead of paying it once in the document. The fix isn't a scheduled review — it's treating "I've said this before" as the trigger to add the rule immediately, the next time it happens.
+
+</div>
+</Quiz>
+
+---
+
+## Up Next
+
+Module 3 moves from the standing instructions file to the second artifact: the spec for one specific piece of work. You'll see a real spec — the exact structure the project requires for one repeatable feature type — and why its precision comes from being quantified, not from being long.

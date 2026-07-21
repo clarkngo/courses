@@ -1,0 +1,81 @@
+---
+title: "What a Spec Needs So an Agent Can Execute It"
+description: "A real, in-use spec for a repeatable feature type — exact tab counts, required content per section, a canonical reference file — and why quantified beats descriptive."
+module: 3
+moduleTitle: "Writing a Spec an Agent Can Execute"
+lesson: 1
+duration: "13 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## What a Spec Is For
+
+A spec (or PRD) exists to make a repeatable piece of work **deterministic** — so that the tenth time someone asks for it, the outcome doesn't depend on who's asking, what mood the agent is in, or how the request happened to be phrased that day. If a spec still leaves room for two reasonable-but-different interpretations, it isn't finished yet, no matter how much it explains the *why*.
+
+This is the artifact most teams get wrong first, because a vague spec still *feels* like it says enough — right up until an agent builds something technically responsive to it and wrong in the details.
+
+---
+
+## A Real Spec: Building a New Industry Primer
+
+One project's `CLAUDE.md` contains a full spec for adding a new "industry primer" page — a recurring feature type the team builds repeatedly. It's worth seeing in full because every part of it is doing specific work:
+
+**A canonical reference file.** "Copy the structure from `primer/insurance/index.html` — it is the reference implementation. Do not copy from ecommerce, edtech, or ai-infrastructure (they use an older system)." Instead of describing what "good" looks like in prose, the spec points at one file that already *is* good, and explicitly rules out the near-misses that would otherwise seem like reasonable references.
+
+**Exact structure, not approximate structure.** The spec requires exactly 9 tabs, in a fixed order, each with a named section id (`tab-overview`, `tab-terminology`, and so on). Not "several tabs covering the key areas" — nine, in this order, with these ids.
+
+**Quantified content per section.** Every section has a number attached: 6 sub-sector cards, 15–22 glossary terms, 3–5 player-company groups, 7 technology-stack layers, 3 workflows with exactly 5 steps each, 6 trend cards, 5 pain-point cards, 8 historical-timeline cards. None of these are "a good number" — they're specific ranges an agent can count against.
+
+**Explicit rules, not implied ones.** "No apostrophes in JS strings — use `"don" + "t"` or rephrase." This looks like a strange, narrow rule until you know it exists because apostrophes inside single-quoted JS strings had previously broken pages in production. It's written as an absolute rule precisely so the agent never has to rediscover the failure mode.
+
+---
+
+## Why Quantified Beats Descriptive
+
+Compare two ways of specifying the same requirement:
+
+> "Add a comprehensive glossary section with good coverage of the industry's terminology."
+
+versus
+
+> "15–22 expandable glossary terms, each with a search box that filters by term text."
+
+The first sentence is *reasonable* — a competent agent could satisfy it several different, all-plausible ways. That's exactly the problem: "several plausible ways" means the outcome isn't determined by the spec, it's determined by which way the agent happened to guess. The second sentence has exactly one way to be wrong: fewer than 15, more than 22, or no working search. That's a spec you can actually execute against and check.
+
+The lesson generalizes past this one example: wherever your spec uses a word like "comprehensive," "good," "appropriate," or "sufficient," that's the exact spot to replace with a number, a range, or a named reference file.
+
+<Pitfall title="A Spec That Only You Could Execute Isn't Finished">
+
+It's easy to write a spec that makes complete sense to the person who wrote it, because they're filling gaps with context in their own head. The test for whether a spec is actually finished: could someone (or some agent) with zero prior context on this project execute it correctly, with no follow-up questions? If the honest answer requires "well, they'd probably ask me first," the spec still has ambiguity that needs to move from your head onto the page.
+
+</Pitfall>
+
+<CodeLab title="Quantify Your Own Spec">
+
+Take the recurring task from Module 1 and Module 2. Write down every place your current mental spec for it uses a vague quality word ("good," "comprehensive," "consistent," "clean"). For each one, replace it with:
+
+1. A specific number or range, OR
+2. A named canonical reference (an existing file, page, or example that already does it correctly)
+
+If you can't find a number or a reference for a given requirement, that's worth flagging — it may genuinely require judgment, which Module 3's next lesson addresses directly.
+
+</CodeLab>
+
+<Quiz question="A PM writes a spec for a new dashboard widget: 'Show the key metrics in a clean, readable layout.' An agent builds it, and it's technically responsive to the sentence but not what the PM wanted. What's the most useful fix?">
+<div>
+
+**Replace 'key metrics' and 'clean, readable layout' with an exact list of which metrics, in what order, and a reference to an existing widget whose layout should be copied — the same fix the primer spec uses: quantify counts and point at a canonical example.**
+
+"Key metrics" and "clean, readable" are both quality words with no single correct interpretation — an agent has to guess which metrics count as "key" and what "clean" means visually, and any technically-defensible guess satisfies the sentence as written. The fix isn't to add more descriptive prose about what clean means; it's to replace the ambiguous words with something checkable: a named list of metrics, and either an explicit layout spec or a link to an existing widget that already looks the way the PM wants. This is the same move the primer spec makes with "15–22 glossary terms" and "copy `primer/insurance/index.html`."
+
+</div>
+</Quiz>
+
+---
+
+## Up Next
+
+The next lesson covers the other half of a usable spec: acceptance criteria written so the agent can check its own work, rather than needing you to eyeball whether it "looks right."

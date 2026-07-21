@@ -26,6 +26,8 @@ A self-paced course platform built with [Astro](https://astro.build), Tailwind C
 | MEAN Full Stack Development | ✅ Available |
 | Introduction to Hydraulic Hose and Fittings | ✅ Available |
 | Vibe Coding for Future Aviators | ✅ Available |
+| Systems Thinking for Product & Engineering Teams | ✅ Available |
+| Spec-Driven Development: Writing for AI Agents | ✅ Available |
 
 ## Stack
 
