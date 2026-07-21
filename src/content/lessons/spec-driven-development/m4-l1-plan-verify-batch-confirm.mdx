@@ -81,6 +81,37 @@ The lesson's point isn't that verify-one is only needed when you're unsure — i
 
 ---
 
+## Example: `plan.md`
+
+A short planning note written before a multi-file batch — enough to fix the approach without being a project in itself.
+
+```markdown
+# Plan: Roll Out New Onboarding Checklist Step to All Clients
+
+## Scope
+40 existing client pages need a 9th checklist step added
+("Data Migration Confirmed") between steps 7 and 8.
+
+## Verify on
+`clients/acme-corp/index.html` first — it's the most recently
+built page and closest to the current spec.
+
+## Check before batching
+- [ ] New step renders in the correct position (between 7 and 8, not appended)
+- [ ] Step numbering for steps 8–9 updated, not just the new step inserted
+- [ ] Status badge defaults to "Not Started" on existing clients
+- [ ] `saveState`/`loadState` both updated to include the new step key
+
+## Batch
+Apply to the remaining 39 client pages only after Acme Corp is confirmed.
+
+## Log outcome in
+`changelog/clients.md` (one entry covering all 40) + root `CHANGELOG.md`
+one-liner.
+```
+
+---
+
 ## Up Next
 
 The final lesson in this module covers what happens after the batch is confirmed: how the outcome gets written back into your living documentation, so the next session — or the next person — inherits the correction instead of repeating it.
