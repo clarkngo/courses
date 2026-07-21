@@ -1,0 +1,60 @@
+---
+title: "Acceptance Criteria the Agent Can Verify Itself"
+description: "Turning 'make sure it works' into a checklist of literal, executable checks — using a real post-creation checklist and syntax-check command as the model."
+module: 3
+moduleTitle: "Writing a Spec an Agent Can Execute"
+lesson: 2
+duration: "11 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Two Kinds of "Done"
+
+There's a version of "done" that requires a human to look at the result and form a judgment: *does this feel right?* And there's a version of "done" that's a pass/fail check anyone — or any agent — can run without judgment: *did this specific command exit with an error?*
+
+A spec is only as strong as its weakest acceptance criterion. If nine out of ten checks are executable and the tenth is "make sure it looks good," the agent will satisfy the nine easily and guess at the tenth — and the tenth is usually where the actual disagreement lives.
+
+---
+
+## A Real Example: Post-Creation Checklist as Literal Commands
+
+The industry-primer spec from the previous lesson ends with a checklist, and every item on it is written as something you can actually run or directly observe, not something you have to judge:
+
+- **"JS syntax check passes"** — with the literal shell command spelled out: extract the `<script>` block and pipe it to `node --check`. Not "make sure the JavaScript works" — a specific command with a specific pass/fail exit code.
+- **"Add industry card to the grid"** — with the exact attributes required (`data-industry`, `data-search`, a status badge, a progress label reading `"8 / 8 sections"`).
+- **"Update the detailed changelog"** — naming the exact file and what it must contain (all tabs, terminology count, workflow titles).
+- **"Update the root changelog with a one-line summary."**
+
+Compare this to the project's more general post-write checklist, which applies to *any* HTML file: JS syntax check passes, page loads without console errors (checked via console log output, not a guess), key interactive elements are visible (checked via screenshot), changelog updated, lessons-learned updated if a new pattern was confirmed. Every single item names either a command to run or an artifact to point at — nothing on the list is "eyeball it and see."
+
+---
+
+## The Test: Could a Different Agent Verify This Without You?
+
+A useful way to audit your own acceptance criteria: imagine handing the finished checklist to a second agent — or a different reviewer — who has no context beyond the checklist itself. Could they mark each item pass or fail using only what's written? If an item requires them to ask you "does this count?", it's not yet a checkable criterion — it's a placeholder for one.
+
+This is exactly why "run `node --check` on the extracted script block" survives as a criterion and "make sure the JavaScript works" doesn't: the first can be checked by anyone with the command; the second can only be checked by someone who already knows what "working" is supposed to look like.
+
+<Pitfall title="Subjective Criteria Don't Disappear — They Just Move to Review">
+
+Writing "looks good" as an acceptance criterion doesn't eliminate the judgment call — it just delays it to a manual review step, after the agent has already spent time building against an unclear target. If a requirement genuinely needs a human eye (visual polish, tone, prioritization judgment) say so explicitly and route it to a person — don't disguise it as a checkable item the agent could satisfy on its own. The point isn't to eliminate every subjective decision; it's to stop pretending subjective decisions are objective ones.
+
+</Pitfall>
+
+<Quiz question="A spec's acceptance criteria include: 'Confirm the new API endpoint is properly documented.' What's the issue, and how would this course's approach fix it?">
+<div>
+
+**"Properly documented" is a judgment call with no fixed pass/fail definition — it should be replaced with a literal, checkable requirement, like a specific doc file existing at a specific path with a specific set of required fields (endpoint, method, request/response schema, example call), the same way the primer spec replaces vague checks with exact commands and named files.**
+
+As written, one agent's idea of "properly documented" might be a single sentence; another's might be a full OpenAPI block — both could claim to satisfy the criterion, because it never said which. The fix mirrors the lesson's core example: name the exact file, the exact required sections, and ideally a command or script that can confirm they're present (e.g., a doc-lint check), so "done" is something anyone — human or agent — can verify without guessing at what "properly" was supposed to mean.
+
+</div>
+</Quiz>
+
+---
+
+## Up Next
+
+Module 4 brings the instructions file and the spec together into a workflow: how to catch a wrong interpretation on the first file, before it's repeated across the next nine.

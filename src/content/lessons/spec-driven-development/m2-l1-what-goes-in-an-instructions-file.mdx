@@ -1,0 +1,74 @@
+---
+title: "What Goes In an Instructions File"
+description: "A real, working CLAUDE.md broken down section by section — behavioral rules, verification checklists, debugging order, and routing tables — and why each category earns its place."
+module: 2
+moduleTitle: "The Instructions File"
+lesson: 1
+duration: "12 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## The Instructions File Is Not Documentation
+
+A `CLAUDE.md` or `AGENTS.md` file isn't a README explaining what the project does — it's a **standing operating contract** the agent reads at the start of every session, the same way a new contractor reads onboarding material before touching their first ticket. Documentation describes the system. An instructions file changes the agent's *behavior* going forward.
+
+That distinction matters because it tells you what to write. A README sentence like "this project uses Astro" belongs in documentation — an agent can discover that by reading `package.json`. A rule like "always run a JS syntax check after editing any HTML file with a `<script>` block" belongs in the instructions file, because it's a behavior the agent needs to repeat every time, and nothing in the code forces it to remember.
+
+---
+
+## A Real Instructions File, Section by Section
+
+Here's what one working project's `CLAUDE.md` actually contains, and why each section is there:
+
+**Prompting guidance.** A rule telling the agent to proactively flag ambiguous prompts and suggest a clearer rephrasing — with explicit trigger conditions (vague spatial terms like "move it to the top," bundled multi-part requests, vague completion criteria like "fix it"). This is a *behavioral* rule: it changes how the agent responds to input, not just what it builds.
+
+**Post-write verification checklists.** After writing any HTML file: run a JS syntax check with a specific shell command, confirm the page loads without console errors, confirm key elements are visible, update the changelog, update lessons-learned if a new pattern emerged. Every item is a concrete, repeatable action — not "make sure it works."
+
+**Debugging order.** A fixed sequence for one specific failure mode (a blank canvas): check if the script parsed, check if expected globals exist, check console logs, manually test in isolation, *only then* investigate timing issues. This exists because agents (and people) tend to jump straight to the hardest hypothesis first. Writing the order down forces the cheap checks to happen before the expensive ones.
+
+**Routing tables.** A table mapping every top-level folder to the specific changelog file that documents changes to it. This offloads a decision (`which file do I update?`) that would otherwise require judgment, every single time, into a lookup.
+
+Notice what these four categories have in common: each one is a rule the agent would otherwise have to be told again, in-session, every time the situation recurred.
+
+---
+
+## What Doesn't Belong
+
+Just as important as what goes in is what stays out:
+
+- **In-progress task state** — what you're working on right now belongs in a todo list or a plan file, not the instructions file. It goes stale the moment the task finishes.
+- **One-off session notes** — a note relevant to a single afternoon's work doesn't belong in a document read at the start of every future session.
+- **Anything derivable from the code itself** — if an agent can find it by reading the file, it doesn't need to be told.
+
+A useful test: if you imagine deleting this line in six months, would anything future break? If the answer is "no, it was only ever relevant that one day," it doesn't belong here.
+
+<CodeLab title="Draft Three Sections for Your Instructions File">
+
+Using the recurring task you named in Module 1, draft three short sections for an instructions file covering that task:
+
+1. **One behavioral rule** — something the agent should always do or check before you'd have to ask.
+2. **One verification checklist** — the concrete, repeatable steps that confirm the task is actually done, not just attempted.
+3. **One routing rule** — if your task touches multiple files or folders, where does the record of "this changed" go?
+
+Keep these — Module 3 builds the spec for the same task, and Module 5's capstone combines all three artifacts.
+
+</CodeLab>
+
+<Quiz question="A teammate wants to add this line to the instructions file: 'Working on the checkout redesign this week — hold off on touching the cart component.' Should it go in CLAUDE.md?">
+<div>
+
+**No — this is in-progress task state with a natural expiration date, not a standing rule. It belongs in a todo list, a plan file, or a Slack message, not a document the agent reads at the start of every future session.**
+
+The instructions file is for behaviors, checklists, and routing rules that stay true indefinitely — the kind of thing you'd otherwise have to repeat every session. "Hold off this week" is true for exactly one week; leaving it in CLAUDE.md means it's still there, silently wrong, the following month. If the underlying concern is durable — e.g. "the cart component has a fragile state pattern, always run the JS State Pattern Checklist before editing it" — *that* general rule belongs in the instructions file. The temporary "this week" framing does not.
+
+</div>
+</Quiz>
+
+---
+
+## Up Next
+
+The next lesson covers the other half of maintaining an instructions file: how it avoids becoming stale or bloated, and the specific signal that tells you it's time to add a new rule.
