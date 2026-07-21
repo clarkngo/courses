@@ -1,0 +1,145 @@
+---
+title: "Bonus: Put Your Project Online with GitHub Pages"
+description: "What GitHub and GitHub Pages actually are, why a live link beats a saved file, and the exact steps to publish an HTML build — or a React one — for free."
+module: 3
+moduleTitle: "Day 3 — Ship It"
+lesson: 4
+duration: "30 min (optional)"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## 🎁 This One's Optional
+
+Everything that matters for this workshop already happened — you built, you tested, you shipped a demo. This lesson is for after today, for anyone who wants their project to keep existing as a real link on the internet instead of a file sitting on one laptop. No pressure to do this live; read it now, try it whenever.
+
+---
+
+## 🤔 What Even Is GitHub?
+
+Two new words are about to show up a lot, so let's define them plainly before touching anything:
+
+**GitHub** is a website that stores your project's files online — think of it like the Google Drive folder you've been saving into all week, except it's built specifically for code, and it automatically keeps a full history of every version, instead of you manually typing `_v1`, `_v2` into filenames.
+
+A **repository** (everyone just says "repo") is one project's folder on GitHub. One repo = one project.
+
+**GitHub Pages** is a free feature that takes the files sitting in a repo and turns them into an actual website — with a real, clickable web address, like `https://yourname.github.io/your-project/`.
+
+<svg viewBox="0 0 720 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="From a file on your laptop, to a GitHub repository, to GitHub Pages turned on, to a live public URL anyone can open.">
+  <defs>
+    <marker id="hostarrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1d4ed8" />
+    </marker>
+  </defs>
+  <g font-family="system-ui, sans-serif">
+    <rect x="10" y="60" width="150" height="80" rx="12" fill="#1d4ed8" />
+    <text x="85" y="95" text-anchor="middle" fill="white" font-size="13" font-weight="700">Your saved</text>
+    <text x="85" y="113" text-anchor="middle" fill="white" font-size="13" font-weight="700">.html file</text>
+
+    <path d="M160,100 L195,100" stroke="#1d4ed8" stroke-width="2.5" marker-end="url(#hostarrow)" />
+
+    <rect x="195" y="60" width="150" height="80" rx="12" fill="#2563eb" />
+    <text x="270" y="95" text-anchor="middle" fill="white" font-size="13" font-weight="700">Upload to a</text>
+    <text x="270" y="113" text-anchor="middle" fill="white" font-size="13" font-weight="700">GitHub repo</text>
+
+    <path d="M345,100 L380,100" stroke="#1d4ed8" stroke-width="2.5" marker-end="url(#hostarrow)" />
+
+    <rect x="380" y="60" width="150" height="80" rx="12" fill="#2563eb" />
+    <text x="455" y="95" text-anchor="middle" fill="white" font-size="13" font-weight="700">Turn on</text>
+    <text x="455" y="113" text-anchor="middle" fill="white" font-size="13" font-weight="700">GitHub Pages</text>
+
+    <path d="M530,100 L565,100" stroke="#1d4ed8" stroke-width="2.5" marker-end="url(#hostarrow)" />
+
+    <rect x="565" y="60" width="145" height="80" rx="12" fill="#1d4ed8" />
+    <text x="637" y="88" text-anchor="middle" fill="white" font-size="12" font-weight="700">A live URL,</text>
+    <text x="637" y="106" text-anchor="middle" fill="white" font-size="12" font-weight="700">free, forever</text>
+    <text x="637" y="122" text-anchor="middle" fill="#dbeafe" font-size="9">anyone can open it</text>
+  </g>
+</svg>
+
+---
+
+## 🛫 Why Bother?
+
+Right now, your project only opens for someone who has the actual file *and* knows how to open an HTML file — that's a real barrier for a parent, a friend, or a potential employer. A live link works instantly on any phone, laptop, or browser, with nothing to download.
+
+It's also free, permanent, and it's the exact same infrastructure real companies and open-source projects run on. A working link in a portfolio or an internship application says "I built and shipped something real" far louder than a screenshot.
+
+---
+
+## 📄 Section 1: Hosting Your HTML Project
+
+This is the one that applies to almost everyone in the room — every project you built this week with Gemini Canvas is a single, self-contained HTML file. That makes hosting it genuinely simple: no build step, no terminal required.
+
+<CodeLab title="Publish an HTML File to GitHub Pages">
+
+1. Go to [github.com](https://github.com) and create a free account, if you don't already have one.
+2. Click **New repository**. Give it a short name (like `clear-the-runway`), set it to **Public**, and create it.
+3. Inside the new repo, click **Add file → Upload files**, and drag in your saved `.html` file.
+4. Rename the uploaded file to exactly **`index.html`** — GitHub Pages automatically serves whatever file is named `index.html` as your site's homepage. This step is easy to miss and nothing loads without it.
+5. Go to the repo's **Settings → Pages**. Under "Build and deployment," set Source to **Deploy from a branch**, branch to **main**, folder to **/ (root)**, then **Save**.
+6. Wait about a minute, then refresh that same Settings → Pages screen — your live URL appears at the top, something like `https://yourname.github.io/clear-the-runway/`.
+
+Open that link. That's your project, live, on the actual internet.
+
+</CodeLab>
+
+<Pitfall title="Forgetting to Rename the File to index.html">
+
+If you upload `maria_day2_v2.html` and leave it named that, your live URL will show a blank error page — GitHub Pages doesn't know to look for it. It specifically looks for a file named `index.html` at the root of the repo. Rename before you turn Pages on, and this disappears as a problem.
+
+</Pitfall>
+
+---
+
+## ⚛️ Section 2: Hosting a React Project
+
+Skip this section unless you know your project was built as a React app rather than a single HTML file — this mostly applies if you're one of the Software Engineering majors who went further with Canvas this week. A React project isn't one file; it's a small collection of files that has to be **built** — compiled down into plain HTML, CSS, and JavaScript — before it can go live anywhere. That build step is the whole difference from Section 1.
+
+| | Plain HTML (most projects this week) | React project |
+|---|---|---|
+| What you have | One `.html` file, ready to open | Many source files, need a build step |
+| To publish | Upload the file directly | Build it first, then publish the *output* |
+| Terminal needed? | No | Yes |
+
+<CodeLab title="Publish a React App to GitHub Pages">
+
+1. Make sure your project is already pushed to a GitHub repo (same account/repo setup as Section 1, but using `git` instead of drag-and-drop — ask Gemini for the exact `git init` / `git push` commands for your operating system if you haven't done this before; that's a completely normal use of the loop you've practiced all week).
+2. Install the deploy helper: `npm install --save-dev gh-pages`
+3. Open `vite.config.js` and add your repo name as the `base` path:
+   ```
+   export default { base: '/your-repo-name/' }
+   ```
+4. In `package.json`, add a deploy script:
+   ```
+   "scripts": { "deploy": "vite build && gh-pages -d dist" }
+   ```
+5. Run `npm run deploy` in your terminal. This builds your app and pushes the finished output to a `gh-pages` branch on your repo.
+6. In the repo's **Settings → Pages**, set Source to **Deploy from a branch**, branch to **gh-pages**, folder to **/ (root)**, then **Save**.
+7. Your live URL appears the same way as Section 1: `https://yourname.github.io/your-repo-name/`.
+
+</CodeLab>
+
+<Pitfall title="A Blank White Page After Deploying">
+
+This is the single most common React-on-GitHub-Pages mistake: the page loads but shows nothing. Almost always, it's the missing `base` path in step 3 — without it, your app looks for its files at the root of the domain, but GitHub Pages serves your project from a subfolder (`/your-repo-name/`). If you hit a blank page, that's the first thing to check.
+
+</Pitfall>
+
+<Quiz question="You upload your HTML file to a new GitHub repo, turn on GitHub Pages, and visit your new URL — but it shows a 404 error instead of your project. You didn't touch the React steps at all. What's the most likely cause?">
+<div>
+
+**The uploaded file isn't named exactly `index.html`.**
+
+For a plain HTML project, GitHub Pages looks specifically for a file called `index.html` at the root of the repo to know what to serve as your homepage. If your file is still named something like `maria_day2_v2.html`, GitHub Pages has nothing to show — rename it to `index.html` and the same URL starts working within a minute.
+
+</div>
+</Quiz>
+
+---
+
+## ⏭️ Up Next
+
+That's the whole workshop. You've got a working project, a way to describe what you want and get real code back, a lens for who you're building for, a way to debug when it breaks, real feedback you acted on, and now — if you want it — a permanent, public home for what you built. Keep looping.
