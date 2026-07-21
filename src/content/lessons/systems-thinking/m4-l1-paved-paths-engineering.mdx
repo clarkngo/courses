@@ -1,0 +1,69 @@
+---
+title: "Paved Paths: Systems Thinking in Engineering"
+description: "How Netflix turned repeated engineering problems into shared, reusable infrastructure — and why that same structure is what lets AI agents build safely."
+module: 4
+moduleTitle: "Systems Thinking at Netflix Scale"
+lesson: 1
+duration: "20 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## From Local Speed to Shared Infrastructure
+
+For years, a common pattern at fast-moving engineering organizations — Netflix included — was for individual teams to build their own tech stack, tuned exactly to their own problem. It's a reasonable local decision: your own stack moves at your own speed, with no dependency on another team's roadmap.
+
+At the scale of one team, this looks like pure upside. At the scale of an entire engineering org, it's the reinforcing loop from [Module 3](/systems-thinking/lessons/m3-l1-feedback-loops-and-leverage-points): more teams building their own stacks means more incompatible systems, more duplicated effort solving the same underlying problem, and more institutional knowledge that lives only in one team's heads instead of anywhere documented or shared.
+
+Netflix's response, as described by Chief Product and Technology Officer Elizabeth Stone, has been a deliberate shift in what the org hires and builds for: rather than only accumulating narrow subject-matter specialists per team, Netflix has been actively hiring for **distributed systems and infrastructure** talent whose job is to abstract the *repeated* problem across teams into a shared, reusable capability — a "paved path."
+
+---
+
+## What a Paved Path Actually Is
+
+A paved path is a shared capability, built once by a platform team, that solves a common underlying problem well enough that individual teams get roughly **80% of the way** to their specific need just by using it — with the option to customize the remaining 20%, rather than build the whole thing from scratch.
+
+The name is deliberate: it's a path that's easier to walk than the alternative, not a wall that blocks the alternative. A paved path that teams are forced onto by mandate, while the unpaved route stays genuinely faster, will be resented and worked around. A paved path that's simply the easiest way to get the job done gets adopted voluntarily — which is the only way it actually interrupts the reinforcing loop.
+
+<CodeLab title="Recognizing a Paved-Path Candidate">
+
+Run a repeated organizational problem through the lenses you already have from Module 2 and Module 3:
+
+1. **The three strategic questions:** Is this the same underlying need showing up across multiple teams? Would a shared version genuinely serve more than one team, not just the one asking?
+2. **The leverage-point lens:** Is the current state a rules- or paradigm-level gap (no shared default exists) rather than just a parameter-level one (one team is simply understaffed)?
+
+If a problem clears both — the same need, recurring, at a structural level, not a one-team staffing issue — it's a paved-path candidate. If it's genuinely specific to one team's context and unlikely to recur elsewhere, building it locally is still the right call. Not everything should become a platform.
+
+</CodeLab>
+
+---
+
+## What Gets Encoded Into the Path
+
+The deeper reason paved paths matter isn't just development speed — it's that they're where an organization encodes the standards it can't rely on every individual team to remember under deadline pressure: security practices, identity and access rules, a single source of truth for data, and quality standards. Building these into the shared capability means a team using the paved path gets them by default, without needing to be the team that remembers to ask for a security review before shipping — closing exactly the gap that produces the Fixes That Fail archetype from Module 3.
+
+This has taken on new urgency as AI tools change who's doing the building. When both human engineers *and* autonomous AI agents can generate working code quickly, the organization can no longer rely on "the person building this will remember the standards" as its only safeguard — because increasingly, the thing doing the building isn't a person who was ever trained on those standards in the first place. A paved path that has security, identity, and quality built in in makes the safe choice the *default* choice, for a human moving fast or an agent moving faster, instead of an extra step either one might skip.
+
+<Pitfall title="Building a Platform Nobody Asked to Use">
+
+The failure mode on the other side of this is real and common: a platform team invests heavily in an abstraction for a problem they believe is widely shared, ships it, and finds adoption is thin — because the "80%" fit was closer to 40% for most teams' actual needs, or because the existing unpaved alternative was still faster for the specific cases teams actually had. A paved path earns adoption by being genuinely easier to use than the alternative, for the cases people actually hit — not by being comprehensive in theory. Validate the 80% claim against real, current team needs before building the whole path, not after.
+
+</Pitfall>
+
+<Quiz question="A platform team spends two quarters building a comprehensive shared data-pipeline capability, believing it will serve every team's needs. After launch, only one of six target teams adopts it — the other five say it's easier to keep building their own pipelines for their specific data shapes. What does this lesson suggest went wrong, and what's the fix?">
+<div>
+
+**The paved path likely didn't clear the 80%-fit bar for most teams' actual, current needs — validate against real use cases before building, and treat low voluntary adoption as a signal to revisit the design, not a signal to mandate adoption.**
+
+The Pitfall names this exact scenario: a platform team can correctly identify that a problem is shared in principle, and still build something that doesn't fit the specific, current shape of most teams' real work — especially if the design was based on an assumed use case rather than validated against the five other teams' actual pipelines before two quarters were spent. The fix isn't to mandate adoption (that produces resentment and workarounds, not the voluntary uptake that actually interrupts the underlying reinforcing loop) — it's to go back to the teams that didn't adopt it, find the specific gap between what was built and what they actually need, and close that gap before pushing adoption further.
+
+</div>
+</Quiz>
+
+---
+
+## Up Next
+
+Paved paths are the engineering half of this story. The next lesson covers the product design half — how a shared design language does the same job for user experience that paved paths do for infrastructure, especially as AI makes it easier for non-designers to build and ship UI.

@@ -1,0 +1,81 @@
+---
+title: "The One-Click-Out Technique"
+description: "The fastest way to question your assumptions about a task without trying to map the entire company strategy — plus the three questions that separate a fix from a capability."
+module: 2
+moduleTitle: "The Practical Toolkit"
+lesson: 1
+duration: "20 min"
+youtubeId: "t0GiTyz4syY"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## The Problem With "Just Build It"
+
+You get a task. The instinct — a reasonable one, most of the time — is to start building immediately. Requirements are usually clear enough, the deadline is usually real, and questioning things can feel like stalling.
+
+The cost shows up later, not immediately: the feature that only works for the one use case it was built for, the fix that has to be rebuilt from scratch the moment a second team needs something similar, the tool three other people were quietly building in parallel because nobody knew to ask. None of that shows up in the moment you start typing. All of it shows up a few months later, as rework.
+
+---
+
+## The Technique: Step Out One Click
+
+Elizabeth Stone, Netflix's Chief Product and Technology Officer, described the fix as something deliberately small. Asked how a beginner should start practicing systems thinking, her answer wasn't "learn the company's five-year strategy" — it was to take the specific thing you're responsible for and do **one zoom out**: ask what you're assuming is true about the broader space around it.
+
+That's the whole technique. Not the whole org chart, not the whole roadmap — one click out from the task in front of you. You're not trying to "boil the whole ocean." You're trying to notice the one assumption that, if wrong, changes what you should build.
+
+<CodeLab title="Try It on a Real Example">
+
+Say you've been asked to add an "export to PDF" button to one internal analytics dashboard.
+
+**Zero clicks out** (the task as given): build a PDF export button on this dashboard.
+
+**One click out** (the question): is this dashboard the only place people need to export data, or is "get my data out of this tool" a need that shows up on four other dashboards too — and if so, am I about to build the first of five near-identical, slightly-incompatible export buttons?
+
+Notice what didn't happen: you didn't need to know the company's entire data strategy to ask that question. You needed to know your one task, and take one step back from it.
+
+</CodeLab>
+
+<Pitfall title="Confusing 'One Click Out' With 'Boiling the Ocean'">
+
+The most common way beginners get this wrong is overcorrecting — treating "zoom out" as license to research the company's entire strategic landscape before touching a single ticket. That's not one click out, that's ten, and it's exactly the paralysis this technique is designed to avoid. If you find yourself opening more than one or two new questions, you've gone further than the technique asks for. Pull back to the one assumption that matters most for *this* task, and move on.
+
+</Pitfall>
+
+---
+
+## The Three Strategic Questions
+
+Once you've stepped out one click, three questions turn that instinct into something concrete and repeatable:
+
+1. **What is the bigger consumer (or user) problem we're actually trying to solve here?** Not the literal request — the need underneath it.
+2. **Will the way I'm planning to build this scale across multiple different areas or use cases?** Or does it only work for exactly this one case, exactly as specified?
+3. **Can this be turned into a shared "building block" that other parts of the business could reuse?** Or does it only make sense bolted to this one feature?
+
+You don't need a "yes" to all three to proceed — plenty of legitimate work is genuinely one-off. The point isn't to block small work; it's to *notice* when the answer to question 2 or 3 is actually yes, before you've already built something that makes reuse harder, not easier.
+
+| | Without the questions | With the questions |
+|---|---|---|
+| The request | "Add a PDF export button to this dashboard" | Same request |
+| What gets built | A button wired directly into this one dashboard's specific data shape | A small export capability, built once, that this dashboard calls — and that the next dashboard can call too |
+| Cost of the second request | Rebuild something similar from scratch | Wire up an existing capability |
+
+The build is barely more expensive the first time. The second team's version is dramatically cheaper — or free.
+
+<Quiz question="You're asked to add a 'flag as reviewed' checkbox to one internal tool. You ask the three strategic questions and realize: the bigger problem is 'track review status,' it would plausibly scale to two other internal tools your team knows about, and it could become a shared capability. What should you do next?">
+<div>
+
+**Build it as a small, reusable capability those other tools could call — not necessarily build all three integrations right now, but avoid building it in a way that makes reuse harder later.**
+
+The three questions aren't a mandate to immediately build for every use case you can imagine — that's its own failure mode (over-engineering for hypothetical future needs). The point is narrower: once you know the answer to "will this scale" is genuinely yes, design the one thing you're building so it *can* be reused later, instead of hard-coding it to this one tool's specific quirks. That's a small design decision now that prevents a full rebuild later — not a bigger project right now.
+
+</div>
+</Quiz>
+
+---
+
+## Up Next
+
+The one-click-out technique works on your own task. The next lesson gives you a second lens — evaluating your work through your manager's eyes — plus the one caveat that keeps both techniques from turning into an excuse to never ship anything.

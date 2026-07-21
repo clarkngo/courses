@@ -1,0 +1,68 @@
+---
+title: "One Design Language: Systems Thinking in Product"
+description: "How a shared design framework keeps a product coherent when AI lets far more people prototype and ship — and the three questions Netflix's design team asks instead of designing feature by feature."
+module: 4
+moduleTitle: "Systems Thinking at Netflix Scale"
+lesson: 2
+duration: "20 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## The Same Problem, on the Product Side
+
+Module 4's first lesson covered engineering's version of a familiar problem: many teams solving the same underlying need in incompatible, one-off ways. Product design has its own version of that problem, and it's arrived faster than most teams expected — AI tools now let far more people, including engineers and product managers with no formal design training, prototype and ship a user interface in an afternoon.
+
+That's a genuine gain in speed. It's also a genuine risk to coherence: a product built by many people, each making locally reasonable design decisions with no shared reference point, tends to accumulate into what's sometimes called a "Frankenstein" interface — individually functional pieces stitched together in a way that never reads as one product.
+
+---
+
+## Design as a Framework, Not a Feature List
+
+Netflix's response mirrors the engineering one structurally, even though the artifact is different. Rather than the experience design team reviewing and approving each individual feature one at a time — a bottleneck that gets worse, not better, as more people are building — the team's actual job is to define the overarching framework: what a great Netflix experience *looks and behaves like*, as a system, independent of any one feature.
+
+That framework — templates, a cohesive visual and interaction language, defined patterns for common needs — becomes the paved path for design the same way shared infrastructure is the paved path for engineering. A non-designer prototyping a new feature with AI assistance isn't starting from a blank canvas and hoping their instincts happen to match everyone else's; they're building inside a system that already encodes what "on-brand, on-pattern" looks like, which means the fast path and the coherent path are the same path — exactly the design goal Module 4's first lesson described for infrastructure.
+
+<CodeLab title="The Three Questions, Design Edition">
+
+Netflix's design team encourages the same "step out one click" instinct from Module 2, adapted for product decisions specifically:
+
+1. **What is the larger consumer problem being solved** — not just the feature as specified?
+2. **Will this scale across the different things the product actually spans** — for Netflix, that's film, TV, cloud games, and live events; for your product, it's whatever range of contexts your users actually touch?
+3. **Am I leaving a stronger, more coherent version of the system behind** — or a one-off pattern the next designer will have to either copy inconsistently or ignore?
+
+Notice these are the same three questions from Module 2, applied to a design decision instead of an engineering one. The technique doesn't change with the artifact — only the specifics of what "scale" and "shared building block" mean.
+
+</CodeLab>
+
+---
+
+## Empowering Non-Designers Without Losing Coherence
+
+The point of this system isn't to keep non-designers out of design work — AI tools have already made that gate difficult to enforce, and Netflix's stated approach isn't to fight that trend. It's to make sure that when a PM or engineer uses AI to prototype something quickly, the result fits into the end-to-end member experience by default, because the framework they're building inside of already encodes the patterns, rather than relying on that person's individual design judgment alone.
+
+This is the product-design equivalent of the security-and-identity point from the last lesson: you don't want coherence to depend on every single contributor independently having good design instincts, any more than you want security to depend on every engineer remembering to run a review under deadline pressure. You want the default path to already be the good one.
+
+<Pitfall title="Mistaking a Consistent Style Guide for Systems Thinking">
+
+It's tempting to treat "we all use the same button color and font" as evidence the design-systems problem is solved. A style guide is necessary, but it's the parameter-level version of the fix from Module 3's leverage-point hierarchy — it standardizes surface appearance without necessarily standardizing the deeper thing: consistent information architecture, consistent interaction patterns for similar tasks, a shared point of view on what the product is actually *for*. Two features can share every visual token and still feel like they belong to different products, because the deeper design language — not just the visual one — was never actually shared.
+
+</Pitfall>
+
+<Quiz question="A product manager with no design background uses an AI tool to prototype a new in-app notification feature in an afternoon. It works well on its own, uses the company's standard color palette and fonts, but introduces a new interaction pattern — a swipe-to-dismiss gesture — that doesn't exist anywhere else in the product. Using this lesson's framework, is this feature 'on-system,' and why?">
+<div>
+
+**Not fully — it's on-brand (correct colors and fonts) but not necessarily on-pattern, and the interaction-pattern gap is the part a style guide alone won't catch.**
+
+The Pitfall in this lesson makes exactly this distinction: shared visual tokens (color, font) are the parameter-level, surface layer of consistency, while a truly coherent design system also standardizes interaction patterns for similar tasks. A new swipe-to-dismiss gesture that doesn't exist elsewhere in the product is a new pattern being introduced ad hoc — even with correct colors, it risks becoming exactly the "Frankenstein" fragmentation this lesson describes, where each feature is individually reasonable but the product as a whole doesn't hold together. The fix isn't to block the PM from prototyping quickly; it's to check the new gesture against the existing interaction-pattern framework (question 3 from the CodeLab: is this reusing an existing pattern, or quietly introducing a new one that the next designer will now have to reconcile) before it ships as the default experience.
+
+</div>
+</Quiz>
+
+---
+
+## Up Next
+
+You now have both practical techniques, the theory underneath them, and two real examples of how they operate at organizational scale. Module 5's capstone brings all of it back down to the one task you picked in Module 1 — and asks you to run it through the whole framework at once.
