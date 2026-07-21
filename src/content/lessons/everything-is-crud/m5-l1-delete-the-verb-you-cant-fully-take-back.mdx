@@ -1,0 +1,89 @@
+---
+title: "Delete: The Verb You Can't Fully Take Back"
+description: "Why 'delete' rarely means 'gone' — the difference between hard and soft delete, and what happens to everything else in the system that pointed at the thing you just removed."
+module: 5
+moduleTitle: "Delete — The Verb You Can't Fully Take Back"
+lesson: 1
+duration: "12 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## The Most Final-Sounding Verb
+
+Create, Read, and Update all leave the record in place, in some form. Delete is the one verb that promises to make something go away — which is exactly why it deserves the most scrutiny of the four. "Delete" is a word users trust literally: if they click it, they expect the thing to be gone. Whether that's actually what happens is a real product decision.
+
+---
+
+## Hard Delete vs. Soft Delete
+
+| | Hard delete | Soft delete |
+|---|---|---|
+| **What happens** | The record is actually removed from storage | The record is kept, but marked as deleted and hidden from normal view |
+| **Can you undo it?** | No — it's gone | Usually yes, by un-marking it |
+| **Where you'll see it** | "Delete my account" under privacy law, permanent cleanup | "Move to trash," most everyday delete buttons |
+
+Most delete buttons a user clicks in everyday software are actually soft deletes — the record still exists somewhere, just hidden, which is why "Recently Deleted" or "Trash" folders that let you restore something for 30 days are common. Hard delete is reserved for cases where the data genuinely needs to stop existing — often driven by privacy regulation, not user convenience.
+
+<Pitfall title="Users Can't Tell the Difference, So Say So">
+
+A user who clicks "Delete" has no way of knowing whether the record is truly gone or just hidden — from their side, the screen looks the same either way. If your product's delete is actually a soft delete with a recovery window, telling the user ("Moved to Trash — recoverable for 30 days") sets accurate expectations. If it's a genuine hard delete, saying so plainly ("This action cannot be undone") is equally important, for the opposite reason.
+
+</Pitfall>
+
+---
+
+## Cascading Deletes: What Else Goes With It
+
+Records are rarely deleted in isolation. A deleted customer account might have orders, support tickets, and saved payment methods attached to it. Deleting the "parent" record raises an immediate question: **what happens to everything attached to it?**
+
+- **Cascade** — delete the customer, and all their orders and tickets go with them.
+- **Block** — refuse to delete the customer until their open orders are resolved some other way.
+- **Orphan** — delete the customer, but leave their orders behind, now pointing at a customer that no longer exists.
+
+The third option is usually the accidental one, and it's the most dangerous — an "orphaned" record that references something deleted can crash a report, break a page that expected the customer to still be there, or worse, look fine until someone tries to click through it. Any Delete spec worth reviewing should say explicitly which of the three behaviors is intended.
+
+---
+
+## Permission to Delete Is Its Own Question
+
+Just like Create and Update, Delete needs its own permission check — and it's worth asking separately, because "can edit" and "can delete" are not the same permission in most well-designed systems. A support agent who can update a ticket's status shouldn't necessarily be able to delete the ticket entirely. Conflating the two is a common, avoidable gap.
+
+---
+
+## Questions to Ask About Any "Delete" Feature
+
+1. Is this a hard delete or a soft delete — and does the user know which?
+2. Is there a recovery window, and how long is it?
+3. What happens to everything else that referenced this record — cascade, block, or orphan?
+4. Is "can delete" checked as its own permission, separate from "can edit"?
+
+<CodeLab title="Investigate a Real Delete Button">
+
+Take the "delete" screen or button you identified in Module 1 (a trash icon, "Remove," or "Cancel"). Try to answer, from the outside:
+
+1. Does the app give any hint about whether this is reversible (a "Trash" folder, an "Undo" toast, a warning that it's permanent)?
+2. If this thing has other data attached to it (an order's line items, a project's tasks), what do you predict happens to that attached data?
+3. Is there any indication that deleting requires a different permission level than editing the same thing?
+
+Keep your answers — Module 6's capstone reuses this same screen.
+
+</CodeLab>
+
+<Quiz question="A product manager asks engineering to 'let users delete their account.' What's the most important follow-up question before this ships?">
+<div>
+
+**"What happens to this user's data that other people or records depend on — their past orders, comments on other people's posts, or shared documents they own?"**
+
+"Delete my account" sounds like a single, self-contained action, but a user is rarely an isolated record — they're usually the owner or author of other data that other parts of the system, or other users, still reference. If the account is hard-deleted with a cascade, a comment thread might lose context when the author's name disappears; if it's orphaned, other screens might break trying to display a user that no longer exists. This is exactly the cascade/block/orphan decision the lesson raises, and it's rarely optional to decide — regulations like the right to erasure often require an actual answer, not silence.
+
+</div>
+</Quiz>
+
+---
+
+## Up Next
+
+The next lesson goes deeper on soft delete, archiving, and the compliance reasons "delete" sometimes legally has to mean "gone," not "hidden."

@@ -1,0 +1,93 @@
+---
+title: "The Four Verbs Behind Every Feature"
+description: "Course overview: why nearly every software feature is one of four operations in disguise, and why that's the fastest mental model a non-engineer can learn."
+module: 1
+moduleTitle: "Why CRUD Is the Hidden Skeleton of Software"
+lesson: 1
+duration: "10 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Who This Course Is For
+
+This course is for **product managers, founders, and business stakeholders** who work alongside engineers but don't write code. If you've sat in a sprint planning meeting and heard "that's just a CRUD screen" and nodded along without being totally sure what that meant, this course closes that gap.
+
+You don't need to learn to program. You need one mental model that, once it clicks, makes almost every feature request, bug report, and engineering estimate easier to reason about.
+
+---
+
+## Why This Course Exists
+
+Open nearly any app on your phone. A to-do list. A CRM. A social feed. An online store. Underneath wildly different designs, colors, and branding, almost everything you can *do* in that app falls into one of four buckets:
+
+1. You make something new — a task, a contact, a post, an order.
+2. You look at something that already exists — a list, a profile, a receipt.
+3. You change something that already exists — edit a task, correct an address, cancel an order.
+4. You get rid of something — delete a task, remove a contact, cancel a subscription.
+
+Engineers have a name for these four buckets: **CRUD** — **C**reate, **R**ead, **U**pdate, **D**elete. It's one of the oldest and most durable ideas in software, because it describes what a database can do, and almost everything you interact with is a nicer-looking window onto a database.
+
+<Pitfall title="CRUD Sounds Trivial — It Isn't">
+
+"It's just CRUD" is sometimes used to mean "this is simple, low-effort work." That's a trap for a non-technical reader. The four verbs are simple to *name*, but each one hides real decisions: who's allowed to do it, what happens when two people try to do it at once, what "removed" actually means, and what gets logged along the way. This course spends a full module on each verb precisely because the simplicity is at the surface, not underneath.
+
+</Pitfall>
+
+---
+
+## Why This Model Is Worth Learning
+
+Once you can see CRUD underneath a feature, three things get easier:
+
+- **Reading a spec or ticket.** "Users should be able to edit their shipping address" is an Update. That single word tells you to ask about validation, who else might be editing it at the same time, and whether the old address should be kept for records — before an engineer has to ask you.
+- **Estimating effort realistically.** A feature that's "just" a Create is usually the cheapest of the four. The same feature described as an Update or a Delete usually costs more, because of the edge cases in Modules 4 and 5.
+- **Spotting missing requirements.** Most incomplete specs are missing one of the four verbs entirely — usually Delete, or the read permissions around who can see what. Learning to check for all four is the single fastest way to make a spec harder to misinterpret.
+
+---
+
+## Course Objectives
+
+By the end of this course, you will be able to:
+
+1. **Identify which of the four CRUD operations** any feature, button, or user story maps to — including features that combine more than one.
+2. **Ask the right follow-up questions** for each operation: the questions engineers wish stakeholders asked before the ticket was written, not after.
+3. **Recognize the common failure modes** of each verb — duplicate records, stale reads, lost edits, and deletions that aren't really gone — well enough to flag them in a review.
+4. **Read any feature request as a CRUD map**, spotting which of the four verbs is missing or underspecified, as the capstone exercise in Module 6.
+
+---
+
+## The Line We Keep Returning To
+
+> **Every feature is a sentence with a CRUD verb hiding in it. Find the verb, and you know which questions to ask next.**
+
+<CodeLab title="Spot the Verb">
+
+Before Module 2, open any app you use daily and find one screen for each verb:
+
+1. A screen where you **create** something (a "New ___" button or form)
+2. A screen where you **read** something (a list, feed, or detail view)
+3. A screen where you **update** something (an "Edit" button or settings page)
+4. A screen where you **delete** something (a trash icon, "Remove," or "Cancel")
+
+Write down the app and the screen for each. Keep this list — every module from here builds on these four real examples, and the Module 6 capstone asks you to map a full feature to all four verbs at once.
+
+</CodeLab>
+
+<Quiz question="A colleague says, 'The new feature just lets users see their order history — that's a simple one.' Based on this lesson, what should you check before agreeing it's simple?">
+<div>
+
+**"See their order history" is a Read — and Reads are only simple until you ask who can see what, and how much data they're reading at once.**
+
+The word "just" is the tell. Before agreeing, ask: Can a user see *only* their own orders, or could the query accidentally expose someone else's? Is the list paginated, or does it try to load a customer's entire multi-year history in one screen? Is any of that data (payment details, addresses) sensitive enough to need extra access control? Module 3 covers exactly these Read pitfalls — visibility and scale are where "simple" Reads get expensive.
+
+</div>
+</Quiz>
+
+---
+
+## Up Next
+
+Module 2 opens with **Create** — the verb most people assume is the simplest, and where a surprising number of production bugs actually start.

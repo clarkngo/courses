@@ -1,0 +1,77 @@
+---
+title: "Conflicts and Concurrency: Who Won When Two People Edit at Once"
+description: "A no-code mental model for concurrent edits — last-write-wins, lost updates, and version checks — and the audit trail questions that catch problems after the fact."
+module: 4
+moduleTitle: "Update — Changing What Already Exists"
+lesson: 2
+duration: "12 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## The Problem Unique to Update
+
+Create and Delete each happen to one record, once. Update is the only verb where the *same* record can be targeted by two people at the same moment — two support agents editing the same ticket, two co-authors editing the same document, two admins changing the same customer's discount code within seconds of each other. Something has to decide what happens when that overlap occurs.
+
+---
+
+## Last-Write-Wins: The Default, and Its Cost
+
+The simplest way to handle two overlapping edits is **last-write-wins**: whichever save request reaches the system last is the one that sticks, and the other one is silently overwritten. This is the default behavior in a huge number of systems, because it's the cheapest to build. It also has a real cost: the person whose edit was overwritten usually has no idea it happened.
+
+Picture two support agents both viewing the same customer record. Agent A adds a note about a billing issue and saves. Agent B, who opened the record two minutes earlier, updates the customer's shipping address and saves ten seconds later — using a copy of the record from before Agent A's note existed. Agent B's save wins, and Agent A's note is gone, with no error, no warning, nothing.
+
+<Pitfall title="No Error Message Doesn't Mean No Data Was Lost">
+
+Last-write-wins conflicts rarely throw an error. Both saves succeed from each user's point of view — one of them just quietly loses. If a feature involves multiple people plausibly editing the same record, "no error occurred" is not evidence that nothing was lost.
+
+</Pitfall>
+
+---
+
+## Detecting the Conflict Instead of Hiding It
+
+Systems that care about this problem more than the default do one of two things:
+
+| Approach | What it looks like to the user |
+|---|---|
+| **Version check** | "This record was changed by someone else since you opened it — reload to see the latest before saving." |
+| **Field-level merge** | The system only overwrites the specific fields you changed, leaving other fields' concurrent edits intact |
+
+Neither approach is free — both require the system to track *when* a record was last read versus when it's being saved, and to have a plan for what to tell the user when a conflict is caught. But for any feature where two people editing the same thing is a realistic, regular occurrence — not a rare edge case — this is worth explicitly asking about in a spec, rather than assuming last-write-wins is fine.
+
+---
+
+## When Concurrency Actually Matters
+
+Not every Update needs conflict detection — building it everywhere would be wasted effort. The deciding question is: **how often will two people plausibly edit this same record at close to the same time?**
+
+- A user editing their *own* profile — low risk, usually fine with last-write-wins.
+- A shared document multiple people co-author — high risk, worth real investment.
+- A shared inventory count that two warehouse systems both adjust — high risk, and a lost update here means physical stock numbers are wrong.
+- A single admin's personal dashboard settings — low risk.
+
+Asking "who else, realistically, edits this same record around the same time?" is the fastest way to tell which category a feature falls into.
+
+---
+
+## The Audit Trail: Answering "What Happened?" After the Fact
+
+Separate from *preventing* conflicts is the ability to *investigate* them after the fact. An **audit trail** — a log of who changed what field, to what value, and when — doesn't stop a lost update, but it turns "the data is wrong and nobody knows why" into "Agent B changed the discount code at 2:14 PM, overwriting Agent A's change from 2:12 PM." For any Update on data sensitive enough to matter (pricing, permissions, financial records), asking whether changes are logged — not just applied — is a reasonable, low-cost question to raise early.
+
+<Quiz question="Two managers both open the same employee's record to update their pay grade within a minute of each other. The system uses last-write-wins with no audit trail. A week later, HR notices the pay grade is wrong. What's the actual problem, and what would have prevented the confusion?">
+<div>
+
+**The actual problem is that one manager's update silently overwrote the other's, and with no audit trail, there's no way to reconstruct which change happened when or reverse it correctly. An audit trail — logging who changed the pay grade, to what value, and when — would have made the conflict visible and fixable, even without preventing it outright.**
+
+This scenario doesn't necessarily need full conflict *prevention* (a version check that blocks the second save) — for a field that changes rarely, that might be more engineering investment than it's worth. But logging changes is comparatively cheap and turns an unsolvable mystery ("the number is wrong, nobody knows why") into a two-minute investigation ("Manager A set it to Grade 5 at 2:12, Manager B overwrote it to Grade 4 at 2:13 — ask B which was intended"). The lesson's distinction between preventing conflicts and being able to investigate them after the fact is exactly what separates these two outcomes.
+
+</div>
+</Quiz>
+
+---
+
+## Up Next
+
+Module 5 turns to **Delete** — the verb that sounds the most final, and is rarely as final as it sounds.

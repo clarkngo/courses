@@ -1,0 +1,91 @@
+---
+title: "Apply the Framework: Reading Any Feature as CRUD"
+description: "Capstone: map a real feature to all four CRUD verbs at once, using the checklists from every module to find what a spec is missing before an engineer has to ask."
+module: 6
+moduleTitle: "Putting It Together"
+lesson: 1
+duration: "15 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## One Feature, Four Verbs
+
+Most real features aren't a single CRUD operation in isolation — they're all four, connected. "Manage your team's projects" implies creating a project, reading a list of them, updating their details, and eventually deleting or archiving one. A spec that only describes the Create half of that (a "New Project" form) and says nothing about the other three is an incomplete spec, even if nobody notices until someone asks "wait, how do I delete a project I made by mistake?"
+
+This lesson is a single worked example, followed by the exercise that pulls together everything from Modules 2 through 5.
+
+---
+
+## Worked Example: "Add a Notes Feature to Customer Records"
+
+Imagine this one-line request: *"Let support agents add notes to a customer's record."* Here's what mapping it across all four verbs surfaces — questions that a one-line request never raises on its own.
+
+**Create**
+- Required fields: just note text, or also a category (billing, complaint, general)?
+- Who owns it: is a note tied to the agent who wrote it, permanently?
+- Duplicates: not usually a concern for free-text notes — a good example of a verb that's genuinely simple here.
+
+**Read**
+- Scope: all notes on this customer, or only notes written by the current agent's team?
+- Permission: can the *customer* ever see these notes, or are they strictly internal?
+- Order and volume: newest first, presumably — but is there a limit, or do all notes ever written load at once?
+
+**Update**
+- Can a note be edited after it's written, or is it permanent once saved (common for internal audit-style notes)?
+- If edits are allowed, is the edit history kept, so it's clear a note was changed after the fact?
+
+**Delete**
+- Can an agent delete their own note? Someone else's?
+- Is a deleted note gone, or soft-deleted and still visible to a supervisor for quality review?
+
+Notice that the one-line request didn't specify a single one of these answers — and that "notes" being editable-and-deletable-by-anyone versus permanent-and-attributable changes the entire trust model of the feature. This is the value of the four-verb pass: it turns one ambiguous sentence into a concrete list of decisions someone needs to make on purpose.
+
+<Pitfall title="The Missing Verb Is Usually Delete">
+
+Across real specs, Delete is the verb most often left out entirely — not because it's forgotten, exactly, but because "how do we get rid of this later" feels like a problem for future-you. It rarely is. Deciding delete behavior after a feature has real user data in it is far more constrained than deciding it up front, because by then, real records already exist that any new rule has to account for retroactively.
+
+</Pitfall>
+
+---
+
+## The Full Review Checklist
+
+Pulling together every module's checklist into one pass:
+
+- [ ] **Create** — What's required? What's defaulted? Who owns the new record? What counts as a duplicate?
+- [ ] **Read** — What's the scope? Who has permission? What's hidden or masked? What's the sort order and volume?
+- [ ] **Update** — Full replace or partial? Is old data kept anywhere? What else depends on this value?
+- [ ] **Delete** — Hard or soft? What happens to attached data — cascade, block, or orphan? Is delete its own permission?
+
+A feature spec that has explicit answers to all sixteen of these sub-questions is unusually well-specified — most specs answer three or four of them and leave the rest implicit, which is exactly where the follow-up questions and surprise bugs come from later.
+
+<CodeLab title="Map Your Own Feature">
+
+Go back to the four screens you identified across Modules 1 through 5 (your Create, Read, Update, and Delete examples). If they're all part of the same underlying feature (e.g., a to-do app's tasks, a CRM's contacts), walk through the full checklist above for that one feature, using your own notes from each module as a starting point.
+
+If they came from different features, pick just one of them and imagine the other three verbs for it — if you found a "create a task" screen, work out what reading, updating, and deleting a task should look like, even if the app doesn't show you those screens directly.
+
+Write down at least one question, for at least one verb, that you don't think the app you chose actually has a good answer to. That gap is exactly the kind of thing this course trains you to notice.
+
+</CodeLab>
+
+<Quiz question="You're reviewing a one-paragraph feature request: 'Add a favorites list so users can save items they like.' Using the four-verb framework, what's the single most valuable question to ask before this gets built?">
+<div>
+
+**A strong answer engages with more than one verb — for example: 'Can a user remove an item from favorites (Delete), and does favoriting the same item twice do anything different the second time (Create/duplicates)?' There's no single universally correct question, but the exercise is picking one that the one-paragraph request left genuinely open.**
+
+The point of this capstone isn't to memorize one right question — it's to practice running a short request through all four verbs and noticing which ones the request left unanswered. "Add a favorites list" clearly covers Create (favoriting an item) and Read (viewing the list), but says nothing about Update (can you reorder favorites? does anything about a favorite change after the fact?) or Delete (un-favoriting). Naming the verb the request is silent on — and asking the specific question that verb raises — is the transferable skill this course is building.
+
+</div>
+</Quiz>
+
+---
+
+## Where You Go From Here
+
+You now have a lens that works on almost any software feature, in any product, regardless of the underlying technology: find the CRUD verb (or verbs) hiding in the request, and run it through that verb's checklist. You don't need to know how a database works to ask "what happens if two people edit this at once?" or "is this really gone, or just hidden?" — you just need to know to ask.
+
+The next time a ticket, spec, or feature request crosses your desk, try running it through all four verbs before you approve it. It's the fastest way to turn "this seems simple" into a short, specific list of the decisions that still need to be made — before an engineer has to make them without you.

@@ -1,0 +1,85 @@
+---
+title: "Where Create Goes Wrong"
+description: "The recurring failure modes of the Create operation — duplicate records, partial creates, and permission gaps — and how to spot them before they ship."
+module: 2
+moduleTitle: "Create — Bringing New Things Into Existence"
+lesson: 2
+duration: "12 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Create Fails Quietly
+
+Unlike a crash or an error message, a broken Create operation usually looks like success. The user sees "Saved!" and moves on. The problem surfaces later — as a duplicate customer record in a mailing list, an order that's half-there, or a report that lets someone create something they shouldn't have been able to. This lesson covers the three shapes that failure takes.
+
+---
+
+## Failure Mode 1: Duplicate Records
+
+Covered briefly in the last lesson, duplication deserves top billing because it's the most common Create bug in production systems. It shows up in a few recognizable ways:
+
+- **The double-click order.** A user clicks "Place Order," the page is slow, they click again — and now there are two orders, two charges, two shipments.
+- **The same person, twice.** A customer signs up once through the website and once through a mobile app with a slightly different email capitalization, and the system treats them as two different people with two different histories.
+- **The re-import.** A spreadsheet of contacts gets uploaded twice by two different team members, and nobody notices until the mailing list sends the same customer three copies of a newsletter.
+
+The fix in each case is deciding, in advance, what makes two records "the same" — and either blocking the second Create or merging it into the first.
+
+---
+
+## Failure Mode 2: The Partial Create
+
+A Create operation often has to touch more than one place at once. Placing an order might need to: create the order record, reduce inventory count, and email a receipt. If the system creates the order but the inventory update fails halfway through, you get a **partial create** — a record that exists, but in an inconsistent state the rest of the system didn't expect.
+
+| Symptom | What actually happened |
+|---|---|
+| Order confirmation email never arrives | Order record created, but the email step failed silently |
+| Inventory count is wrong | Order created, but the inventory decrement step didn't run |
+| A "ghost" record with missing fields | Create started, was interrupted, and left an incomplete row behind |
+
+<Pitfall title="'It Saved' Doesn't Mean 'It Saved Everything'">
+
+When a feature involves creating one thing that touches several systems or tables, ask specifically: **what happens if step 2 of 3 fails?** Does the whole operation roll back cleanly, or can you end up with a half-created record? This is a fair question to ask in a design review even without knowing any implementation details — the answer tells you how much operational cleanup risk the feature carries.
+
+</Pitfall>
+
+---
+
+## Failure Mode 3: Permission Gaps
+
+Create operations decide who's *allowed* to bring a new record into existence, and getting this wrong runs in both directions:
+
+- **Too permissive** — any logged-in user can create a company-wide announcement, when only admins should be able to.
+- **Too restrictive** — a support agent can't create a refund record without an engineer manually intervening, because nobody built the form for their role.
+
+The ownership question from the previous lesson — who owns a new record — is directly connected to this. If ownership isn't clearly assigned at creation time, permission checks later on (can this user edit it? see it?) have nothing solid to check against.
+
+---
+
+## A Checklist for Reviewing Any Create Spec
+
+Before approving a Create feature, look for explicit answers to:
+
+- [ ] What makes two records count as duplicates, and what happens when one is detected?
+- [ ] If this Create touches more than one system or table, what happens if it's interrupted partway?
+- [ ] Who is allowed to perform this Create, and is that check enforced, not just assumed?
+- [ ] Is there a way to undo an accidental Create shortly after it happens?
+
+A spec that answers all four is far less likely to generate a support ticket in its first month.
+
+<Quiz question="A customer support team reports: 'We keep seeing the same customer show up twice in the system, with two different order histories.' Which Create failure mode does this describe, and what's the first question to ask the engineering team?">
+<div>
+
+**This is the duplicate-records failure mode. The first question: 'What field or combination of fields do we currently treat as unique when creating a new customer?'**
+
+If the system doesn't check email, phone, or some combination against existing records before creating a new customer, then two sign-ups by the same person — through different channels, with slightly different information — will always produce two separate records. The fix isn't a bug fix in the traditional sense; it's a product decision about what "the same customer" means, followed by either blocking the duplicate at creation time or building a merge tool to combine records after the fact.
+
+</div>
+</Quiz>
+
+---
+
+## Up Next
+
+Module 3 turns to **Read** — the verb that feels the most passive, and hides the most surprising failure modes around who can see what.

@@ -1,0 +1,98 @@
+---
+title: "Read: Finding and Showing Data Back"
+description: "Why 'just display the data' is never just displaying the data — the hidden decisions in every list, feed, and detail screen: scope, permissions, sorting, and shape."
+module: 3
+moduleTitle: "Read — Finding and Showing Data Back"
+lesson: 1
+duration: "12 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## The Verb That Feels Passive
+
+Create, Update, and Delete all *change* something — Read just shows it. That makes Read feel like the safe, simple verb: no risk of data loss, no risk of corruption. It's the one stakeholders are most likely to wave through in a review without questions.
+
+That instinct is worth resisting. Read decides **what a person is allowed to know**, and getting that wrong is its own category of serious problem — a customer seeing another customer's invoice, a junior employee seeing executive salary data, a competitor scraping your entire product catalog through an unprotected search box.
+
+---
+
+## The Four Questions Behind Every Read
+
+Whenever data is displayed on screen, four decisions were made to get it there:
+
+1. **Scope** — out of everything in the system, which records are even candidates to show?
+2. **Permission** — of those candidates, which is *this* user actually allowed to see?
+3. **Shape** — which fields are shown, and which are hidden or masked (like a partial credit card number)?
+4. **Order and volume** — what order are results shown in, and how many at once?
+
+A "simple list of orders" screen has already answered all four: it scoped to one customer's orders, checked that the logged-in user *is* that customer, decided to hide internal cost data, and sorted newest-first with a page size of 20.
+
+---
+
+## Scope vs. Permission: A Critical Distinction
+
+These two are easy to conflate but are different failure points:
+
+| | Scope | Permission |
+|---|---|---|
+| **Question** | What data could this screen possibly show? | Is *this specific user* allowed to see it? |
+| **Example** | "All orders in the last 90 days" | "...but only orders belonging to this logged-in customer" |
+| **Failure if wrong** | Screen is slow or shows irrelevant data | Screen leaks someone else's private data |
+
+A scope bug is usually a performance or usability problem. A permission bug is usually a security incident. When reviewing a Read feature, always ask both questions separately — "what's the query looking at" and "who's allowed to see the result" — because a spec can get the first right and the second wrong.
+
+<Pitfall title="'The Query Is Correct' Doesn't Mean 'The Access Check Is Correct'">
+
+A common real-world bug: an engineer writes a perfectly correct query to fetch "order #4521," and it works — for the customer who placed it. The bug is that the same URL, with the number changed to `#4522`, shows *someone else's* order, because nobody checked whether the logged-in user actually owns that order before returning it. This class of bug (sometimes called an access control or "IDOR" issue) is common precisely because the Read itself works fine — the missing piece is the permission check layered on top of it.
+
+</Pitfall>
+
+---
+
+## Shape: What Gets Shown, and What Gets Hidden
+
+The same underlying record often needs to be displayed differently depending on who's looking. A support agent viewing a customer's account might see the last four digits of a card on file; the customer sees the same thing; a random logged-out visitor should see none of it. Deciding the "shape" of a Read result — which fields show, which are masked, which are omitted entirely — is a per-audience decision, not a single fixed answer.
+
+---
+
+## Order and Volume: Why Pagination Is a Product Decision
+
+"Show all the customer's orders" sounds simple until a customer has 4,000 orders. Someone has to decide:
+
+- Sorted by what — newest first? Highest value first?
+- Shown how many at a time — 20? 100? All of them?
+- What happens when there are more results than fit on one screen — does the user click "Next," scroll to load more, or search/filter instead?
+
+These aren't implementation details to leave to engineering — they shape whether the feature is actually usable, and they belong in the spec.
+
+<CodeLab title="Map the Four Decisions on a Real Screen">
+
+Take the "read" screen you identified in Module 1 (a list, feed, or detail view). Answer:
+
+1. **Scope** — what's the full set of data this screen could show?
+2. **Permission** — how does it narrow that down to what *you* specifically are allowed to see?
+3. **Shape** — is anything hidden, masked, or simplified compared to the full record?
+4. **Order and volume** — what order is it sorted in, and how much loads at once?
+
+Keep your answers — Module 6's capstone reuses this same screen.
+
+</CodeLab>
+
+<Quiz question="A feature request says: 'Managers should be able to see a dashboard of their team's performance.' What question exposes the biggest hidden assumption in this request?">
+<div>
+
+**"What happens when a manager's team changes — do they lose access to a former team member's data immediately, and do they gain access to a new team member's history retroactively?"**
+
+The request assumes "their team" is a stable, well-defined thing, but scope and permission for Read features are rarely static — org charts change, people transfer, managers get promoted. If the dashboard's permission check is based on a manager's *current* team but a report pulls *historical* performance data, there's an implicit decision buried in the request about whether past data follows the person or the point-in-time reporting relationship. That's exactly the kind of scope-versus-permission question this lesson asks you to separate out before a feature ships.
+
+</div>
+</Quiz>
+
+---
+
+## Up Next
+
+The next lesson covers what happens when these four decisions go wrong in practice — the specific Read bugs that generate support tickets and, occasionally, security incidents.

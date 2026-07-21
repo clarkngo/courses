@@ -1,0 +1,96 @@
+---
+title: "Create: Bringing New Things Into Existence"
+description: "What actually happens when a user clicks 'Save' on a new record, and the decisions hiding inside every Create screen: validation, defaults, ownership, and identity."
+module: 2
+moduleTitle: "Create — Bringing New Things Into Existence"
+lesson: 1
+duration: "12 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## What "Create" Really Means
+
+Every time a user fills out a form and clicks "Save," "Submit," or "Add," they're asking the system to bring a brand-new record into existence. A new task. A new contact. A new order. Under the hood, the system has to make several decisions before that record is allowed to exist:
+
+- **Does this data pass validation?** Is the email actually shaped like an email? Is the required field actually filled in?
+- **What gets filled in automatically?** A creation timestamp, a default status ("pending," not blank), a unique ID nobody typed in.
+- **Who owns this new thing?** Is it tied to the logged-in user, a team, an account? That ownership decides who can read, update, or delete it later.
+- **Is this actually new, or does it already exist?** Creating a "new" customer with an email that's already in the system is usually a bug waiting to surface as two customer records for one real person.
+
+None of this shows up in the button that says "Add Contact." It's all invisible, which is exactly why it's worth naming.
+
+---
+
+## The Anatomy of a Create Screen
+
+Look at any "New ___" form and you can map every field to one of three roles:
+
+| Role | Example | Why it matters |
+|---|---|---|
+| **User-supplied** | Name, email, quantity | What the user actually typed or chose |
+| **System-assigned** | Record ID, created-at timestamp | Generated automatically, never edited by the user |
+| **Defaulted** | Status = "Draft," Currency = account default | Filled in unless the user overrides it |
+
+When you're reviewing a spec for a new "Create" feature, checking that all three columns are accounted for is one of the fastest ways to catch a gap. A spec that only describes the user-supplied fields is an incomplete spec — someone still has to decide what the record's status is on day one.
+
+<Pitfall title="'Required Field' Is a Business Decision, Not a Technical One">
+
+Engineers will ask which fields are required, but the *answer* is a product decision, not a technical one. If "phone number" is optional at signup, what happens later when a feature needs it — do you block the user, or does the feature just silently not work for people who skipped it? Deciding what's required at creation time is deciding what every downstream feature can safely assume exists.
+
+</Pitfall>
+
+---
+
+## Create and Identity: The Duplicate Problem
+
+The single most common real-world Create bug is **the same real-world thing being created twice** — a customer who signs up with a slightly different email, an order submitted twice because a user double-clicked "Place Order." Preventing this requires the system to define, in advance, what makes two records "the same":
+
+- Is a contact unique by email? By phone? By name plus company?
+- If a user double-submits a form, does the second click create a second order, or does the system recognize the duplicate and stop it?
+
+This is why "add a duplicate check" is a real, non-trivial line item in almost any Create spec — it requires deciding what counts as "the same," which is a business judgment call before it's ever a technical one.
+
+---
+
+## Questions to Ask About Any "Create" Feature
+
+Before a Create feature ships, these questions catch the gaps a vague spec leaves open:
+
+1. What fields are required, and what happens if they're missing?
+2. What gets defaulted automatically, and is that default actually correct for every case?
+3. Who owns the new record, and who can see it right after it's created?
+4. What counts as a duplicate, and what should happen if one is detected?
+5. What does the user see immediately after creating it — confirmation, the new record, a list?
+
+<CodeLab title="Audit a Real Create Form">
+
+Pick the "create" screen you identified in Module 1 (a "New ___" button or form). Answer the five questions above for it:
+
+1. Which fields are required?
+2. What's filled in automatically that you never typed?
+3. Who "owns" the thing you just created?
+4. Could you accidentally create a duplicate? What would that look like?
+5. What did you see right after saving?
+
+Keep your answers — Module 6's capstone reuses this same screen.
+
+</CodeLab>
+
+<Quiz question="A stakeholder writes this user story: 'As a user, I can create a new project.' What's the most important follow-up question to ask before an engineer starts building it?">
+<div>
+
+**"What happens if I try to create a project with the same name as one that already exists?"**
+
+The story only describes the happy path — a user filling in a form and clicking save. It says nothing about ownership (who else can see this project?), defaults (what status does a brand-new project start in?), or duplicates (can two projects share a name, and does that matter?). Of these, the duplicate question is usually the highest-leverage one to ask first, because the answer changes the data model, not just the form — and it's the gap most specs leave open, as this lesson covers.
+
+</div>
+</Quiz>
+
+---
+
+## Up Next
+
+Create rarely fails loudly — it fails quietly, in the shape of duplicate records, half-saved data, and orphaned entries nobody meant to make. The next lesson walks through exactly how.
