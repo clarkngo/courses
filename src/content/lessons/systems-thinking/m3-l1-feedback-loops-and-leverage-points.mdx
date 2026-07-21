@@ -1,0 +1,80 @@
+---
+title: "Feedback Loops and Leverage Points"
+description: "The theory underneath the practical techniques: why some fixes make a problem worse over time, and why not all points of intervention are equally powerful."
+module: 3
+moduleTitle: "Systems Thinking Foundations"
+lesson: 1
+duration: "20 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Where the Practical Techniques Come From
+
+The one-click-out technique and the manager's-eye view aren't Netflix inventions — they're applied, fast versions of ideas system dynamicists have formalized for decades. The clearest source is Donella Meadows, whose 1997 essay ["Leverage Points: Places to Intervene in a System"](https://donellameadows.org/archives/leverage-points-places-to-intervene-in-a-system/) and later book *Thinking in Systems* remain the standard reference. This lesson gives you the underlying model, so the techniques stop feeling like tricks and start feeling like the obvious move.
+
+---
+
+## Feedback Loops: The Engine Behind Every System
+
+Every system — a team, a codebase, a product line — is held together by feedback loops: chains where an outcome influences the very thing that produced it. There are two kinds worth knowing by name.
+
+**Reinforcing loops** amplify change in one direction — they're why small problems compound into large ones (and, just as often, why small wins compound into large ones).
+
+<CodeLab title="A Reinforcing Loop You've Probably Lived Through">
+
+Consider a team under deadline pressure that skips writing shared infrastructure and builds a one-off solution instead:
+
+1. Deadline pressure → team builds a one-off, undocumented solution
+2. One-off solution → no shared capability exists for the next team
+3. No shared capability → the next team, also under pressure, builds their *own* one-off solution
+4. More one-off solutions → more inconsistent systems → more integration problems → more pressure on everyone to move fast just to keep up
+
+Each loop through this cycle makes the next loop more likely, not less. That's what makes it reinforcing — left alone, it doesn't stabilize, it accelerates.
+
+</CodeLab>
+
+**Balancing loops** work the opposite way — they push a system back toward a stable state, resisting change. A platform team that absorbs a repeated problem into a shared capability is introducing a balancing loop: every team that adopts the shared capability instead of building their own reduces the pressure that was driving the reinforcing loop in the first place.
+
+Most of the dysfunction in a product or engineering org isn't caused by one bad decision. It's a reinforcing loop nobody named, running quietly, for long enough that it looks like "how things are" instead of a pattern that can be interrupted.
+
+---
+
+## Leverage Points: Not All Interventions Are Equal
+
+Meadows' deeper insight is that a system has specific places where a small push produces a disproportionately large effect — **leverage points** — and that most people, most of the time, reach for the weakest ones available, because they're the easiest to see and the easiest to act on alone.
+
+Ranked roughly from weakest to strongest, adapted for a product/engineering context:
+
+| Leverage point | What it looks like | Why it's weak or strong |
+|---|---|---|
+| **Parameters** (numbers, thresholds, headcount) | Add more QA staff, raise a timeout value, increase a budget line | Weakest — treats the symptom, the underlying loop keeps running |
+| **Rules** (who decides what, what's rewarded) | Change what gets rewarded in performance reviews; require sign-off before building a parallel system | Stronger — changes the incentives that were driving the loop |
+| **Goals** (what the system is actually optimizing for) | Shift a team's stated goal from "ship this feature" to "reduce the number of duplicate systems across the org" | Stronger still — changes what "success" means, which reshapes every downstream decision |
+| **Paradigms** (the shared, often unstated assumption the whole system runs on) | Shift from "every team owns its full stack" to "shared infrastructure is the default, custom is the exception" | Strongest — changes the lens through which every future decision gets made |
+
+The pattern in that reinforcing-loop example: adding more engineers (a parameter) doesn't stop the next team from building their own one-off solution. Changing what's rewarded (a rule) or changing the org's default assumption about ownership (a paradigm) does.
+
+<Pitfall title="Pulling the Easiest Lever Instead of the Strongest One">
+
+Meadows herself noted the counterintuitive trap: people often correctly identify a real leverage point, and then push it in a way that's easy rather than a way that's effective — because parameter-level changes (more headcount, a new tool, a tighter deadline) are within one person's control, while rule- and paradigm-level changes usually require influencing other people. It's not laziness; it's that the strong levers are genuinely harder to reach. Recognizing that a parameter fix is weak — even when it's the only lever you personally control — is still useful: it tells you the fix is temporary, and to keep watching for the chance to push a stronger one.
+
+</Pitfall>
+
+<Quiz question="A team's sprint velocity keeps dropping because engineers spend increasing time debugging integration issues between systems that don't share common data formats. Leadership responds by adding two more engineers to the team. Using this lesson's framework, why is this response unlikely to fix the underlying problem?">
+<div>
+
+**Adding headcount is a parameter-level change, and the underlying loop — teams building incompatible, one-off data formats because there's no shared standard or incentive to use one — operates at the rules or paradigm level, which more people doesn't touch.**
+
+More engineers can absorb more of the debugging workload in the short term, which may look like progress. But the reinforcing loop that's producing the incompatible formats in the first place — no shared standard, no reward for adopting one, an unstated assumption that each team owns its own data shape — keeps running exactly as before, now with more people generating more incompatible formats faster. The stronger fix operates at the rules level (require a shared format, or reward its adoption) or the paradigm level (shift the org's default assumption about data ownership) — not the parameter level of team size.
+
+</div>
+</Quiz>
+
+---
+
+## Up Next
+
+Feedback loops explain *why* problems compound. The next lesson names the specific, recurring *patterns* those loops produce in real teams — Peter Senge's system archetypes — so you can recognize one while you're still inside it, not just after it's become "how things are."

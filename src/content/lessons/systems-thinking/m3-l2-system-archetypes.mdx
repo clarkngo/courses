@@ -1,0 +1,86 @@
+---
+title: "System Archetypes: Fixes That Fail and Shifting the Burden"
+description: "Two recurring failure patterns from Peter Senge's The Fifth Discipline, translated into product and engineering scenarios you've probably already lived through."
+module: 3
+moduleTitle: "Systems Thinking Foundations"
+lesson: 2
+duration: "20 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Patterns, Not Just Loops
+
+Peter Senge's 1990 book *The Fifth Discipline* did for organizations what the last lesson's feedback-loop concept does for systems generally: it named specific, recurring shapes that dysfunction takes, called **system archetypes**, so people could recognize a pattern in progress instead of only diagnosing it in hindsight. Two of them show up constantly in product and engineering work.
+
+---
+
+## Archetype 1: Fixes That Fail
+
+The shape: a quick fix relieves an urgent symptom. That relief creates unintended, delayed consequences that make the underlying problem worse — and because the consequences are delayed, the connection back to the original fix is easy to miss.
+
+<CodeLab title="A Fixes-That-Fail Scenario">
+
+A team is behind schedule on a launch. To hit the date, they skip the standard identity and permissions review and hard-code a temporary access rule directly into the feature.
+
+- **The fix works immediately:** the launch date is met.
+- **The delayed consequence:** six months later, that hard-coded rule is the reason a security audit flags an access-control gap — one that now has to be found, understood by someone who didn't write it, and unwound from a production feature that's grown three more dependencies since it shipped.
+
+The team that made the original call is often long past that project by the time the consequence surfaces, which is exactly why the pattern is easy to repeat — the person who benefits from the shortcut is rarely the person who pays for it.
+
+</CodeLab>
+
+This is precisely the failure mode Netflix's engineering approach is built to prevent by design, not by vigilance: baking security, identity, and data-quality standards directly into shared infrastructure so that the fast path and the safe path are the same path, rather than relying on every team, under every deadline, to remember to choose safety over speed. You'll see that approach in [Module 4](/systems-thinking/lessons/m4-l1-paved-paths-engineering).
+
+---
+
+## Archetype 2: Shifting the Burden
+
+The shape: a problem has two possible responses — a **symptomatic fix** (fast, easy, addresses the surface) and a **fundamental fix** (slower, harder, addresses the actual cause). Every time the symptomatic fix is chosen, it provides just enough relief that the fundamental fix keeps getting deferred — and worse, the muscle for doing the fundamental fix atrophies the longer it goes unused.
+
+<CodeLab title="A Shifting-the-Burden Scenario">
+
+A team keeps hand-building its own version of a capability — logging, auth, a data pipeline — instead of adopting a shared platform capability, because their own version is faster to stand up *this one time*.
+
+- **Symptomatic fix:** build it yourself, again, this sprint. Fast, familiar, entirely within your control.
+- **Fundamental fix:** invest the time to integrate with the shared platform capability, even though it's slower this sprint and requires coordinating with a team you don't control.
+
+Every time the team picks the symptomatic fix, three things happen: the immediate pressure eases, the shared platform capability gets one fewer real-world user (and therefore one less signal about what it's missing), and the team's own familiarity with — and trust in — the shared path erodes a little further. A year in, "we just build our own" isn't a decision anymore. It's tribal knowledge nobody remembers choosing.
+
+</CodeLab>
+
+<Pitfall title="Diagnosing the Archetype but Not Changing the Incentive">
+
+Naming the pattern out loud — "we're shifting the burden here" — feels like progress, and it's a necessary first step, but it changes nothing on its own. If the team is still measured and rewarded on this sprint's velocity, the symptomatic fix will keep winning every single time, no matter how clearly everyone can articulate the pattern. Fixing a Shifting the Burden archetype requires changing what's actually rewarded (a **rules**-level leverage point, from the last lesson) — not just correctly labeling the diagram.
+
+</Pitfall>
+
+---
+
+## Telling the Two Apart
+
+They're related, but not identical, and the fix differs:
+
+| | Fixes That Fail | Shifting the Burden |
+|---|---|---|
+| **Core mechanic** | One fix, with a delayed side effect that worsens the original problem | Two competing fixes, where choosing the easy one repeatedly weakens the hard one |
+| **What you'll notice** | A problem that keeps "coming back worse" after being "solved" | A team that's structurally *unable* to choose the harder, better option anymore |
+| **The real fix** | Slow down enough to check for delayed consequences before shipping the quick version | Change the incentive so the fundamental fix is at least sometimes the easier choice |
+
+<Quiz question="A support team keeps manually patching the same category of customer-facing bug with individual, one-off fixes — never the underlying code path that causes it — because the underlying fix would require a full sprint and manual patches take an hour. Six months in, no one on the team has touched the underlying code path, and the newest team members don't know how. Which archetype is this, and why does it matter that the diagnosis is specific?">
+<div>
+
+**This is Shifting the Burden, not Fixes That Fail — and the distinction matters because the fix isn't 'ship the quick patch more carefully,' it's changing the incentive that makes the fundamental fix keep losing.**
+
+Fixes That Fail describes a single fix with a delayed negative side effect; this scenario has two competing options (patch vs. fundamental fix) where the easy one is chosen repeatedly, eroding the team's capability to choose the hard one — the newest members not knowing the underlying code path is the tell. Correctly naming it as Shifting the Burden points at the actual leverage point: something has to change about what's rewarded or prioritized (a rules-level change) so the fundamental fix is chosen at least some of the time, before the capability to do it disappears entirely.
+
+</div>
+</Quiz>
+
+---
+
+## Up Next
+
+Module 4 shows both archetypes and the leverage-point hierarchy in action at organizational scale — how Netflix's engineering and product design teams structure their systems specifically to make the fundamental fix the *easy* choice, not just the correct one.

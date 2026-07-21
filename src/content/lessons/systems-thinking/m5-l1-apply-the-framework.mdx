@@ -1,0 +1,108 @@
+---
+title: "Capstone: Apply the Framework to Your Own Work"
+description: "Bring back the real task you picked in Module 1 and run it through every lens from this course, once, as a single worksheet."
+module: 5
+moduleTitle: "Apply It"
+lesson: 1
+duration: "30 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## What You've Built So Far
+
+Four modules, one running thread: your job is never just the ticket in front of you — it's the system that ticket sits inside. Here's the toolkit you're carrying into this capstone:
+
+| Module | What it gave you |
+|---|---|
+| **1** | A definition — systems thinking is evaluating work by how it interacts with what's around it, not just whether it works alone |
+| **2** | Two fast techniques — one click out with three strategic questions, and your manager's-eye view — plus the rule against overthinking your way into paralysis |
+| **3** | The theory underneath — reinforcing and balancing feedback loops, the leverage-point hierarchy, and two named failure patterns (Fixes That Fail, Shifting the Burden) |
+| **4** | Two real examples of the theory operating at organizational scale — paved paths in engineering, a shared design language in product |
+
+None of that matters unless it changes how you approach the next real task on your desk. This lesson is that test.
+
+---
+
+## The Worksheet
+
+Pull out the task you picked back in [Module 1](/systems-thinking/lessons/m1-l1-what-systems-thinking-actually-means) — the real feature, fix, or decision you're currently facing. Run it through every lens, once, in order.
+
+<CodeLab title="Run Your Task Through the Full Framework">
+
+**1. One click out (Module 2).** What are you assuming about the broader space this task sits in? State the assumption in one sentence.
+
+**2. The three strategic questions (Module 2).**
+- What's the bigger problem underneath the literal request?
+- Would this scale to other use cases if built as a shared capability instead of a one-off?
+- Could it become a building block others reuse?
+
+**3. Your manager's-eye view (Module 2).** If your manager saw only the outcome, would it fit cleanly with what else is happening around it, or need explaining later? Which other function does it touch, and would that function be surprised by it?
+
+**4. The feedback loop check (Module 3).** Is there a reinforcing loop this task feeds — for better or worse? Is there a balancing loop (a shared capability, a standard) it could plug into instead of running around?
+
+**5. The leverage-point check (Module 3).** If you're fixing something, which level are you actually operating at — a parameter (easy, weak), a rule (harder, stronger), or a paradigm (hardest, strongest)? Is that the right level for the problem you actually have?
+
+**6. The archetype check (Module 3).** Does this look like it could become a Fixes That Fail (a quick win with a delayed downside) or a Shifting the Burden (an easy option quietly weakening the harder, better one)?
+
+**7. The paved-path / shared-system check (Module 4).** Is this a repeated, structural need across teams (worth building as a shared capability) or a genuinely local, one-off need (fine to build locally)?
+
+Time-box this to 15–20 minutes. If you're still working through it after that, you've drifted past "one click out" — take your best current answers and move on, exactly as Module 2 warned you would need to.
+
+</CodeLab>
+
+<Pitfall title="Treating the Worksheet as a Gate Instead of a Habit">
+
+The point of running through all seven steps once, deliberately, is to build the habit — not to establish a seven-step checklist you're expected to run formally on every future ticket. Once the habit is real, most of this collapses into a single, fast internal question you ask almost without noticing: *what does this connect to, and am I making the next version of this easier or harder?* If the full worksheet still feels necessary for routine work six months from now, the habit hasn't actually formed yet — that's worth noticing on its own.
+
+</Pitfall>
+
+---
+
+## Final Knowledge Check
+
+<Quiz
+  questions={[
+    {
+      question: "A team is asked to add a 'download my data' button to one feature. Applying the one-click-out technique, which question matters most before starting?",
+      options: [
+        "What color should the button be?",
+        "Is this the same underlying need — 'get my data out' — that's likely to show up in other parts of the product too?",
+        "How many story points should this be estimated at?",
+        "Which team member should implement it?"
+      ],
+      correctIndex: 1,
+      explanation: "One click out means stepping back from the literal request to check the one assumption that changes the approach — here, whether this is a one-off or a recurring need worth building as a reusable capability."
+    },
+    {
+      question: "A manager responds to slipping delivery dates by requiring every team to submit a more detailed weekly status report. Which leverage point does this operate at, and what does that suggest about its likely effectiveness?",
+      options: [
+        "Paradigm level — it will strongly reshape how the org thinks about delivery",
+        "Rules level — it will moderately change incentives around delivery",
+        "Parameter level — it adds reporting overhead without touching whatever is actually causing the delays",
+        "It isn't a leverage point at all"
+      ],
+      correctIndex: 2,
+      explanation: "More reporting is a parameter-level change — it's easy to implement and entirely within one manager's control, but it doesn't touch the rules, goals, or paradigm actually producing the delays. It's the weakest tier in the hierarchy from Module 3, and likely to add overhead without fixing the underlying cause."
+    },
+    {
+      question: "A platform team wants to build a shared capability because two teams have asked for something similar. Before committing two quarters to it, what does this course's material on paved paths suggest they validate first?",
+      options: [
+        "That leadership has approved the headcount",
+        "That the shared version will genuinely get most teams roughly 80% of the way to their real, current need — not just a plausible-sounding shared need",
+        "That the capability uses the company's standard color palette",
+        "That it can be built without any coordination from other teams"
+      ],
+      correctIndex: 1,
+      explanation: "Module 4's Pitfall covers this exactly: a platform team can correctly identify a shared need in principle and still build something that doesn't fit most teams' actual, current work. Validating the real fit against real use cases before investing quarters of work is what separates an adopted paved path from an unused one."
+    }
+  ]}
+/>
+
+---
+
+## Where to Go From Here
+
+This course doesn't end with a certificate task or a final build, because the actual deliverable was never a project — it was a habit you now carry into whatever you build next. The next ticket on your list is the first real place to practice it. Take one click out, ask the three questions, and see what changes.
