@@ -55,6 +55,25 @@ As written, one agent's idea of "properly documented" might be a single sentence
 
 ---
 
+## Example: Acceptance Criteria Block
+
+Appended to the bottom of a spec — every line is something a second agent, with zero context, could mark pass or fail on its own.
+
+```markdown
+## Acceptance Criteria
+
+- [ ] `npm run typecheck` exits with code 0
+- [ ] `npm run lint` exits with code 0
+- [ ] Page loads at `/clients/<slug>` with zero console errors
+- [ ] All 5 tabs are present with the exact section ids listed in the spec
+- [ ] Onboarding Checklist has exactly 8 steps, each with one of the 3
+      named status badges
+- [ ] `changelog/clients.md` has a new dated entry naming this client
+- [ ] Root `CHANGELOG.md` has a one-line `[feature]` summary
+```
+
+---
+
 ## Up Next
 
 Module 4 brings the instructions file and the spec together into a workflow: how to catch a wrong interpretation on the first file, before it's repeated across the next nine.

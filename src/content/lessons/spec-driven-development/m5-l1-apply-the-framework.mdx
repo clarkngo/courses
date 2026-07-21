@@ -57,6 +57,45 @@ A single long prompt tends to mix standing conventions (which should persist acr
 
 ---
 
+## Example: A Completed Capstone Deliverable
+
+Here's what a finished version of the three artifacts looks like for one concrete recurring task — a single file combining all three, the same way you'd hand it to an agent or a teammate.
+
+```markdown
+# Task: Add a New Blog Post Template
+
+## Standing rules (→ CLAUDE.md)
+- Behavioral rule: if the post category isn't one of the 6 existing
+  categories, ask before creating a new one — don't invent one silently
+- Verification checklist: after adding a post, confirm it appears on the
+  category index page and the RSS feed validates
+
+## Spec
+- Canonical reference: `posts/2026-06-01-example-post.md` — copy its
+  frontmatter shape and section structure exactly
+- Exact structure: frontmatter with `title`, `date`, `category` (one of
+  the 6 existing categories), `summary` (1 sentence, under 160 chars);
+  body has exactly 3 sections — Context, What Changed, Why It Matters
+- Explicit rules: images go in `posts/images/<slug>/`, never inline as
+  base64; no more than 1 image per section
+
+## Acceptance criteria
+- [ ] Frontmatter validates against the schema (`npm run validate:posts`)
+- [ ] Post appears on its category index page after build
+- [ ] `npm run build` produces a valid RSS entry for the new post
+- [ ] `CHANGELOG.md` has a one-line `[feature]` entry naming the post
+
+## Workflow
+- Verify on: the first post only, reviewed against the checklist above
+  before writing any further posts in the same batch
+- Batch: additional posts only after the first is confirmed correct
+- Log outcome in: `CHANGELOG.md` (root) — one line per post published;
+  any new pattern (e.g. a new category getting approved) goes in
+  `lessons-learned/content.md`
+```
+
+---
+
 ## Course Complete
 
 You've now built the three-part discipline this course is centered on: a standing instructions file that grows only when a real gap shows up twice, a spec precise enough that an agent can't reasonably guess wrong, and a workflow that catches a bad guess on file one instead of file ten. Apply it to the next real task in front of you — that's where it actually pays off.

@@ -85,6 +85,36 @@ The lesson's core claim is that AI agents moved the bottleneck from typing speed
 
 ---
 
+## Example: A Blank Three-Artifact Template
+
+You don't need to remember the structure of all three documents from scratch — here's the skeleton this course builds up, piece by piece. Save it now; you'll fill in each section as its module teaches you how, and the capstone in Module 5 asks you to complete a version of this for your own recurring task.
+
+```markdown
+<!-- specs/_template.md — one file per recurring task -->
+
+# <Name of the recurring task>
+
+## Standing rules (from CLAUDE.md / AGENTS.md — Module 2)
+- <Behavioral rule the agent should already know before this task starts>
+- <Verification checklist item(s) for this kind of work>
+
+## Spec (Module 3)
+- Canonical reference: <existing file/page this should copy the structure of>
+- Exact structure: <counts, order, required sections — no vague words>
+- Explicit rules: <anything that's broken before and shouldn't again>
+
+## Acceptance criteria (Module 3)
+- [ ] <A literal command or check, not "make sure it works">
+- [ ] <Another checkable item>
+
+## Workflow (Module 4)
+- Verify on: <the smallest first unit to apply this to>
+- Batch: <the rest, only after the first is confirmed>
+- Log outcome in: <which changelog / lessons-learned file>
+```
+
+---
+
 ## Up Next
 
 Module 2 opens the first artifact: the instructions file. You'll see a real, in-production `CLAUDE.md` — the sections it actually contains, why each one is there, and what deliberately isn't in it.

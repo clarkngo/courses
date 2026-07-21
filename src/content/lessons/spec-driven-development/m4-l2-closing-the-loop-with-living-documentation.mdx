@@ -68,6 +68,28 @@ An entry like "fixed some bugs" or "updated the docs" satisfies the letter of "k
 
 ---
 
+## Example: A Filled-In `CHANGELOG.md` Entry
+
+Following the format and discipline from this lesson — specific enough that a reader with zero context could act on it.
+
+```markdown
+## 2026-07-21
+
+### [feature] Client Onboarding — Data Migration Confirmed step added
+- Added 9th onboarding checklist step (between steps 7 and 8) across all
+  40 client pages; defaults to "Not Started" for existing clients
+- `saveState`/`loadState` updated to persist the new step key
+- See `changelog/clients.md` for the full per-client rollout list
+
+### [bug] Contract Terms table — renewal date sorting was alphabetical, not chronological
+- **Symptom:** Clients with a renewal date in "Jan" sorted before "Dec"
+  of an earlier year
+- **Root cause:** Dates were sorted as strings, not parsed to `Date` objects
+- **Fix:** Sort comparator now parses `YYYY-MM-DD` before comparing
+```
+
+---
+
 ## Up Next
 
 The capstone in Module 5 asks you to write all three artifacts — an instructions-file section, a quantified spec, and a workflow checklist — for the real recurring task you've been building toward since Module 1.

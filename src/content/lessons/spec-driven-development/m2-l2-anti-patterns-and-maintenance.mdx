@@ -54,6 +54,32 @@ The lesson's core signal is: if you've given the same correction more than once,
 
 ---
 
+## Example: A Lessons-Learned Entry
+
+This is the format that turns a one-off correction into searchable history — and, once the same root cause shows up twice, into a new line in `CLAUDE.md`.
+
+```markdown
+<!-- lessons-learned/bug-fixes.md -->
+
+## State Resets on Refresh — Init Order
+
+**What happened:** The "objectives completed" overlay reset to zero every
+time the page was refreshed, even after the user had completed items.
+
+**Root cause:** `saveState()` was being called during initialization,
+*before* `loadState()` had run — so the freshly-initialized (empty) state
+was immediately saved over the stored one.
+
+**Fix:** Confirmed `loadState()` always runs first in the init sequence;
+added a comment marking the required order.
+
+**Pattern (seen twice now — promoted to CLAUDE.md):** Any function called
+during page init that internally calls `saveState()` must run *after*
+`loadState()`. See the "JS State Pattern Checklist" in CLAUDE.md.
+```
+
+---
+
 ## Up Next
 
 Module 3 moves from the standing instructions file to the second artifact: the spec for one specific piece of work. You'll see a real spec — the exact structure the project requires for one repeatable feature type — and why its precision comes from being quantified, not from being long.

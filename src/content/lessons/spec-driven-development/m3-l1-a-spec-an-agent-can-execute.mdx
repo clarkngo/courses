@@ -76,6 +76,39 @@ If you can't find a number or a reference for a given requirement, that's worth 
 
 ---
 
+## Example: `spec.md`
+
+A spec for one recurring feature type, following the same shape as the industry-primer spec — canonical reference, exact structure, quantified content, explicit rules. Notice there's no sentence in here an agent would need to guess at.
+
+```markdown
+# Spec: New Client Onboarding Page
+
+## Canonical reference
+Copy the structure from `clients/acme-corp/index.html` — it is the current
+reference implementation. Do not copy from `clients/globex/` (uses the
+older 3-tab layout).
+
+## Structure — exactly 5 tabs, in this order
+1. Overview (`tab-overview`)
+2. Contacts (`tab-contacts`)
+3. Contract Terms (`tab-contract`)
+4. Onboarding Checklist (`tab-checklist`)
+5. Engagement Log (`tab-log`)
+
+## Required content per tab
+- **Overview:** 1 summary card + 4 key-facts cards (industry, size, region, start date)
+- **Contacts:** 3–6 contact cards, each with name, role, email, phone
+- **Contract Terms:** table with columns Term | Value | Renewal Date
+- **Onboarding Checklist:** exactly 8 steps, each with a status badge (Not Started / In Progress / Done)
+- **Engagement Log:** reverse-chronological list, newest entry first
+
+## Explicit rules
+- No inline `<script>` — use the shared `client-page.js` bundle
+- Dates in `YYYY-MM-DD` format only
+```
+
+---
+
 ## Up Next
 
 The next lesson covers the other half of a usable spec: acceptance criteria written so the agent can check its own work, rather than needing you to eyeball whether it "looks right."

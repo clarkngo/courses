@@ -69,6 +69,41 @@ The instructions file is for behaviors, checklists, and routing rules that stay 
 
 ---
 
+## Example: `CLAUDE.md`
+
+Here's a condensed instructions file following the four categories from this lesson — behavioral rule, verification checklist, debugging order, and routing table. Adapt the specifics to your own project; keep the categories.
+
+```markdown
+# Project — Agent Instructions
+
+## Prompting Guidance
+When a request is ambiguous — a vague spatial term ("move it up"), a bundled
+multi-part ask, or a vague completion criterion ("fix it") — ask for the
+specific reference or split the request before implementing.
+
+## Post-Write Verification Checklist
+After writing or editing any file in `src/`:
+- [ ] Run the project's lint/typecheck command
+- [ ] Confirm the page/feature loads with no console errors
+- [ ] Confirm the specific element or behavior the task asked for is visible
+- [ ] Update `CHANGELOG.md`
+
+## Debugging Order (blank screen / nothing renders)
+1. Check the build/console for a syntax or import error first
+2. Check that expected globals/exports actually exist
+3. Check runtime console logs
+4. Only then investigate timing or layout issues
+
+## Changelog Routing
+| Folder changed      | Update this file           |
+|----------------------|-----------------------------|
+| `src/features/auth/`  | `changelog/auth.md`         |
+| `src/features/billing/` | `changelog/billing.md`    |
+| Shared/root files     | `CHANGELOG.md` (root)       |
+```
+
+---
+
 ## Up Next
 
 The next lesson covers the other half of maintaining an instructions file: how it avoids becoming stale or bloated, and the specific signal that tells you it's time to add a new rule.
