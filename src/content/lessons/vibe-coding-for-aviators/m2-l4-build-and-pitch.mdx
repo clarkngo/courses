@@ -1,0 +1,110 @@
+---
+title: "Build & Pitch: Clear the Runway"
+description: "Apply the PM, UX, and debug lenses to a real build — an aviation-themed mini-game — then pitch it in one sentence."
+module: 2
+moduleTitle: "Day 2 — Think Like a Builder"
+lesson: 4
+duration: "90 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## ❓ Answer Your Two Questions First
+
+Before you open Gemini, write down — even just in your head — your answers to lesson one's two questions:
+
+1. **Who is this for?**
+2. **What's the ONE thing it has to do well?**
+
+If you're building today's suggested project, here's a starting point:
+
+<CodeLab title="Build Your v1">
+
+```
+Build a fast-paced clicking game called "Clear the Runway" — a
+grid of [6-9] runway slots, where a small airplane icon pops
+into a random empty slot every [half a second], for a bored
+first-time flyer killing time at a gate who wants a 30-second
+distraction. The ONE thing it must do well: clicking an
+airplane before it disappears scores a point, and missing it
+costs nothing — just keeps the game moving. Show a running
+score and a 30-second countdown timer. When the timer hits
+zero, show my final score and a "Play Again" button.
+```
+
+That's your PM lens already baked into the prompt: a specific audience ("a bored first-time flyer killing time at a gate") and a specific single job ("click the plane before it disappears, track the score").
+
+If you chose to iterate yesterday's boarding-pass project instead, apply the same lens to it: name who it's for, name the one thing it should do best, and prompt Gemini for one change that serves that job.
+
+</CodeLab>
+
+Run the loop — Describe, Build, Test, Refine, Repeat — just like yesterday. This time, as you test, check specifically for the three UX basics:
+
+- Is there **one clear main action** on the page? (Clarity — it should be obvious you're supposed to click the planes, not the empty slots)
+- Does something **visibly happen** when you click? (Feedback — a color flash, a point counting up, a small "nice!")
+- Does the **most important thing look the most important**? (Hierarchy — your score and timer should be the biggest, boldest things on screen while the game runs)
+
+<Pitfall title="Polishing Before It Works">
+
+It's tempting to ask for sound effects or animations before you've confirmed the core loop actually works end to end. Get the ONE thing — a plane appearing, a click registering, the score going up — solid first. Polish is a refine step for *after* the core job works, not before.
+
+</Pitfall>
+
+---
+
+## 🐛 When (Not If) It Breaks
+
+Timers and random pop-ins are exactly the kind of feature that breaks in small, specific ways: a plane that never disappears, a score that counts twice, two planes appearing in the same slot. When it happens, don't panic and don't retype the whole prompt — run the debug loop from last lesson:
+
+**Notice** something's off → **Isolate** the exact click or moment → **Describe** expected vs. actual → **Ask** Gemini for that one fix → **Retest**.
+
+For example: *"When I click a plane, the score goes up by 2 instead of 1 — it should only count once per click."* That sentence alone is usually enough for Gemini to find and fix it in one pass.
+
+---
+
+## ☕ Break (10 min)
+
+---
+
+## 🛠️ Keep Building
+
+Continue looping. If you finish your core feature early, revisit the UX triangle from lesson two — is there one place where clarity, feedback, or hierarchy is weak? Fix that before adding anything new.
+
+---
+
+## 🎤 Submit & PM Pitch
+
+Save your file using the same convention as yesterday: `name_day2_v1.html` if this is a new project, or the next version number if you iterated. Save it into the **Day 2** subfolder of the shared Drive (or commit it, if you're using GitHub this week).
+
+Then, in **one sentence**, tell the room:
+
+> "This is for [who], and it does [the one thing] well."
+
+That's the whole pitch. No slides, no long explanation — just the PM lens, spoken out loud.
+
+<Quiz question="Two students both built Clear the Runway today. One says: 'It's a clicking game.' The other says: 'It's for someone bored at a gate, and it gives them a 30-second distraction where every click feels satisfying.' Which pitch shows stronger PM thinking, and why?">
+<div>
+
+**The second one — it names a specific audience and a specific, single job the build does well.**
+
+"It's a clicking game" describes a mechanic, not a purpose. The second pitch answers both of lesson one's core questions in one sentence: who it's for, and what it does well. That's the difference between describing what something *is* and describing what it's *for* — and it's the same gap between a feature and a value.
+
+</div>
+</Quiz>
+
+---
+
+## 🚀 Stretch Challenge (optional)
+
+Finished early? Try one:
+
+- Make planes appear faster as the timer counts down, so the game ramps up in difficulty
+- Add a sound or animation when you hit vs. when you miss
+- Save your high score with `localStorage` so it survives a page refresh
+- **Automate the boring part:** ask Gemini to write a small script that auto-plays 20 rounds (clicking at random times) and reports your average score — a taste of using AI to automate a repetitive task instead of doing it by hand
+
+## ⏭️ Up Next
+
+Tomorrow, someone else uses your project — cold, with no explanation from you. What they say next changes everything about how you finish it.

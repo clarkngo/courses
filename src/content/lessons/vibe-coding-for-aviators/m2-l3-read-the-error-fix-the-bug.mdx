@@ -1,0 +1,105 @@
+---
+title: "Read the Error, Fix the Bug"
+description: "Bugs aren't a sign you did something wrong — they're the most normal part of building. Learn the loop that turns 'it's broken' into a fix."
+module: 2
+moduleTitle: "Day 2 — Think Like a Builder"
+lesson: 3
+duration: "25 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import LoopDiagram from '@components/LoopDiagram.astro';
+
+## 🐛 Bugs Aren't Failure — They're Data
+
+Here's something nobody tells beginners: professional software engineers spend a huge chunk of every single day looking at something broken. Not because they're bad at their jobs — because that's what building *is*. Every builder you'll ever meet, at every skill level, hits a moment where they click something and it doesn't do what they expected.
+
+The gap between a beginner and an expert isn't "the expert doesn't get bugs." It's that the expert has a calm, repeatable process for turning "this is broken" into "here's exactly what's wrong." That process is what this lesson gives you.
+
+---
+
+## 📖 Words You'll Actually See
+
+A few terms show up constantly once something breaks. None of them are complicated once you've seen them once:
+
+| Term | What it actually means |
+|---|---|
+| **Console** | A hidden panel (usually opens with a small "Console" or "Inspect" tab) where the computer writes down what went wrong, in its own words |
+| **Error message** | A short note from the computer pointing at roughly where it got confused — not an accusation, just a location |
+| **`undefined`** | The computer looked for something (a name, a value) and found nothing there yet |
+| **Syntax** | The grammar rules of code — a missing bracket or comma is a syntax problem, the same way a missing period changes a sentence |
+
+<Pitfall title="Assuming an Error Message Means You Broke Something Important">
+
+An error message looks alarming — red text, unfamiliar words — but it's closer to a spell-check underline than a smoke alarm. It's pointing at one specific spot, not judging your whole project. Read it as a clue, not a verdict.
+
+</Pitfall>
+
+---
+
+## 🔁 The Debug Loop
+
+When something doesn't work, don't retype your entire original prompt and hope. Run this loop instead:
+
+<LoopDiagram
+  label="The debug loop: Notice, Isolate, Describe, Ask, Retest, arranged in a circle with arrows connecting each step back to the next."
+  steps={[
+    { title: '1. Notice', subtitle: 'something is off' },
+    { title: '2. Isolate', subtitle: 'the exact click that triggers it' },
+    { title: '3. Describe', subtitle: 'expected vs. actual' },
+    { title: '4. Ask', subtitle: 'Gemini for that one fix' },
+    { title: '5. Retest', subtitle: 'did it actually fix it?' },
+  ]}
+/>
+
+**Notice** — something feels wrong. A button does nothing. A number looks wrong. The layout jumps.
+
+**Isolate** — find the *smallest* action that causes it. Not "the page is broken," but "clicking the second button specifically does nothing."
+
+**Describe** — say what you *expected* to happen, and what *actually* happened. This is the single most important step, and it's the one beginners skip.
+
+**Ask** — hand that description to Gemini as a Refine prompt, the same way you refined yesterday.
+
+**Retest** — click the exact same thing again. Did it actually fix it, or just move the problem?
+
+---
+
+## 💬 The One Sentence That Changes Everything
+
+Compare these two bug reports for the exact same problem:
+
+| Vague bug report | Specific bug report |
+|---|---|
+| "It's broken." | "When I click the second aircraft option, nothing happens — it should highlight and show a description, but the page doesn't change at all." |
+| Gemini has to guess what "broken" means | Gemini knows exactly where to look and what "fixed" looks like |
+
+The vague version forces Gemini to guess — and a wrong guess wastes a whole loop. The specific version names the exact trigger (clicking the second option), the expected result (highlight + description), and the actual result (nothing happens). That's Isolate and Describe, combined into one sentence.
+
+<Pitfall title="Reporting the Bug as 'Everything Is Wrong Now'">
+
+After a refine request goes sideways, it's tempting to panic and say something like "none of this works, start over." That throws away everything that *was* working. Instead, isolate again: what's the one thing that's different now? Usually it's much smaller than it feels in the moment.
+
+</Pitfall>
+
+---
+
+## 👀 Watch a Bug Get Fixed
+
+Your instructor will break something on purpose in a live build — misname a button, cause a click to do nothing — and narrate the debug loop out loud: what they notice, how they isolate it, and the exact sentence they type to describe it to Gemini.
+
+<Quiz question="You click 'See My Match' on your quiz and nothing happens — no error, no reaction, nothing. Using today's loop, what's your next move?">
+<div>
+
+**Isolate first, then describe expected vs. actual — don't just say 'it's not working.'**
+
+Before typing anything to Gemini, check: does *any* click do anything, or just this one? Does it happen every time, or only sometimes? Once you can say something like "clicking 'See My Match' should reveal my aircraft type, but nothing changes at all when I click it," you've done the hard part. That sentence — not a vague "fix it" — is what actually gets you a working fix on the first try.
+
+</div>
+</Quiz>
+
+---
+
+## ⏭️ Up Next
+
+Time to build "Clear the Runway" — and you now have both the UX lens to make it feel good, and the debug loop for when (not if) something breaks along the way.
