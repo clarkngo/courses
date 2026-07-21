@@ -1,0 +1,63 @@
+---
+title: "Accountability AI"
+description: "How Seattle's Office of Police Accountability uses a custom NLP database, historical precedent search, and bulk document extraction to make decades of case records actually searchable — and why OPA itself is telling SPD to write a policy for this."
+module: 2
+moduleTitle: "Technical Implementations"
+lesson: 2
+duration: "12 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## A Different Direction: AI Looking Backward at the Department
+
+Operational AI (previous lesson) points forward, into live cases. **Accountability AI** points the other direction — backward, into the department's own historical record. Its user isn't a patrol officer or detective; it's the **Office of Police Accountability (OPA)**, Seattle's civilian oversight body for investigating complaints against officers.
+
+This distinction matters for how you evaluate risk. A tool that helps OPA search its own case history doesn't touch active investigations or evidentiary chains the way Operational AI does — but it carries a different kind of stake: the accuracy and completeness of oversight itself depends on whether this tool actually surfaces the precedent it's supposed to.
+
+---
+
+## The Problem Accountability AI Solves
+
+OPA's case record spans decades of complaints, investigations, and disciplinary decisions — a volume of unstructured documents that makes manual precedent research genuinely difficult. When OPA evaluates a new complaint, prior similar cases matter for consistency: how was a comparable use-of-force complaint handled five years ago? Has this officer had prior sustained findings on a related issue? Answering that reliably by manual search across a large historical archive doesn't scale.
+
+Seattle's answer is a **custom NLP database** purpose-built for OPA's case archive, supporting three core functions:
+
+| Function | What It Does |
+|---|---|
+| **OPA Custom NLP Database** | Indexes the full historical case archive in a form that supports semantic, not just keyword, search |
+| **Historical precedent search** | Lets investigators find prior cases with similar fact patterns, not just matching terms |
+| **Bulk document extraction** | Pulls relevant records at volume for a given investigation, rather than manual file-by-file review |
+
+---
+
+## Why OPA Itself Is the One Calling for Policy
+
+The most important fact in this lesson is who's raising the flag: **OPA has publicly recommended that SPD develop formal policy around AI use** — not an outside advocacy group, the oversight body itself. That's a significant signal. It means the entity actually using this Accountability AI tooling has concluded that its own department lacks sufficiently clear rules governing AI use more broadly, and is asking for that gap to be closed.
+
+Read alongside Module 1's Legislative Evolution — where the 2025 POL-211 AI Policy responded to exactly this kind of gap for AI generally — this is a case of the internal accountability mechanism identifying a governance gap ahead of, or in parallel with, the external ordinance process closing it.
+
+<Pitfall title="Accountability AI Still Needs Its Own Accuracy Standard">
+
+A precedent-search tool that misses relevant prior cases — because of how it was indexed, trained, or queried — doesn't fail loudly. It fails silently: an investigator simply doesn't see the case that should have informed their decision, and has no way of knowing what they didn't find. Unlike Operational AI's human-in-the-loop design (previous lesson), where a human reviews a flagged item, a precedent-search tool's failure mode is an *absence* — nothing to review because nothing was surfaced. That makes independent accuracy auditing of the search index itself, not just the individual outputs, a real requirement, not an optional nicety.
+
+</Pitfall>
+
+<Quiz question="An OPA investigator uses the Accountability AI precedent-search tool for a new use-of-force complaint and finds no similar historical cases, concluding this is a novel fact pattern with no relevant precedent. What should this course's framework make the investigator do before finalizing that conclusion?">
+
+<div>
+
+**Treat a null result from an NLP search tool as inconclusive, not as proof of no precedent, and verify with at least a spot-check of the underlying archive or a different search approach before relying on it.**
+
+Because Accountability AI's failure mode is silent — a missed case simply doesn't appear, with no signal that anything was missed — a "no results" finding could mean either that no precedent genuinely exists, or that indexing, phrasing, or embedding limitations caused the tool to miss a real match. Given that OPA itself has flagged the need for clearer AI use policy, an investigator relying on an unverified null result to make a consistency-relevant accountability decision is exactly the scenario that policy is meant to guard against.
+
+</div>
+
+</Quiz>
+
+---
+
+## Up Next
+
+Accountability AI works on records. The next lesson turns to AI that works on people — specifically, on training them: [Tactile AI](/algorithmic-policing-seattle/lessons/m2-l3-tactile-ai).

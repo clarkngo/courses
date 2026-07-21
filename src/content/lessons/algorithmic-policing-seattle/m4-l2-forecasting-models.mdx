@@ -1,0 +1,61 @@
+---
+title: "Forecasting Models"
+description: "How predictive policing actually works under the hood — Random Forest classification trained on variables like meteorological correlation with crime — and what the criminological literature says about the limits of that approach."
+module: 4
+moduleTitle: "Criminological Research"
+lesson: 2
+duration: "13 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## What "Forecasting" Actually Means Here
+
+Predictive policing models don't predict a specific crime committed by a specific person — that's a common misconception worth correcting immediately, because it shapes how much weight leadership should put on their output. What these models actually do is **forecast probability distributions**: given historical data, where and when is a given category of crime statistically more likely to occur in the near term. That's a meaningfully weaker claim than "this will happen here," and understanding the gap between the two is the single most important thing this lesson teaches.
+
+---
+
+## Random Forest Classification
+
+The dominant technical approach in this space is **Random Forest classification** — an ensemble machine learning method that builds many individual decision trees, each trained on a random subset of the historical data and input variables, and combines their outputs into a single probability estimate. The "forest" of many trees, rather than one, is specifically designed to reduce overfitting to any single pattern in the historical data and produce a more stable prediction.
+
+Typical input variables for a crime-forecasting Random Forest model include: historical incident location and time, day-of-week and seasonal patterns, proximity to specific land uses (bars, transit stops, vacant lots), and — genuinely — **meteorological data**.
+
+---
+
+## The Meteorological Correlation, and Why It's a Legitimate Variable
+
+It can sound strange that weather shows up as a predictive input for crime forecasting, but the underlying criminological logic (routine activity theory, well established independent of any AI application) is straightforward: weather changes how many people are outdoors, when, and where — and a large share of opportunistic crime depends on the physical presence of potential victims and offenders in the same place at the same time. Warmer evenings correlate with more outdoor activity and, in turn, with measurable shifts in certain crime types. This is one of the more criminologically defensible variables in a forecasting model — it has decades of non-AI research behind the underlying mechanism, unlike some of the historical-enforcement-derived variables discussed in [Systemic Drawbacks](/algorithmic-policing-seattle/lessons/m3-l2-systemic-drawbacks).
+
+---
+
+## Where the Research Raises Caution
+
+Independent criminological literature on AI in policing — including research specifically evaluating how these tools perform across "routine, rare, and novel events" — draws a consistent distinction: forecasting models tend to perform reasonably on **routine, high-volume, well-patterned crime types** (the kind of property crime that follows predictable seasonal and situational patterns) and perform much worse on **rare or novel events** — exactly the high-stakes incidents where accurate forecasting would matter most, and exactly the cases with the least historical data to train on.
+
+This creates a specific deployment risk: a model that performs well in aggregate validation metrics can still be systematically unreliable for the rarer, more serious incidents that drive public concern and resource allocation decisions — a gap that a single overall "accuracy" figure will not surface unless the evaluation specifically breaks out performance by event type.
+
+<Pitfall title="A Model's Aggregate Accuracy Hides Its Weakest Cases">
+
+If 90% of the training data consists of routine property crime, a model can achieve strong-looking aggregate accuracy almost entirely by getting the routine cases right, while still performing poorly on rare violent crime — the exact scenario the "routine, rare, and novel events" research framework warns about. Before relying on a forecasting tool's published accuracy figure for a resource-allocation decision, ask whether that figure is broken out by event type, and specifically what the model's performance looks like on the rarer, higher-stakes categories — not just the overall number.
+
+</Pitfall>
+
+<Quiz question="A forecasting model reports 88% overall predictive accuracy and is proposed for guiding patrol resource allocation department-wide, including for violent crime hotspot prediction. What does this lesson say leadership should ask before approving that use case specifically?">
+
+<div>
+
+**Ask for accuracy broken out by crime type/event rarity, not just the aggregate figure — because a strong overall number can be driven mostly by routine, high-volume crime performance while masking much weaker performance on rare or novel events like violent crime.**
+
+The research on routine, rare, and novel events specifically warns that aggregate accuracy metrics can obscure exactly this gap. Since violent crime hotspot prediction is precisely a rare-event use case, and the proposed deployment is for a use case different from what the aggregate figure most likely reflects, approving it on the strength of an unbroken 88% figure risks deploying the model in exactly the category where it's least likely to perform as advertised.
+
+</div>
+
+</Quiz>
+
+---
+
+## Up Next
+
+Modules 1 through 4 have covered the rules, the tools, the evidence, and the research. Module 5 closes the course with the current state of accountability itself: [Structural Transitions](/algorithmic-policing-seattle/lessons/m5-l1-structural-transitions) — what changed when Seattle's federal consent decree ended, and who watches these systems now.

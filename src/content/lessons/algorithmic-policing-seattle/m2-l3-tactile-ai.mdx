@@ -1,0 +1,60 @@
+---
+title: "Tactile AI"
+description: "Axon Virtual Reality training as Seattle PD's third AI category: systems that don't touch a case file at all, but train the officer's judgment and muscle memory before they're ever in the field."
+module: 2
+moduleTitle: "Technical Implementations"
+lesson: 3
+duration: "11 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## The Third Category: AI That Never Touches a Case
+
+Operational AI reads live cases. Accountability AI searches historical records. **Tactile AI** is different in kind from both: it doesn't touch case data, evidence, or the accountability record at all. It's used entirely in **training**, before an officer is ever in a real incident — which means it carries a fundamentally different risk profile than the other three categories in this module. There's no evidentiary chain to protect, no Brady/Giglio exposure, no historical-record accuracy question. The risk here is a different one: does the training actually transfer to real-world performance, and does simulated practice change behavior in the ways it's designed to.
+
+Seattle PD's implementation of this category centers on **Axon Virtual Reality**.
+
+---
+
+## How Axon VR Training Works
+
+The system places an officer in an immersive, simulated scenario — a domestic disturbance call, a traffic stop, an armed-subject encounter — and lets them practice decision-making, verbal de-escalation, and use-of-force judgment in a repeatable, controlled environment. Two specific applications matter most:
+
+- **De-escalation training** — practicing verbal and tactical de-escalation techniques against a responsive simulated subject, in scenarios that would be impossible or unsafe to fully replicate in a live role-play exercise at scale.
+- **TASER proficiency** — building and testing muscle-memory proficiency with less-lethal tools in scenario-realistic conditions, rather than static range practice alone.
+
+The pitch for VR training over traditional role-play is repeatability and scale: a scenario can be run identically for every officer in a cohort, scored consistently, and repeated as many times as needed — something a live actor-based exercise struggles to do at department-wide scale.
+
+---
+
+## Why This Category Faces a Different Question Than the Rest of the Course
+
+Everything else in this course asks some version of: *does this AI system's output, when it touches a real case, hold up to legal, ethical, and evidentiary scrutiny?* Tactile AI asks a completely different question: **does simulated training transfer to real-world performance?**
+
+That's an empirical training-science question, not a civil-liberties or evidentiary one — and it means the review process from Module 1 (Surveillance Impact Reports, Civil Liberties Assessments) doesn't map cleanly onto this category, because Tactile AI isn't a surveillance technology and doesn't collect data on the public at all. Evaluating Axon VR effectively requires the same kind of question you'd ask about any training program: are outcomes measured, and against what baseline?
+
+<Pitfall title="Don't Assume Simulation Realism Equals Training Transfer">
+
+A highly realistic VR scenario is not automatically evidence that skills learned in it transfer to a real encounter. Training science broadly draws a distinction between engagement (does the trainee find it immersive and take it seriously) and transfer (does performance in the simulation predict performance in the field) — and the second is much harder to establish than the first. Before treating VR training hours as equivalent to field-readiness, leadership should look for outcome data — use-of-force incident rates, de-escalation success rates, post-training assessment scores — not just adoption and engagement metrics from the vendor.
+
+</Pitfall>
+
+<Quiz question="A vendor's marketing material for Axon VR reports high officer engagement scores and strong self-reported confidence after training. Command staff want to expand VR-based de-escalation training department-wide based on these numbers. What is the strongest independent question to ask first?">
+
+<div>
+
+**Ask for outcome data that measures actual field performance change — de-escalation success rates or use-of-force incident rates before and after training — rather than relying on engagement scores or self-reported confidence alone.**
+
+Engagement and self-reported confidence measure whether officers found the training compelling, not whether the training changed real-world behavior. This mirrors a pattern seen elsewhere in this course (see [Report Quality Evaluations](/algorithmic-policing-seattle/lessons/m4-l1-report-quality-evaluations)): a positive-sounding vendor metric that doesn't actually measure the outcome that matters. A defensible expansion decision rests on field-performance evidence, not adoption enthusiasm.
+
+</div>
+
+</Quiz>
+
+---
+
+## Up Next
+
+The first three categories in this module each do one job — reading cases, searching records, or training officers. The final lesson covers what happens when several AI-driven systems are wired together into one operational platform: [Integrated Systems](/algorithmic-policing-seattle/lessons/m2-l4-integrated-systems).

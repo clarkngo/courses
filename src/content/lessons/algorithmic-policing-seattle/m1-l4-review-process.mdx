@@ -1,0 +1,78 @@
+---
+title: "Review Process"
+description: "The four checkpoints a surveillance or AI tool has to clear in Seattle before deployment: Surveillance Impact Reports, Privacy Impact Assessments, Civil Liberties Assessments, and the Community Surveillance Working Group."
+module: 1
+moduleTitle: "Regulatory Framework"
+lesson: 4
+duration: "14 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Four Checkpoints, Not One Approval
+
+SMC 14.18 doesn't ask a department for a single sign-off. It requires a technology to clear four distinct checkpoints, each answering a different question, before it reaches a City Council vote. Leadership evaluating a new tool needs to know all four — because a tool can look strong on one and still fail on another.
+
+| Checkpoint | Question It Answers | Who Produces / Reviews It |
+|---|---|---|
+| **Surveillance Impact Report (SIR)** | What does this technology do, what data does it touch, and how is that data handled? | The acquiring department, published for public comment |
+| **Privacy Impact Assessment** | What personal data is collected, retained, or shared, and what are the risks? | City privacy program staff |
+| **Civil Liberties Assessment** | Does deployment create disparate impact or chill constitutionally protected activity? | Civil liberties / equity review staff |
+| **Community Surveillance Working Group (CSWG) review** | What does the affected public actually think, and what conditions do they want attached? | An independent community body, with findings reported to Council |
+
+---
+
+## Surveillance Impact Reports: The Foundational Document
+
+The SIR is the document everything else builds on. It has to describe, in specific and public terms: the technology's function, the data it collects, how long that data is retained, who it's shared with (including other agencies), the financial cost, and — critically — a plain-language explanation a non-technical council member and a member of the public can both actually evaluate.
+
+The SIR is published for public comment before Council votes, which means a poorly scoped SIR doesn't just risk internal pushback — it becomes a public document that advocacy groups, journalists, and residents can and do scrutinize directly.
+
+---
+
+## Privacy and Civil Liberties Assessments: Two Different Lenses on Risk
+
+It's easy to conflate these, but they ask different questions:
+
+- The **Privacy Impact Assessment** is a data-handling audit: what's collected, how it's secured, how long it's kept, who can access it. This is the checkpoint most similar to a standard corporate data-privacy review.
+- The **Civil Liberties Assessment** is a use-and-effect audit: even if data handling is technically sound, does *how* the tool gets used create disparate impact on specific communities, or discourage people from exercising rights — showing up to a protest, a place of worship, a legal clinic — because they know they're being watched or algorithmically flagged?
+
+A tool can pass the first and fail the second. A camera network with excellent data retention discipline can still raise serious civil liberties concerns if it's disproportionately sited in specific neighborhoods, or if its output feeds a predictive model that reproduces historical policing bias (a concern covered in depth in [Module 3](/algorithmic-policing-seattle/lessons/m3-l2-systemic-drawbacks)).
+
+---
+
+## The Community Surveillance Working Group
+
+The CSWG is the review step furthest from the department itself: an independent body of community members and civil liberties representatives that reviews SIRs and issues findings and recommendations *before* Council votes. Its role is not veto power — Council retains the final decision — but its findings become part of the public record Council has to weigh, and its objections are frequently cited in public debate and press coverage of a proposed technology.
+
+<CodeLab title="Walk a Real Tool Through the Four Checkpoints">
+
+Take one AI or surveillance tool your own department is currently considering. Answer, in writing, what a Seattle-style review would require at each checkpoint:
+
+1. **SIR**: Could you currently write a plain-language public description of what data this tool collects and how long it's retained?
+2. **Privacy Impact Assessment**: Who outside the acquiring unit would sign off on the data-handling practices?
+3. **Civil Liberties Assessment**: Is there any plausible disparate-impact or chilling-effect concern, even if data handling itself is clean?
+4. **Community review**: If an independent community body reviewed this tool publicly today, what's the single objection you'd expect first?
+
+If you can't answer one of these confidently, that's the gap to close before procurement — not after.
+
+</CodeLab>
+
+<Quiz question="A department's Privacy Impact Assessment for a new AI tool comes back clean — data retention is short, access is tightly controlled, and sharing with other agencies is minimal. Command staff conclude the tool is ready for deployment. What does the four-checkpoint model say is missing from that conclusion?">
+
+<div>
+
+**A clean Privacy Impact Assessment does not substitute for a Civil Liberties Assessment or Community Surveillance Working Group review — those evaluate different risks (disparate impact, chilling effects, public trust) that sound data handling alone does not address.**
+
+The four checkpoints are deliberately non-redundant: the Privacy Impact Assessment audits *how data is handled*, while the Civil Liberties Assessment and CSWG review ask whether the tool's actual use — regardless of how well the data itself is managed — creates disparate impact or discourages protected activity, and whether the affected public has had a real chance to weigh in. A tool can score well on data hygiene and still generate legitimate civil liberties objections or public opposition that only surface at the later checkpoints.
+
+</div>
+
+</Quiz>
+
+---
+
+## Up Next
+
+Module 1 has covered *why* Seattle regulates locally, *how* that regulation evolved, and *what* a tool has to pass through before deployment. Module 2 shifts from policy to practice: [Operational AI](/algorithmic-policing-seattle/lessons/m2-l1-operational-ai), the first category of tools actually running inside Seattle PD today.

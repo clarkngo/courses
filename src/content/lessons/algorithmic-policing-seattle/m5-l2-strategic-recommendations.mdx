@@ -1,0 +1,88 @@
+---
+title: "Strategic Recommendations"
+description: "Four concrete policy proposals on the table to close the remaining oversight gaps: a strict ban on criminal narrative AI, five-day data retention limits, mandatory subpopulation bias audits, and a permanent AI Advisory Body."
+module: 5
+moduleTitle: "Oversight and Reform"
+lesson: 2
+duration: "15 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Quiz from '@components/Quiz.astro';
+
+## From Evidence to Recommendation
+
+This course has built toward this lesson deliberately. Module 1 gave you the regulatory vocabulary. Module 2 showed what's actually deployed. Module 3 weighed real benefits against real, documented costs. Module 4 brought in independent research. Module 5's first lesson explained who watches these systems now that federal supervision has ended. This final lesson closes the loop: four concrete recommendations, each one traceable directly back to a specific gap this course has already documented.
+
+---
+
+## Recommendation 1: Strict Ban on Criminal Narrative AI
+
+**The gap it closes:** [Report Quality Evaluations](/algorithmic-policing-seattle/lessons/m4-l1-report-quality-evaluations) documented reduced factual accuracy, increased complexity, and zero net time savings for AI-generated incident narratives. Seattle's own KCPAO directive already draws this line for prosecution purposes.
+
+**The recommendation:** Codify a strict, department-wide policy ban on generative AI producing narrative prose for any criminal incident report or investigative record — not as informal guidance, but as binding policy with the same enforcement weight as other evidentiary handling rules. This closes the gap between "the county prosecutor won't accept it" (a downstream consequence) and "the department doesn't produce it" (an upstream prevention).
+
+---
+
+## Recommendation 2: Five-Day Data Retention Limits
+
+**The gap it closes:** [Continuous spatial surveillance](/algorithmic-policing-seattle/lessons/m3-l2-systemic-drawbacks) from Integrated Systems creates persistent tracking capability regardless of individual suspicion. Extended retention windows are what let that capability turn into retrospective movement reconstruction — searching where someone has been over weeks or months, not just responding to an active incident.
+
+**The recommendation:** Impose short default retention limits — on the order of five days — for non-evidentiary surveillance data (raw CCTV feed, ALPR reads not tied to an active investigation), with retention beyond that window requiring an affirmative, documented investigative justification rather than indefinite default storage. This directly narrows the "aggregate capability exceeds any single approval" problem identified in [Integrated Systems](/algorithmic-policing-seattle/lessons/m2-l4-integrated-systems).
+
+---
+
+## Recommendation 3: Mandatory Subpopulation Bias Audits
+
+**The gap it closes:** [Codified racial and economic bias](/algorithmic-policing-seattle/lessons/m3-l2-systemic-drawbacks) and the routine/rare/novel event performance gap from [Forecasting Models](/algorithmic-policing-seattle/lessons/m4-l2-forecasting-models) both showed that aggregate accuracy figures can hide serious disparities and weaknesses that only appear when results are broken out by subgroup.
+
+**The recommendation:** Require that any deployed predictive or classification model undergo **recurring, mandatory bias audits broken out by subpopulation** — race, neighborhood, and (per Module 4) by crime-type rarity — not a one-time pre-deployment check, but a standing requirement re-run on a fixed schedule as models are retrained on new data. This directly operationalizes the caution from both Module 3 and Module 4: an aggregate number is not sufficient evidence of fairness or reliability on its own.
+
+---
+
+## Recommendation 4: A Permanent AI Advisory Body
+
+**The gap it closes:** The Community Surveillance Working Group ([Review Process](/algorithmic-policing-seattle/lessons/m1-l4-review-process)) reviews individual technologies at the point of proposed deployment, and OPA has already flagged the absence of comprehensive AI policy ([Accountability AI](/algorithmic-policing-seattle/lessons/m2-l2-accountability-ai)). Neither is a standing body specifically tasked with ongoing, cross-cutting AI governance as new tools and integrations emerge — exactly the gap [Structural Transitions](/algorithmic-policing-seattle/lessons/m5-l1-structural-transitions) identified as most urgent now that the federal backstop is gone.
+
+**The recommendation:** Establish a **permanent AI Advisory Body** — not project-specific, not sunset after one technology's review — with standing authority to review new integrations (closing the Module 2 "integration exceeds the sum of approved parts" problem), monitor bias audit results (Recommendation 3), and recommend policy updates as generative AI capabilities continue to change faster than any single ordinance revision cycle can track.
+
+<CodeLab title="Apply the Four Recommendations to Your Own Department">
+
+Return to the tool inventory you started in Module 1, Lesson 1. For each tool on your list, ask:
+
+1. Does it generate narrative text about a criminal incident? If so, Recommendation 1 applies directly.
+2. Does it retain surveillance data longer than five days by default? If so, what's the actual justification?
+3. Has it been bias-audited by subpopulation — not just overall accuracy — and on a recurring basis?
+4. Is there a standing body in your department with the authority and mandate to review it going forward, not just at initial procurement?
+
+Where the answer is "no" on any of these, you've identified your department's most concrete next step coming out of this course.
+
+</CodeLab>
+
+<Quiz question="A department has adopted Recommendation 1 (a strict ban on criminal narrative AI) but has not adopted Recommendation 4 (a permanent AI Advisory Body). A new vendor proposes a generative summarization tool that doesn't draft narrative text, but writes a plain-language 'case summary' for supervisors by paraphrasing an already-completed, human-authored report. Does the existing ban cover this tool, and does the absence of an advisory body matter here?">
+
+<div>
+
+**The strict narrative ban likely does not clearly cover this tool, since it paraphrases an already-completed human narrative rather than drafting the original incident account — and the absence of a permanent AI Advisory Body matters precisely because this is the kind of edge case that needs a standing review mechanism rather than an ad hoc decision.**
+
+This scenario is deliberately designed to fall in a gray zone: it's generative (produces new prose) but operates on already-verified human-authored content rather than authoring the original narrative — closer to the AI-as-Auditor pattern from [Report Quality Evaluations](/algorithmic-policing-seattle/lessons/m4-l1-report-quality-evaluations) than the AI-as-Author pattern the ban targets, but not identical to either category covered explicitly in this course. Without a standing AI Advisory Body, this kind of case gets decided ad hoc, by whichever unit encounters it first — exactly the coordination gap Recommendation 4 is designed to close. This is also a live illustration of why recommendations aren't independent: partial adoption leaves exactly the kind of edge case a permanent body exists to resolve.
+
+</div>
+
+</Quiz>
+
+---
+
+## Course Complete
+
+You've now covered:
+
+- **Module 1 — Regulatory Framework**: why cities regulate surveillance locally, how Seattle's ordinance regime evolved from 2013 disclosure through 2017's structured review to the 2025 AI policy, and the four checkpoints — SIR, Privacy Impact Assessment, Civil Liberties Assessment, and Community Surveillance Working Group review — a tool has to clear.
+- **Module 2 — Technical Implementations**: the four functional categories actually deployed in Seattle — Operational AI (bias crime detection), Accountability AI (OPA precedent search), Tactile AI (Axon VR training), and Integrated Systems (the Fusus-powered Real-Time Crime Center).
+- **Module 3 — Impact Analysis**: real operational gains (force multiplication, a 95% detection-time reduction, clearance rate improvements) weighed against systemic drawbacks (feedback loops, codified bias, hallucination, continuous surveillance) — with the ShotSpotter decision as the model for tool-by-tool, evidence-based judgment.
+- **Module 4 — Criminological Research**: independent findings that AI-assisted report writing reduces accuracy and produces zero net time savings, and that forecasting models can hide serious rare-event weaknesses behind strong aggregate accuracy figures.
+- **Module 5 — Oversight and Reform**: what changed when the 13-year federal consent decree lifted, the local OIG and Sentinel Event Review structures now carrying that weight, and four concrete recommendations — a narrative AI ban, five-day retention limits, mandatory subpopulation bias audits, and a permanent AI Advisory Body — for closing the gaps this course has documented.
+
+The thread running through every module: **algorithmic policing tools are not a single category to approve or reject wholesale.** Seattle's own record — dropping ShotSpotter while expanding the Real-Time Crime Center, funding AI upskilling while its own prosecutor's office rejects AI-drafted narratives — shows that the discipline this course teaches is tool-by-tool, evidence-first evaluation, applied continuously as the technology and the governance structure around it both keep changing.
+
+For the full bibliography behind every claim in this course, organized by topic, see [Sources & References](/algorithmic-policing-seattle/lessons/m5-l3-sources-references).

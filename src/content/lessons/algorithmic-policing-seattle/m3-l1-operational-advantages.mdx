@@ -1,0 +1,61 @@
+---
+title: "Operational Advantages"
+description: "The real, documented case for algorithmic policing tools: computational force multiplication, a 95% reduction in pattern-detection time, and measurable case clearance gains — and why these numbers need to be read carefully."
+module: 3
+moduleTitle: "Impact Analysis"
+lesson: 1
+duration: "12 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Starting With the Strongest Case, Not the Weakest
+
+Module 3 is where this course weighs benefits against costs — and it starts with benefits deliberately, before Systemic Drawbacks and the ShotSpotter Debate. Skipping straight to the failure cases would make it easy to conclude these tools are broadly not worth deploying, which is not what Seattle's actual record shows. Some categories of algorithmic policing tool — particularly the pattern-detection and analytical work covered in [Operational AI](/algorithmic-policing-seattle/lessons/m2-l1-operational-ai) — show real, measurable gains. Command staff need to be able to name those gains specifically, not wave at "efficiency," because specificity is what makes a procurement case defensible under the review process from Module 1.
+
+---
+
+## Computational Force Multipliers
+
+The core operational argument for AI tools in policing is **force multiplication**: a fixed number of analysts and detectives can cover substantially more investigative ground when computational tools handle the pattern-matching and correlation work that would otherwise require manual review at scale. This isn't a claim that AI replaces investigative judgment — it's a claim that it changes what a given headcount can process in a given shift.
+
+This is the same logic underlying the Real-Time Crime Center's integrated systems (Module 2, Lesson 4): a handful of RTCC analysts, supported by aggregated camera and ALPR feeds, can maintain situational awareness that would require far more personnel to replicate through manual monitoring alone.
+
+---
+
+## The 95% Figure — and How to Read It
+
+Seattle's reporting on its AI-assisted analytical tools has cited pattern-detection time reductions as dramatic as 95% compared to fully manual review — for example, in tasks like surfacing bias-crime indicators or correlating incidents across large volumes of narrative and sensor data (see [Operational AI](/algorithmic-policing-seattle/lessons/m2-l1-operational-ai)).
+
+That number is real, but it measures a specific, narrow thing: **time to surface a candidate pattern for human review**, not time to reach a final determination, and not overall case-outcome quality. It's the same distinction that matters in [Report Quality Evaluations](/algorithmic-policing-seattle/lessons/m4-l1-report-quality-evaluations) later in this course, where a headline efficiency claim and a rigorously measured end-to-end outcome turn out to be different things. A 95% reduction in detection time is a genuinely strong result for the specific step it measures — command staff should just be precise about which step that is when citing it.
+
+---
+
+## Case Clearance Rates
+
+Beyond detection speed, Seattle has reported increased case clearance rates in areas supported by these tools — cases where investigative leads that would have taken longer to surface manually get identified and acted on faster, within the time window where evidence and witness memory are freshest. Clearance rate is a more outcome-oriented metric than detection time alone, which makes it a stronger piece of evidence for genuine operational value — but it should still be read against a clear baseline (clearance rates for comparable case types before the tool was deployed) rather than cited as a bare percentage.
+
+<Pitfall title="An Efficiency Metric Is Not an Outcome Metric Until You Check">
+
+"95% faster" and "higher clearance rate" sound like the same kind of claim, but they're not. Faster detection describes a process step; clearance rate describes an outcome. A tool can genuinely accelerate a process step without moving the outcome metric at all — for instance, if the acceleration mostly reallocates analyst time to lower-value tasks rather than converting directly into closed cases. When evaluating a vendor or internal claim, always ask which of these two kinds of metric you're actually looking at, and whether an outcome metric has been measured at all.
+
+</Pitfall>
+
+<Quiz question="A department's internal report cites a 95% reduction in time-to-detect suspicious patterns after deploying a new analytical AI tool, and recommends expanding it based on that figure alone. What is the strongest question to ask before approving expansion?">
+
+<div>
+
+**Ask what happened to outcome-level metrics — case clearance rates, investigative accuracy, time to actual resolution — not just the process-step detection-time metric, since the two are not interchangeable.**
+
+A large reduction in detection time is a real and useful result, but it measures how fast a candidate pattern reaches a human reviewer, not what happens after that — whether it leads to more cases cleared, more accurate outcomes, or simply more flagged items competing for the same review capacity. Expansion decisions grounded only in a process-speed metric risk over-crediting the tool for gains that haven't actually been demonstrated at the outcome level.
+
+</div>
+
+</Quiz>
+
+---
+
+## Up Next
+
+The gains in this lesson are real, but they are not the whole picture. The next lesson turns to the other side of the ledger: [Systemic Drawbacks](/algorithmic-policing-seattle/lessons/m3-l2-systemic-drawbacks) — the structural risks that come with the same tools.
