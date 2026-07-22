@@ -1,0 +1,92 @@
+---
+title: "Choosing Your Channel"
+description: "Video, writing, and audio aren't interchangeable — media richness theory explains which one actually fits the kind of expertise you're trying to make public."
+module: 2
+moduleTitle: "Choosing Your Format"
+lesson: 1
+duration: "14 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import CodeLab from '@components/CodeLab.astro';
+import Quiz from '@components/Quiz.astro';
+
+## The Wrong First Question
+
+The wrong first question is "should I do YouTube or LinkedIn or a newsletter?" That question has no correct answer in the abstract — it depends entirely on what kind of knowledge you're trying to move out of your head and into someone else's, which is a question with real research behind it.
+
+---
+
+## Media Richness Theory
+
+**Daft, R. L., & Lengel, R. H. (1986). "Organizational information requirements, media richness and structural design." *Management Science*, 32(5), 554–571.**
+
+Daft and Lengel's media richness theory ranks communication channels by how much ambiguity and nuance they can carry: richness comes from the ability to give immediate feedback, use multiple cues (tone, pacing, facial expression), convey natural language, and personalize the message. Face-to-face is the richest channel; a numeric report is the leanest. Their core finding — developed for organizational communication, but directly applicable here — is that **matching message richness to the ambiguity of the content being communicated** improves comprehension; mismatches in either direction (a rich channel for a simple fact, a lean channel for something genuinely ambiguous) waste effort or lose the audience.
+
+Applied to public content:
+
+| Format | Richness (Daft & Lengel) | Best suited to |
+|---|---|---|
+| **Video** | High — tone, pacing, visual demonstration, near-synchronous feel | Procedures, debugging live, anything with a "watch me do this" component, emotionally-loaded topics (career advice, failure stories) |
+| **Long-form writing** | Medium-high, asynchronous | Frameworks, comparisons, anything a reader needs to re-read, pause on, or link back to later |
+| **Short-form writing (LinkedIn, threads)** | Lower, but high reach | A single sharp claim, a link to richer material, discovery — not the place to teach something genuinely complex |
+| **Audio / podcast conversation** | High on tone and nuance, low on visual demonstration | Interviews, debates, anything better heard than shown, passive consumption during commutes |
+
+<Pitfall title="Picking the Format That's Trendy Instead of the One That Fits">
+
+It's tempting to default to whatever format is currently getting the most attention — short-form video, for instance — regardless of what you're actually trying to teach. Daft and Lengel's framework predicts exactly where this goes wrong: a 45-second video cannot carry the richness a genuinely ambiguous, multi-step framework needs, any more than a dense whitepaper is the right vehicle for "here's what imposter syndrome felt like in my first industry job." The format should be chosen by the content's actual ambiguity, not by channel popularity.
+
+</Pitfall>
+
+---
+
+## A Second Dimension: Tacit vs. Explicit Knowledge
+
+**Polanyi, M. (1966). *The Tacit Dimension*. University of Chicago Press.**
+
+Polanyi's distinction between **explicit knowledge** (what can be written down as a fact, formula, or step-by-step procedure) and **tacit knowledge** (what's known but hard to fully articulate — the judgment call you make instinctively after years of practice) is the second filter worth applying here, alongside richness.
+
+- **Explicit knowledge** — a definition, a checklist, a comparison table — usually transfers fine in lean, written form. You don't need video to explain what a term means.
+- **Tacit knowledge** — the thing you can *do* correctly but struggle to fully articulate in a list, like reading a room in a negotiation or knowing when a system design "smells wrong" — needs the richest channel you can manage, because demonstrating it (video, live walkthrough) transmits far more than describing it does.
+
+Most of what makes industry practitioners valuable as instructors is exactly this tacit layer — judgment calls that don't show up in a textbook. That's often your best content, and it's usually under-served by whichever format is easiest to produce.
+
+---
+
+## Choosing One Primary Channel
+
+This course recommends picking **one primary channel** to start, not spreading thin across three. A single well-matched channel, run consistently, builds an audience faster than three channels run occasionally — Module 5 covers the research on why consistency beats reach. Use the table above and Polanyi's tacit/explicit split to make the call:
+
+1. **List three things you know that you'd want to teach publicly** — from your Module 1 inventory.
+2. **For each, judge tacit vs. explicit** (Polanyi) — a judgment call, a "feel" for something, versus a definable fact or process.
+3. **For each, judge richness needed** (Daft & Lengel) — does it need tone, demonstration, and feedback, or does it hold up fine in plain text?
+4. **Pick the channel that fits the majority of your list**, not the one you personally find least intimidating to start with.
+
+<CodeLab title="Match Your Three Ideas to a Channel">
+
+Using your Module 1 inventory, build this table for yourself:
+
+| Idea | Tacit or Explicit? | Richness needed? | Best-fit channel |
+|---|---|---|---|
+| (idea 1) | | | |
+| (idea 2) | | | |
+| (idea 3) | | | |
+
+If two of three point to the same channel, that's your primary channel for the next three modules. If they're split evenly, pick the one channel you can sustain most easily on your actual weekly time budget (Module 6) — sustainability beats theoretical fit if the two disagree.
+
+</CodeLab>
+
+<Quiz question="An instructor wants to teach the tacit judgment involved in triaging a production incident — knowing which alert to trust and which to ignore, a skill they can perform but struggle to write down as a checklist. Based on Daft & Lengel (1986) and Polanyi (1966), which format is the strongest starting choice, and why?">
+
+<div>
+
+**Video, specifically a screen-recorded or narrated walkthrough of an actual (or realistic simulated) incident.** Polanyi's framework identifies this as tacit knowledge — hard to fully specify as a rule set — which means a lean, explicit-only channel like a bulleted checklist will lose most of the value; the instructor will end up writing a checklist that looks authoritative but doesn't transmit the actual judgment. Daft and Lengel's richness framework points to the same answer from a different angle: this is high-ambiguity content that benefits from tone, pacing, and something close to "watching a person think out loud," which only a rich, near-synchronous-feeling channel like video can carry. A short LinkedIn post could still work as a *pointer* to the video — but the teaching itself belongs in the richer format.
+
+</div>
+</Quiz>
+
+---
+
+## Up Next
+
+Choosing a channel answers *what kind* of content you'll make. **Module 2's second lesson** answers the harder question: how to actually produce it on a repeatable schedule without it consuming the time you need for teaching — including what the research on habit formation says about why "when I have time" plans reliably fail.
