@@ -1,0 +1,76 @@
+---
+title: "Structuring for Retention"
+description: "YouTube's biggest lever isn't a better idea — it's pacing. Cognitive load theory explains why most educational videos lose viewers in the first 30 seconds, and how to structure around it."
+module: 2
+moduleTitle: "Choosing Your Format"
+lesson: 3
+duration: "14 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import CodeLab from '@components/CodeLab.astro';
+import Quiz from '@components/Quiz.astro';
+
+## The Platform-Specific Problem This Lesson Solves
+
+Module 2's first lesson helped you choose video as a channel when the content warranted it. This lesson assumes that choice is made and addresses something specific to YouTube as a platform: its retention curve is unforgiving in the first 30 seconds, and most instructors, trained to open a lecture with context and agenda, structure their videos exactly backwards for it.
+
+---
+
+## Why the Classroom Opening Fails On YouTube
+
+A university lecture can open with "today we'll cover three things" because the audience is contractually captive — they enrolled, they're in the room, they're not leaving. A YouTube viewer has made no such commitment and is one thumb-swipe from a different video at every second. The lecture-style throat-clearing open (context, agenda, credentials) that works in a classroom is, on YouTube, simply dead time before the reason to stay arrives.
+
+---
+
+## Cognitive Load Theory and Why Pacing Matters
+
+**Sweller, J. (1988). "Cognitive load during problem solving: Effects on learning." *Cognitive Science*, 12(2), 257–285.**
+
+Sweller's cognitive load theory distinguishes **intrinsic load** (the inherent difficulty of the material itself), **extraneous load** (difficulty added by how the material is presented — poor structure, irrelevant detail, unclear sequencing), and **germane load** (the effortful processing that actually builds understanding). His central finding: working memory is severely limited, and instructional design that adds unnecessary extraneous load — asking the viewer to hold irrelevant scaffolding in mind — crowds out the germane load where real learning happens.
+
+Applied to video structure, this gives a concrete diagnostic for a slow open: a preamble ("let me tell you about my background, then the agenda, then we'll get started") is pure extraneous load. It teaches nothing and costs working-memory capacity and attention before the intrinsic content even begins. Sweller's framework predicts, correctly, that cutting it doesn't just improve retention metrics — it improves comprehension, because viewers reach the actual content with more attentional capacity intact, not less.
+
+<Pitfall title={`"Cutting My Intro Feels Like It's Missing Context"`}>
+
+The instinct to front-load context comes from a real teaching skill — Module 3's discussion of pedagogical content knowledge (Shulman, 1986) is exactly about sequencing explanations well. But sequencing for a captive classroom and sequencing for an opt-in platform are different problems. The fix isn't removing context — it's **relocating** it: state the specific problem or question first (the intrinsic content's entry point), and fold in only the context strictly necessary to understand *that*, deferring your credentials, the broader agenda, or tangential background to later in the video or to the description, where an already-retained viewer can find it without cost.
+
+</Pitfall>
+
+---
+
+## A Structure That Front-Loads Intrinsic Load
+
+A structure consistent with Sweller's framework, adaptable to most instructional video:
+
+1. **Cold open on the specific problem** (0–15 seconds) — the exact question, bug, or misconception the video resolves, with no throat-clearing.
+2. **One sentence of essential context only** — the minimum needed to understand why the problem matters, not your full background.
+3. **The explanation itself**, sequenced the way your best in-class explanation already is (Module 3) — this is where germane load does its work.
+4. **A concrete example or demonstration**, anchoring the explanation in something visible rather than purely verbal.
+5. **A short close** stating what was resolved, without re-explaining it — respecting the viewer's working memory rather than repeating content they've already processed.
+
+<CodeLab title="Re-Cut Your Module 3 Artifact's Opening">
+
+Take the first public artifact you built in Module 3 and apply this test:
+
+1. Time how long it takes before you state the actual problem or question the video answers.
+2. If it's more than 15 seconds, identify what's happening in that time — almost always, it's extraneous load (background, agenda, disclaimers) rather than intrinsic content.
+3. Cut or relocate that material to later in the video or the description.
+4. Re-time the new opening. Your goal isn't an arbitrary number — it's the shortest distance to the specific problem your video resolves.
+
+</CodeLab>
+
+<Quiz question="An instructor's video opens with: 'Hi, I'm a senior engineer with 12 years of experience, and today I want to walk you through three common mistakes people make with database indexing — but first, let me tell you why indexing matters in general.' Based on Sweller (1988), what's the most likely effect of this opening on viewer retention, and what should change?">
+
+<div>
+
+**This opening adds several seconds of extraneous load — credentials, a preview of an agenda, and general context — before reaching the actual intrinsic content (the three specific mistakes), which Sweller's framework predicts will cost attention and working-memory capacity that would otherwise go toward comprehension, and on an opt-in platform, cost viewers outright before the content even starts.** The fix isn't removing the instructor's credibility or the context entirely — it's resequencing: open directly on the first concrete mistake or its symptom (something specific and recognizable), and fold credentials and general context in briefly afterward, once the viewer has a concrete reason to keep watching.
+
+</div>
+</Quiz>
+
+---
+
+## Up Next
+
+Structure gets someone to *stay* once they've clicked. **The next lesson** covers what gets them to click in the first place — titles and thumbnails, and the real psychological research on curiosity versus the manipulative version of it commonly called clickbait.
