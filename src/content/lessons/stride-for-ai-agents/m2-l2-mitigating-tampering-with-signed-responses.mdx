@@ -1,0 +1,180 @@
+---
+title: "Mitigating Tampering with Signed Responses"
+description: "Add ResearchAgent to FinFlow with a bank API client that verifies response signatures and validates schema before trusting any data."
+module: 2
+moduleTitle: "Tampering"
+lesson: 2
+duration: "50 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## What You'll Build
+
+`ResearchAgent`, plus a bank API client that treats every response as untrusted until its signature checks out and its shape passes validation. You'll also simulate a tampering attack yourself, so you can watch the defense catch it.
+
+---
+
+## Step 1: Scaffold ResearchAgent
+
+Continuing in the `finflow/` project from Module 1:
+
+```bash
+mkdir research_agent
+touch research_agent/__init__.py research_agent/agent.py research_agent/bank_client.py
+echo "from . import agent" > research_agent/__init__.py
+```
+
+Add a signing secret to `.env` — this simulates the bank's private signing key on one side, and FinFlow's copy of the bank's public verification key on the other. (In production these would be an actual public/private keypair; a shared secret keeps the lab simple while teaching the same verification logic.)
+
+```
+BANK_API_SIGNING_SECRET=a-secret-shared-with-the-banks-signing-service
+```
+
+---
+
+## Step 2: A Bank Client That Verifies Before Trusting
+
+**`research_agent/bank_client.py`:**
+
+```python
+import hashlib
+import hmac
+import json
+import os
+
+BANK_SECRET = os.environ["BANK_API_SIGNING_SECRET"]
+
+# Simulates the bank's server. A real client would call requests.get(...) over
+# TLS 1.2+; we simulate the wire here to isolate the signature-verification logic.
+def _call_bank_api(account_id: str) -> tuple[dict, str]:
+    payload = {"account_id": account_id, "balance": 1000.00, "currency": "USD"}
+    body = json.dumps(payload, sort_keys=True)
+    signature = hmac.new(BANK_SECRET.encode(), body.encode(), hashlib.sha256).hexdigest()
+    return payload, signature
+
+
+def _verify_signature(payload: dict, signature: str) -> bool:
+    body = json.dumps(payload, sort_keys=True)
+    expected = hmac.new(BANK_SECRET.encode(), body.encode(), hashlib.sha256).hexdigest()
+    return hmac.compare_digest(expected, signature)
+
+
+def _validate_schema(payload: dict) -> bool:
+    if not isinstance(payload.get("balance"), (int, float)):
+        return False
+    if payload["balance"] < 0:
+        return False
+    if payload.get("currency") != "USD":
+        return False
+    return True
+
+
+def get_account_balance(account_id: str, *, simulate_tampering: bool = False) -> dict:
+    """Fetches a balance from the bank API, verifying signature and schema first."""
+    payload, signature = _call_bank_api(account_id)
+
+    if simulate_tampering:
+        payload = dict(payload, balance=10.00)  # attacker rewrites the balance
+
+    if not _verify_signature(payload, signature):
+        return {"status": "error", "message": "Signature verification failed — response rejected"}
+
+    if not _validate_schema(payload):
+        return {"status": "error", "message": "Response failed schema validation — response rejected"}
+
+    return {"status": "success", "balance": payload["balance"], "currency": payload["currency"]}
+```
+
+<CodeLab title="hmac.compare_digest, Not ==">
+
+`_verify_signature` uses `hmac.compare_digest` instead of a plain `==`. A normal string comparison exits early on the first mismatched character, which means the time it takes to compare depends on how much of the two strings matched — an attacker who can measure that timing can guess a signature one byte at a time. `compare_digest` always takes the same amount of time regardless of how many characters match, closing that side channel.
+
+It's a small detail, but it's the kind of thing that separates "looks like it verifies signatures" from actually being safe to deploy. Any time you're comparing a secret or a signature, reach for a constant-time comparison.
+
+</CodeLab>
+
+<CodeLab title="Signature Check Before Schema Check">
+
+Notice the order: signature verification happens *before* schema validation. If you validated schema first, an attacker could craft a tampered payload that's perfectly well-formed — passes every shape and range check — and you'd never get to the signature check that would have caught it. Verifying trust before verifying shape means a forged-but-valid-looking payload still gets rejected on the first gate.
+
+</CodeLab>
+
+---
+
+## Step 3: Wire It Into ResearchAgent
+
+**`research_agent/agent.py`:**
+
+```python
+from google.adk.agents import Agent
+from research_agent.bank_client import get_account_balance
+
+root_agent = Agent(
+    name="research_agent",
+    model="gemini-2.0-flash",
+    description="Looks up account and market data for FinFlow, including bank balances.",
+    instruction="""
+        You look up financial data for FinFlow. When asked for an account balance,
+        call get_account_balance. If it returns an error status, tell the user the
+        balance could not be safely retrieved — never guess a number or explain
+        away a verification failure. A rejected response is not a smaller balance;
+        it is no balance.
+    """,
+    tools=[get_account_balance],
+)
+```
+
+<Pitfall title="Don't Let the Agent 'Helpfully' Recover">
+
+It's tempting to have the agent fall back to *something* — a cached value, a rough estimate — when verification fails, so the user isn't left empty-handed. Resist this. A verification failure means you cannot currently trust the data source. Falling back to a stale or approximate number silently reintroduces the exact risk you just built a defense against, and now it's hidden behind a response that looks successful.
+
+The correct "helpful" behavior is a clear error: tell the user what happened and let them retry or escalate. Silent degradation is how tampering defenses get worked around by well-meaning error handling.
+
+</Pitfall>
+
+---
+
+## Step 4: Watch It Catch a Tampering Attempt
+
+Wire `research_agent` into `root_agent` the same way you wired in `auth_agent` in Module 1 — add `AgentTool(agent=research_agent)` to `root_agent`'s `tools` list and import it. Then:
+
+```bash
+adk web
+```
+
+Select **root_agent** and try:
+
+- `"What's the account balance for account_id acct_001?"`
+
+You should get back `$1000.00` with a successful status. Now open a Python shell and call the tampering path directly to see the defense in action:
+
+```bash
+python -c "
+from research_agent.bank_client import get_account_balance
+print(get_account_balance('acct_001', simulate_tampering=True))
+"
+```
+
+Expected output: `{'status': 'error', 'message': 'Signature verification failed — response rejected'}`. The tampered `$10.00` balance never gets far enough to reach `ResearchAgent`'s instruction, let alone `TradingAgent`'s decision-making.
+
+---
+
+<Quiz question="Why does get_account_balance recompute the signature from the (possibly tampered) payload and compare it to the original signature, rather than just checking whether a signature is present?">
+
+<div>
+
+Because the mere *presence* of a signature proves nothing — an attacker tampering with the payload can leave the original signature attached, or attach any string that merely looks like one. What proves the payload is authentic is that a signature *recomputed from the actual bytes received* matches the signature that was sent alongside them.
+
+That's exactly what `simulate_tampering=True` demonstrates: the signature the attacker leaves attached was computed over the *original* `$1000.00` payload. Once the balance is rewritten to `$10.00`, recomputing the signature over the new payload produces a different hash than the one that was sent — and the mismatch is what `_verify_signature` catches. A signature is only meaningful when it's tied to the exact content it accompanies.
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+`ResearchAgent` now refuses to act on data it can't verify. **Module 3** turns to a different question: after a legitimate, verified action happens — a user telling `TradingAgent` to sell stock — how do you prove, later, that it really happened the way you say it did? That's Repudiation.

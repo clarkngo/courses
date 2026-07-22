@@ -1,0 +1,70 @@
+---
+title: "Understanding Information Disclosure"
+description: "The I in STRIDE — what happens when sensitive data leaks not through a breach, but through an agent that was simply too generic to know it was handling something sensitive."
+module: 4
+moduleTitle: "Information Disclosure"
+lesson: 1
+duration: "20 min"
+---
+
+import Quiz from '@components/Quiz.astro';
+
+## Not Every Leak Is a Hack
+
+The first three modules all involved something adversarial: a forged identity, a tampered payload, a disputed action. Module 4 is different. The FinFlow scenario for **Information Disclosure** doesn't require an attacker at all — just an ordinary request, handled by an agent that wasn't built to know what it was carrying.
+
+---
+
+## What Is Information Disclosure?
+
+**Information Disclosure** is exposure of data to a party that shouldn't have access to it. Classically this covers things like an unencrypted database, a misconfigured API that returns more fields than it should, or a verbose error message that leaks internal details. The common thread: confidentiality fails not because someone broke in, but because the system itself handed the data somewhere it shouldn't have gone.
+
+---
+
+## The FinFlow Scenario
+
+`RootAgent` delegates data lookups to `ResearchAgent` — the same agent Module 2 built to fetch bank balances. `ResearchAgent` was designed to be generic: a general-purpose research and lookup specialist, reusable across many kinds of queries. Here's the scenario from the talk:
+
+> `RootAgent` passes a query containing PII — the user's full name, account number, and recent transaction details — to `ResearchAgent`, so it can look up related information. `ResearchAgent`, being generic, logs the query verbatim as part of its normal operational logging. Those logs are shipped to a public-facing analytics dashboard used for debugging query performance. The PII is now sitting in a system with a far wider audience than anyone intended, with no attacker involved anywhere in the chain.
+
+The failure here is architectural, not malicious. `ResearchAgent` did exactly what it was built to do — log its inputs for debuggability. Nobody decided "let's expose PII." The exposure was a side effect of two reasonable-sounding design choices — "make ResearchAgent generic and reusable" and "log everything for observability" — that were never examined together.
+
+---
+
+## Why This Is an Agent-Specific Problem
+
+- **Generic agents don't know what they're carrying.** A specialist `AccountLookupAgent` could be built to know its inputs are sensitive by definition. A generic `ResearchAgent`, reused for stock symbols, market news, *and* account lookups, has no way to distinguish "this query is sensitive" from "this query is not" unless something upstream tells it explicitly.
+- **LLM context windows are a new place for data to live.** Sensitive data passed into an agent's prompt doesn't just risk exposure through logs — it can also surface in the LLM's own output, in traces, in caching layers, or in eval datasets built from real production traffic. Every one of those is a place PII wasn't supposed to end up.
+- **Delegation multiplies exposure surface.** Every additional agent a piece of sensitive data passes through is another logging pipeline, another observability dashboard, another team's access permissions it's now subject to. A monolithic system has one place data can leak from; a multi-agent system has one place per agent in the chain.
+
+---
+
+## Mitigation Strategies
+
+**1. Scrub PII Before Delegation**
+Before `RootAgent` hands a query to a generic downstream agent, it should strip or redact fields that agent doesn't actually need — replacing a full account number with a reference token, dropping a name when only a lookup key is required. This shrinks the blast radius at the source: `ResearchAgent` can't leak PII it was never given.
+
+**2. Implement Contextual Logging**
+Not all logging needs to capture full field values. Contextual logging means logging *that* a lookup happened, with structured, non-sensitive context (a request ID, a query type, a timing measurement) — instead of logging the raw query string, which is the easiest and most common way sensitive input ends up captured somewhere it shouldn't be.
+
+**3. Apply Data Masking by Default**
+Treat masking as the default for any field the system hasn't explicitly classified as safe to show in full — an account number becomes `••••4821`, an email becomes `j***@example.com` — rather than something bolted on after a specific field is flagged as sensitive. Default-safe beats default-open, especially in a system with multiple agents that weren't all built by someone thinking about this specific field.
+
+---
+
+<Quiz question="ResearchAgent's current logging captures the full text of every query it receives, including any PII in it, because that made debugging easier during development. What's the fastest, highest-leverage first fix here?">
+
+<div>
+
+Stop logging the raw query text by default — switch to contextual logging that captures structured, non-sensitive metadata (query type, timing, a request ID you can use to correlate with other logs) instead of the sensitive payload itself. This single change closes the actual leak path described in the scenario: the PII didn't reach a public dashboard through a hack, it reached it because normal logging captured it and normal log shipping moved it somewhere too public.
+
+Scrubbing PII before delegation and default masking are also both worth doing — they're deeper, more robust fixes. But contextual logging is the fastest fix for the *specific* failure in this scenario, because the leak happened entirely inside the logging pipeline. Fixing the widest, most immediate exposure first, then layering the other two mitigations for defense in depth, is the practical order of operations.
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+The code lab adds a PII-scrubbing layer to `RootAgent`'s delegation path, switches `ResearchAgent`'s logging to a contextual, non-sensitive format, and builds a default-masking helper that applies automatically to any field not explicitly marked safe.

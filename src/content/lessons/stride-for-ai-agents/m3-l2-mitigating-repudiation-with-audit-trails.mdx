@@ -1,0 +1,225 @@
+---
+title: "Mitigating Repudiation with Audit Trails"
+description: "Add TradingAgent to FinFlow with explicit trade confirmation and a hash-chained, tamper-evident audit log."
+module: 3
+moduleTitle: "Repudiation"
+lesson: 2
+duration: "55 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## What You'll Build
+
+`TradingAgent`, which refuses to execute a trade until the user explicitly confirms an unambiguous restatement of it — and a hash-chained audit log where every entry cryptographically references the one before it, so editing an old entry breaks the chain and is detectable.
+
+---
+
+## Step 1: Scaffold TradingAgent
+
+```bash
+mkdir trading_agent
+touch trading_agent/__init__.py trading_agent/agent.py trading_agent/audit_log.py
+echo "from . import agent" > trading_agent/__init__.py
+```
+
+---
+
+## Step 2: A Hash-Chained Audit Log
+
+**`trading_agent/audit_log.py`:**
+
+```python
+import hashlib
+import json
+import os
+import time
+
+_LOG_PATH = os.path.join(os.path.dirname(__file__), "..", "audit_log.jsonl")
+_GENESIS_HASH = "0" * 64
+
+
+def _last_hash() -> str:
+    if not os.path.exists(_LOG_PATH):
+        return _GENESIS_HASH
+    with open(_LOG_PATH, "r") as f:
+        lines = [line for line in f if line.strip()]
+    if not lines:
+        return _GENESIS_HASH
+    return json.loads(lines[-1])["entry_hash"]
+
+
+def append_entry(action: str, details: dict) -> dict:
+    """Appends a tamper-evident audit entry, chained to the previous entry's hash."""
+    prev_hash = _last_hash()
+    record = {
+        "timestamp": time.time(),  # secure timestamp: fixed at write time, part of the hash
+        "action": action,
+        "details": details,
+        "prev_hash": prev_hash,
+    }
+    body = json.dumps(record, sort_keys=True)
+    entry_hash = hashlib.sha256((prev_hash + body).encode()).hexdigest()
+    record["entry_hash"] = entry_hash
+
+    with open(_LOG_PATH, "a") as f:
+        f.write(json.dumps(record) + "\n")
+    return record
+
+
+def verify_chain() -> dict:
+    """Walks the entire log and confirms every entry's hash matches its recomputed value."""
+    if not os.path.exists(_LOG_PATH):
+        return {"status": "valid", "entries": 0}
+
+    expected_prev = _GENESIS_HASH
+    with open(_LOG_PATH, "r") as f:
+        for i, line in enumerate(f):
+            record = json.loads(line)
+            claimed_hash = record.pop("entry_hash")
+
+            if record["prev_hash"] != expected_prev:
+                return {"status": "broken", "at_entry": i, "reason": "prev_hash mismatch"}
+
+            body = json.dumps(record, sort_keys=True)
+            recomputed = hashlib.sha256((record["prev_hash"] + body).encode()).hexdigest()
+            if recomputed != claimed_hash:
+                return {"status": "broken", "at_entry": i, "reason": "entry_hash mismatch — entry was altered"}
+
+            expected_prev = claimed_hash
+
+    return {"status": "valid", "entries": i + 1}
+```
+
+<CodeLab title="Why Chaining, Not Just Signing Each Entry">
+
+You could sign each entry independently, the way Module 2 signed bank responses — and that would catch tampering with any *single* entry. What it wouldn't catch is an entry being **deleted entirely**, or entries being **reordered**. Chaining fixes this: every entry's hash depends on the previous entry's hash, so the log forms a chain from the first entry to the last. Delete or reorder an entry anywhere in the middle, and every hash after that point stops matching — `verify_chain` finds the break immediately, and tells you exactly where.
+
+This is the same core idea behind how blockchains achieve tamper-evidence, applied here at the scale of "one FinFlow trading log" rather than a distributed ledger.
+
+</CodeLab>
+
+---
+
+## Step 3: TradingAgent — Confirm, Then Execute
+
+**`trading_agent/agent.py`:**
+
+```python
+from google.adk.agents import Agent
+from trading_agent.audit_log import append_entry
+
+# Demo-only price feed.
+_DEMO_PRICES = {"TSLA": 250.00, "AAPL": 190.00}
+
+
+def propose_trade(symbol: str, quantity: int) -> dict:
+    """Prepares an unambiguous trade summary for the user to confirm. Executes nothing."""
+    symbol = symbol.upper()
+    if symbol not in _DEMO_PRICES:
+        return {"status": "error", "message": f"Unknown symbol {symbol}"}
+
+    price = _DEMO_PRICES[symbol]
+    return {
+        "status": "pending_confirmation",
+        "summary": f"Sell {quantity} shares of {symbol} at approximately ${price:.2f}/share "
+                    f"(estimated total: ${price * quantity:.2f}).",
+        "symbol": symbol,
+        "quantity": quantity,
+    }
+
+
+def sell_stock(symbol: str, quantity: int, user_confirmed: bool) -> dict:
+    """Executes a sell order — but only if the user explicitly confirmed the exact trade."""
+    if not user_confirmed:
+        return {
+            "status": "error",
+            "message": "Trade not executed: explicit user confirmation is required first.",
+        }
+
+    entry = append_entry(
+        action="sell_stock",
+        details={"symbol": symbol.upper(), "quantity": quantity, "user_confirmed": True},
+    )
+    return {"status": "executed", "audit_entry_hash": entry["entry_hash"]}
+
+
+root_agent = Agent(
+    name="trading_agent",
+    model="gemini-2.0-flash",
+    description="Executes stock trades for FinFlow users, with mandatory confirmation and audit logging.",
+    instruction="""
+        You execute trades for FinFlow. Never call sell_stock directly from a
+        user's initial request, no matter how specific it sounds.
+
+        Always follow this exact sequence:
+        1. Call propose_trade with the symbol and quantity you understood.
+        2. Show the user the returned "summary" text verbatim and ask them to
+           explicitly confirm it — a plain "yes" is not enough; they must
+           confirm the specific summary shown.
+        3. Only after explicit confirmation, call sell_stock with
+           user_confirmed=True.
+
+        If the user's instructions are vague ("sell some Tesla"), propose your
+        best-effort interpretation and make the ambiguity part of what they're
+        confirming — never guess silently.
+    """,
+    tools=[propose_trade, sell_stock],
+)
+```
+
+<Pitfall title="Confirmation Theater vs. Real Confirmation">
+
+It's easy to build "confirmation" that isn't actually protective: the agent says "Should I proceed? (yes/no)" without ever restating *what* it's about to do. A user who says "yes" to that has confirmed nothing specific — the log entry still can't prove they approved 50 shares of TSLA rather than 500.
+
+Real confirmation restates the exact, unambiguous action and requires approval of *that specific restatement*. That restatement is also what should end up quoted in the audit log — not "user confirmed," but "user confirmed: Sell 50 shares of TSLA at ~$250.00/share."
+
+</Pitfall>
+
+---
+
+## Step 4: Run It, Then Try to Cheat Your Own Log
+
+Wire `trading_agent` into `root_agent` with `AgentTool`, same as previous modules. Then:
+
+```bash
+adk web
+```
+
+Try:
+
+- `"Sell 50 shares of TSLA."`
+
+Confirm the trade when asked. Check the Events panel — you should see `propose_trade` called first, then `sell_stock` only after your confirmation.
+
+Now simulate tampering with the log itself:
+
+```bash
+python -c "
+from trading_agent.audit_log import verify_chain
+print(verify_chain())
+"
+```
+
+You should see `{'status': 'valid', 'entries': N}`. Open `audit_log.jsonl` in a text editor, change the `quantity` in the first entry to a different number, save, and re-run `verify_chain()`. You should now see `{'status': 'broken', 'at_entry': 0, 'reason': 'entry_hash mismatch — entry was altered'}` — proof the log detects exactly the kind of after-the-fact edit a dispute would hinge on.
+
+---
+
+<Quiz question="A user disputes a trade, claiming they never confirmed it. You pull up the audit log and find a valid, unbroken hash chain with an entry showing user_confirmed: True for that exact trade. Does this settle the dispute?">
+
+<div>
+
+It settles the *technical* question — the system executed the trade only after receiving an explicit confirmation, and the log proving that hasn't been altered since. It doesn't, by itself, prove the confirmation came from the *real* account owner rather than someone else with access to their session — that's back to Module 1's territory (spoofing) and depends on the strength of the authentication that established the session in the first place.
+
+This is why STRIDE categories compose rather than substitute for each other: a hash-chained audit log gives you strong non-repudiation *given* a legitimate session, but it's Module 1's signed-token verification that establishes the session was legitimate in the first place. A repudiation defense with a weak authentication defense underneath it is only as strong as the weaker of the two.
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+**Module 4** looks at a threat that doesn't require an attacker doing anything sophisticated at all — just an agent being *too willing to share* what it knows. That's Information Disclosure, and it's where `ResearchAgent`, already handling account data, becomes the focus again.

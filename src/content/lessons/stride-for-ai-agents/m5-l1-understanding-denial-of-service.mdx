@@ -1,0 +1,70 @@
+---
+title: "Understanding Denial of Service"
+description: "The D in STRIDE — what happens when an agent's own willingness to use a tool becomes the mechanism for exhausting it."
+module: 5
+moduleTitle: "Denial of Service"
+lesson: 1
+duration: "20 min"
+---
+
+import Quiz from '@components/Quiz.astro';
+
+## When Helpfulness Becomes the Weapon
+
+Every threat so far has involved an agent being tricked about *what's true* — a false identity, false data, an unprovable action, an over-shared secret. **Denial of Service** is different: the agent isn't deceived about anything. It's simply persuaded to do a real, legitimate action — an email, a lookup, an API call — far more times than anyone intended.
+
+---
+
+## What Is Denial of Service?
+
+**Denial of Service (DoS)** is an attack on *availability*: making a system, or a specific capability of it, unusable for legitimate users — usually by overwhelming it with volume rather than breaking it outright. Classic examples flood a web server with traffic. Agentic systems introduce a new variant: flooding an agent's *tool calls*, so a shared resource behind that tool (an API quota, a rate-limited service, a budget) gets exhausted by one user's requests, denying it to everyone else.
+
+---
+
+## The FinFlow Scenario
+
+`NotifierAgent` can send emails on FinFlow's behalf — trade confirmations, balance alerts, statements. Here's the scenario from the talk:
+
+> A malicious user tricks an agent into calling the `send_email` tool 1,000 times in a loop — for example, by asking it to "send a confirmation for every possible name variation" or some other pretext that produces a large, repetitive task. Each call is individually legitimate: a real email, correctly formatted, sent through the real API. But 1,000 of them exhaust the shared API quota for *all* FinFlow users, not just the attacker. Everyone else's real trade confirmations start failing to send.
+
+What makes this scenario interesting is that no single call looks malicious. A content filter looking for "bad" emails would find nothing wrong with any individual message. The attack is entirely in the *aggregate* — a pattern a single-call inspection can't see.
+
+---
+
+## Why This Is an Agent-Specific Problem
+
+- **Agents can generate their own volume.** A traditional web form requires an attacker to submit 1,000 requests themselves, usually with visible automation. An agent that's been persuaded into a loop generates that volume *itself*, from a single user message — the amplification happens inside the system, not from outside traffic.
+- **"Helpful" and "unbounded" look the same to an LLM.** An instruction like "send a confirmation for every name variation" is the kind of open-ended task an agent is specifically designed to handle well — break a big ask into many small tool calls. Nothing in that framing signals danger unless something is explicitly watching the count.
+- **Shared resources mean one user's cost is everyone's outage.** A rate limit scoped to "the whole system" rather than "this specific user" means a single bad actor's flood degrades the experience for every legitimate user sharing that quota — the blast radius is the whole user base, not just the requester.
+
+---
+
+## Mitigation Strategies
+
+**1. Enforce Per-User Rate Limits**
+Cap how many times a given user can trigger a given tool within a time window — say, 10 emails per user per hour — enforced by code the LLM can't reason its way around. This is the direct fix: even if the agent is fully persuaded to try sending 1,000 emails, the 11th call for that user simply gets rejected before it reaches the real API.
+
+**2. Implement "Cost" Analysis**
+Not every tool call costs the same. Sending one email is cheap; sending a thousand is expensive — in API cost, in quota consumption, in risk if something goes wrong. A cost-aware check estimates the aggregate cost of a *planned* batch of actions before executing them, and can refuse or flag a plan whose total cost is disproportionate to what a normal request should require.
+
+**3. Require Pre-Execution Review**
+For actions above a certain size or cost threshold, don't let the agent execute autonomously at all — surface the planned batch to a human ("this will send 1,000 emails — proceed?") and require explicit approval before any of it runs. This is Module 3's confirmation pattern, applied to *scale* instead of a single sensitive action: the bigger the blast radius, the more a human should be in the loop before it happens.
+
+---
+
+<Quiz question="A rate limit is set to 'no agent may send more than 10,000 emails per hour, system-wide.' A single user asks the agent to send 1,000 emails in a loop. Does this rate limit stop the DoS scenario from the talk?">
+
+<div>
+
+Not really — 1,000 is comfortably under a 10,000 system-wide limit, so the attacker's flood sails through, and it still consumes 10% of the *entire system's* hourly quota on behalf of one user's request. A system-wide limit protects against total runaway usage, but it does nothing to stop one user from consuming a disproportionate share of a shared resource at everyone else's expense.
+
+This is exactly why the mitigation is specifically **per-user** rate limiting, not just rate limiting in general. The limit needs to be scoped to the entity making the request, so that one user's flood is capped at a level that can't meaningfully degrade service for anyone else — the failure mode in the scenario is fundamentally about fairness of a shared resource, not just aggregate volume.
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+The code lab adds `NotifierAgent` with a `send_email` tool wrapped in a per-user rate limiter and a pre-execution cost check — so a request that would trigger hundreds of sends gets caught and held for approval before a single email goes out.

@@ -1,0 +1,72 @@
+---
+title: "Understanding Elevation of Privilege"
+description: "The E in STRIDE — what happens when an agent that's supposed to be helpful is talked into using power it was never authorized to use."
+module: 6
+moduleTitle: "Elevation of Privilege"
+lesson: 1
+duration: "20 min"
+---
+
+import Quiz from '@components/Quiz.astro';
+
+## The Last Letter, and the Sharpest One
+
+Five modules in, FinFlow verifies identity, verifies data, keeps an audit trail, protects sensitive fields, and rate-limits its own tools. Module 6 covers the threat the talk frames as the one that matters most for agents specifically: **Elevation of Privilege**, the E in STRIDE.
+
+---
+
+## What Is Elevation of Privilege?
+
+**Elevation of Privilege** is gaining capabilities beyond what you're authorized to have — a regular user performing an admin action, a low-trust process reaching a high-trust resource. In traditional software, this usually requires exploiting a bug: a broken permission check, an injection vulnerability, a misconfigured access control list.
+
+In agentic systems, there's a second path to the same outcome that doesn't require a bug at all: **prompt injection**. If an agent's authorization logic lives in its instructions rather than in enforced code, then convincing the LLM — through clever phrasing embedded in a normal-looking request — *is* the exploit.
+
+---
+
+## The FinFlow Scenario
+
+`AuthAgent` manages user accounts, including an admin-only capability: `delete_user`. Here's the scenario from the talk:
+
+> A user's message contains a prompt injection — text crafted to look like an embedded instruction rather than user-provided data — that calls an admin-only tool: `delete_user('bob')`. The LLM, trying to be helpful and follow what looks like a legitimate instruction, obeys the command. Nothing was hacked in the traditional sense: the LLM did exactly what a piece of text told it to do. The problem is that the text came from an untrusted user, not from FinFlow's actual authorization system.
+
+The talk's own framing is worth sitting with: *the agent, trying to be helpful, obeys the command.* Helpfulness — the core trait that makes an agent useful at all — is the exact mechanism the attack exploits. There's no bug to patch in the LLM's reasoning. The LLM reasoned correctly, given what it believed. What was missing was a check that didn't depend on what the LLM believed.
+
+---
+
+## Why This Is *the* Agent-Specific STRIDE Threat
+
+- **Tool access is the whole point of an agent.** A traditional application has a fixed set of things a given user role can do, enforced by code paths that simply don't exist for unauthorized actions. An LLM-driven agent has a much more open-ended relationship to its tools — it decides, per request, which tool to call based on reasoning over text. That flexibility is the feature. It's also the attack surface.
+- **Prompt injection blurs instructions and data.** `delete_user('bob')` can arrive as an explicit system instruction, or it can arrive embedded inside something that's supposed to be inert user data — a note field, a document the agent was asked to summarize, even a variable name. If the agent's tool-calling logic can't reliably tell the difference, an attacker doesn't need special access. They need clever text.
+- **The failure is silent and instantaneous.** Unlike a DoS flood building up over many calls, elevation of privilege can be a single tool call. There's no ramp-up to notice — the first sign of the problem is the admin action having already happened.
+
+---
+
+## Mitigation Strategies
+
+**1. Enforce ACLs at the Tool Level**
+The authorization check has to live inside the tool itself — code that runs every time `delete_user` is called, checks who's actually calling (via a verified credential, not a claim in the prompt), and refuses if they're not authorized — regardless of what the LLM was convinced to attempt. This is the direct fix for the scenario: even if the LLM decides to call `delete_user('bob')`, the tool itself checks the caller's verified role and refuses if it isn't `admin`.
+
+**2. Use Dynamic Tool Scoping**
+Beyond checking authorization *inside* the tool, don't even expose a tool to an agent session that has no legitimate use for it. If a non-admin user's session never has `delete_user` in its available tool list at all, there's no tool for a prompt injection to target in the first place — the attack surface shrinks before the ACL check ever needs to run.
+
+**3. Treat the LLM as Untrusted**
+The deepest version of this mitigation: design the whole system on the assumption that the LLM's output — including which tool it decides to call and with what arguments — can be manipulated by anything in its input. Authorization, validation, and irreversible actions should never depend solely on the LLM having "decided correctly." The LLM proposes; verified code disposes.
+
+---
+
+<Quiz question="AuthAgent's instruction now says: 'Only call delete_user if the requesting user claims to be an administrator.' Does this fix the scenario from the talk?">
+
+<div>
+
+No — this instruction is exactly the failure mode the scenario describes, just made slightly more explicit. "The user claims to be an administrator" is still a claim evaluated by the LLM, and an attacker's prompt injection can make that claim just as easily as it can directly request `delete_user('bob')`. Nothing about requiring a claim of adminship changes the fact that the check is happening in natural-language reasoning rather than in verified code.
+
+A fix has to replace "claims to be" with "is cryptographically verified to be" — checking a role claim inside a signed session token (Module 1's JWTs, extended with a `role` field), inside the tool's own code, independent of anything the LLM was told or believes. That's the difference between an instruction *describing* an authorization rule and a tool *enforcing* one.
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+The code lab extends `AuthAgent`'s session tokens with a `role` claim, adds `delete_user` with a tool-level ACL check that verifies that claim cryptographically, and demonstrates dynamic tool scoping by building `RootAgent` with a different available tool set depending on the authenticated caller's role. This closes out FinFlow — and STRIDE.

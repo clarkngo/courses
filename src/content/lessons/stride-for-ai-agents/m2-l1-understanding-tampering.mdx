@@ -1,0 +1,74 @@
+---
+title: "Understanding Tampering"
+description: "The T in STRIDE — what happens when the data an agent trusts is altered in transit before the agent ever sees it."
+module: 2
+moduleTitle: "Tampering"
+lesson: 1
+duration: "20 min"
+---
+
+import Quiz from '@components/Quiz.astro';
+
+## From Who to What
+
+Module 1 answered "is this really AuthAgent?" with a signature. That solves *identity* — but it leaves a second question wide open: even from a legitimate source, has the *content* of a message been altered along the way?
+
+That's **Tampering**: the T in STRIDE, and the second scenario in the talk this course extends.
+
+---
+
+## What Is Tampering?
+
+Tampering is unauthorized modification of data — in transit, in storage, or in memory. Where spoofing is about a false identity, tampering is about a false *payload*: the sender might be exactly who they claim to be, but what actually arrives isn't what they sent.
+
+The classic example is a **Man-in-the-Middle (MitM) attack**: an attacker sits on the network path between two legitimate parties and rewrites messages as they pass through, so both sides believe they're talking directly to each other.
+
+---
+
+## The FinFlow Scenario
+
+FinFlow's `ResearchAgent` calls an external bank API to look up a user's account balance before `TradingAgent` decides how much stock it can safely sell. Here's the scenario from the talk:
+
+> A MitM attacker intercepts the bank API's response and modifies it — changing a user's balance from $1,000 to $10 — before `ResearchAgent` ever sees the number. `ResearchAgent` has no way to tell the response was altered. It reports the tampered balance as fact. Every downstream decision — how much to sell, what to recommend, what to tell the user — is now built on a number the bank never actually sent.
+
+Notice what makes this worse than a simple bug: nothing crashed, nothing looked malformed. The tampered response was well-formed JSON with a plausible number in it. Nothing about the *shape* of the data gave away that its *content* had been rewritten.
+
+---
+
+## Why Agents Are Especially Exposed
+
+- **Agents chain decisions on data they don't independently verify.** `TradingAgent` doesn't re-check the bank balance itself — it trusts whatever `ResearchAgent` reports. A single tampered value can cascade through several agents' worth of downstream reasoning before a human ever sees it.
+- **LLMs reason confidently over whatever they're given.** An LLM won't second-guess a number that "looks reasonable" — and unlike a rule-based system with hardcoded bounds checks, its skepticism is only as good as its instructions.
+- **More network hops mean more opportunities.** A multi-agent system that calls out to banks, market data providers, and other agents has more data-in-transit than a single monolithic app — and every hop is a place where tampering can happen.
+
+---
+
+## Mitigation Strategies
+
+**1. Enforce Strict TLS (1.2+)**
+TLS encrypts data in transit, which makes it much harder for an attacker to read *or* silently rewrite traffic without detection — a tampered TLS-protected message typically just fails to decrypt correctly rather than arriving as a plausible fake. Older TLS versions (1.0, 1.1) have known weaknesses; requiring 1.2 or higher closes off downgrade attacks where an attacker forces a connection onto a weaker, breakable protocol.
+
+**2. Verify Response Signatures**
+TLS protects the pipe, but it doesn't prove the *content* is what the origin server actually produced versus what a compromised intermediate proxy or cache decided to serve. A response signature — the sender cryptographically signs the payload itself, the same idea as Module 1's JWTs, applied to data instead of identity — lets the receiver verify the bytes weren't altered *after* the origin signed them, independent of the transport.
+
+**3. Validate Data Schema**
+Even signed, verified data should still be checked against expectations before an agent reasons over it: is this the right type, the right shape, within a sane range? A schema and sanity-bounds check (a bank balance shouldn't be negative, a percentage shouldn't exceed 100) catches both tampering that slips past other defenses and plain upstream bugs — cheaply, as the last line of defense before the LLM sees the data.
+
+---
+
+<Quiz question="ResearchAgent's connection to the bank API uses TLS 1.3, so the response is encrypted in transit. Is that alone sufficient to guarantee the balance ResearchAgent receives is exactly what the bank sent?">
+
+<div>
+
+Not necessarily. TLS protects the connection between `ResearchAgent` and whatever server it's directly talking to — but if that path includes an intermediate service (a proxy, a cache, an aggregator API) that is itself compromised or misconfigured, TLS on the last hop won't catch content that was altered *before* that hop. TLS proves the data wasn't tampered with **in transit on this specific connection**; it doesn't prove the data matches what the original source produced further upstream.
+
+That's exactly the gap response signatures close: a signature travels *with the data itself*, so it can be verified no matter how many hops the data passed through, while TLS only protects one hop at a time. In FinFlow's lab, you'll implement both — TLS for the connection, and an HMAC signature check for the payload — because they defend against different points in the chain.
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+The code lab builds `ResearchAgent`, adds a (simulated) bank API client, and implements signature verification plus schema validation on every response before `ResearchAgent` reports a balance to the rest of FinFlow.
