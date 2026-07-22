@@ -1,0 +1,172 @@
+---
+title: "Mitigating Information Disclosure with Data Masking"
+description: "Scrub PII before RootAgent delegates to ResearchAgent, switch to contextual logging, and mask sensitive fields by default."
+module: 4
+moduleTitle: "Information Disclosure"
+lesson: 2
+duration: "45 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## What You'll Build
+
+A scrubbing step `RootAgent` runs before delegating any query to `ResearchAgent`, a default-masking helper applied to anything not explicitly marked safe, and a switch from raw-query logging to contextual logging — three layers, matching the three mitigations from Lesson 1.
+
+---
+
+## Step 1: Default Masking
+
+**`research_agent/masking.py`:**
+
+```python
+_SAFE_FIELDS = {"symbol", "currency", "query_type", "request_id"}
+
+
+def mask_value(field_name: str, value: str) -> str:
+    """Masks a value unless its field name is explicitly allow-listed as safe."""
+    if field_name in _SAFE_FIELDS:
+        return value
+
+    value = str(value)
+    if "@" in value:  # looks like an email
+        local, _, domain = value.partition("@")
+        return f"{local[0]}***@{domain}" if local else f"***@{domain}"
+
+    if len(value) <= 4:
+        return "•" * len(value)
+    return "•" * (len(value) - 4) + value[-4:]
+
+
+def mask_fields(data: dict) -> dict:
+    """Applies mask_value to every field in a dict, defaulting unknown fields to masked."""
+    return {k: mask_value(k, v) for k, v in data.items()}
+```
+
+<CodeLab title="Allow-List, Not Block-List">
+
+`_SAFE_FIELDS` is an **allow-list**: only fields explicitly named here pass through unmasked. Every other field — including any field added later by someone who didn't know to update a block-list — gets masked automatically.
+
+This is the concrete meaning of "data masking by default" from Lesson 1. A block-list (`_SENSITIVE_FIELDS = {"account_number", "full_name", ...}`) requires everyone who ever adds a new field to remember to classify it. An allow-list requires everyone who wants a field to show in full to make that choice explicitly — and default to safe if they forget.
+
+</CodeLab>
+
+---
+
+## Step 2: Contextual Logging
+
+**`research_agent/logging_util.py`:**
+
+```python
+import json
+import time
+
+
+def contextual_log(event: str, **safe_fields) -> None:
+    """Logs structured, non-sensitive context — never the raw query payload."""
+    record = {"timestamp": time.time(), "event": event, **safe_fields}
+    print(json.dumps(record))  # in production: ship to your logging backend
+```
+
+Compare the call sites this replaces:
+
+```python
+# Before — leaks whatever the query contains, including any PII
+print(f"ResearchAgent received query: {query}")
+
+# After — structured, and incapable of leaking a field nobody listed
+contextual_log("query_received", query_type=query_type, request_id=request_id)
+```
+
+<Pitfall title="f-strings Are Where PII Logging Usually Hides">
+
+The "before" line above isn't hypothetical — it's the single most common way sensitive data ends up in logs: a developer debugging locally adds `print(f"got: {payload}")` or `logger.info(f"processing {user_data}")`, it works, it ships, and six months later that payload contains a field nobody thought to check. Contextual logging isn't just a technique, it's a habit: log named, individually-chosen fields, never a whole object or dict by interpolating it into a string.
+
+</Pitfall>
+
+---
+
+## Step 3: Scrub Before Delegation
+
+**`root_agent/delegation.py`:**
+
+```python
+_RESEARCH_AGENT_ALLOWED_FIELDS = {"query_type", "symbol", "account_ref"}
+
+
+def scrub_for_delegation(full_context: dict, allowed_fields: set[str]) -> dict:
+    """Strips any field a downstream agent doesn't explicitly need before delegating."""
+    return {k: v for k, v in full_context.items() if k in allowed_fields}
+```
+
+Update `root_agent/agent.py`'s instruction to require this step:
+
+```python
+        Before delegating any lookup to research_agent, first reduce the request
+        to only the fields research_agent actually needs (a query type, a
+        symbol, an account reference token) — never pass a user's name, raw
+        account number, or transaction details directly. If research_agent
+        needs more than a reference token to do its job, that's a sign the
+        request should go to a more specific agent, not that PII should be
+        sent to a generic one.
+```
+
+<CodeLab title="A Reference Token, Not a Real Account Number">
+
+`account_ref` in the allowed-fields set is deliberately not `account_number`. The idea is that `RootAgent` (or `AuthAgent`) maintains the mapping from a short-lived reference token to the real account number, and only agents that specifically need the real number ever see it. `ResearchAgent` can look up a balance using a token it can't reverse into anything sensitive on its own — so even if its logs were compromised, there's no PII in them to steal.
+
+This pattern — pass a reference, not the sensitive value itself — is the same idea as Module 1's session tokens, applied to data instead of identity.
+
+</CodeLab>
+
+---
+
+## Step 4: Verify the Leak Is Closed
+
+```bash
+python -c "
+from root_agent.delegation import scrub_for_delegation
+
+full_context = {
+    'user_name': 'Jordan Rivera',
+    'account_number': '4400123398214821',
+    'account_ref': 'ref_9f2a',
+    'query_type': 'balance_lookup',
+}
+print(scrub_for_delegation(full_context, {'query_type', 'account_ref'}))
+"
+```
+
+Expected output: `{'account_ref': 'ref_9f2a', 'query_type': 'balance_lookup'}` — no name, no raw account number.
+
+Now check masking:
+
+```bash
+python -c "
+from research_agent.masking import mask_fields
+print(mask_fields({'account_ref': 'ref_9f2a', 'email': 'jordan@example.com', 'query_type': 'balance_lookup'}))
+"
+```
+
+Expected: `account_ref` masked (it's not in `_SAFE_FIELDS`), `email` masked to `j***@example.com`, `query_type` shown in full.
+
+---
+
+<Quiz question="Suppose someone later adds a new field, ssn_last_four, to the context RootAgent builds — and forgets to add it to _RESEARCH_AGENT_ALLOWED_FIELDS or _SAFE_FIELDS. What happens to that field?">
+
+<div>
+
+It gets scrubbed out before delegation (because `scrub_for_delegation` only keeps fields explicitly in the allowed set), and if it somehow did reach `ResearchAgent` and got logged anyway, `mask_fields` would mask it by default (because it's not in `_SAFE_FIELDS`). The forgetful developer's mistake — not updating either list — fails safe in both places, rather than failing open.
+
+This is the payoff of allow-lists over block-lists, made concrete: the system's default behavior for anything unclassified is "treat it as sensitive," which means the most common real-world failure mode — someone adds a new field and forgets the security bookkeeping — doesn't turn into a leak. It turns into the new field simply not showing up anywhere it wasn't explicitly permitted to.
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+FinFlow now handles data carefully. **Module 5** asks a different question entirely: what stops someone from overwhelming an agent's tools with sheer volume, until the system stops working for everyone? That's Denial of Service, and it's where `NotifierAgent` joins FinFlow.

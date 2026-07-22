@@ -1,0 +1,203 @@
+---
+title: "Mitigating Denial of Service with Rate Limits"
+description: "Add NotifierAgent to FinFlow with per-user rate limiting, batch cost estimation, and a pre-execution review gate for large sends."
+module: 5
+moduleTitle: "Denial of Service"
+lesson: 2
+duration: "45 min"
+---
+
+import CodeLab from '@components/CodeLab.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## What You'll Build
+
+`NotifierAgent`, with a per-user rate limiter that caps how many emails one user can trigger per hour, and a batch-cost check that stops any plan to send more than a few emails at once until a human approves it.
+
+---
+
+## Step 1: Scaffold NotifierAgent
+
+```bash
+mkdir notifier_agent
+touch notifier_agent/__init__.py notifier_agent/agent.py
+touch notifier_agent/rate_limiter.py notifier_agent/cost_review.py
+echo "from . import agent" > notifier_agent/__init__.py
+```
+
+---
+
+## Step 2: Per-User Rate Limiting
+
+**`notifier_agent/rate_limiter.py`:**
+
+```python
+import time
+from collections import defaultdict
+
+_WINDOW_SECONDS = 3600
+_MAX_PER_USER = 10
+
+_send_history: dict[str, list[float]] = defaultdict(list)
+
+
+def check_rate_limit(user_id: str) -> dict:
+    """Returns whether user_id is still under the per-hour send limit."""
+    now = time.time()
+    recent = [t for t in _send_history[user_id] if now - t < _WINDOW_SECONDS]
+    _send_history[user_id] = recent
+
+    if len(recent) >= _MAX_PER_USER:
+        return {
+            "allowed": False,
+            "reason": f"Rate limit exceeded: max {_MAX_PER_USER} emails per user per hour.",
+        }
+    return {"allowed": True}
+
+
+def record_send(user_id: str) -> None:
+    _send_history[user_id].append(time.time())
+```
+
+<CodeLab title="Why the Window Is Sliding, Not Fixed">
+
+`check_rate_limit` drops timestamps older than `_WINDOW_SECONDS` every time it's called, rather than resetting a counter at the top of each clock hour. A fixed window (reset at :00 every hour) has a known gap: a user can send `_MAX_PER_USER` emails at 12:59 and another `_MAX_PER_USER` at 1:01 — twice the intended limit in two real minutes, right across the boundary. A sliding window closes that gap: "per hour" means *any* rolling 60-minute period, not a specific clock hour.
+
+</CodeLab>
+
+---
+
+## Step 3: Batch Cost Estimation
+
+**`notifier_agent/cost_review.py`:**
+
+```python
+_REVIEW_THRESHOLD = 5  # batches at or below this size auto-approve
+
+
+def estimate_batch_cost(planned_count: int) -> dict:
+    """Flags any planned batch above the auto-approval threshold for human review."""
+    requires_review = planned_count > _REVIEW_THRESHOLD
+    return {
+        "planned_count": planned_count,
+        "requires_review": requires_review,
+        "message": (
+            f"Sending {planned_count} emails exceeds the {_REVIEW_THRESHOLD}-email "
+            "auto-approval threshold. Human review is required before any are sent."
+            if requires_review
+            else "Within auto-approval threshold."
+        ),
+    }
+```
+
+---
+
+## Step 4: NotifierAgent — Plan Before You Send
+
+**`notifier_agent/agent.py`:**
+
+```python
+from google.adk.agents import Agent
+from notifier_agent.rate_limiter import check_rate_limit, record_send
+from notifier_agent.cost_review import estimate_batch_cost
+
+
+def plan_email_batch(user_id: str, recipient_count: int) -> dict:
+    """Estimates the cost of a planned batch of emails before any are sent."""
+    return estimate_batch_cost(recipient_count)
+
+
+def send_email(user_id: str, to: str, subject: str, body: str) -> dict:
+    """Sends a single email on behalf of user_id, enforcing a per-user rate limit."""
+    limit_check = check_rate_limit(user_id)
+    if not limit_check["allowed"]:
+        return {"status": "error", "message": limit_check["reason"]}
+
+    record_send(user_id)
+    return {"status": "sent", "to": to, "subject": subject}  # simulated send
+
+
+root_agent = Agent(
+    name="notifier_agent",
+    model="gemini-2.0-flash",
+    description="Sends account and trade notifications for FinFlow, with rate limiting and batch review.",
+    instruction="""
+        Before sending more than one email for a single request, call
+        plan_email_batch with the number of emails you intend to send.
+
+        If requires_review is true, STOP. Do not send any emails in that batch.
+        Tell the user the batch needs human approval because of its size, and
+        do not attempt to work around this by sending in smaller groups across
+        multiple turns — the limit applies to the total request, not each call.
+
+        If requires_review is false, proceed to call send_email once per
+        recipient. If any call returns a rate-limit error, stop immediately,
+        report how many sent successfully before the limit was hit, and do not
+        retry in a loop.
+    """,
+    tools=[plan_email_batch, send_email],
+)
+```
+
+<Pitfall title="The LLM Will Try to Be Clever — Design for It">
+
+An agent that hits `requires_review: true` might reason: "I can't send 1,000 at once, but nothing stops me from sending them 5 at a time, 200 times." That's not a hypothetical — it's exactly the kind of workaround an LLM optimizing for "get the task done" will find unless the instruction explicitly forecloses it, which is why the instruction above says the limit "applies to the total request, not each call."
+
+This is a recurring lesson across STRIDE mitigations for agents: a defense that lives only in the system prompt is a defense the LLM can potentially reason its way around. The rate limiter itself — code, not instructions — is what actually stops the 1,000-email flood even if the instruction-level guardrail fails. Layer both; trust the code more than the wording.
+
+</Pitfall>
+
+---
+
+## Step 5: Run the Attack Scenario
+
+Wire `notifier_agent` into `root_agent` via `AgentTool`. Then:
+
+```bash
+adk web
+```
+
+Try the legitimate path first:
+
+- `"Send a trade confirmation email to jordan@example.com for user_42."`
+
+Then simulate the attack from the talk:
+
+- `"Send a confirmation email for every possible spelling variation of the name 'Catherine' — Catherine, Katherine, Kathryn, Cathryn, and about 20 more you can think of, one email each, to user_42."`
+
+A correctly wired agent should call `plan_email_batch`, see `requires_review: true` for anything past 5, and refuse to proceed — reporting that the batch needs human approval instead of sending two dozen emails.
+
+You can also test the rate limiter directly:
+
+```bash
+python -c "
+from notifier_agent.rate_limiter import check_rate_limit, record_send
+for i in range(12):
+    result = check_rate_limit('user_42')
+    print(i, result)
+    if result['allowed']:
+        record_send('user_42')
+"
+```
+
+You should see `allowed: True` for the first 10 calls and `allowed: False` starting at the 11th — the rate limit catching the flood directly, independent of whatever the LLM decided to do.
+
+---
+
+<Quiz question="Why does send_email check the rate limit itself, rather than relying on NotifierAgent's instruction telling the LLM to count its own calls and stop at 10?">
+
+<div>
+
+Because an LLM counting its own tool calls is a judgment the model makes, and judgments made by the model are exactly what a sufficiently persuasive prompt can override — the same reason Module 1 verified signatures in code rather than trusting the LLM's read of "does this look like it's from AuthAgent." An instruction saying "don't send more than 10" is a strong hint, but it's not an enforcement mechanism; a rate limiter implemented in `check_rate_limit`, called from inside `send_email` itself, enforces the cap regardless of what the LLM believes it already sent, how it was prompted, or whether it "forgot" partway through a long batch.
+
+The general pattern across this whole course: instructions guide the LLM's *intent*, but the actual security boundary — the thing that holds even when the model is confused, prompt-injected, or simply wrong — lives in code the LLM calls into, not code the LLM is merely told to imagine following.
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+**Module 6** closes out FinFlow — and STRIDE — with the threat the talk treats as the most dangerous of the six: an agent following an instruction it should have refused, because nothing enforced that certain tools are off-limits to certain requests. That's Elevation of Privilege.

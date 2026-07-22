@@ -1,0 +1,74 @@
+---
+title: "Understanding Repudiation"
+description: "The R in STRIDE — what happens when an agent takes a real, consequential action but can't later prove who asked for it or what exactly they asked for."
+module: 3
+moduleTitle: "Repudiation"
+lesson: 1
+duration: "20 min"
+---
+
+import Quiz from '@components/Quiz.astro';
+
+## After the Action
+
+Modules 1 and 2 were about stopping a bad action *before* it happens — verifying identity, verifying data. Module 3 is about what happens *after* a legitimate action already went through, and someone later disputes it.
+
+That's **Repudiation**: the R in STRIDE.
+
+---
+
+## What Is Repudiation?
+
+To repudiate something is to deny it happened — or deny you're the one who caused it. **Repudiation** as a threat category is about a system's *inability to prove otherwise*. It's not primarily about attackers forging actions (that's spoofing and tampering); it's about a legitimate action happening and the system having no reliable, tamper-evident record of who did what, when, and under what exact instruction.
+
+The defense against repudiation is usually called **non-repudiation**: a record strong enough that the person who took the action can't credibly deny it, and the system can't be accused of having taken an action no one actually requested.
+
+---
+
+## The FinFlow Scenario
+
+`TradingAgent` can sell stock on a user's behalf. Here's the scenario from the talk:
+
+> A user tells `TradingAgent` to sell a stock position. The market moves against them shortly after. They call support and deny ever giving that instruction. FinFlow's logs are vague — a line that says roughly "sell executed" with no clear record of the original wording, the exact time, or a confirmation step the user explicitly approved. There's no way to prove, one way or the other, what actually happened.
+
+Notice this scenario doesn't require an attacker at all. It's the ordinary, foreseeable case of a user having a change of heart after a bad outcome — and a system that can't defend itself because it never built the evidence trail in the first place.
+
+---
+
+## Why This Is an Agent-Specific Problem
+
+- **Natural language is inherently ambiguous.** "Sell my position" could mean all of it or some of it, right now or "when you get a good price." A vague instruction, faithfully logged as vague, doesn't protect anyone — the dispute becomes "what did I actually mean," which a log can't resolve after the fact.
+- **Agents compress a conversation into an action.** A human support rep who executes a trade usually leaves a paper trail shaped by a form: this account, this quantity, this price, this signature. An agent can execute the same trade from a loosely worded chat message, with the compression step — turning "sell some Tesla" into `sell_stock("TSLA", 50)` — being exactly where the record needs to be most explicit, and often is least.
+- **Autonomy raises the stakes of "who decided this."** If an agent can act without a human confirming each step, "the agent decided to sell" and "the user told the agent to sell" need to be distinguishable after the fact — otherwise disputes have no way to resolve.
+
+---
+
+## Mitigation Strategies
+
+**1. Create an Immutable Audit Trail**
+Every sensitive action gets a log entry that can't be quietly edited or deleted after the fact — append-only storage, write-once logging, or a hash-chained log where altering an old entry breaks the chain and is detectable. The point isn't just "we logged it," it's "we logged it in a way where tampering with the log itself would be tamperinng, and Module 2 already taught you how that gets caught."
+
+**2. Require Explicit Confirmation**
+Before executing an action with real consequences, have the agent restate exactly what it's about to do — in unambiguous terms — and require the user to explicitly approve that restatement. "Sell some Tesla" becomes "Confirm: sell 50 shares of TSLA at market price?" This does two things at once: it resolves ambiguity *before* acting, and it creates a clean, specific record of what was actually approved.
+
+**3. Use Secure Timestamps**
+A timestamp that's just whatever the local system clock said is trivially editable after the fact by anyone with write access to the log. A secure timestamp — signed at the moment of creation, or anchored to a trusted time source — makes "when did this happen" itself part of the tamper-evident record, not a detail an attacker (or a careless retention policy) can quietly adjust.
+
+---
+
+<Quiz question="TradingAgent's current log entry for a trade reads: 'Executed sell order per user request.' What's missing that would matter if the user later disputed this trade?">
+
+<div>
+
+Almost everything specific: *which* security, *how many* shares, the *exact wording* the user approved, a *timestamp* that can't be silently altered, and — if explicit confirmation was required — a record that the user actually confirmed a precise restatement of the action rather than a vague one.
+
+"Executed sell order per user request" is a log entry that's technically true and practically useless in a dispute. It proves an action category happened; it proves nothing about the specifics anyone would actually be arguing over. A log built for non-repudiation should let a third party, months later, read the entry and know exactly what was requested, exactly what was confirmed, and exactly when — without needing to trust anyone's memory of the conversation.
+
+</div>
+</Quiz>
+
+---
+
+## What's Next
+
+The code lab builds `TradingAgent` with a `sell_stock` tool that requires explicit confirmation of the exact trade details, writes an append-only, hash-chained audit entry for every execution, and timestamps each entry in a way that later tampering would break the chain.
