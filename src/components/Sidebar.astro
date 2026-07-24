@@ -39,11 +39,27 @@ function lessonHref(fullSlug: string) {
 <!-- Mobile backdrop -->
 <div id="sidebar-backdrop" class="hidden fixed inset-0 bg-black/40 z-30 md:hidden"></div>
 
+<!-- Invisible strip along the left edge: hovering it peeks open a collapsed sidebar -->
+<div id="sidebar-hover-zone" class="hidden md:block fixed inset-y-0 left-0 w-3 z-30" aria-hidden="true"></div>
+
+<!-- Floating handle to re-expand (pin open) a collapsed desktop sidebar -->
+<button
+  type="button"
+  id="sidebar-expand"
+  class="hidden fixed left-0 top-20 z-40 items-center justify-center w-6 h-12 rounded-r-lg
+         bg-white border border-l-0 border-gray-200 text-gray-400 shadow-sm
+         hover:text-brand-600 hover:bg-gray-50 transition-colors"
+  aria-label="Expand sidebar"
+  title="Expand sidebar"
+>
+  ›
+</button>
+
 <aside
   id="course-sidebar"
-  class="w-72 max-w-[85vw] flex-shrink-0 h-screen overflow-y-auto bg-white border-r border-gray-200 flex flex-col
+  class="w-72 max-w-[85vw] flex-shrink-0 h-screen overflow-y-auto overflow-x-hidden bg-white border-r border-gray-200 flex flex-col
          fixed inset-y-0 left-0 z-40 -translate-x-full transition-transform duration-200 ease-in-out
-         md:static md:z-auto md:translate-x-0"
+         md:static md:z-auto md:translate-x-0 md:transition-[width,opacity]"
 >
 
   <!-- Course header -->
@@ -52,14 +68,25 @@ function lessonHref(fullSlug: string) {
       <a href={base} class="text-xs text-gray-400 hover:text-brand-600 transition-colors">
         ← All Courses
       </a>
-      <button
-        type="button"
-        id="sidebar-close"
-        class="md:hidden -mr-1.5 p-1.5 text-gray-400 hover:text-gray-700 rounded-lg hover:bg-gray-100"
-        aria-label="Close menu"
-      >
-        ✕
-      </button>
+      <div class="flex items-center gap-1">
+        <button
+          type="button"
+          id="sidebar-collapse"
+          class="hidden md:flex -mr-1.5 p-1.5 text-gray-400 hover:text-gray-700 rounded-lg hover:bg-gray-100"
+          aria-label="Collapse sidebar"
+          title="Collapse sidebar"
+        >
+          ‹
+        </button>
+        <button
+          type="button"
+          id="sidebar-close"
+          class="md:hidden -mr-1.5 p-1.5 text-gray-400 hover:text-gray-700 rounded-lg hover:bg-gray-100"
+          aria-label="Close menu"
+        >
+          ✕
+        </button>
+      </div>
     </div>
     <a href={`${base}${courseSlug}/`} class="flex items-center gap-2 group">
       <div
@@ -133,6 +160,25 @@ function lessonHref(fullSlug: string) {
   </div>
 </aside>
 
+<style>
+  @media (min-width: 768px) {
+    #course-sidebar.is-collapsed {
+      width: 0;
+      opacity: 0;
+      pointer-events: none;
+    }
+    #course-sidebar.is-collapsed.is-hover-peek {
+      position: fixed;
+      inset-block: 0;
+      left: 0;
+      width: 18rem;
+      opacity: 1;
+      pointer-events: auto;
+      box-shadow: 0 20px 40px -8px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(0, 0, 0, 0.05);
+    }
+  }
+</style>
+
 <script>
   const STORAGE_KEY = 'course-progress';
   let progress: Record<string, string> = {};
@@ -165,6 +211,9 @@ function lessonHref(fullSlug: string) {
   const backdrop = document.getElementById('sidebar-backdrop');
   const toggleBtn = document.getElementById('sidebar-toggle');
   const closeBtn = document.getElementById('sidebar-close');
+  const collapseBtn = document.getElementById('sidebar-collapse');
+  const expandBtn = document.getElementById('sidebar-expand');
+  const hoverZone = document.getElementById('sidebar-hover-zone');
 
   function openSidebar() {
     sidebar?.classList.remove('-translate-x-full');
@@ -190,4 +239,57 @@ function lessonHref(fullSlug: string) {
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') closeSidebar();
   });
+
+  // Desktop collapse/expand (persisted across pages). Defaults to collapsed;
+  // hovering the left edge peeks the sidebar open without changing the pinned state.
+  const COLLAPSE_KEY = 'course-sidebar-collapsed';
+  let collapsed = true;
+  try {
+    const stored = localStorage.getItem(COLLAPSE_KEY);
+    collapsed = stored === null ? true : stored === '1';
+  } catch {}
+
+  function updateA11y() {
+    const visible = !collapsed || sidebar?.classList.contains('is-hover-peek');
+    sidebar?.setAttribute('aria-hidden', visible ? 'false' : 'true');
+  }
+
+  function setCollapsed(value: boolean) {
+    collapsed = value;
+    try { localStorage.setItem(COLLAPSE_KEY, value ? '1' : '0'); } catch {}
+    sidebar?.classList.toggle('is-collapsed', value);
+    if (!value) sidebar?.classList.remove('is-hover-peek');
+    collapseBtn?.setAttribute('aria-expanded', String(!value));
+    expandBtn?.classList.toggle('md:flex', value);
+    updateA11y();
+  }
+
+  function setHoverPeek(value: boolean) {
+    if (!collapsed) return;
+    sidebar?.classList.toggle('is-hover-peek', value);
+    updateA11y();
+  }
+
+  sidebar?.classList.toggle('is-collapsed', collapsed);
+  expandBtn?.classList.toggle('md:flex', collapsed);
+  collapseBtn?.setAttribute('aria-expanded', String(!collapsed));
+  updateA11y();
+
+  collapseBtn?.addEventListener('click', () => setCollapsed(true));
+  expandBtn?.addEventListener('click', () => setCollapsed(false));
+
+  let peekLeaveTimer: ReturnType<typeof setTimeout>;
+  function peekIn() {
+    clearTimeout(peekLeaveTimer);
+    setHoverPeek(true);
+  }
+  function peekOut() {
+    clearTimeout(peekLeaveTimer);
+    peekLeaveTimer = setTimeout(() => setHoverPeek(false), 150);
+  }
+
+  hoverZone?.addEventListener('mouseenter', peekIn);
+  sidebar?.addEventListener('mouseenter', peekIn);
+  hoverZone?.addEventListener('mouseleave', peekOut);
+  sidebar?.addEventListener('mouseleave', peekOut);
 </script>
