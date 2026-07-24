@@ -88,6 +88,21 @@ function lessonHref(fullSlug: string) {
         </button>
       </div>
     </div>
+    <div class="hidden md:flex items-center justify-between mb-3 -mt-1">
+      <label for="sidebar-hover-toggle" class="text-[11px] text-gray-400 cursor-pointer select-none">
+        Peek on hover
+      </label>
+      <button
+        type="button"
+        id="sidebar-hover-toggle"
+        role="switch"
+        aria-checked="true"
+        title="Toggle peek-on-hover"
+        class="relative inline-flex h-4 w-7 flex-shrink-0 items-center rounded-full bg-brand-500 transition-colors"
+      >
+        <span class="inline-block h-3 w-3 translate-x-3.5 transform rounded-full bg-white shadow transition-transform"></span>
+      </button>
+    </div>
     <a href={`${base}${courseSlug}/`} class="flex items-center gap-2 group">
       <div
         class="w-8 h-8 rounded-lg flex items-center justify-center text-white font-bold text-sm flex-shrink-0"
@@ -214,6 +229,7 @@ function lessonHref(fullSlug: string) {
   const collapseBtn = document.getElementById('sidebar-collapse');
   const expandBtn = document.getElementById('sidebar-expand');
   const hoverZone = document.getElementById('sidebar-hover-zone');
+  const hoverToggle = document.getElementById('sidebar-hover-toggle');
 
   function openSidebar() {
     sidebar?.classList.remove('-translate-x-full');
@@ -280,6 +296,7 @@ function lessonHref(fullSlug: string) {
 
   let peekLeaveTimer: ReturnType<typeof setTimeout>;
   function peekIn() {
+    if (!hoverEnabled) return;
     clearTimeout(peekLeaveTimer);
     setHoverPeek(true);
   }
@@ -292,4 +309,29 @@ function lessonHref(fullSlug: string) {
   sidebar?.addEventListener('mouseenter', peekIn);
   hoverZone?.addEventListener('mouseleave', peekOut);
   sidebar?.addEventListener('mouseleave', peekOut);
+
+  // Let users turn peek-on-hover off entirely (persisted across pages)
+  const HOVER_ENABLED_KEY = 'course-sidebar-hover-enabled';
+  let hoverEnabled = true;
+  try {
+    const storedHover = localStorage.getItem(HOVER_ENABLED_KEY);
+    hoverEnabled = storedHover === null ? true : storedHover === '1';
+  } catch {}
+
+  function applyHoverToggleUI() {
+    hoverToggle?.setAttribute('aria-checked', String(hoverEnabled));
+    hoverToggle?.classList.toggle('bg-brand-500', hoverEnabled);
+    hoverToggle?.classList.toggle('bg-gray-200', !hoverEnabled);
+    const dot = hoverToggle?.querySelector('span');
+    dot?.classList.toggle('translate-x-3.5', hoverEnabled);
+    dot?.classList.toggle('translate-x-0.5', !hoverEnabled);
+  }
+  applyHoverToggleUI();
+
+  hoverToggle?.addEventListener('click', () => {
+    hoverEnabled = !hoverEnabled;
+    try { localStorage.setItem(HOVER_ENABLED_KEY, hoverEnabled ? '1' : '0'); } catch {}
+    applyHoverToggleUI();
+    if (!hoverEnabled) setHoverPeek(false);
+  });
 </script>
