@@ -138,21 +138,33 @@ const coursesByCategory = categories.map(category => ({
     <section class="bg-gradient-to-br from-brand-700 via-brand-600 to-brand-500 text-white px-4 sm:px-6 py-14 sm:py-20">
       <div class="max-w-4xl mx-auto text-center">
         <p class="text-brand-200 text-sm font-semibold uppercase tracking-widest mb-4">
-          Learn at your own pace
+          Zero Fluff · Self-Paced · 100% Free &amp; Open-Access
         </p>
         <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold mb-5 leading-tight">
           Skills That Move the World Forward
         </h1>
         <p class="text-brand-100 text-base sm:text-lg max-w-2xl mx-auto mb-8 leading-relaxed">
-          Practical short courses on AI, technology, and the skills that matter —
-          built for complete beginners, taught with real-world examples.
+          Practical short courses on AI, modern technology, and applied systems —
+          built for complete beginners, taught through real-world projects.
         </p>
-        <div class="flex flex-wrap justify-center gap-2 sm:gap-3">
-          <span class="bg-white/20 text-white text-xs sm:text-sm font-medium px-3 sm:px-4 py-1 sm:py-1.5 rounded-full">🤖 Physical AI</span>
-          <span class="bg-white/20 text-white text-xs sm:text-sm font-medium px-3 sm:px-4 py-1 sm:py-1.5 rounded-full">🚨 First Responders</span>
-          <span class="bg-white/20 text-white text-xs sm:text-sm font-medium px-3 sm:px-4 py-1 sm:py-1.5 rounded-full">🛡️ Secure AI</span>
-          <span class="bg-white/20 text-white text-xs sm:text-sm font-medium px-3 sm:px-4 py-1 sm:py-1.5 rounded-full">💻 Web Dev</span>
-          <span class="bg-white/20 text-white text-xs sm:text-sm font-medium px-3 sm:px-4 py-1 sm:py-1.5 rounded-full">🧠 LLMs</span>
+        <nav aria-label="Jump to course category" class="flex flex-wrap justify-center gap-2 sm:gap-3 mb-6">
+          <a href="#ai-machine-learning" class="hero-pill">🤖 Physical AI</a>
+          <a href="#ai-for-public-safety" class="hero-pill">🚨 First Responders</a>
+          <a href="#ai-machine-learning" class="hero-pill">🛡️ Secure AI</a>
+          <a href="#software-development" class="hero-pill">💻 Web Dev</a>
+          <a href="#ai-machine-learning" class="hero-pill">🧠 LLMs</a>
+        </nav>
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
+          <a href="#all-courses" class="hero-cta-primary">
+            Browse All {totalCount} Courses ↓
+          </a>
+          <a
+            href={`${base}zero-to-vibe/`}
+            class="hero-cta-ghost"
+            aria-label="New to tech? Start with the Zero to Vibe beginner course"
+          >
+            New to Tech? Start Here →
+          </a>
         </div>
       </div>
     </section>
@@ -172,7 +184,7 @@ const coursesByCategory = categories.map(category => ({
     </div>
 
     <!-- ── Course Catalog ────────────────────────────── -->
-    <section class="max-w-6xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+    <section id="all-courses" class="max-w-6xl mx-auto px-4 sm:px-6 py-12 sm:py-16 scroll-mt-16">
       <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-6">
         <div>
           <h2 class="text-2xl font-bold text-gray-900">All Courses</h2>
@@ -264,6 +276,21 @@ const coursesByCategory = categories.map(category => ({
 
       buttons.forEach(btn => {
         btn.addEventListener('click', () => setView(btn.getAttribute('data-view-btn')!));
+      });
+
+      // Smooth-scroll in-page anchors (hero pills, jump nav, "Browse" CTA)
+      // via JS rather than a global `scroll-behavior: smooth`, since Chrome
+      // can fail to honor an initial page-load's URL fragment when that CSS
+      // property is set on <html>.
+      document.querySelectorAll<HTMLAnchorElement>('a[href^="#"]').forEach(link => {
+        link.addEventListener('click', (e) => {
+          const id = link.getAttribute('href')!.slice(1);
+          const target = document.getElementById(id);
+          if (!target) return;
+          e.preventDefault();
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          history.pushState(null, '', `#${id}`);
+        });
       });
     </script>
 
