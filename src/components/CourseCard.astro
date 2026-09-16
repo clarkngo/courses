@@ -11,7 +11,7 @@ const isAvailable = course.data.status === 'available';
 const color = course.data.color || '#3b63f5';
 ---
 
-<div class={`module-card overflow-hidden p-0 flex flex-col group ${isAvailable ? 'cursor-pointer' : 'opacity-75'}`}>
+<div data-category={course.data.category} class={`module-card overflow-hidden p-0 flex flex-col group ${isAvailable ? 'cursor-pointer' : 'opacity-75'}`}>
   <!-- Banner -->
   <div
     class="relative flex items-start justify-between px-5 pt-4 pb-6"
