@@ -1,0 +1,105 @@
+---
+title: "What AI Is (and What It Isn't)"
+description: "Get a plain-language picture of what today's AI assistants are, what they're genuinely good at, and how this free course will take you from curious to confident."
+module: 1
+moduleTitle: "Collaborate with AI"
+lesson: 1
+duration: "10 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Welcome to AI Fundamentals
+
+You've probably already used AI today without thinking about it: your email suggested the end of a sentence, your phone sorted photos by who was in them, a streaming service recommended a show. What's changed in the last few years is that AI is now something you can *talk to*. You type a request in plain English, and an assistant like Gemini, ChatGPT, Claude, or Microsoft Copilot writes back.
+
+This course is about that second kind of AI — the conversational assistant — and how to use it well at work. It's free, it assumes no technical background, and every hands-on exercise works in the free tier of any major AI assistant. You don't need to write code, and you don't need to pay for anything.
+
+---
+
+## A Working Definition
+
+**Artificial intelligence (AI)** is software that performs tasks we'd normally associate with human thinking — recognizing patterns, understanding language, making predictions, producing new content.
+
+The assistants you'll use in this course are a specific kind of AI called **generative AI**: they *generate* new content — text, images, summaries, code — in response to a request. The request you type is called a **prompt**, and what comes back is called the **output** or **response**.
+
+Under the hood, the text-focused assistants run on a **large language model (LLM)**: a model trained on an enormous amount of written text until it became very good at predicting what words should come next. You'll see how that works in Module 3. For now, the important idea is this:
+
+> An AI assistant doesn't look up the answer to your question. It *writes* a response that fits your request, based on patterns it learned during training.
+
+That one sentence explains most of what makes AI useful — it can write, summarize, and brainstorm in seconds — and most of what makes it risky, because a response that *sounds* right isn't guaranteed to *be* right.
+
+---
+
+## What AI Assistants Are Good At
+
+| Good at | Example at work |
+|---|---|
+| **Drafting** | A first version of an email, job post, meeting agenda, or project update |
+| **Summarizing** | Condensing a long report or email thread into five bullets |
+| **Rewriting** | Changing tone, length, or reading level ("make this friendlier and half as long") |
+| **Brainstorming** | Twenty names for a new program, ten angles for a presentation |
+| **Explaining** | "Explain this spreadsheet formula like I'm new to Excel" |
+| **Organizing** | Turning messy notes into a table, checklist, or outline |
+
+## What AI Assistants Are *Not*
+
+- **Not a search engine.** Some assistants can search the web, but by default they generate text from learned patterns. They can state things confidently that are simply false.
+- **Not a decision-maker.** AI can lay out options and trade-offs. The judgment — and the accountability — stays with you.
+- **Not a mind reader.** It only knows what's in your prompt (plus what it learned in training). If you leave out the audience, the purpose, or the constraints, it will guess.
+- **Not a vault.** What you type may be stored or reviewed by the provider. Treat the chat box like a shared document, not a private diary.
+
+---
+
+## How This Course Is Organized
+
+| Module | What you'll be able to do |
+|---|---|
+| **1. Collaborate with AI** | Treat AI as a collaborator instead of a vending machine |
+| **2. Practice Using AI** | Set up a free AI workspace and run your first brainstorm |
+| **3. Learn How AI Works** | Explain how AI learns, where it fails, and where it shines |
+| **4. Design Great Prompts** | Use a repeatable framework to get better outputs on the first try |
+| **5. Level Up Your Prompts** | Chain prompts together, carry context between chats, and generate images |
+| **6. Use AI Responsibly** | Protect privacy, catch bad outputs, understand AI agents, and pass the course challenge |
+
+Most lessons include a **Try It** exercise. Do them. Reading about prompting is like reading about swimming — the understanding only shows up once you're in the water.
+
+<Pitfall title="Judging AI From One Bad Try">
+
+**Common mistake:** typing a vague, one-line request, getting a bland or wrong answer, and concluding that "AI isn't useful for my job."
+
+A single vague prompt tells you almost nothing about what the tool can do. Most of the gap between a disappointing result and a genuinely useful one comes from how the request was framed and whether you followed up. That skill is exactly what Modules 4 and 5 teach. Give it a fair trial before deciding.
+
+</Pitfall>
+
+<Quiz questions={[
+  {
+    question: "Which statement best describes how a generative AI assistant produces an answer?",
+    options: [
+      "It retrieves a stored, verified answer from a database of facts.",
+      "It writes a new response that fits your request, based on patterns learned during training.",
+      "It forwards your question to a human expert who types the reply.",
+      "It copies the top search-engine result word for word."
+    ],
+    correctIndex: 1,
+    explanation: "Generative AI generates new content from learned patterns. That's why it's fast and flexible — and also why it can produce confident answers that are wrong. Some assistants can also search the web, but generation is the core mechanism."
+  },
+  {
+    question: "A colleague says, 'I'll just let the AI decide which vendor we pick.' What's the best response?",
+    options: [
+      "Great idea — AI is objective, so its decision will be fairer than ours.",
+      "Use AI to lay out criteria, options, and trade-offs, but make and own the decision yourselves.",
+      "Never use AI for anything related to vendors.",
+      "Ask three different AI tools and go with the majority vote."
+    ],
+    correctIndex: 1,
+    explanation: "AI is a strong thinking partner for structuring a decision, but it isn't accountable for the outcome and doesn't know your full context. The judgment stays with the people responsible for it."
+  }
+]} />
+
+---
+
+## Up Next
+
+Now that you know what an AI assistant is, the next lesson covers the most important habit in this course: working *with* AI as a collaborator instead of just handing it tasks.

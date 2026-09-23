@@ -1,0 +1,137 @@
+---
+title: "The CRAFT Prompting Framework"
+description: "Learn a five-part framework — Context, Role, Ask, Format, Tweak — that turns vague requests into prompts that get useful results on the first try."
+module: 4
+moduleTitle: "Design Great Prompts"
+lesson: 1
+duration: "20 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## A Prompt Is a Brief
+
+Imagine handing a task to a smart new colleague on their first day. You wouldn't say "write something about the budget." You'd explain what's going on, what you need, who it's for, and what a good result looks like. A prompt is the same kind of **brief** — and the AI is a colleague who knows nothing about your situation except what's in it.
+
+To make that brief easy to remember, this course uses **CRAFT**:
+
+| Letter | Stands for | Question it answers | Example |
+|---|---|---|---|
+| **C** | **Context** | What's the situation? Who's the audience? Why does this matter? | "Our 40-person nonprofit is announcing a new volunteer program to existing donors." |
+| **R** | **Role** | What perspective or expertise should the AI take? | "Act as an experienced nonprofit communications writer." |
+| **A** | **Ask** | What exactly do you want done? | "Write the announcement email." |
+| **F** | **Format** | What shape, length, and tone should it have? | "Under 150 words, warm tone, one clear call to action, plus 3 subject-line options." |
+| **T** | **Tweak** | How will you review and refine it? | "Now make it more concise and move the call to action higher." |
+
+C, R, A, and F go into your prompt. T is what you do *after* the first response: evaluate it and refine. Most great results come from the tweak.
+
+---
+
+## Before and After
+
+**Before:**
+
+```text
+Write an email about the new volunteer program.
+```
+
+The AI has to guess the audience, the tone, the length, the details, and the goal. It will produce something generic.
+
+**After (CRAFT):**
+
+```text
+Context: I work at a 40-person nonprofit that runs after-school
+tutoring. We're launching a new program where donors can volunteer
+as tutors 2 hours a month. This email goes to existing donors, many
+of whom have given for years but never volunteered.
+
+Role: Act as an experienced nonprofit communications writer.
+
+Ask: Write an email announcing the program and inviting donors to
+sign up for an info session on March 12.
+
+Format: Under 150 words. Warm, personal, not salesy. One clear call
+to action. Give me 3 subject-line options at the top.
+```
+
+Same task, completely different result. You don't need to label each part like this — a natural paragraph that covers all four works just as well. The labels simply make it easy to check you haven't skipped one.
+
+---
+
+## Each Part, a Little Deeper
+
+**Context is the part people skip most**, because it feels obvious to *you*. The AI doesn't know your industry, your audience, what happened last week, or what you've already tried. A sentence or two of context usually improves results more than anything else.
+
+**Role sets the lens.** "Act as a skeptical investor" and "act as a patient tutor for a nervous beginner" will respond to the same material very differently. Role is optional for simple tasks and powerful for reviews, critiques, and specialized writing.
+
+**Ask should use a clear action verb:** summarize, draft, compare, list, rewrite, critique, explain. If you have several asks, number them.
+
+**Format is the easiest win.** Specify the length ("under 100 words," "5 bullets"), structure ("a table with columns for...," "headings for each section"), tone ("plain and direct," "friendly but professional"), and audience reading level.
+
+**Tweak is where the collaboration happens.** Evaluate the first response: Is it accurate? Does it fit the audience? Is anything missing? Then give specific feedback — "shorter," "less formal," "add an example," "the second point is wrong because..." — rather than starting over.
+
+<TryIt title="Rebuild a Vague Prompt With CRAFT">
+
+1. Start a new chat and send this vague prompt exactly as written:
+   ```text
+   Write a job posting for a coordinator.
+   ```
+   Save the result.
+2. Start *another* new chat. Rewrite the prompt using all four in-prompt parts of CRAFT. Invent realistic details if you need to: the organization, what the coordinator actually does, who you want to apply, the length and tone you want.
+3. Compare the two outputs side by side. List three specific differences.
+4. Now **Tweak**: give the CRAFT version at least one round of specific feedback and see how it improves.
+5. Add your finished CRAFT prompt to your prompt library as a reusable template.
+
+</TryIt>
+
+<Pitfall title="Starting Over Instead of Tweaking">
+
+**Common mistake:** getting a so-so result, opening a brand-new chat, and retyping a slightly different prompt from scratch — over and over.
+
+Unless the conversation has gone badly off track, it's usually faster to stay in the same chat and give direct feedback: "Good start. Cut it by half, drop the jargon, and make the opening sentence about the reader, not us." The AI can see its previous draft and your feedback together, which makes the revision targeted instead of a fresh guess.
+
+</Pitfall>
+
+<Quiz questions={[
+  {
+    question: "Which part of CRAFT is missing from this prompt: 'Act as an HR specialist. Write a policy summary in 5 bullet points for new hires.'?",
+    options: [
+      "Role",
+      "Ask",
+      "Format",
+      "Context"
+    ],
+    correctIndex: 3,
+    explanation: "It has a Role (HR specialist), an Ask (write a policy summary), and a Format (5 bullets for new hires). But which policy? What organization? What should new hires take away? Without context, the AI will invent a generic policy."
+  },
+  {
+    question: "What does the 'T' (Tweak) in CRAFT represent?",
+    options: [
+      "Adding a title to your prompt.",
+      "Evaluating the response and refining it with specific feedback.",
+      "Translating the output into another language.",
+      "Timing how long the AI takes to respond."
+    ],
+    correctIndex: 1,
+    explanation: "Tweak is the iterative step after the first response: check it critically, then give targeted feedback to improve it. It's where most of the quality gains come from."
+  },
+  {
+    question: "Which Format instruction is most useful?",
+    options: [
+      "'Make it good.'",
+      "'Keep it professional-ish.'",
+      "'Under 120 words, 3 short paragraphs, plain language for customers with no technical background.'",
+      "'Format it nicely.'"
+    ],
+    correctIndex: 2,
+    explanation: "Specific, checkable format instructions — length, structure, tone, audience — remove guesswork. 'Good' and 'nicely' leave the AI to guess what you mean."
+  }
+]} />
+
+---
+
+## Up Next
+
+CRAFT gives you the structure. The next lesson adds a toolkit of practical tips — examples, constraints, asking for questions, and more — and a hands-on lab to put it all together.

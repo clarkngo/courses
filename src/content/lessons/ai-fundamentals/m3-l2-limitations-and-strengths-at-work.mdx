@@ -1,0 +1,122 @@
+---
+title: "AI's Limitations — and Where It Shines at Work"
+description: "Learn the predictable ways AI goes wrong — hallucinations, outdated knowledge, bias, and weak math — and the workplace capabilities worth putting to use today."
+module: 3
+moduleTitle: "Learn How AI Works"
+lesson: 2
+duration: "20 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## Know the Failure Modes
+
+AI mistakes aren't random. Because they come from how the models are built, you can learn to anticipate them — and that's what separates confident AI users from people who get burned.
+
+### 1. Hallucinations
+
+A **hallucination** is when AI produces information that sounds right but is false: a statistic that doesn't exist, a made-up quote, a citation to a study nobody wrote, a policy detail invented to fill a gap.
+
+It happens because the model generates *plausible* text. If it doesn't have a strong pattern for the answer, it may still produce something with the right shape. Hallucinations are most likely with:
+
+- Specific numbers, dates, names, and citations
+- Niche topics with little training data
+- Questions about your own organization, which it has never seen
+- Requests that assume something false ("Why did the company announce X?" when it didn't)
+
+### 2. Knowledge Cutoff
+
+A model's built-in knowledge stops at the point its training data was collected — its **knowledge cutoff**. Without a web search feature, it won't know about recent events, new laws, or updated prices, and it may not *realize* it doesn't know. Many assistants can now search the web, which helps, but check whether a given answer actually came from a search.
+
+### 3. Bias
+
+Models learn from human-written data, and human data contains biases — about gender, race, age, culture, and more. Those patterns can show up in outputs: whose name a model uses for "the engineer" versus "the nurse," which cultures it treats as the default, how it describes different groups. Review outputs about people with extra care, especially anything involving hiring, evaluation, or customers.
+
+### 4. Math, Counting, and Precise Logic
+
+Language models are word predictors, not calculators. They often get arithmetic right, but they can fumble multi-step calculations, counting, and exact logic — and state a wrong total confidently. Some assistants run actual code to calculate, which is far more reliable. When numbers matter, ask the AI to show its work, or check with a spreadsheet or calculator.
+
+### 5. Missing Context
+
+The AI knows nothing about your team, your customers, your history, or unwritten norms unless you tell it. Many "wrong" answers are really *reasonable answers to a different situation* than yours.
+
+---
+
+## Where AI Shines at Work
+
+The flip side: some tasks play directly to AI's strengths, especially when **you supply the source material** and can check the result.
+
+| Capability | What it looks like |
+|---|---|
+| **Summarize** | Condense a long document, transcript, or thread into key points and action items |
+| **Draft** | First versions of emails, announcements, job descriptions, FAQs |
+| **Transform** | Change tone, length, format, or reading level; turn notes into a table |
+| **Analyze** | Spot themes in survey comments, compare two documents, extract key terms |
+| **Explain** | Break down jargon, a formula, or an unfamiliar process step by step |
+| **Work with files and images** | Many assistants accept uploaded PDFs, spreadsheets, and photos — "What does this chart show?" |
+| **Translate** | Draft translations to review with a fluent speaker for anything important |
+
+Notice the pattern: AI is most reliable when it's **working with material you provided** (summarize *this*, rewrite *this*) and least reliable when it's **recalling specific facts from memory** (what did *this* study find?). That's the single most useful rule of thumb in this lesson.
+
+<TryIt title="Catch a Hallucination in the Wild">
+
+1. Ask your assistant a question about something niche that you know well — a small local business, a detail of your organization's history, a specific stat from your field. For example: `What year was [a small local organization you know] founded, and who founded it?`
+2. Check the answer against what you know. Was it right, wrong, or honestly uncertain?
+3. Now try: `Give me 3 academic studies, with authors and years, about [a narrow topic in your field].` Then search for each citation yourself. Do they all exist exactly as described?
+4. Finally, ask: `How confident are you in each of those citations, and how should I verify them?`
+
+Reflect: what kinds of questions produced reliable answers, and which didn't?
+
+</TryIt>
+
+<Pitfall title="Trusting Confidence as a Signal of Accuracy">
+
+**Common mistake:** assuming an answer is right because it's detailed, specific, and written with total confidence.
+
+AI uses the same confident, polished tone whether it's right or wrong. Specificity — an exact percentage, a precise date, a named author — can actually be a *warning sign* for facts you haven't provided yourself, because those details are exactly what gets invented. Verify anything that matters with a trusted source.
+
+</Pitfall>
+
+<Quiz questions={[
+  {
+    question: "Which task is AI likely to handle most reliably?",
+    options: [
+      "Recalling the exact revenue figure from a competitor's annual report.",
+      "Summarizing a meeting transcript you pasted into the chat.",
+      "Stating your company's current parental-leave policy from memory.",
+      "Listing this week's news in your industry without a web search."
+    ],
+    correctIndex: 1,
+    explanation: "When AI works with material you provide, it isn't relying on memory for the facts. Recalling specifics from memory, knowing your internal policies, or reporting recent news are all high-risk."
+  },
+  {
+    question: "An AI tool gives you a statistic with a precise percentage and a named source. What should you do before putting it in a report?",
+    options: [
+      "Use it — the specificity shows it's accurate.",
+      "Round the number so it's less likely to be wrong.",
+      "Find and check the original source yourself.",
+      "Ask the AI 'Are you sure?' and use it if it says yes."
+    ],
+    correctIndex: 2,
+    explanation: "Precise-sounding details are exactly what hallucinations look like. Asking the AI if it's sure isn't verification — it can confidently confirm its own mistake. Check the real source."
+  },
+  {
+    question: "Why might an AI give an outdated answer about a regulation that changed recently?",
+    options: [
+      "Its built-in knowledge stops at its training cutoff, and it may not have searched the web.",
+      "AI tools are deliberately programmed to be out of date.",
+      "Regulations are too complicated for AI to read.",
+      "It only happens with paid plans."
+    ],
+    correctIndex: 0,
+    explanation: "Without a search feature, a model only knows what was in its training data up to its knowledge cutoff — and it may not flag that its information could be stale."
+  }
+]} />
+
+---
+
+## Up Next
+
+You now know how AI works and where it fails. Module 4 turns that knowledge into a skill: a repeatable framework for writing prompts that get useful results the first time.

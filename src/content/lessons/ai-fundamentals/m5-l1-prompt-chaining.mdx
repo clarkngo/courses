@@ -1,0 +1,115 @@
+---
+title: "Prompt Chaining: Big Tasks, Small Steps"
+description: "Break complex work into a sequence of focused prompts where each output feeds the next — and get far better results than one giant request."
+module: 5
+moduleTitle: "Level Up Your Prompts"
+lesson: 1
+duration: "25 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## Why One Giant Prompt Falls Short
+
+Ask an AI to "research, outline, write, and polish a 10-slide presentation on our customer retention problem" in one prompt, and you'll get something — but it will be shallow everywhere. The AI has to make dozens of decisions at once, and you have no chance to steer any of them.
+
+**Prompt chaining** is the fix: split a big task into a series of smaller prompts, where **the output of one step becomes the input to the next**, and you review each link before moving on.
+
+```text
+Step 1: Understand   →   Step 2: Outline   →   Step 3: Draft   →   Step 4: Refine
+   (you review)            (you review)          (you review)        (you review)
+```
+
+It's how a skilled professional works anyway: nobody writes a report by typing the final version from top to bottom. Chaining just makes those stages explicit.
+
+---
+
+## Three Chaining Patterns
+
+### Pattern 1: Sequential Build
+
+Each step builds directly on the last. Great for documents, presentations, and plans.
+
+1. "Here are my notes on our customer retention data: [notes]. What are the 3–5 main themes?"
+2. "Using those themes, propose an outline for a 10-slide presentation to our leadership team. One line per slide."
+3. *(After you adjust the outline)* "Write speaker notes for slides 1–3 using the revised outline."
+4. "Review all the speaker notes for consistency and cut any repetition."
+
+### Pattern 2: Generate, Then Filter
+
+Produce many options, then evaluate them in a separate step. You used a version of this in the Module 2 brainstorm.
+
+1. "Generate 15 possible names for our internal mentoring program."
+2. "Rate each name from 1–5 on: easy to remember, inclusive, not already a common brand. Show a table."
+3. "Take the top 3 and write a one-sentence tagline for each."
+
+### Pattern 3: Draft, Critique, Revise
+
+Use separate steps for creating and judging, because AI (like people) evaluates better when it isn't also trying to create.
+
+1. "Draft a response to this customer complaint: [complaint]."
+2. "Now act as the customer who wrote the complaint. How would you feel reading that response? What's missing?"
+3. "Revise the response to address those gaps."
+
+---
+
+## Tips for Better Chains
+
+- **Plan the chain first.** You can even ask the AI: "I need to produce X. Break this into 4–6 steps I should do one at a time. Don't start the work yet."
+- **Review at every link.** A mistake in step 1 carries through every later step. Catching it early is the whole point.
+- **Edit the output before passing it on.** You don't have to accept an outline as-is — change it, then say "Use this revised version."
+- **Keep one chain in one chat** so the AI can see the earlier steps. For very long chains, see the next lesson on carrying context.
+
+<TryIt title="Chain Your Way to a Finished Deliverable">
+
+Choose a deliverable you actually need, or use this scenario: *"Create a one-page onboarding guide for new volunteers at a community food bank."*
+
+1. **Plan:** `I need to create [deliverable] for [audience]. Break this into 4-5 steps I should complete one at a time. Don't do the work yet.`
+2. **Step through it:** complete each step in the same chat. After each response, review it and make at least one change or correction before saying "Next step."
+3. **Critique:** at the end, ask the AI to review the whole thing from the audience's point of view and list what's confusing or missing.
+4. **Revise and verify:** apply the fixes you agree with, then check every fact yourself.
+
+Reflect: at which step did your review make the biggest difference?
+
+</TryIt>
+
+<Pitfall title="Rubber-Stamping Each Step">
+
+**Common mistake:** running a chain but typing "looks good, next" at every step without actually reading.
+
+That turns a chain back into one giant prompt with extra clicks. The value of chaining comes from the checkpoints. If you're not going to review a step, you've lost your chance to steer it — and any error compounds through everything that follows.
+
+</Pitfall>
+
+<Quiz questions={[
+  {
+    question: "What is the defining feature of prompt chaining?",
+    options: [
+      "Using the same prompt in several different AI tools.",
+      "Splitting a task into steps where each output feeds the next, with review between steps.",
+      "Writing prompts that are as long as possible.",
+      "Asking the AI to repeat its answer several times."
+    ],
+    correctIndex: 1,
+    explanation: "Chaining is about sequence and checkpoints: focused steps, each building on reviewed output from the previous one."
+  },
+  {
+    question: "Why separate 'draft' and 'critique' into different steps?",
+    options: [
+      "Because AI can only do one thing per day.",
+      "Evaluation tends to be sharper when it's a dedicated step, and it gives you a clear point to decide which critiques to accept.",
+      "Because critiquing is a premium feature.",
+      "It makes the chat look more organized."
+    ],
+    correctIndex: 1,
+    explanation: "A dedicated critique step — especially from a specific point of view — surfaces problems that are easy to miss during drafting, and lets you choose which changes to make."
+  }
+]} />
+
+---
+
+## Up Next
+
+Long chains and long conversations raise a practical problem: what happens when a chat gets too long, or you need to start fresh without losing everything? The next lesson covers carrying context between chats — and using AI to generate images.
