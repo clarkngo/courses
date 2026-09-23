@@ -1,0 +1,113 @@
+---
+title: "Set Up Your Free AI Workspace"
+description: "Choose a free AI assistant, adjust the privacy settings that matter, and learn how the hands-on exercises in this course work — no paid plan required."
+module: 2
+moduleTitle: "Practice Using AI"
+lesson: 1
+duration: "15 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## You Don't Need to Pay to Learn This
+
+Every exercise in this course works in the **free tier** of a mainstream AI assistant. Paid plans usually add higher usage limits, faster or more capable models, and extra features — nice to have, not required. The skills you'll learn (framing a request, iterating, verifying) transfer across every tool, because they're about *you*, not the product.
+
+---
+
+## Pick One Assistant (Any of These Works)
+
+| Assistant | Made by | Where to find it | Worth knowing |
+|---|---|---|---|
+| **Gemini** | Google | [gemini.google.com](https://gemini.google.com) | Signs in with a Google account; connects well with Google Workspace |
+| **ChatGPT** | OpenAI | [chatgpt.com](https://chatgpt.com) | The most widely used assistant; free tier includes image generation with limits |
+| **Claude** | Anthropic | [claude.ai](https://claude.ai) | Strong at long documents and careful writing |
+| **Microsoft Copilot** | Microsoft | [copilot.microsoft.com](https://copilot.microsoft.com) | Built into Windows and Edge; signs in with a Microsoft account |
+
+Free-tier features and limits change often, so check the provider's current plan page if something in this course isn't available to you. If your employer provides an approved AI tool, **use that one for anything work-related** — it's likely covered by agreements that protect company data.
+
+**Recommendation:** pick one and stick with it for the whole course. Switching tools every lesson makes it harder to tell whether a better result came from your prompt or from the tool. Once you're comfortable, try the same prompt in a second assistant — comparing them is a great lesson on its own.
+
+---
+
+## Three Settings to Check Before You Start
+
+Take five minutes to look through your assistant's settings. Names and locations vary by product and change over time, but look for:
+
+1. **Training on your data.** Many free consumer tools may use your conversations to improve their models unless you opt out. Look for a setting like "Improve the model for everyone," "Activity," or "Help improve." Decide deliberately rather than by default.
+2. **Chat history and memory.** Some assistants remember facts about you across conversations. Useful, but know it's on — and know how to view and delete what it remembers.
+3. **Temporary or private chats.** Most assistants offer a mode that doesn't save the conversation. Handy for anything you'd rather not keep.
+
+<Pitfall title="Pasting Sensitive Information Into a Consumer Tool">
+
+**Common mistake:** pasting customer lists, employee records, health information, passwords, unreleased financials, or confidential contracts into a personal, free AI account to "just summarize it quickly."
+
+Once it's submitted, you've shared it with a third party — possibly one your organization has no agreement with. The rule of thumb for this whole course: **if you wouldn't paste it into an email to a stranger, don't paste it into a consumer AI tool.** Remove names and identifying details, or use your organization's approved tool.
+
+</Pitfall>
+
+---
+
+## How the "Try It" Exercises Work
+
+Each Try It box gives you a prompt or a short scenario to run in your assistant. A few conventions:
+
+- **Text in brackets**, like `[your job title]`, is a placeholder. Replace it with your own details.
+- **Your output will differ from anyone else's** — and from your own output if you run the same prompt twice. AI responses vary by design. That's normal.
+- **Start a new chat** for each exercise unless it says to continue, so earlier conversations don't influence the result.
+- **There's no answer key.** Success means you got a response that's genuinely useful to you, and you can explain *why* it's better than your first attempt.
+
+<TryIt title="Get to Know Your Assistant">
+
+Start a new chat and send:
+
+```text
+I'm new to using AI assistants and I work as a [your job title]
+in [your industry]. Suggest 5 specific, low-risk ways I could use
+you this week to save time. For each, give an example prompt I
+could copy.
+```
+
+Then follow up with:
+
+```text
+Which of those 5 would be the riskiest if I didn't double-check
+your output, and why?
+```
+
+Save one of the example prompts somewhere — a note, a doc — as the first entry in your personal **prompt library**. You'll add to it throughout the course.
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "You want to summarize a spreadsheet of customer names, emails, and purchase history. Your only AI tool is a free personal account. What's the best move?",
+    options: [
+      "Paste the whole spreadsheet in — it's faster.",
+      "Remove or replace the personal details first, or use your organization's approved AI tool.",
+      "Paste it into a temporary chat, which makes any data safe to share.",
+      "Take a screenshot instead of pasting text, since images aren't stored."
+    ],
+    correctIndex: 1,
+    explanation: "Customer personal data shouldn't go into a consumer tool without an agreement in place. Temporary chats and screenshots reduce what's kept in your history, but they don't change the fact that the data was sent to a third party."
+  },
+  {
+    question: "Why does this course recommend sticking with one AI assistant while you learn?",
+    options: [
+      "Because the other assistants don't work for beginners.",
+      "So you can tell whether better results come from better prompting rather than from switching tools.",
+      "Because free accounts expire if you use more than one.",
+      "Because prompting techniques only work in one specific tool."
+    ],
+    correctIndex: 1,
+    explanation: "Keeping the tool constant isolates the variable you're practicing — your prompting. The techniques themselves transfer across assistants."
+  }
+]} />
+
+---
+
+## Up Next
+
+Your workspace is ready. In the next lesson you'll put it to work on one of the most useful things AI does: brainstorming.

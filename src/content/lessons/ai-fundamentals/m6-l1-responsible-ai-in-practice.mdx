@@ -1,0 +1,127 @@
+---
+title: "Responsible AI in Practice"
+description: "Build everyday habits for using AI responsibly — protecting data, checking for bias, verifying outputs, being transparent — and know exactly what to do when AI gives you a bad response."
+module: 6
+moduleTitle: "Use AI Responsibly"
+lesson: 1
+duration: "20 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## You're the Human in the Loop
+
+Everything in this course points to one principle: **AI assists; you're accountable.** When an AI-drafted email goes out under your name, it's your email. When an AI summary shapes a decision, it's your decision. Responsible AI use isn't a separate skill from good AI use — it's the part that makes the rest trustworthy.
+
+Here are five habits that cover most real-world situations.
+
+---
+
+## Five Everyday Habits
+
+### 1. Protect Data
+
+- Follow your organization's AI policy. If there isn't one, ask.
+- Use approved tools for work data; don't put confidential information into personal accounts.
+- Strip names and identifying details when you can: "Customer A," "Employee B."
+- Never paste passwords, API keys, financial account numbers, health records, or government IDs.
+
+### 2. Verify Before You Use
+
+Match your checking to the stakes:
+
+| Stakes | Example | Verification |
+|---|---|---|
+| **Low** | Brainstorm list, casual rewording | Quick read for sense |
+| **Medium** | Internal email, meeting summary | Read carefully; check names, dates, action items against the source |
+| **High** | Client deliverable, public statement, anything legal, medical, financial, or about a person's job | Check every fact against a trusted source; have a qualified human review it |
+
+### 3. Watch for Bias and Fairness
+
+Be extra careful whenever AI output involves **people**: hiring, performance reviews, customer communication, descriptions of groups. Ask: Would this read differently if the person were a different gender, age, or background? Is anyone being stereotyped or left out? You can also ask the AI directly: "Review this for biased language or assumptions."
+
+AI should never be the sole decision-maker for decisions that significantly affect people — who gets hired, promoted, approved, or disciplined.
+
+### 4. Be Transparent
+
+Know your organization's expectations about disclosing AI use. As a general norm, be open about substantial AI help when it matters to the reader: in academic work, in published content, and whenever someone would reasonably assume a human wrote or checked something. Never present AI-generated content — or images — as something it isn't.
+
+### 5. Respect Others' Work
+
+Don't use AI to pass off someone else's writing, art, or ideas as your own, and be cautious about asking AI to closely imitate a specific living creator. If AI output closely resembles a known source, don't use it as original work.
+
+---
+
+## What to Do When You Get a Bad Response
+
+Every AI user gets bad responses: wrong, off-topic, biased, or simply unhelpful. Here's a quick playbook.
+
+1. **Diagnose.** Was it missing context? A vague ask? A fact the AI shouldn't be expected to know? (Revisit the quick-reference table in Module 4.)
+2. **Correct it directly.** "That's incorrect — our policy is 10 days, not 15. Please revise." Specific corrections work better than "that's wrong."
+3. **Supply the source.** If it's getting facts wrong, give it the right material and say "only use this."
+4. **Start fresh if it's stuck.** If the conversation keeps circling back to the same error, write a handoff summary with the correction included and open a new chat.
+5. **Know when to stop.** Some tasks just aren't a good fit. If you've spent longer fixing the AI's output than doing it yourself would have taken, do it yourself.
+6. **Report harmful outputs.** Most assistants have a thumbs-down or feedback button. Use it for harmful, biased, or badly wrong responses.
+
+<TryIt title="Run a Responsibility Check">
+
+Take a piece of AI-assisted work you created earlier in this course (the job posting or onboarding guide work well).
+
+1. Ask the AI: `Review this for factual claims I should verify, biased or exclusionary language, and anything that could be sensitive to share. List each issue with a suggested fix.`
+2. Evaluate the list — do you agree with each point?
+3. Using the stakes table above, decide how much verification this piece needs and do it.
+4. Write one sentence about how you'd disclose AI assistance for this piece, if at all, based on where it would be used.
+
+</TryIt>
+
+<Pitfall title="Assuming the AI Checked Itself">
+
+**Common mistake:** asking "Is this accurate?" and treating "Yes, this is accurate" as verification.
+
+The AI can confidently confirm its own errors. Self-review prompts are great for catching style problems and surfacing claims *to* check, but actual verification means checking against a source outside the AI — a document, a database, an expert, an official website.
+
+</Pitfall>
+
+<Quiz questions={[
+  {
+    question: "A manager wants to use AI to rank job applicants and automatically reject the bottom half. What's the most responsible approach?",
+    options: [
+      "Go ahead — AI is more objective than people.",
+      "Use AI to help organize or summarize applications if policy allows, but keep humans making and accountable for the decisions, and check for bias.",
+      "Only do it for entry-level roles.",
+      "Do it, but don't tell anyone."
+    ],
+    correctIndex: 1,
+    explanation: "Decisions that significantly affect people shouldn't be made solely by AI. AI can inherit bias from training data, and accountability must stay with humans, along with any legal or policy requirements."
+  },
+  {
+    question: "The AI keeps repeating the same factual error even after you correct it twice. What's the best next step?",
+    options: [
+      "Keep correcting it in the same chat indefinitely.",
+      "Accept the error — the AI probably knows better.",
+      "Start a new chat with a handoff summary that includes the correct information and source material.",
+      "Give it a thumbs-up so it learns."
+    ],
+    correctIndex: 2,
+    explanation: "When a conversation is stuck, a fresh chat with the correct facts supplied up front usually breaks the loop. The earlier error is no longer in the conversation to influence it."
+  },
+  {
+    question: "Which output needs the highest level of verification?",
+    options: [
+      "A list of 20 team-lunch ideas.",
+      "A reworded version of your own internal note.",
+      "An AI-drafted summary of a contract's cancellation terms that will be sent to a client.",
+      "A brainstorm of names for a project."
+    ],
+    correctIndex: 2,
+    explanation: "Client-facing, legal content is high-stakes: every fact needs checking against the actual contract, and a qualified person should review it."
+  }
+]} />
+
+---
+
+## Up Next
+
+So far, you've used AI as an assistant that responds to you. The next lesson introduces AI agents — systems that can take actions on your behalf — and what changes when AI starts *doing*, not just *writing*.

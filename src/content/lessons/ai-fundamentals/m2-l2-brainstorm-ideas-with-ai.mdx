@@ -1,0 +1,121 @@
+---
+title: "Brainstorm Ideas with AI"
+description: "Run a structured brainstorm with an AI assistant: go wide to generate lots of options, then narrow down with criteria you choose — and keep the final call your own."
+module: 2
+moduleTitle: "Practice Using AI"
+lesson: 2
+duration: "20 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## Why Brainstorming Is a Great First Use
+
+Brainstorming is the ideal place to start with AI because **the risk is low and the payoff is high**. An idea doesn't have to be correct — it just has to be worth considering. If the AI suggests ten ideas and eight are mediocre, you've still gained two you might not have thought of, in about fifteen seconds.
+
+AI is particularly good at the part of brainstorming humans find hardest: generating *volume* without getting stuck on the first idea.
+
+---
+
+## Go Wide, Then Go Narrow
+
+Good brainstorms have two phases, and AI helps with both.
+
+**Phase 1 — Diverge (go wide).** Generate lots of options without judging them. Quantity beats quality here.
+
+**Phase 2 — Converge (go narrow).** Apply criteria, compare, combine, and pick.
+
+The most common mistake is collapsing both phases into one prompt ("Give me the best idea for..."). You get one safe, middle-of-the-road answer instead of a range to choose from.
+
+### Diverge Prompts
+
+```text
+Give me 20 ideas for [goal]. Include some safe ideas, some
+unusual ones, and at least 3 that seem a little ridiculous.
+Just list them — no explanations yet.
+```
+
+Useful variations:
+
+- **Change the lens:** "Now give me 10 more ideas as if you were a [kindergarten teacher / startup founder / skeptical accountant]."
+- **Add a constraint:** "Now 10 ideas that cost nothing." Constraints often produce the most creative results.
+- **Flip it:** "What are 10 ways to guarantee this *fails*?" Then reverse each one.
+
+### Converge Prompts
+
+```text
+From the list above, pick the 5 ideas that best fit these criteria:
+[budget under $500], [can launch within a month], [appeals to
+[audience]]. Show them in a table with columns for the idea,
+estimated effort (low/medium/high), and the biggest risk.
+```
+
+Then keep going:
+
+- "Combine ideas 3 and 7 into one stronger idea."
+- "What would a skeptic say about my top pick?"
+- "What's the smallest version of this we could test next week?"
+
+---
+
+## You're the Editor
+
+AI supplies raw material. You supply judgment about what fits your team, your budget, your culture, and your customers — things the AI can't see. Treat its list as a starting point, not a shortlist.
+
+<TryIt title="Brainstorm a Real Workplace Challenge">
+
+Pick a real challenge you're facing. If nothing comes to mind, use this one: *"Our team's weekly meeting runs long and people seem disengaged."*
+
+1. **Diverge.** In a new chat, send:
+   ```text
+   I lead a team of [number] people. Challenge: [your challenge].
+   Give me 20 possible ideas to address it — mix practical, bold,
+   and a few unconventional ones. List only, no explanations.
+   ```
+2. **Change the lens.** Ask for 10 more ideas from a completely different perspective of your choosing.
+3. **Converge.** Give it 2–3 criteria that matter to you and ask for the top 5 in a table with effort and risk.
+4. **Pressure-test.** Ask: "What's the strongest argument against your #1 pick?"
+5. **Decide.** Pick one idea to actually try. Write one sentence on *why you chose it* — that reasoning is the part only you could supply.
+
+</TryIt>
+
+<Pitfall title="Stopping at the First List">
+
+**Common mistake:** asking for ideas once, skimming the list, and concluding "nothing new here."
+
+The first list is usually the most predictable, because the AI leads with the most common answers. The interesting ideas tend to appear after you change the lens, add a constraint, or ask for the unconventional options. Push for at least two or three rounds before judging.
+
+</Pitfall>
+
+<Quiz questions={[
+  {
+    question: "Why is 'Give me the best idea for improving team morale' a weak brainstorming prompt?",
+    options: [
+      "It's too polite.",
+      "It collapses diverging and converging into one step, so you get a single safe answer instead of a range to choose from.",
+      "AI can't discuss team morale.",
+      "It should be written in all capital letters for emphasis."
+    ],
+    correctIndex: 1,
+    explanation: "Asking for 'the best' skips the wide, exploratory phase. You'll get a generic, middle-of-the-road suggestion — and the AI doesn't know your criteria for 'best' anyway."
+  },
+  {
+    question: "Which follow-up is most likely to surface genuinely new ideas after a first list?",
+    options: [
+      "'Repeat that list.'",
+      "'Are you sure?'",
+      "'Now give me 10 ideas that cost nothing, from the point of view of a new employee.'",
+      "'Make the list shorter.'"
+    ],
+    correctIndex: 2,
+    explanation: "Adding a constraint and changing the perspective pushes the AI away from its most common answers and toward new territory."
+  }
+]} />
+
+---
+
+## Up Next
+
+You've now used AI hands-on. Module 3 goes under the hood: how AI actually learns, why it gets things wrong, and how to use that knowledge to get better results.

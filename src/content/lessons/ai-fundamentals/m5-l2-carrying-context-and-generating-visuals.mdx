@@ -1,0 +1,146 @@
+---
+title: "Carrying Context and Generating Visuals"
+description: "Use a handoff summary to move work into a fresh chat without losing context, then learn how to prompt AI image generators for useful workplace visuals."
+module: 5
+moduleTitle: "Level Up Your Prompts"
+lesson: 2
+duration: "25 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## Part 1: Carrying Context to a New Chat
+
+Every AI conversation has a **context window** — a limit on how much text the model can consider at once. In a very long chat, early details can get less attention or fall out of view entirely, and answers start to drift. Long chats can also accumulate wrong turns that keep influencing new responses.
+
+Sometimes the best move is a fresh start. But starting over means re-explaining everything... unless you use a **handoff summary**.
+
+### The Handoff Summary
+
+Before leaving a long conversation, ask the AI to package up what matters:
+
+```text
+We're going to continue this work in a new chat. Write a handoff
+summary I can paste in to bring a new conversation fully up to
+speed. Include:
+- The goal and the audience
+- Key decisions we've made and why
+- Important facts, constraints, and preferences I've given you
+- The current state of the work (paste the latest version)
+- What we should do next
+Keep it concise but complete.
+```
+
+Then **read the summary** — fix anything it got wrong or left out — and paste it as the first message in a new chat.
+
+The same trick works for:
+
+- **Switching tools:** moving work from one AI assistant to another.
+- **Picking up tomorrow:** save the summary in a document so you can resume anytime.
+- **Handing work to a colleague:** they can paste it into their own assistant.
+
+### A Reusable "About Me" Context Block
+
+If you find yourself repeatedly explaining your role, save a short context block in your prompt library and paste it at the start of new chats:
+
+```text
+Context about me: I'm a [role] at a [type/size of organization].
+My audience is usually [audience]. I prefer [plain, direct language /
+bullet points / etc.]. Never invent statistics — use placeholders.
+```
+
+Some assistants have built-in "custom instructions," "memory," or project features that do this automatically. Check what yours offers — and remember, anything saved there is stored by the provider.
+
+<TryIt title="Write and Test a Handoff Summary">
+
+1. Open the longest conversation from an earlier Try It (the prompt chain from the last lesson works well).
+2. Ask for a handoff summary using the prompt above.
+3. Review it. Correct anything wrong or missing.
+4. Start a **new chat**, paste the summary, and ask for the next step of the work.
+5. Does the new chat pick up where you left off? What did the summary miss?
+
+</TryIt>
+
+---
+
+## Part 2: Generating Visuals With AI
+
+Many free AI assistants can now generate images from a text description — useful for presentation visuals, social posts, concept mockups, event flyers, and illustrations. Availability and daily limits vary by tool and plan.
+
+### Prompting for Images
+
+Image prompts benefit from the same principle as text prompts: **specific beats vague.** Cover these elements:
+
+| Element | Example |
+|---|---|
+| **Subject** | "A small team collaborating around a whiteboard" |
+| **Style** | "flat vector illustration," "watercolor," "photorealistic," "minimalist line art" |
+| **Composition** | "wide shot," "close-up," "subject on the left with empty space on the right for text" |
+| **Color and mood** | "calm blues and greens," "bright and energetic," "warm morning light" |
+| **Purpose/format** | "for a presentation title slide, 16:9, no text in the image" |
+
+**Vague:** `A picture of teamwork.`
+
+**Specific:** `A flat vector illustration of four diverse coworkers building a bridge out of puzzle pieces, calm blue and green palette, simple shapes, lots of white space on the right side for a headline, 16:9, no text in the image.`
+
+### Iterate the Same Way
+
+Image generation is a conversation too: "Same scene, but warmer colors." "Make the people less formal." "Remove the background clutter." Specific feedback beats regenerating at random.
+
+### Know the Limits
+
+- **Text inside images** is improving but can still come out garbled. Add real text afterward in your slide or design tool.
+- **Hands, counts, and fine details** can be off. Zoom in before you publish.
+- **Real people and brands:** don't generate images of real, identifiable people without consent, or images that imitate trademarks or a living artist's distinctive style. Many tools block these anyway.
+- **Label AI images** where your organization expects it, and never present an AI image as a real photo of a real event.
+
+<TryIt title="Create a Visual for a Real Purpose">
+
+1. Pick a real need: a title-slide image for a presentation, a header for a newsletter, or an illustration for a flyer.
+2. Write an image prompt covering subject, style, composition, color/mood, and purpose/format.
+3. Generate it, then refine it with at least two rounds of specific feedback.
+4. Zoom in and inspect: any garbled text, odd hands, or details that don't make sense?
+5. Reflect: which element of your prompt had the biggest effect on the result?
+
+</TryIt>
+
+<Pitfall title="Passing Off an AI Image as a Real Photo">
+
+**Common mistake:** using a photorealistic AI image in a way that implies it's a real photo — for example, "our team at last week's event" or "the facility we built."
+
+Even when it's unintentional, it damages trust once someone notices. Use AI images as illustrations and concept art, label them when appropriate, and use real photos for real events.
+
+</Pitfall>
+
+<Quiz questions={[
+  {
+    question: "Your chat has become very long and the AI keeps forgetting decisions you made early on. What's the best move?",
+    options: [
+      "Keep going and repeat yourself more loudly.",
+      "Ask for a handoff summary, review it, and continue in a new chat.",
+      "Delete your account and start over.",
+      "Switch to typing in all capital letters."
+    ],
+    correctIndex: 1,
+    explanation: "A reviewed handoff summary carries the important context into a fresh conversation, where it gets the model's full attention without the clutter of a long history."
+  },
+  {
+    question: "Which image prompt is likely to produce the most useful slide visual?",
+    options: [
+      "'Innovation.'",
+      "'A cool picture for my presentation.'",
+      "'Minimalist line-art illustration of a lightbulb growing from a plant, soft green palette, empty space on the left for a title, 16:9, no text in the image.'",
+      "'Make an image like the ones on famous company websites.'"
+    ],
+    correctIndex: 2,
+    explanation: "It specifies subject, style, color, composition, and format — including leaving room for real text, which image generators still struggle to render reliably."
+  }
+]} />
+
+---
+
+## Up Next
+
+You now have a strong prompting toolkit. The final module is about using it well: responsible AI practices, what to do when AI gets it wrong, what AI agents are, and the course challenge.

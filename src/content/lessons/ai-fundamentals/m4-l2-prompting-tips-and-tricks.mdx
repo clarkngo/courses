@@ -1,0 +1,139 @@
+---
+title: "Prompting Tips and Tricks"
+description: "Add practical techniques to your prompting toolkit — examples, constraints, letting AI ask questions, reusable templates — then apply CRAFT end to end on a real task."
+module: 4
+moduleTitle: "Design Great Prompts"
+lesson: 2
+duration: "25 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## Eight Techniques Worth Knowing
+
+CRAFT is the skeleton. These techniques are the muscles — use whichever ones fit the task.
+
+### 1. Show an Example
+
+If you want a particular style, showing beats describing. Paste a sample of what "good" looks like:
+
+```text
+Write 5 product descriptions in the same style as this example:
+
+"Merino Trail Sock — Warm when it's cold, cool when it's not.
+Cushioned where your boots rub. Built for 500 miles."
+```
+
+One or two examples often do more than a paragraph of style instructions.
+
+### 2. Let the AI Ask *You* Questions
+
+When you're not sure what context matters, flip the conversation:
+
+```text
+I need to write a proposal to my manager for a four-day work week
+pilot. Before you draft anything, ask me the questions you need
+answered to make it persuasive. Ask them one at a time.
+```
+
+### 3. Say What to Avoid
+
+Constraints narrow the output toward what you want: "No jargon." "Don't mention pricing." "Avoid clichés like 'game-changer' and 'synergy.'" "Don't make up statistics — use a placeholder like [STAT] where a number would go."
+
+That last one is a powerful habit: asking for **placeholders instead of invented facts** keeps hallucinations out of your drafts.
+
+### 4. Provide the Source Material
+
+Remember from Module 3: AI is most reliable when it works with material you supply. Instead of "What are the key points of our Q3 strategy?", paste the strategy document (if it's appropriate to share) and ask for the key points *from that text*. Add: "Only use information from the document above."
+
+### 5. Break Big Tasks Into Steps
+
+"Write my entire annual report" will get a shallow result. "First, propose an outline. Wait for my feedback before writing anything." gives you control at each stage. (Module 5 builds this into a full technique: prompt chaining.)
+
+### 6. Ask for Options
+
+"Give me 3 versions: one formal, one friendly, one very brief." Choosing between options is faster than describing exactly what you want in advance.
+
+### 7. Ask the AI to Critique Its Own Work
+
+After a draft: "Review your response as a demanding editor. What are the three weakest parts? Then revise to fix them." This frequently produces a noticeably better second version.
+
+### 8. Save Templates
+
+When a prompt works well, save it with placeholders:
+
+```text
+Summarize the following [document type] for [audience] in
+[number] bullet points. Focus on [what matters most]. Flag
+anything that needs a decision. Text: [paste here]
+```
+
+Over time, your prompt library becomes one of your most valuable work tools.
+
+---
+
+## Quick Reference: Fixing Common Problems
+
+| The output is... | Try adding... |
+|---|---|
+| Too generic | More context about your situation and audience |
+| Too long | A specific word or bullet limit |
+| The wrong tone | A tone description *and* an example of the tone you want |
+| Full of jargon | "Explain for someone with no background in [field]" |
+| Making things up | Source material + "only use the information provided" + placeholders |
+| Missing the point | A clearer Ask with an action verb and a stated goal |
+| Not quite right, but close | Specific feedback in the same chat (Tweak) |
+
+<TryIt title="Apply the Full Framework to a Real Task">
+
+Pick a genuine task from your work or life — a newsletter, a process document, a presentation outline, a difficult message to a colleague.
+
+1. **Write a CRAFT prompt** with Context, Role, Ask, and Format.
+2. **Add at least two techniques** from this lesson — for example, an example of the style you want, and a "don't make up facts; use placeholders" constraint.
+3. **Tweak at least twice** with specific feedback.
+4. **Ask for self-critique:** "What are the three weakest parts of this? Revise to fix them."
+5. **Verify:** read the final version carefully. Is every fact correct? Would you be comfortable putting your name on it?
+6. **Save the prompt** as a template in your prompt library.
+
+</TryIt>
+
+<Pitfall title="Over-Engineering Simple Requests">
+
+**Common mistake:** writing a 300-word, fully labeled CRAFT prompt to fix a typo or convert a list to a table.
+
+Match the effort to the task. "Turn this into a table with columns for name, date, and status" is a perfectly good prompt. Frameworks are for tasks where a generic answer would waste your time — use your judgment about when you need them.
+
+</Pitfall>
+
+<Quiz questions={[
+  {
+    question: "You're drafting a press release and don't want the AI to invent statistics. Which instruction helps most?",
+    options: [
+      "'Be accurate.'",
+      "'Don't make up numbers — use a placeholder like [STAT] wherever a figure would go.'",
+      "'Use lots of statistics to be convincing.'",
+      "'Pretend you are a statistician.'"
+    ],
+    correctIndex: 1,
+    explanation: "Placeholders give the AI a clear alternative to inventing numbers, and give you an obvious list of facts to fill in from real sources."
+  },
+  {
+    question: "You're unsure what details the AI needs to write a strong proposal. What's the most efficient technique?",
+    options: [
+      "Write the longest prompt you can with every possible detail.",
+      "Ask the AI to ask you the questions it needs answered before drafting.",
+      "Accept the first draft and fix it by hand.",
+      "Use a different AI tool."
+    ],
+    correctIndex: 1,
+    explanation: "Letting the AI ask questions surfaces the missing context quickly, without you having to guess in advance which details matter."
+  }
+]} />
+
+---
+
+## Up Next
+
+Module 5 takes your prompting further: chaining prompts together for complex tasks, carrying context into a new chat, and generating images with AI.

@@ -1,0 +1,124 @@
+---
+title: "How AI Learns: Machine Learning Basics"
+description: "Understand the core ideas behind today's AI — machine learning, training data, models, and next-word prediction — explained without math or code."
+module: 3
+moduleTitle: "Learn How AI Works"
+lesson: 1
+duration: "15 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## Rules vs. Learning
+
+For most of computing history, software followed **rules a programmer wrote**: *if* the order total is over $50, *then* shipping is free. That works when the rules are simple and known.
+
+But try writing rules for "is this email spam?" or "is there a cat in this photo?" There are too many cases, and the rules change constantly. **Machine learning (ML)** takes a different approach: instead of writing the rules, you show the computer lots of examples and let it *learn* the pattern.
+
+| Traditional software | Machine learning |
+|---|---|
+| Humans write the rules | The system learns patterns from examples |
+| Input + rules → answer | Examples → learned patterns → answers on new inputs |
+| Predictable, but brittle for messy problems | Flexible, but can be wrong in surprising ways |
+
+---
+
+## The Key Vocabulary
+
+**Training data** — the examples the system learns from. For a spam filter: thousands of emails labeled "spam" or "not spam." For a language model: a vast amount of text from books, websites, and other sources.
+
+**Model** — the result of training: a mathematical structure that captures the patterns found in the data. When people say "the AI," they usually mean the model.
+
+**Training** — the process of adjusting the model, over and over, until its predictions match the examples well.
+
+**Inference** — using the trained model on something new. Every time you send a prompt, the model is doing inference.
+
+A useful analogy: training is like years of reading and practice; inference is answering a question on the spot using what that practice taught you.
+
+### The Nesting Dolls of AI
+
+These terms nest inside each other:
+
+- **Artificial intelligence** — the broad goal of machines doing "thinking" tasks.
+- **Machine learning** — a way to achieve AI by learning from data.
+- **Deep learning** — machine learning with large, layered **neural networks**, loosely inspired by the brain. It powers modern image, speech, and language AI.
+- **Generative AI** — deep learning models that *create* new content: text, images, audio, video.
+
+---
+
+## How a Language Model Writes
+
+Large language models are trained on one deceptively simple task: **predict the next word.** (Technically, the next *token* — a word or piece of a word — but "word" is close enough.)
+
+Given "The capital of France is", the most likely next word is "Paris." Given "Thanks so much for your", likely next words include "help," "time," and "patience." Repeat that prediction billions of times across an enormous amount of text, and the model absorbs grammar, facts, writing styles, reasoning patterns, and a sense of how conversations flow.
+
+When you send a prompt, the model writes its response **one word at a time**, each time choosing a likely next word given everything before it — your prompt plus what it has written so far. After training, assistants go through additional steps that teach them to follow instructions, hold a conversation, and decline harmful requests.
+
+Three consequences follow directly from this, and they'll matter for the rest of the course:
+
+1. **Your prompt shapes everything.** The model continues from what you give it. More relevant context produces more relevant continuations.
+2. **Fluency isn't accuracy.** The model is optimized to produce *plausible* text. Plausible and true usually overlap — but not always.
+3. **Responses vary.** There's some deliberate randomness in which likely word gets chosen, so the same prompt can produce different answers.
+
+<TryIt title="See the Variation for Yourself">
+
+1. In a new chat, send: `Write a one-sentence slogan for a neighborhood coffee shop.`
+2. Use your assistant's **regenerate** or **retry** button (often a circular-arrow icon) two or three times, or open new chats and send the exact same prompt.
+3. Compare the results. How different are they?
+4. Now send a more specific version: `Write a one-sentence slogan for a neighborhood coffee shop that's known for its quiet study space and opens at 5 a.m.` Regenerate a few times again.
+
+Notice that the specific prompt produces answers that vary *less* and fit *better*. More context narrows the range of plausible continuations — that's the whole idea behind the prompting framework in Module 4.
+
+</TryIt>
+
+<Pitfall title="Thinking the AI 'Knows' Things the Way a Database Does">
+
+**Common mistake:** assuming the model has a stored, checked fact for everything it tells you.
+
+The model learned *patterns*, not a verified fact table. For well-known facts, the patterns are strong and the answer is usually right. For obscure details — a specific statistic, a small company's policy, a quote, a citation — the model may generate something that fits the *shape* of a correct answer without being correct. The next lesson covers this in depth.
+
+</Pitfall>
+
+<Quiz questions={[
+  {
+    question: "What is the core task a large language model is trained on?",
+    options: [
+      "Looking up answers in an encyclopedia.",
+      "Predicting the next word (token) given the text so far.",
+      "Translating everything into English first.",
+      "Memorizing every website exactly."
+    ],
+    correctIndex: 1,
+    explanation: "Next-word prediction, repeated at enormous scale, is what gives language models their fluency and broad knowledge — and also why they can produce confident, plausible text that isn't true."
+  },
+  {
+    question: "Which is the correct nesting, from broadest to narrowest?",
+    options: [
+      "Generative AI → Deep learning → Machine learning → AI",
+      "AI → Machine learning → Deep learning → Generative AI",
+      "Machine learning → AI → Generative AI → Deep learning",
+      "Deep learning → AI → Machine learning → Generative AI"
+    ],
+    correctIndex: 1,
+    explanation: "AI is the broad goal; machine learning is one approach; deep learning is ML with neural networks; generative AI is deep learning that creates new content."
+  },
+  {
+    question: "You send the same prompt twice and get two different answers. What's the most likely explanation?",
+    options: [
+      "The AI is broken.",
+      "Someone changed the model between your two messages.",
+      "Language models include some randomness when choosing each next word, so outputs naturally vary.",
+      "The second answer is always the correct one."
+    ],
+    correctIndex: 2,
+    explanation: "Variation is built in. It's why regenerating can be useful for brainstorming — and why you shouldn't treat any single response as the definitive answer."
+  }
+]} />
+
+---
+
+## Up Next
+
+Knowing *how* AI generates text makes its weaknesses predictable. The next lesson covers AI's main limitations — and the workplace tasks where it genuinely shines.

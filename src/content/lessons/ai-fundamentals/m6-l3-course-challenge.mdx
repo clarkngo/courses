@@ -1,0 +1,181 @@
+---
+title: "Course Challenge"
+description: "Put all six modules together: a scenario-based knowledge check plus a hands-on capstone task where you take a real piece of work from blank page to verified, finished result."
+module: 6
+moduleTitle: "Use AI Responsibly"
+lesson: 3
+duration: "30 min"
+---
+
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## How the Challenge Works
+
+The challenge has two parts:
+
+1. **Knowledge check** — ten scenario questions covering every module. Aim for at least 8 out of 10. If you miss one, read the explanation and revisit that lesson.
+2. **Capstone task** — a hands-on exercise that uses the full workflow: collaborate, prompt with CRAFT, chain, verify, and use AI responsibly.
+
+This course is free and self-paced, so there's no grade to submit. The goal is simple: finish able to use AI confidently, effectively, and responsibly in your own work.
+
+---
+
+## Part 1: Knowledge Check
+
+<Quiz questions={[
+  {
+    question: "(Module 1) A coworker gets a bland answer from their first AI prompt and says AI is useless. What's the best advice?",
+    options: [
+      "Agree — if the first answer isn't good, the tool isn't good.",
+      "Add context about the situation and audience, then refine the response through follow-up feedback.",
+      "Switch to a paid plan immediately.",
+      "Ask the same question again, word for word, until it improves."
+    ],
+    correctIndex: 1,
+    explanation: "The collaborator mindset treats the first response as a draft. Better context and specific follow-ups are what turn a bland answer into a useful one."
+  },
+  {
+    question: "(Module 1) You want AI's help to become a better presenter, not just to get one presentation done. Which request fits best?",
+    options: [
+      "'Write my whole presentation.'",
+      "'Here's my opening. Don't rewrite it — tell me the two biggest weaknesses and why.'",
+      "'Find me a presentation online.'",
+      "'Make my slides pretty.'"
+    ],
+    correctIndex: 1,
+    explanation: "Coaching mode — targeted feedback without a rewrite — builds your skill instead of replacing it."
+  },
+  {
+    question: "(Module 2) Which is the safest way to get help summarizing a document containing employee salaries?",
+    options: [
+      "Paste it into a personal free AI account.",
+      "Use your organization's approved AI tool, or remove the identifying details first.",
+      "Paste it into a temporary chat, since that makes it private.",
+      "Email it to yourself and then paste it in."
+    ],
+    correctIndex: 1,
+    explanation: "Salary data is confidential. Use approved tools with proper data agreements, or remove identifying details before sharing anything."
+  },
+  {
+    question: "(Module 2) In a brainstorm, what should come first?",
+    options: [
+      "Asking for the single best idea.",
+      "Going wide: generating many ideas without judging them.",
+      "Choosing the budget.",
+      "Asking the AI to decide for you."
+    ],
+    correctIndex: 1,
+    explanation: "Diverge first (volume and variety), then converge with your criteria. Asking for 'the best' too early gets you one safe, generic answer."
+  },
+  {
+    question: "(Module 3) Why can an AI produce a fluent, confident answer that is completely false?",
+    options: [
+      "It is deliberately trying to deceive you.",
+      "It generates plausible text from learned patterns rather than looking up verified facts.",
+      "Its internet connection failed.",
+      "False answers only happen in free tiers."
+    ],
+    correctIndex: 1,
+    explanation: "Language models predict likely text. Plausible usually overlaps with true, but not always — that gap is where hallucinations come from."
+  },
+  {
+    question: "(Module 3) For which task is AI most reliable?",
+    options: [
+      "Rewriting a paragraph you provide so it's easier to read.",
+      "Quoting a specific line from a book it hasn't been given.",
+      "Reporting today's stock price without a web search.",
+      "Stating your team's internal deadlines from memory."
+    ],
+    correctIndex: 0,
+    explanation: "Transforming material you supply is a core strength. Recalling specific quotes, recent data, or private information from memory is where AI is least reliable."
+  },
+  {
+    question: "(Module 4) 'Write a newsletter intro, under 80 words, friendly tone.' Which CRAFT element is most clearly missing?",
+    options: [
+      "Ask",
+      "Format",
+      "Context",
+      "None — it's complete."
+    ],
+    correctIndex: 2,
+    explanation: "It has an Ask (write a newsletter intro) and a Format (under 80 words, friendly tone). But whose newsletter, for which audience, about what? Without Context the AI will guess."
+  },
+  {
+    question: "(Module 4) The AI's draft is close but too formal and a bit long. What's the most efficient next step?",
+    options: [
+      "Open a new chat and rewrite the prompt from scratch.",
+      "Tweak in the same chat: 'Make it more conversational and cut it by a third.'",
+      "Accept it as-is.",
+      "Ask a different AI tool."
+    ],
+    correctIndex: 1,
+    explanation: "Specific feedback in the same conversation lets the AI revise its own draft precisely. That's the Tweak step in CRAFT."
+  },
+  {
+    question: "(Module 5) You need a 12-page project proposal. Which approach will likely produce the best result?",
+    options: [
+      "One prompt asking for the entire finished proposal.",
+      "A prompt chain: outline, review, draft section by section, critique, revise, and verify.",
+      "Asking for 12 separate proposals and picking one.",
+      "Letting the AI write it with no input from you."
+    ],
+    correctIndex: 1,
+    explanation: "Chaining gives you checkpoints to steer the work and catch errors early, instead of a shallow all-at-once result."
+  },
+  {
+    question: "(Module 6) An AI agent has finished 'booking travel' and reports success. What should you do?",
+    options: [
+      "Trust the report — agents don't make mistakes.",
+      "Check the actual bookings, dates, costs, and confirmations yourself.",
+      "Give the agent access to more accounts so it can do more next time.",
+      "Delete the conversation."
+    ],
+    correctIndex: 1,
+    explanation: "An agent's report of success isn't proof. Review the actions it actually took, especially anything involving money or commitments."
+  }
+]} />
+
+---
+
+## Part 2: Capstone Task
+
+<TryIt title="From Blank Page to Finished, Verified Work">
+
+Choose one **real** deliverable you need in the next month — a report, a proposal, a training guide, a process document, a presentation, a newsletter. Then work through the full workflow:
+
+1. **Collaborate (Module 1).** Start by asking the AI to ask you 5 questions about the task before it does anything.
+2. **Set up safely (Module 2).** Before pasting anything, decide what's safe to share. Remove or replace sensitive details.
+3. **Know the limits (Module 3).** List which parts of the deliverable depend on facts the AI can't know or might get wrong. Plan to supply or verify those.
+4. **Prompt with CRAFT (Module 4).** Write a full Context–Role–Ask–Format prompt. Include "use placeholders instead of inventing facts."
+5. **Chain it (Module 5).** Work in steps: outline → draft sections → critique from the audience's point of view → revise. Create one visual if it helps. If the chat gets long, use a handoff summary.
+6. **Take responsibility (Module 6).** Check every fact and placeholder against real sources. Review for bias and tone. Decide how you'll disclose AI assistance, if needed.
+
+**Self-assessment checklist.** You've completed the capstone when you can say yes to all of these:
+
+- The final piece is something I'd confidently put my name on.
+- I verified every factual claim against a source outside the AI.
+- I didn't share anything I shouldn't have.
+- I can point to at least two places where *my* judgment changed the AI's output for the better.
+- I saved at least one reusable prompt template to my prompt library.
+
+</TryIt>
+
+---
+
+## Congratulations — You've Finished AI Fundamentals
+
+You can now:
+
+- Work with AI as a **collaborator**, not a vending machine
+- Set up and use a **free AI assistant** safely
+- Explain **how AI learns**, where it fails, and where it shines
+- Write effective prompts with **CRAFT** and a toolkit of techniques
+- **Chain prompts**, carry context between chats, and **generate visuals**
+- Use AI **responsibly**, handle bad responses, and supervise **AI agents**
+
+### Where to Go Next
+
+- **Keep practicing daily.** Pick one recurring task each week and build a reusable prompt for it.
+- **Grow your prompt library** and share the best entries with your team.
+- **Go deeper** with other free courses in this catalog. [AI & LLM Skills](/courses/ai-llm-skills/) is a good next step if you want to see how language models work under the hood and start building with an AI API.

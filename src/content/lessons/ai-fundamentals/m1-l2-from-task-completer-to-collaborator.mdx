@@ -1,0 +1,134 @@
+---
+title: "From Task Completer to Collaborator"
+description: "Shift from using AI as a one-shot vending machine to working with it as a collaborator — and learn three practical ways to collaborate with AI on real work."
+module: 1
+moduleTitle: "Collaborate with AI"
+lesson: 2
+duration: "15 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## The Vending Machine Mindset
+
+Most people start using AI the way they use a vending machine: put in a request, take whatever comes out, walk away. "Write a thank-you email." Done.
+
+That works for tiny tasks. But it leaves most of the value on the table, because it treats the first response as the final answer. A better model is a **collaborator** — a fast, tireless colleague who has read a lot but knows nothing about your situation until you tell them. With a colleague like that, you would:
+
+- **Explain the situation** before asking for help.
+- **React to their first draft** instead of accepting or rejecting it wholesale.
+- **Ask them to push back**, not just agree with you.
+- **Stay responsible** for what finally goes out the door.
+
+| Task-completer mindset | Collaborator mindset |
+|---|---|
+| One prompt, one answer | A back-and-forth conversation |
+| "Write X" | "Here's my situation and goal — help me write X" |
+| Accept or reject the output | Give feedback: "Shorter. Warmer. Drop the second point." |
+| AI does the thinking | AI helps *you* think better and faster |
+| Output is the finished product | Output is a draft you shape and own |
+
+The collaborator mindset isn't about being polite to software. It's about recognizing that **the quality of the output depends on the quality of the conversation.**
+
+---
+
+## Three Ways to Collaborate with AI
+
+Nearly every useful thing you'll do with an AI assistant at work fits one of three roles.
+
+### 1. AI as a Thought Partner
+
+You bring a problem or a half-formed idea, and AI helps you explore it: brainstorming options, asking clarifying questions, poking holes, arguing the other side.
+
+```text
+I'm planning a team offsite for 12 people with a $3,000 budget.
+Before suggesting anything, ask me 5 questions that would help
+you give better recommendations.
+```
+
+Asking the AI to ask *you* questions is one of the most underused moves there is. It surfaces the context you forgot to mention.
+
+### 2. AI as a First Drafter
+
+You know what needs to exist — an email, a policy summary, a slide outline — and AI produces a first version you then edit. The blank page is gone, and your time goes into judgment and polish instead of typing.
+
+```text
+Draft a short email to a client letting them know their project
+will be delivered one week late because a supplier missed a
+deadline. Tone: apologetic but confident. Offer a 15-minute call.
+```
+
+### 3. AI as a Coach or Tutor
+
+You want to *learn* or *improve*, not just get an output. AI explains unfamiliar concepts, gives feedback on your work, and quizzes you.
+
+```text
+Here's the opening paragraph of my grant proposal. Don't rewrite it.
+Instead, tell me the two biggest weaknesses a reviewer would notice,
+and explain why.
+```
+
+Notice the "Don't rewrite it" instruction. In coaching mode, you want feedback that makes *you* better — not a replacement that skips your learning.
+
+---
+
+## Advice for Getting Started
+
+1. **Start with low-stakes tasks** you could easily check yourself — reformatting notes, drafting a routine email.
+2. **Always read the output** before you use it. Every time.
+3. **Follow up at least once.** The second response is almost always better than the first.
+4. **Keep a list** of prompts that worked well so you can reuse them.
+5. **Be curious, not credulous.** Enjoy what it can do, and stay skeptical of what it claims.
+
+<TryIt title="One Task, Three Roles">
+
+Open any free AI assistant (you'll set one up properly in Module 2 — any will do for now). Pick one real task from your week, such as "prepare for a performance review conversation." Then send three separate prompts:
+
+1. **Thought partner:** "I have a performance review next week. Ask me 5 questions that would help me prepare."
+2. **First drafter:** "Draft a one-page list of my accomplishments this quarter based on these notes: [paste a few rough notes]."
+3. **Coach:** "Here's how I plan to describe my biggest challenge this quarter: [one or two sentences]. Give me feedback on how it might land with my manager. Don't rewrite it."
+
+Compare the three responses. Which role saved you the most time? Which one improved your *thinking* the most?
+
+</TryIt>
+
+<Pitfall title="Letting AI Agree With Everything">
+
+**Common mistake:** asking AI to review your plan and taking "This is a great plan!" as validation.
+
+AI assistants tend to be agreeable. If you want real critique, ask for it directly: "What are the three strongest objections to this plan?" or "Argue against this as a skeptical CFO would." A collaborator who only flatters you isn't much help.
+
+</Pitfall>
+
+<Quiz questions={[
+  {
+    question: "You want to get better at writing performance feedback, not just produce one piece of feedback. Which collaboration role fits best?",
+    options: [
+      "AI as a first drafter: have it write the feedback for you.",
+      "AI as a coach: share your draft and ask for specific critique without a rewrite.",
+      "AI as a search engine: look up examples of feedback.",
+      "None — AI can't help with people skills."
+    ],
+    correctIndex: 1,
+    explanation: "When the goal is to improve your own skill, coaching mode — feedback on your work, not a replacement for it — builds the skill instead of bypassing it."
+  },
+  {
+    question: "What most clearly separates a collaborator mindset from a task-completer mindset?",
+    options: [
+      "Using longer prompts.",
+      "Paying for a premium AI plan.",
+      "Treating the output as a draft in an ongoing conversation that you shape and remain responsible for.",
+      "Being polite to the AI."
+    ],
+    correctIndex: 2,
+    explanation: "The collaborator mindset is iterative and keeps you accountable: you give context, react to drafts, ask for pushback, and own the final result."
+  }
+]} />
+
+---
+
+## Up Next
+
+Module 2 gets you hands-on: setting up a free AI workspace, understanding what the free tiers offer, and running your first structured brainstorm.
