@@ -28,7 +28,7 @@ This wasn't a generic technology objection. Clark's memo laid out concrete, tech
 1. **No retained draft history.** The tool does not preserve what it originally generated versus what the officer subsequently edited or added — so there is no record of what the AI invented versus what the human corrected.
 2. **Unrecorded judgment calls.** The tool independently decides which portions of body-worn camera audio are "unintelligible" and works around them, without flagging that decision to the officer or documenting it.
 3. **Hallucinations, large and small.** The tool has documented errors of varying severity, and does not track or report its own error rate.
-4. **A documented real-world failure.** Clark's memo cites an actual case in which prosecutors caught an AI-assisted draft referencing an officer who was not present at the scene — this is the "Ghost Officer" failure from [Lesson 1](/operational-ai-compliance/lessons/m2-l1-brady-giglio-and-the-ghost-officer), not a hypothetical.
+4. **A documented real-world failure.** Clark's memo cites an actual case in which prosecutors caught an AI-assisted draft referencing an officer who was not present at the scene — this is the "Ghost Officer" failure from [Lesson 1](/courses/operational-ai-compliance/lessons/m2-l1-brady-giglio-and-the-ghost-officer), not a hypothetical.
 5. **Perjury exposure sits with the officer, not the vendor.** Officers are required to certify the narrative as accurate under penalty of perjury — but the memo's point is that some AI-introduced errors are subtle enough that they will be missed in a normal review pass, meaning the officer certifies accuracy they cannot actually vouch for.
 
 ---
@@ -44,7 +44,7 @@ Two things follow from that framing:
 - **This is a narrative-generation prohibition, not a blanket AI prohibition.** The directive targets tools that draft prose describing what happened. It says nothing about tools that check human-written prose against a checklist, transcribe audio to text without summarizing or interpreting it, or manage records without generating new narrative content.
 - **It is stated as a current, reviewable position** — not a permanent one. That's a reason for agencies to keep documentation current, not a reason to treat the directive as temporary or safe to route around.
 
-This is exactly the distinction that makes [Module 5's AI-as-Auditor workflow](/operational-ai-compliance/lessons/m5-l1-the-ai-as-auditor-workflow) compliant: it never asks a tool to generate a sentence of narrative.
+This is exactly the distinction that makes [Module 5's AI-as-Auditor workflow](/courses/operational-ai-compliance/lessons/m5-l1-the-ai-as-auditor-workflow) compliant: it never asks a tool to generate a sentence of narrative.
 
 <CodeLab title="Sort the Tools">
 
@@ -62,7 +62,7 @@ For each tool description below, decide: does this fall inside the KCPAO directi
 1. **Outside the prohibition.** Verbatim transcription creates no new narrative content — it's a record of what was actually said, not an interpretation of it.
 2. **Outside the prohibition.** This tool never generates prose; it only checks the officer's own words and prompts human verification.
 3. **Inside the prohibition.** This is exactly the Draft One / Code Four pattern the KCPAO rejected — AI-generated narrative prose entering the report, regardless of subsequent officer editing.
-4. **Outside the prohibition.** This is the model for [Module 5](/operational-ai-compliance/lessons/m5-l1-the-ai-as-auditor-workflow) — analytical QA against a policy standard, with zero generated prose.
+4. **Outside the prohibition.** This is the model for [Module 5](/courses/operational-ai-compliance/lessons/m5-l1-the-ai-as-auditor-workflow) — analytical QA against a policy standard, with zero generated prose.
 
 </CodeLab>
 
