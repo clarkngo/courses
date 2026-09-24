@@ -7,6 +7,7 @@ lesson: 2
 duration: "15 min"
 ---
 
+import LoopDiagram from '@components/LoopDiagram.astro';
 import Pitfall from '@components/Pitfall.astro';
 import Quiz from '@components/Quiz.astro';
 import TryIt from '@components/TryIt.astro';
@@ -29,6 +30,19 @@ That works for tiny tasks. But it leaves most of the value on the table, because
 | Accept or reject the output | Give feedback: "Shorter. Warmer. Drop the second point." |
 | AI does the thinking | AI helps *you* think better and faster |
 | Output is the finished product | Output is a draft you shape and own |
+
+In practice, collaboration is a loop you go around as many times as the task needs:
+
+<LoopDiagram
+  label="The collaboration loop: you give context, the AI drafts, you give feedback, the AI revises, and the cycle repeats until the result is ready for you to own"
+  colors={['#4f46e5', '#6366f1', '#818cf8']}
+  steps={[
+    { title: "Context", subtitle: "you explain" },
+    { title: "Draft", subtitle: "AI writes" },
+    { title: "Feedback", subtitle: "you react" },
+    { title: "Revise", subtitle: "AI improves" },
+  ]}
+/>
 
 The collaborator mindset isn't about being polite to software. It's about recognizing that **the quality of the output depends on the quality of the conversation.**
 

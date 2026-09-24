@@ -27,6 +27,47 @@ To make that brief easy to remember, this course uses **CRAFT**:
 
 C, R, A, and F go into your prompt. T is what you do *after* the first response: evaluate it and refine. Most great results come from the tweak.
 
+<svg viewBox="0 0 700 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The CRAFT framework. Context, Role, Ask, and Format combine into your prompt. The prompt produces an AI response. The Tweak step loops from the response back to the prompt to evaluate and refine, until you have a draft you own.">
+  <defs>
+    <marker id="af-craft-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#475569"/>
+    </marker>
+    <marker id="af-craft-tweak" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#ea580c"/>
+    </marker>
+  </defs>
+  <g font-family="system-ui, -apple-system, sans-serif">
+    <g font-size="15" fill="#ffffff" font-weight="700">
+      <rect x="20" y="30" width="170" height="44" rx="8" fill="#4f46e5"/>
+      <text x="40" y="58">C</text><text x="70" y="58" font-weight="500">Context</text>
+      <rect x="20" y="82" width="170" height="44" rx="8" fill="#7c3aed"/>
+      <text x="40" y="110">R</text><text x="70" y="110" font-weight="500">Role</text>
+      <rect x="20" y="134" width="170" height="44" rx="8" fill="#0891b2"/>
+      <text x="40" y="162">A</text><text x="70" y="162" font-weight="500">Ask</text>
+      <rect x="20" y="186" width="170" height="44" rx="8" fill="#0d9488"/>
+      <text x="40" y="214">F</text><text x="70" y="214" font-weight="500">Format</text>
+    </g>
+    <g stroke="#94a3b8" stroke-width="1.5" fill="none">
+      <path d="M190,52 C220,52 220,125 244,128"/>
+      <path d="M190,104 C215,104 220,128 244,129"/>
+      <path d="M190,156 C215,156 220,131 244,131"/>
+      <path d="M190,208 C220,208 220,134 244,132"/>
+    </g>
+    <rect x="245" y="100" width="130" height="60" rx="10" fill="#eef2ff" stroke="#4f46e5" stroke-width="1.5"/>
+    <text x="310" y="136" text-anchor="middle" fill="#1e293b" font-size="15" font-weight="700">Your prompt</text>
+    <line x1="377" y1="130" x2="413" y2="130" stroke="#475569" stroke-width="2" marker-end="url(#af-craft-arrow)"/>
+    <rect x="417" y="100" width="120" height="60" rx="10" fill="#f8fafc" stroke="#475569" stroke-width="1.5"/>
+    <text x="477" y="136" text-anchor="middle" fill="#1e293b" font-size="15" font-weight="700">AI response</text>
+    <line x1="539" y1="130" x2="573" y2="130" stroke="#475569" stroke-width="2" marker-end="url(#af-craft-arrow)"/>
+    <rect x="577" y="100" width="110" height="60" rx="10" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.5"/>
+    <text x="632" y="126" text-anchor="middle" fill="#1e293b" font-size="14" font-weight="700">Draft you</text>
+    <text x="632" y="145" text-anchor="middle" fill="#1e293b" font-size="14" font-weight="700">own</text>
+    <path d="M477,162 C477,240 310,240 310,168" fill="none" stroke="#ea580c" stroke-width="2.5" stroke-dasharray="6 4" marker-end="url(#af-craft-tweak)"/>
+    <text x="394" y="262" text-anchor="middle" fill="#c2410c" font-size="15" font-weight="700">T  Tweak</text>
+    <text x="394" y="282" text-anchor="middle" fill="#334155" font-size="13">evaluate, give specific feedback, repeat</text>
+  </g>
+</svg>
+
 ---
 
 ## Before and After
