@@ -54,6 +54,40 @@ Large language models are trained on one deceptively simple task: **predict the 
 
 Given "The capital of France is", the most likely next word is "Paris." Given "Thanks so much for your", likely next words include "help," "time," and "patience." Repeat that prediction billions of times across an enormous amount of text, and the model absorbs grammar, facts, writing styles, reasoning patterns, and a sense of how conversations flow.
 
+<svg viewBox="0 0 680 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Next-word prediction. The text so far, 'Thanks so much for your', goes into the model, which scores possible next words: help 38 percent, time 27 percent, patience 14 percent, support 11 percent, feedback 6 percent. The model picks one, adds it to the text, and predicts again.">
+  <defs>
+    <marker id="af-nwp-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#4f46e5"/>
+    </marker>
+  </defs>
+  <g font-family="system-ui, -apple-system, sans-serif">
+    <text x="125" y="98" text-anchor="middle" fill="#475569" font-size="13" font-weight="700">TEXT SO FAR</text>
+    <rect x="20" y="110" width="210" height="80" rx="10" fill="#eef2ff" stroke="#4f46e5" stroke-width="1.5"/>
+    <text x="125" y="145" text-anchor="middle" fill="#1e293b" font-size="17">Thanks so much</text>
+    <text x="125" y="170" text-anchor="middle" fill="#1e293b" font-size="17">for your …</text>
+    <line x1="236" y1="150" x2="282" y2="150" stroke="#4f46e5" stroke-width="2.5" marker-end="url(#af-nwp-arrow)"/>
+    <text x="480" y="30" text-anchor="middle" fill="#475569" font-size="13" font-weight="700">LIKELY NEXT WORDS</text>
+    <g font-size="15" fill="#1e293b">
+      <text x="370" y="72" text-anchor="end" font-weight="700">help</text>
+      <rect x="380" y="55" width="228" height="24" rx="4" fill="#4f46e5"/>
+      <text x="616" y="72" fill="#4338ca" font-weight="700">38%</text>
+      <text x="370" y="112" text-anchor="end">time</text>
+      <rect x="380" y="95" width="162" height="24" rx="4" fill="#a5b4fc"/>
+      <text x="550" y="112">27%</text>
+      <text x="370" y="152" text-anchor="end">patience</text>
+      <rect x="380" y="135" width="84" height="24" rx="4" fill="#a5b4fc"/>
+      <text x="472" y="152">14%</text>
+      <text x="370" y="192" text-anchor="end">support</text>
+      <rect x="380" y="175" width="66" height="24" rx="4" fill="#a5b4fc"/>
+      <text x="454" y="192">11%</text>
+      <text x="370" y="232" text-anchor="end">feedback</text>
+      <rect x="380" y="215" width="36" height="24" rx="4" fill="#a5b4fc"/>
+      <text x="424" y="232">6%</text>
+    </g>
+    <text x="340" y="284" text-anchor="middle" fill="#334155" font-size="14">Pick one → add it to the text → predict again, one word at a time</text>
+  </g>
+</svg>
+
 When you send a prompt, the model writes its response **one word at a time**, each time choosing a likely next word given everything before it — your prompt plus what it has written so far. After training, assistants go through additional steps that teach them to follow instructions, hold a conversation, and decline harmful requests.
 
 Three consequences follow directly from this, and they'll matter for the rest of the course:

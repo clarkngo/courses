@@ -32,6 +32,45 @@ Most agents run a loop:
 4. **Observe** — it looks at the result of that action.
 5. **Repeat** — it decides the next step, until it believes the goal is done or it needs your input.
 
+<svg viewBox="0 0 700 310" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The agent loop. Your goal goes to the agent, which cycles through plan, act, and observe. Before it acts on anything risky or irreversible, an approval gate asks you to confirm. When the goal is met, the agent reports back, and you verify the report.">
+  <defs>
+    <marker id="af-agent-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#475569"/>
+    </marker>
+  </defs>
+  <g font-family="system-ui, -apple-system, sans-serif">
+    <rect x="15" y="110" width="110" height="60" rx="10" fill="#eef2ff" stroke="#4f46e5" stroke-width="1.5"/>
+    <text x="70" y="146" text-anchor="middle" fill="#1e293b" font-size="15" font-weight="700">Your goal</text>
+    <line x1="127" y1="140" x2="198" y2="118" stroke="#475569" stroke-width="2" marker-end="url(#af-agent-arrow)"/>
+    <circle cx="245" cy="105" r="44" fill="#4f46e5"/>
+    <text x="245" y="111" text-anchor="middle" fill="#ffffff" font-size="16" font-weight="700">Plan</text>
+    <circle cx="435" cy="105" r="44" fill="#6366f1"/>
+    <text x="435" y="111" text-anchor="middle" fill="#ffffff" font-size="16" font-weight="700">Act</text>
+    <circle cx="340" cy="240" r="44" fill="#818cf8"/>
+    <text x="340" y="246" text-anchor="middle" fill="#ffffff" font-size="16" font-weight="700">Observe</text>
+    <g stroke="#475569" stroke-width="2" marker-end="url(#af-agent-arrow)">
+      <line x1="291" y1="105" x2="317" y2="105"/>
+      <line x1="364" y1="105" x2="387" y2="105"/>
+      <line x1="410" y1="142" x2="370" y2="200"/>
+      <line x1="310" y1="203" x2="270" y2="146"/>
+    </g>
+    <rect x="320" y="92" width="42" height="26" rx="6" fill="#ea580c"/>
+    <text x="341" y="110" text-anchor="middle" fill="#ffffff" font-size="12" font-weight="700">OK?</text>
+    <text x="340" y="22" text-anchor="middle" fill="#c2410c" font-size="13" font-weight="700">approval gate</text>
+    <text x="340" y="40" text-anchor="middle" fill="#334155" font-size="12">you confirm risky or irreversible steps</text>
+    <g fill="#334155" font-size="12.5">
+      <text x="488" y="88">uses tools:</text>
+      <text x="488" y="106">search, browser,</text>
+      <text x="488" y="124">files, email</text>
+    </g>
+    <line x1="386" y1="240" x2="548" y2="240" stroke="#475569" stroke-width="2" marker-end="url(#af-agent-arrow)"/>
+    <text x="465" y="230" text-anchor="middle" fill="#334155" font-size="12.5">goal met</text>
+    <rect x="552" y="208" width="130" height="64" rx="10" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.5"/>
+    <text x="617" y="236" text-anchor="middle" fill="#1e293b" font-size="14" font-weight="700">Report</text>
+    <text x="617" y="256" text-anchor="middle" fill="#15803d" font-size="12.5">you verify it</text>
+  </g>
+</svg>
+
 You may already have met agent features: "deep research" modes that search dozens of sources and write a report, assistants that can browse websites or operate a browser for you, tools that book appointments, and coding assistants that edit and test software on their own.
 
 ---
