@@ -6,9 +6,17 @@ import { ClientRouter } from 'astro:transitions';
 export interface Props {
   title: string;
   description?: string;
+  /** Social preview image, relative to the site base (e.g. `og/physical-ai.png`). */
+  image?: string;
 }
-const { title, description = 'A premium self-hosted learning platform.' } = Astro.props;
+const {
+  title,
+  description = 'Free, self-paced courses on AI and modern technology — built for complete beginners.',
+  image = 'og/default.png',
+} = Astro.props;
 const base = import.meta.env.BASE_URL;
+const pageUrl = new URL(Astro.url.pathname, Astro.site);
+const imageUrl = new URL(`${base}${image}`, Astro.site);
 ---
 <!doctype html>
 <html lang="en">
@@ -18,7 +26,42 @@ const base = import.meta.env.BASE_URL;
     <meta name="description" content={description} />
     <link rel="icon" type="image/svg+xml" href={`${base}favicon.svg`} />
     <title>{title}</title>
+    <link rel="canonical" href={pageUrl} />
+
+    <!-- Social previews -->
+    <meta property="og:site_name" content="Clark's Courses" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={pageUrl} />
+    <meta property="og:image" content={imageUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={imageUrl} />
     <ClientRouter />
+    <!-- Apply the theme before first paint (no light flash in dark mode). The saved
+         choice wins; otherwise follow the OS. Re-applied to each incoming page during
+         client-side navigation, since the router swaps <html>'s attributes. -->
+    <script is:inline>
+      (() => {
+        const KEY = 'theme';
+        const media = matchMedia('(prefers-color-scheme: dark)');
+        const isDark = () => {
+          let saved = null;
+          try { saved = localStorage.getItem(KEY); } catch {}
+          return saved ? saved === 'dark' : media.matches;
+        };
+        const apply = (root) => root.classList.toggle('dark', isDark());
+        apply(document.documentElement);
+        if (window.__themeBound) return;
+        window.__themeBound = true;
+        document.addEventListener('astro:before-swap', (e) => apply(e.newDocument.documentElement));
+        media.addEventListener('change', () => apply(document.documentElement));
+      })();
+    </script>
   </head>
   <body class="min-h-screen">
     <slot />

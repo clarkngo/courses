@@ -1,5 +1,8 @@
 ---
+import ThemeToggle from '../components/ThemeToggle.astro';
+import Footer from '../components/Footer.astro';
 import SearchButton from '../components/SearchButton.astro';
+import Icon from '../components/Icon.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import CourseCard from '../components/CourseCard.astro';
 import { getCollection } from 'astro:content';
@@ -123,17 +126,18 @@ const coursesByCategory = categories.map(category => ({
 ---
 
 <BaseLayout title="Course Catalog" description="Master AI, web development, data science, and more — all built for complete beginners.">
-  <div class="min-h-screen bg-gray-50">
+  <div class="min-h-screen bg-gray-50 dark:bg-gray-950">
 
     <!-- ── Nav ──────────────────────────────────────── -->
-    <nav class="bg-white border-b border-gray-200 px-4 sm:px-6 h-16 flex items-center justify-between sticky top-0 z-20 gap-2">
+    <nav class="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 px-4 sm:px-6 h-16 flex items-center justify-between sticky top-0 z-20 gap-2">
       <div class="flex items-center gap-2 min-w-0">
         <div class="w-8 h-8 rounded-lg bg-brand-600 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">C</div>
-        <span class="font-bold text-gray-900 truncate">Clark's Courses</span>
+        <span class="font-bold text-gray-900 dark:text-gray-100 truncate">Clark's Courses</span>
       </div>
       <div class="flex items-center gap-2 sm:gap-4 flex-shrink-0">
         <SearchButton showLabel />
-        <div class="hidden sm:block text-sm text-gray-500 whitespace-nowrap">
+        <ThemeToggle />
+        <div class="hidden sm:block text-sm text-gray-500 dark:text-gray-400 whitespace-nowrap">
           {hasComingSoon ? `${availableCount} of ${totalCount} courses available` : `${totalCount} free courses`}
         </div>
       </div>
@@ -180,12 +184,12 @@ const coursesByCategory = categories.map(category => ({
       data-index-url={`${base}course-index.json`}
       hidden
     >
-      <h2 id="continue-learning-heading" class="text-lg font-bold text-gray-900 mb-4">Continue learning</h2>
+      <h2 id="continue-learning-heading" class="text-lg font-bold text-gray-900 dark:text-gray-100 mb-4">Continue learning</h2>
       <div data-continue-list class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"></div>
     </section>
 
     <!-- ── Category jump nav ────────────────────────────── -->
-    <div id="category-jump-nav" class="sticky top-16 z-10 bg-white/95 backdrop-blur border-b border-gray-200 overflow-x-auto">
+    <div id="category-jump-nav" class="sticky top-16 z-10 bg-white/95 dark:bg-gray-900/95 backdrop-blur border-b border-gray-200 dark:border-gray-800 overflow-x-auto">
       <div class="max-w-6xl mx-auto px-4 sm:px-6 py-3 flex items-center gap-2 whitespace-nowrap">
         <button
           type="button"
@@ -193,18 +197,18 @@ const coursesByCategory = categories.map(category => ({
           data-ai-filter-toggle
           aria-pressed="false"
           title="Filter the catalog to AI-related courses only — the URL updates so you can share the filtered link"
-          class="text-xs font-semibold text-brand-700 bg-brand-50 hover:bg-brand-100 border border-brand-200 rounded-full px-3 py-1.5 transition-colors flex-shrink-0"
+          class="text-xs font-semibold text-brand-700 dark:text-brand-300 bg-brand-50 dark:bg-brand-950/50 hover:bg-brand-100 dark:hover:bg-brand-900/50 border border-brand-200 dark:border-brand-800 rounded-full px-3 py-1.5 transition-colors flex-shrink-0"
         >
           🤖 AI Courses Only
         </button>
-        <span class="w-px h-4 bg-gray-200 flex-shrink-0"></span>
+        <span class="w-px h-4 bg-gray-200 dark:bg-gray-700 flex-shrink-0"></span>
         {coursesByCategory.map(({ name, slug, courses: catCourses }) => (
           <a
             href={`#${slug}`}
             data-category-pill={name}
-            class="text-xs font-medium text-gray-500 hover:text-brand-600 hover:bg-brand-50 border border-gray-200 rounded-full px-3 py-1.5 transition-colors flex-shrink-0"
+            class="text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-brand-600 dark:hover:text-brand-400 hover:bg-brand-50 dark:hover:bg-brand-950/50 border border-gray-200 dark:border-gray-800 rounded-full px-3 py-1.5 transition-colors flex-shrink-0"
           >
-            {name} <span class="text-gray-500">· {catCourses.length}</span>
+            {name} <span class="text-gray-500 dark:text-gray-400">· {catCourses.length}</span>
           </a>
         ))}
       </div>
@@ -214,37 +218,52 @@ const coursesByCategory = categories.map(category => ({
     <section id="all-courses" class="max-w-6xl mx-auto px-4 sm:px-6 py-12 sm:py-16 scroll-mt-16">
       <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-6">
         <div>
-          <h2 class="text-2xl font-bold text-gray-900">All Courses</h2>
-          <p class="text-gray-500 mt-1">{totalCount} courses across {categories.length} categories · built for complete beginners</p>
+          <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100">All Courses</h2>
+          <p class="text-gray-500 dark:text-gray-400 mt-1">{totalCount} courses across {categories.length} categories · built for complete beginners</p>
         </div>
         {hasComingSoon && <div class="flex items-center gap-2">
           <span class="w-3 h-3 rounded-full bg-brand-500 inline-block"></span>
-          <span class="text-sm text-gray-500">Available</span>
+          <span class="text-sm text-gray-500 dark:text-gray-400">Available</span>
           <span class="w-3 h-3 rounded-full bg-gray-300 inline-block ml-3"></span>
-          <span class="text-sm text-gray-500">Coming soon</span>
+          <span class="text-sm text-gray-500 dark:text-gray-400">Coming soon</span>
         </div>}
       </div>
 
-      <!-- View switcher -->
-      <div id="view-switcher" class="flex items-center gap-1 bg-gray-100 rounded-lg p-1 w-fit mb-10 sm:mb-14">
-        <button type="button" data-view-btn="category" class="view-switcher-btn" aria-pressed="true">
-          By Category
-        </button>
-        <button type="button" data-view-btn="modified" class="view-switcher-btn" aria-pressed="false">
-          Recently Modified
-        </button>
-        <button type="button" data-view-btn="created" class="view-switcher-btn" aria-pressed="false">
-          Recently Created
-        </button>
+      <!-- View switcher + text filter -->
+      <div class="flex flex-col sm:flex-row sm:items-center gap-3 mb-10 sm:mb-14">
+        <div id="view-switcher" class="flex items-center gap-1 bg-gray-100 dark:bg-gray-800 rounded-lg p-1 w-fit">
+          <button type="button" data-view-btn="category" class="view-switcher-btn" aria-pressed="true">
+            By Category
+          </button>
+          <button type="button" data-view-btn="modified" class="view-switcher-btn" aria-pressed="false">
+            Recently Modified
+          </button>
+          <button type="button" data-view-btn="created" class="view-switcher-btn" aria-pressed="false">
+            Recently Created
+          </button>
+        </div>
+        <div class="relative sm:ml-auto sm:w-72">
+          <label for="course-filter" class="sr-only">Filter courses</label>
+          <Icon name="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400 pointer-events-none" />
+          <input
+            id="course-filter"
+            type="search"
+            placeholder="Filter courses…"
+            autocomplete="off"
+            class="w-full pl-9 pr-3 py-2 text-sm rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 placeholder:text-gray-500 dark:placeholder:text-gray-500
+                   focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-200 dark:focus:ring-brand-800"
+          />
+        </div>
       </div>
+      <p id="filter-status" class="sr-only" aria-live="polite"></p>
 
       <!-- Panel: By Category -->
       <div data-view-panel="category" class="space-y-14 sm:space-y-16">
         {coursesByCategory.map(({ name, slug, courses: catCourses }) => (
           <div id={slug} data-category-section={name} class="scroll-mt-32">
             <div class="flex items-baseline gap-3 mb-6">
-              <h3 class="text-lg font-bold text-gray-900">{name}</h3>
-              <span class="text-sm text-gray-500">{catCourses.length} course{catCourses.length !== 1 ? 's' : ''}</span>
+              <h3 class="text-lg font-bold text-gray-900 dark:text-gray-100">{name}</h3>
+              <span class="text-sm text-gray-500 dark:text-gray-400">{catCourses.length} course{catCourses.length !== 1 ? 's' : ''}</span>
             </div>
 
             <div class="grid gap-3 sm:gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -283,6 +302,13 @@ const coursesByCategory = categories.map(category => ({
             dateBadge={`Added ${timeAgo(created)}`}
           />
         ))}
+      </div>
+
+      <div id="filter-empty" class="text-center py-16 text-gray-500 dark:text-gray-400" hidden>
+        <p class="font-semibold text-gray-700 dark:text-gray-300">No courses match your filters.</p>
+        <button type="button" data-clear-filters class="mt-3 text-sm font-semibold text-brand-700 dark:text-brand-300 hover:underline">
+          Clear filters
+        </button>
       </div>
     </section>
 
@@ -326,50 +352,81 @@ const coursesByCategory = categories.map(category => ({
           });
         });
 
-        // ── AI course filter ──────────────────────────────────
-        // Filters the catalog down to AI-related categories and mirrors the
-        // state in the URL (?filter=ai) so the filtered view can be shared or
-        // bookmarked, and re-applies itself on load when that param is present.
+        // ── Catalog filters ───────────────────────────────────
+        // "AI Courses Only" (?filter=ai) and the text box (?q=...) combine. Both
+        // are mirrored in the URL so a filtered view can be shared or bookmarked,
+        // and re-applied on load. Category sections and jump-nav pills with no
+        // matching courses are hidden too.
         const AI_CATEGORY = /\bai\b/i;
         const aiToggle = document.querySelector<HTMLButtonElement>('[data-ai-filter-toggle]');
+        const filterInput = document.getElementById('course-filter') as HTMLInputElement | null;
+        const filterStatus = document.getElementById('filter-status');
+        const filterEmpty = document.getElementById('filter-empty');
         const categorySections = document.querySelectorAll<HTMLElement>('[data-category-section]');
         const categoryPills = document.querySelectorAll<HTMLAnchorElement>('[data-category-pill]');
         const courseCards = document.querySelectorAll<HTMLElement>('.module-card[data-category]');
 
-        function isAICategory(name: string | null) {
-          return AI_CATEGORY.test(name ?? '');
-        }
+        const params = new URLSearchParams(location.search);
+        let aiOnly = params.get('filter') === 'ai';
+        if (filterInput) filterInput.value = params.get('q') ?? '';
 
-        function applyAIFilter(active: boolean, { updateUrl = true } = {}) {
+        function applyFilters({ updateUrl = true } = {}) {
+          const query = filterInput?.value.trim().toLowerCase() ?? '';
+          const terms = query.split(/\s+/).filter(Boolean);
+
+          courseCards.forEach(card => {
+            const matchesAI = !aiOnly || AI_CATEGORY.test(card.dataset.category ?? '');
+            const text = card.dataset.searchText ?? '';
+            const matchesText = terms.every(t => text.includes(t));
+            card.style.display = matchesAI && matchesText ? '' : 'none';
+          });
+
+          const visibleCategories = new Set<string>();
           categorySections.forEach(section => {
-            const match = isAICategory(section.getAttribute('data-category-section'));
-            section.style.display = active && !match ? 'none' : '';
+            const anyVisible = [...section.querySelectorAll<HTMLElement>('.module-card')].some(c => c.style.display !== 'none');
+            section.style.display = anyVisible ? '' : 'none';
+            if (anyVisible) visibleCategories.add(section.dataset.categorySection!);
           });
           categoryPills.forEach(pill => {
-            const match = isAICategory(pill.getAttribute('data-category-pill'));
-            pill.style.display = active && !match ? 'none' : '';
+            pill.style.display = visibleCategories.has(pill.dataset.categoryPill!) ? '' : 'none';
           });
-          courseCards.forEach(card => {
-            const match = isAICategory(card.getAttribute('data-category'));
-            card.style.display = active && !match ? 'none' : '';
-          });
+
+          // Count within the panel currently on screen (each course appears once per panel).
+          const activePanel = [...panels].find(p => !p.hidden);
+          const shown = activePanel
+            ? [...activePanel.querySelectorAll<HTMLElement>('.module-card')].filter(c => c.style.display !== 'none').length
+            : 0;
+          const filtering = aiOnly || terms.length > 0;
+          if (filterEmpty) filterEmpty.hidden = !filtering || shown > 0;
+          if (filterStatus) filterStatus.textContent = filtering ? `${shown} course${shown === 1 ? '' : 's'} shown` : '';
+
           if (aiToggle) {
-            aiToggle.setAttribute('aria-pressed', String(active));
-            aiToggle.textContent = active ? '✕ Clear AI Filter' : '🤖 AI Courses Only';
+            aiToggle.setAttribute('aria-pressed', String(aiOnly));
+            aiToggle.textContent = aiOnly ? '✕ Clear AI Filter' : '🤖 AI Courses Only';
           }
           if (updateUrl) {
             const url = new URL(location.href);
-            if (active) url.searchParams.set('filter', 'ai');
+            if (aiOnly) url.searchParams.set('filter', 'ai');
             else url.searchParams.delete('filter');
-            history.replaceState(null, '', url);
+            if (query) url.searchParams.set('q', query);
+            else url.searchParams.delete('q');
+            history.replaceState(history.state, '', url);
           }
         }
 
         aiToggle?.addEventListener('click', () => {
-          applyAIFilter(aiToggle.getAttribute('aria-pressed') !== 'true');
+          aiOnly = !aiOnly;
+          applyFilters();
         });
+        filterInput?.addEventListener('input', () => applyFilters());
+        document.querySelector('[data-clear-filters]')?.addEventListener('click', () => {
+          aiOnly = false;
+          if (filterInput) { filterInput.value = ''; filterInput.focus(); }
+          applyFilters();
+        });
+        buttons.forEach(btn => btn.addEventListener('click', () => applyFilters({ updateUrl: false })));
 
-        applyAIFilter(new URLSearchParams(location.search).get('filter') === 'ai', { updateUrl: false });
+        applyFilters({ updateUrl: false });
       });
     </script>
 
@@ -419,16 +476,16 @@ const coursesByCategory = categories.map(category => ({
           card.innerHTML = `
             <span class="text-3xl flex-shrink-0" aria-hidden="true"></span>
             <span class="flex-1 min-w-0">
-              <span class="block font-bold text-gray-900 truncate"></span>
-              <span class="block text-sm text-gray-500 truncate"></span>
+              <span class="block font-bold text-gray-900 dark:text-gray-100 truncate"></span>
+              <span class="block text-sm text-gray-500 dark:text-gray-400 truncate"></span>
               <span class="mt-2 flex items-center gap-2">
-                <span class="flex-1 h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                <span class="flex-1 h-1.5 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
                   <span class="block h-full rounded-full" style="width: ${pct}%"></span>
                 </span>
-                <span class="text-xs font-semibold text-gray-500">${done}/${total}</span>
+                <span class="text-xs font-semibold text-gray-500 dark:text-gray-400">${done}/${total}</span>
               </span>
             </span>
-            <span class="text-gray-400 flex-shrink-0" aria-hidden="true">→</span>`;
+            <span class="text-gray-400 dark:text-gray-500 flex-shrink-0" aria-hidden="true">→</span>`;
           card.firstElementChild!.textContent = course.icon;
           const texts = card.querySelectorAll('.truncate');
           texts[0].textContent = course.title;
@@ -445,9 +502,6 @@ const coursesByCategory = categories.map(category => ({
     </script>
 
     <!-- ── Footer ────────────────────────────────────── -->
-    <footer class="border-t border-gray-200 py-8 text-center text-sm text-gray-500">
-      Built by Clark Ngo · Built with Astro · Deployed on GitHub Pages ·
-      <a href="https://github.com/clarkngo/courses" class="hover:text-brand-600 transition-colors">View on GitHub</a>
-    </footer>
+    <Footer />
   </div>
 </BaseLayout>

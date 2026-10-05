@@ -1,6 +1,9 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
+  // Toggled by a `dark` class on <html> (set before paint in BaseLayout from the
+  // saved choice, falling back to the OS preference).
+  darkMode: 'class',
   theme: {
     extend: {
       fontFamily: {

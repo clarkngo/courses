@@ -15,7 +15,7 @@ export async function getStaticPaths() {
 }
 
 const { entry, courseSlug } = Astro.props;
-const { Content } = await entry.render();
+const { Content, headings } = await entry.render();
 
 // Get course metadata for display
 const allCourses = await getCollection('courses');
@@ -34,6 +34,7 @@ const course = allCourses.find(c => c.slug === courseSlug);
   courseTitle={course?.data.title ?? courseSlug}
   courseColor={course?.data.color ?? '#3b63f5'}
   slug={entry.slug}
+  headings={headings}
 >
   <Content />
 </LessonLayout>

@@ -1,4 +1,5 @@
 ---
+import ThemeToggle from '../components/ThemeToggle.astro';
 import Icon from '../components/Icon.astro';
 import SearchButton from '../components/SearchButton.astro';
 import BaseLayout from './BaseLayout.astro';
@@ -18,6 +19,7 @@ export interface Props {
   courseTitle: string;
   courseColor?: string;
   slug: string;
+  headings?: { depth: number; slug: string; text: string }[];
 }
 
 const {
@@ -32,6 +34,7 @@ const {
   courseTitle,
   courseColor = '#3b63f5',
   slug,
+  headings = [],
 } = Astro.props;
 
 const allLessons = await getCollection('lessons');
@@ -49,10 +52,15 @@ const currentIdx = courseLessons.findIndex(l => l.slug === slug);
 const prevLesson = courseLessons[currentIdx - 1];
 const nextLesson = courseLessons[currentIdx + 1];
 const courseHref = `${base}${courseSlug}/`;
+
+// "On this page" outline: top-level sections only, and only when there are
+// enough of them to be worth navigating.
+const outline = headings.filter(h => h.depth === 2);
+const showOutline = outline.length >= 3;
 ---
 
-<BaseLayout title={`${title} | ${courseTitle}`} description={description}>
-  <div class="flex h-screen overflow-hidden bg-gray-50">
+<BaseLayout title={`${title} | ${courseTitle}`} description={description} image={`og/${courseSlug}.png`}>
+  <div class="flex h-screen overflow-hidden bg-gray-50 dark:bg-gray-950">
 
     <!-- ── Sidebar ─────────────────────────────────── -->
     <Sidebar
@@ -64,36 +72,44 @@ const courseHref = `${base}${courseSlug}/`;
     />
 
     <!-- ── Main content ───────────────────────────── -->
-    <main class="flex-1 overflow-y-auto">
+    <main id="lesson-main" class="flex-1 overflow-y-auto">
 
       <!-- Top bar -->
-      <header class="sticky top-0 z-10 bg-white border-b border-gray-200 px-4 sm:px-6 md:px-8 py-3 flex items-center justify-between gap-2">
-        <div class="flex items-center gap-2 text-sm text-gray-500 min-w-0">
+      <header class="sticky top-0 z-10 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 px-4 sm:px-6 md:px-8 py-3 flex items-center justify-between gap-2">
+        <div class="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 min-w-0">
           <button
             type="button"
             id="sidebar-toggle"
-            class="md:hidden -ml-1.5 flex-shrink-0 p-1.5 text-gray-500 hover:text-gray-800 rounded-lg hover:bg-gray-100"
+            class="md:hidden -ml-1.5 flex-shrink-0 p-1.5 text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-100 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
             aria-label="Open lesson menu"
           >
             <Icon name="menu" class="w-5 h-5" />
           </button>
-          <a href={base} class="hidden sm:inline hover:text-brand-600 font-medium flex-shrink-0">Home</a>
+          <a href={base} class="hidden sm:inline hover:text-brand-600 dark:hover:text-brand-400 font-medium flex-shrink-0">Home</a>
           <span class="hidden sm:inline" aria-hidden="true">›</span>
-          <a href={`${base}${courseSlug}/`} class="hidden sm:inline hover:text-brand-600 flex-shrink-0 truncate max-w-[120px]">{courseTitle}</a>
+          <a href={`${base}${courseSlug}/`} class="hidden sm:inline hover:text-brand-600 dark:hover:text-brand-400 flex-shrink-0 truncate max-w-[120px]">{courseTitle}</a>
           <span class="hidden sm:inline" aria-hidden="true">›</span>
-          <span class="text-gray-800 font-semibold truncate">{title}</span>
+          <span class="text-gray-800 dark:text-gray-200 font-semibold truncate">{title}</span>
         </div>
         <div class="flex items-center gap-2 sm:gap-3 flex-shrink-0 ml-2">
           {duration && (
-            <span class="hidden sm:inline-flex items-center gap-1 text-xs font-medium text-gray-600 bg-gray-100 px-2.5 py-1 rounded-full">
+            <span class="hidden sm:inline-flex items-center gap-1 text-xs font-medium text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 px-2.5 py-1 rounded-full">
               <Icon name="clock" class="w-3.5 h-3.5" /> {duration}
             </span>
           )}
           <SearchButton />
+          <ThemeToggle />
         </div>
+        <div
+          id="reading-progress"
+          class="absolute left-0 -bottom-px h-0.5 w-0"
+          style={`background-color: ${courseColor}`}
+          aria-hidden="true"
+        ></div>
       </header>
 
       <!-- Lesson body -->
+      <div class="lesson-columns">
       <article class="max-w-3xl mx-auto px-4 sm:px-6 md:px-8 py-8 md:py-12">
         <!-- Module badge -->
         <div class="mb-4">
@@ -106,9 +122,9 @@ const courseHref = `${base}${courseSlug}/`;
         </div>
 
         <!-- Title -->
-        <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-3 leading-tight">{title}</h1>
+        <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 dark:text-gray-100 mb-3 leading-tight">{title}</h1>
         {description && (
-          <p class="text-base sm:text-lg text-gray-500 mb-8 leading-relaxed">{description}</p>
+          <p class="text-base sm:text-lg text-gray-500 dark:text-gray-400 mb-8 leading-relaxed">{description}</p>
         )}
 
         <!-- YouTube embed -->
@@ -125,10 +141,10 @@ const courseHref = `${base}${courseSlug}/`;
 
         <!-- End-of-lesson navigation: one primary action that marks the lesson
              complete and moves on, with "previous" as a quieter secondary link. -->
-        <nav aria-label="Lesson navigation" class="mt-16 pt-8 border-t border-gray-200">
+        <nav aria-label="Lesson navigation" class="mt-16 pt-8 border-t border-gray-200 dark:border-gray-800">
           {nextLesson && (
-            <p class="text-sm text-gray-500 mb-3 sm:text-right">
-              Up next: <span class="font-semibold text-gray-700">{nextLesson.data.title}</span>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mb-3 sm:text-right">
+              Up next: <span class="font-semibold text-gray-700 dark:text-gray-300">{nextLesson.data.title}</span>
             </p>
           )}
           <div class="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-between gap-3">
@@ -152,21 +168,35 @@ const courseHref = `${base}${courseSlug}/`;
           {!nextLesson && (
             <div
               id="course-complete"
-              class="mt-8 rounded-2xl border border-green-200 bg-green-50 p-6 text-center"
+              class="mt-8 rounded-2xl border border-green-200 dark:border-green-900 bg-green-50 dark:bg-green-950/40 p-6 text-center"
               role="status"
               hidden
             >
               <p class="text-4xl mb-2" aria-hidden="true">🎉</p>
-              <p class="text-lg font-bold text-gray-900">You've reached the end of {courseTitle}</p>
-              <p id="course-complete-summary" class="text-sm text-gray-600 mt-1"></p>
+              <p class="text-lg font-bold text-gray-900 dark:text-gray-100">You've reached the end of {courseTitle}</p>
+              <p id="course-complete-summary" class="text-sm text-gray-600 dark:text-gray-400 mt-1"></p>
               <div class="mt-5 flex flex-col sm:flex-row gap-3 justify-center">
-                <a href={courseHref} class="btn-ghost justify-center bg-white">Review course</a>
+                <a href={courseHref} class="btn-ghost justify-center bg-white dark:bg-gray-900">Review course</a>
                 <a href={base} class="btn-primary justify-center">Find your next course →</a>
               </div>
             </div>
           )}
         </nav>
       </article>
+
+      {showOutline && (
+        <aside class="lesson-toc" aria-labelledby="lesson-toc-heading">
+          <p id="lesson-toc-heading" class="text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-3">On this page</p>
+          <ul class="space-y-1 border-l border-gray-200 dark:border-gray-800">
+            {outline.map(h => (
+              <li>
+                <a href={`#${h.slug}`} data-toc-link={h.slug} class="toc-link">{h.text}</a>
+              </li>
+            ))}
+          </ul>
+        </aside>
+      )}
+      </div>
     </main>
   </div>
 </BaseLayout>
@@ -244,6 +274,74 @@ const courseHref = `${base}${courseSlug}/`;
       refreshProgressUI();
       if (nextHref) navigate(nextHref);
       else showCoursePanel();
+    });
+  });
+</script>
+
+<script>
+  // Reading progress bar, "On this page" highlighting, and code copy buttons.
+  // <main> is the scroll container (the sidebar stays put), not the window.
+  document.addEventListener('astro:page-load', () => {
+    const main = document.getElementById('lesson-main');
+    if (!main) return; // not a lesson page
+
+    const bar = document.getElementById('reading-progress');
+    const tocLinks = [...document.querySelectorAll<HTMLAnchorElement>('[data-toc-link]')];
+    const sections = tocLinks
+      .map(link => document.getElementById(link.dataset.tocLink!))
+      .filter((el): el is HTMLElement => Boolean(el));
+
+    let ticking = false;
+    function update() {
+      ticking = false;
+      const scrollable = main!.scrollHeight - main!.clientHeight;
+      if (bar) bar.style.width = `${scrollable > 0 ? Math.min(100, (main!.scrollTop / scrollable) * 100) : 0}%`;
+
+      if (sections.length === 0) return;
+      // The current section is the last heading scrolled past the area just below the header.
+      const threshold = main!.getBoundingClientRect().top + 120;
+      let current = sections[0].id;
+      for (const section of sections) {
+        if (section.getBoundingClientRect().top <= threshold) current = section.id;
+      }
+      if (scrollable > 0 && main!.scrollTop >= scrollable - 2) current = sections[sections.length - 1].id;
+      tocLinks.forEach(link => {
+        if (link.dataset.tocLink === current) link.setAttribute('aria-current', 'location');
+        else link.removeAttribute('aria-current');
+      });
+    }
+
+    main.addEventListener('scroll', () => {
+      if (!ticking) { ticking = true; requestAnimationFrame(update); }
+    }, { passive: true });
+    update();
+
+    document.querySelectorAll<HTMLPreElement>('.lesson-prose pre').forEach(pre => {
+      if (pre.parentElement?.classList.contains('code-block')) return;
+      const wrapper = document.createElement('div');
+      wrapper.className = 'code-block';
+      pre.replaceWith(wrapper);
+      wrapper.appendChild(pre);
+
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'copy-code';
+      button.textContent = 'Copy';
+      button.setAttribute('aria-label', 'Copy code to clipboard');
+      button.addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(pre.innerText);
+          button.textContent = 'Copied!';
+        } catch {
+          button.textContent = 'Press ⌘C';
+          const range = document.createRange();
+          range.selectNodeContents(pre);
+          getSelection()?.removeAllRanges();
+          getSelection()?.addRange(range);
+        }
+        setTimeout(() => { button.textContent = 'Copy'; }, 2000);
+      });
+      wrapper.appendChild(button);
     });
   });
 </script>
