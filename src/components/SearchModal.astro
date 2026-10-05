@@ -1,92 +1,111 @@
 ---
+import Icon from './Icon.astro';
 const base = import.meta.env.BASE_URL;
 ---
-<div id="search-overlay" role="dialog" aria-modal="true" aria-label="Search courses and lessons" transition:persist>
+<div
+  id="search-overlay"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Search courses and lessons"
+  data-base={base}
+  transition:persist
+>
   <div id="search-panel">
     <div id="search-input-row">
-      <span id="search-icon">🔍</span>
+      <span id="search-icon"><Icon name="search" class="w-5 h-5" /></span>
       <input
         id="search-input"
         type="text"
+        role="combobox"
+        aria-autocomplete="list"
+        aria-controls="search-results"
+        aria-expanded="false"
         placeholder="Search courses and lessons..."
         autocomplete="off"
         spellcheck="false"
       />
       <kbd id="search-esc">esc</kbd>
     </div>
-    <div id="search-results"></div>
-    <div id="search-empty" hidden>
-      <p>No results. Try a different search term.</p>
-    </div>
+    <div id="search-results" role="listbox" aria-label="Search results"></div>
+    <p id="search-hint" hidden></p>
+    <div id="search-status" class="sr-only" aria-live="polite"></div>
   </div>
 </div>
 
-<script define:vars={{ base }}>
-  // #search-overlay is transition:persist'd across navigations, so this only
-  // ever needs to run once — guard against re-running if this script re-executes.
-  if (window.__searchModalBound) {
-    // no-op: already initialized on the persisted overlay
-  } else {
-  window.__searchModalBound = true;
-  const overlay = document.getElementById('search-overlay');
-  const panel = document.getElementById('search-panel');
-  const input = document.getElementById('search-input');
-  const resultsEl = document.getElementById('search-results');
-  const emptyEl = document.getElementById('search-empty');
+<script>
+  import { navigate } from 'astro:transitions/client';
+  import { getLastVisited } from '../scripts/progress';
 
-  let items = null;
+  type Item = {
+    type: 'course' | 'lesson';
+    title: string;
+    subtitle: string;
+    description: string;
+    icon: string;
+    url: string;
+  };
+
+  // Bundled scripts run once per full page load, and #search-overlay is
+  // transition:persist'd, so these listeners are bound exactly once.
+  const overlay = document.getElementById('search-overlay')!;
+  const input = document.getElementById('search-input') as HTMLInputElement;
+  const resultsEl = document.getElementById('search-results')!;
+  const hintEl = document.getElementById('search-hint')!;
+  const statusEl = document.getElementById('search-status')!;
+  const base = overlay.dataset.base!;
+  const MAX_RESULTS = 10;
+
+  let items: Item[] | null = null;
   let activeIndex = -1;
-  let currentResults = [];
+  let currentResults: Item[] = [];
+  let returnFocusTo: HTMLElement | null = null;
 
   async function loadIndex() {
     if (items) return items;
     const res = await fetch(`${base}search.json`);
-    items = await res.json();
+    items = (await res.json()) as Item[];
     return items;
   }
 
-  function escapeHtml(str) {
+  function escapeHtml(str: string) {
     return str.replace(/[&<>"']/g, (c) => ({
       '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
-    }[c]));
+    }[c]!));
   }
 
-  function highlight(text, query) {
-    const safe = escapeHtml(text);
-    if (!query) return safe;
-    const idx = safe.toLowerCase().indexOf(query.toLowerCase());
-    if (idx === -1) return safe;
-    return safe.slice(0, idx) + '<mark>' + safe.slice(idx, idx + query.length) + '</mark>' + safe.slice(idx + query.length);
+  const escapeRegExp = (str: string) => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+  function highlight(text: string, terms: string[]) {
+    if (terms.length === 0) return escapeHtml(text);
+    const re = new RegExp(`(${terms.map(escapeRegExp).join('|')})`, 'gi');
+    return text.split(re).map((part, i) => i % 2 ? `<mark>${escapeHtml(part)}</mark>` : escapeHtml(part)).join('');
   }
 
-  function score(item, q) {
+  // Every term must appear somewhere; rank by how strongly the title matches.
+  function score(item: Item, phrase: string, terms: string[]) {
     const title = item.title.toLowerCase();
-    const desc = (item.description || '').toLowerCase();
-    const subtitle = (item.subtitle || '').toLowerCase();
-    if (title === q) return 0;
-    if (title.startsWith(q)) return 1;
-    if (title.includes(q)) return 2;
-    if (subtitle.includes(q)) return 3;
-    if (desc.includes(q)) return 4;
-    return -1;
+    const subtitle = item.subtitle.toLowerCase();
+    const haystack = `${title} ${subtitle} ${item.description.toLowerCase()}`;
+    if (!terms.every(t => haystack.includes(t))) return -1;
+    if (title === phrase) return 0;
+    if (title.startsWith(phrase)) return 1;
+    if (title.includes(phrase)) return 2;
+    if (terms.every(t => title.includes(t))) return 3;
+    if (terms.every(t => title.includes(t) || subtitle.includes(t))) return 4;
+    return 5;
   }
 
-  function render(results, query) {
+  function render(results: Item[], terms: string[], heading?: string) {
     currentResults = results;
     activeIndex = results.length > 0 ? 0 : -1;
+    input.setAttribute('aria-expanded', String(results.length > 0));
 
-    if (results.length === 0) {
-      resultsEl.innerHTML = '';
-      emptyEl.hidden = query.trim().length === 0;
-      return;
-    }
-    emptyEl.hidden = true;
-
-    resultsEl.innerHTML = results.map((item, i) => `
-      <a href="${item.url}" class="search-result" data-index="${i}" data-active="${i === activeIndex}">
-        <span class="search-result-icon">${item.icon}</span>
+    const header = heading ? `<p class="search-section" role="presentation">${escapeHtml(heading)}</p>` : '';
+    resultsEl.innerHTML = header + results.map((item, i) => `
+      <a href="${item.url}" id="search-option-${i}" role="option" class="search-result" data-index="${i}">
+        <span class="search-result-icon" aria-hidden="true">${item.icon}</span>
         <span class="search-result-text">
-          <span class="search-result-title">${highlight(item.title, query)}</span>
+          <span class="search-result-title">${highlight(item.title, terms)}</span>
           <span class="search-result-meta">
             <span class="search-result-type">${item.type === 'course' ? 'Course' : 'Lesson'}</span>
             · ${escapeHtml(item.subtitle)}
@@ -94,52 +113,88 @@ const base = import.meta.env.BASE_URL;
         </span>
       </a>
     `).join('');
+    updateActive();
   }
 
   function updateActive() {
-    resultsEl.querySelectorAll('.search-result').forEach((el, i) => {
-      el.setAttribute('data-active', String(i === activeIndex));
-      if (i === activeIndex) el.scrollIntoView({ block: 'nearest' });
+    resultsEl.querySelectorAll<HTMLElement>('.search-result').forEach((el, i) => {
+      const active = i === activeIndex;
+      el.setAttribute('aria-selected', String(active));
+      if (active) el.scrollIntoView({ block: 'nearest' });
     });
+    if (activeIndex >= 0) input.setAttribute('aria-activedescendant', `search-option-${activeIndex}`);
+    else input.removeAttribute('aria-activedescendant');
+  }
+
+  function showHint(text: string) {
+    hintEl.textContent = text;
+    hintEl.hidden = !text;
+  }
+
+  // Empty query: offer the lessons the learner most recently opened.
+  async function renderRecent() {
+    const all = await loadIndex();
+    const byUrl = new Map(all.map(item => [item.url, item]));
+    const recent = Object.values(getLastVisited())
+      .sort((a, b) => b.at - a.at)
+      .map(({ lesson }) => {
+        const [course, ...rest] = lesson.split('/');
+        return byUrl.get(`${base}${course}/lessons/${rest.join('/')}`);
+      })
+      .filter((item): item is Item => Boolean(item))
+      .slice(0, 5);
+
+    if (input.value.trim()) return; // the learner started typing meanwhile
+    render(recent, [], recent.length ? 'Jump back in' : undefined);
+    const courses = all.filter(i => i.type === 'course').length;
+    showHint(recent.length ? '' : `Search ${courses} courses and ${all.length - courses} lessons.`);
+    statusEl.textContent = '';
   }
 
   async function handleInput() {
-    const q = input.value.trim().toLowerCase();
-    if (!q) {
-      render([], '');
-      return;
-    }
+    const phrase = input.value.trim().toLowerCase();
+    if (!phrase) { renderRecent(); return; }
+
+    const terms = [...new Set(phrase.split(/\s+/))];
     const all = await loadIndex();
-    const results = all
-      .map(item => ({ item, s: score(item, q) }))
+    const matches = all
+      .map(item => ({ item, s: score(item, phrase, terms) }))
       .filter(({ s }) => s !== -1)
-      .sort((a, b) => a.s - b.s)
-      .slice(0, 8)
-      .map(({ item }) => item);
-    render(results, input.value.trim());
+      .sort((a, b) => a.s - b.s || (a.item.type === 'course' ? -1 : 0) - (b.item.type === 'course' ? -1 : 0));
+
+    render(matches.slice(0, MAX_RESULTS).map(({ item }) => item), terms);
+    if (matches.length === 0) {
+      showHint('No results. Try fewer or different words.');
+      statusEl.textContent = 'No results';
+    } else {
+      showHint(matches.length > MAX_RESULTS ? `Showing ${MAX_RESULTS} of ${matches.length} — add a word to narrow it down.` : '');
+      statusEl.textContent = `${matches.length} result${matches.length === 1 ? '' : 's'}`;
+    }
   }
 
   function openSearch() {
+    returnFocusTo = document.activeElement as HTMLElement | null;
     overlay.classList.add('open');
     document.body.style.overflow = 'hidden';
     input.value = '';
-    render([], '');
-    loadIndex();
+    renderRecent();
     setTimeout(() => input.focus(), 0);
   }
 
   function closeSearch() {
+    if (!overlay.classList.contains('open')) return;
     overlay.classList.remove('open');
     document.body.style.overflow = '';
+    if (returnFocusTo?.isConnected) returnFocusTo.focus();
+    returnFocusTo = null;
   }
 
   // Clicking a result navigates via the client router, which doesn't tear down
   // the page (search-overlay is transition:persist'd) — close it explicitly.
-  document.addEventListener('astro:page-load', closeSearch);
-  document.addEventListener('astro:before-preparation', closeSearch);
+  document.addEventListener('astro:before-preparation', () => { returnFocusTo = null; closeSearch(); });
 
   document.addEventListener('click', (e) => {
-    const trigger = e.target.closest('[data-search-open]');
+    const trigger = (e.target as Element).closest('[data-search-open]');
     if (trigger) {
       e.preventDefault();
       openSearch();
@@ -157,7 +212,8 @@ const base = import.meta.env.BASE_URL;
     }
 
     if (!isOpen) {
-      if (e.key === '/' && document.activeElement.tagName !== 'INPUT') {
+      const tag = (document.activeElement as HTMLElement | null)?.tagName;
+      if (e.key === '/' && tag !== 'INPUT' && tag !== 'TEXTAREA') {
         e.preventDefault();
         openSearch();
       }
@@ -166,6 +222,8 @@ const base = import.meta.env.BASE_URL;
 
     if (e.key === 'Escape') {
       closeSearch();
+    } else if (e.key === 'Tab') {
+      e.preventDefault(); // keep focus in the dialog; arrows move through results
     } else if (e.key === 'ArrowDown') {
       e.preventDefault();
       if (activeIndex < currentResults.length - 1) { activeIndex++; updateActive(); }
@@ -174,8 +232,14 @@ const base = import.meta.env.BASE_URL;
       if (activeIndex > 0) { activeIndex--; updateActive(); }
     } else if (e.key === 'Enter') {
       const active = currentResults[activeIndex];
-      if (active) window.location.href = active.url;
+      if (active) { e.preventDefault(); navigate(active.url); }
     }
+  });
+
+  resultsEl.addEventListener('mousemove', (e) => {
+    const option = (e.target as Element).closest<HTMLElement>('.search-result');
+    const index = option ? Number(option.dataset.index) : -1;
+    if (index >= 0 && index !== activeIndex) { activeIndex = index; updateActive(); }
   });
 
   overlay.addEventListener('click', (e) => {
@@ -183,7 +247,6 @@ const base = import.meta.env.BASE_URL;
   });
 
   input.addEventListener('input', handleInput);
-  }
 </script>
 
 <style is:global>
@@ -234,7 +297,7 @@ const base = import.meta.env.BASE_URL;
   #search-esc {
     font-size: 0.6875rem;
     font-family: inherit;
-    color: #9ca3af;
+    color: #6b7280;
     background: #f3f4f6;
     border: 1px solid #e5e7eb;
     border-radius: 0.375rem;
@@ -255,7 +318,7 @@ const base = import.meta.env.BASE_URL;
     text-decoration: none;
     color: inherit;
   }
-  .search-result[data-active="true"] {
+  .search-result[aria-selected="true"] {
     background: #f0f4ff;
   }
   .search-result-icon { font-size: 1.25rem; line-height: 1.5rem; flex-shrink: 0; }
@@ -275,18 +338,27 @@ const base = import.meta.env.BASE_URL;
   }
   .search-result-meta {
     font-size: 0.75rem;
-    color: #9ca3af;
+    color: #6b7280;
     margin-top: 0.125rem;
   }
   .search-result-type {
     font-weight: 600;
-    color: #6b7280;
+    color: #4b5563;
   }
 
-  #search-empty {
-    padding: 2rem 1.25rem;
+  .search-section {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #6b7280;
+    padding: 0.5rem 0.75rem 0.25rem;
+  }
+
+  #search-hint {
+    padding: 0.75rem 1.25rem 1rem;
     text-align: center;
-    color: #9ca3af;
+    color: #6b7280;
     font-size: 0.875rem;
   }
 </style>

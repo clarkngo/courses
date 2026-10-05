@@ -4,60 +4,66 @@ export interface Props {
   count: number;
   href?: string;
   dateBadge?: string | null;
+  /** Heading level for the card title, so it nests under the surrounding section heading. */
+  headingLevel?: 3 | 4;
 }
 
-const { course, count, href, dateBadge = null } = Astro.props;
+const { course, count, href, dateBadge = null, headingLevel = 3 } = Astro.props;
 const isAvailable = course.data.status === 'available';
 const color = course.data.color || '#3b63f5';
+const Heading = headingLevel === 4 ? 'h4' : 'h3';
+const meta = [
+  isAvailable && count > 0 ? `${count} lesson${count !== 1 ? 's' : ''}` : 'In development',
+  dateBadge,
+].filter(Boolean).join(' · ');
 ---
 
-<div data-category={course.data.category} class={`module-card overflow-hidden p-0 flex flex-col group ${isAvailable ? 'cursor-pointer' : 'opacity-75'}`}>
+<!-- The whole card is clickable via a stretched link on the title (the title's
+     ::after covers the card), so screen readers announce just the course name.
+     Below `sm` it collapses to a compact row (icon tile + title + meta) so the
+     36-course catalog stays scannable on phones. -->
+<div
+  data-category={course.data.category}
+  class={`module-card relative overflow-hidden p-0 flex sm:flex-col group ${isAvailable ? '' : 'opacity-75'}`}
+>
   <!-- Banner -->
   <div
-    class="relative flex items-start justify-between px-5 pt-4 pb-6"
+    class="flex items-center justify-center w-16 flex-shrink-0 sm:w-auto sm:items-start sm:justify-between sm:px-5 sm:py-4"
     style={isAvailable ? `background-image: linear-gradient(135deg, ${color}, ${color}99);` : 'background-color: #e5e7eb;'}
   >
-    <span class="text-4xl drop-shadow-sm">{course.data.icon}</span>
-    {isAvailable ? (
-      <span class="text-xs font-bold px-2.5 py-1 rounded-full bg-white/90 text-gray-800">
-        ✓ Available
-      </span>
-    ) : (
-      <span class="text-xs font-medium px-2.5 py-1 rounded-full bg-white/80 text-gray-500">
-        Coming Soon
+    <span class="text-3xl sm:text-4xl drop-shadow-sm" aria-hidden="true">{course.data.icon}</span>
+    {!isAvailable && (
+      <span class="hidden sm:inline text-xs font-medium px-2.5 py-1 rounded-full bg-white/80 text-gray-600">
+        Coming soon
       </span>
     )}
   </div>
 
-  <!-- Description + meta -->
-  <div class="flex flex-col flex-1 px-6 pt-5">
-    <p class="text-sm text-gray-500 leading-relaxed flex-1 mb-3">
+  <!-- Title, description, meta -->
+  <div class="flex flex-col flex-1 min-w-0 px-4 py-3 sm:px-5 sm:pt-4 sm:pb-5">
+    <Heading class="text-base sm:text-lg font-bold text-gray-900 leading-snug">
+      {isAvailable ? (
+        <a
+          href={href}
+          class="after:absolute after:inset-0 after:content-[''] group-hover:text-brand-700 transition-colors
+                 focus-visible:outline-none after:rounded-2xl focus-visible:after:ring-2 focus-visible:after:ring-brand-500"
+        >
+          {course.data.title}
+        </a>
+      ) : course.data.title}
+    </Heading>
+
+    <p class="hidden sm:line-clamp-3 text-sm text-gray-600 leading-relaxed mt-2 mb-4 flex-1">
       {course.data.description}
     </p>
 
-    {dateBadge && (
-      <p class="text-xs text-gray-400 mb-2">🕒 {dateBadge}</p>
-    )}
-
-    <p class="text-xs text-gray-400 mb-5">
-      {isAvailable && count > 0 ? `${count} lesson${count !== 1 ? 's' : ''}` : '🔒 In development'}
-    </p>
-  </div>
-
-  <!-- Title bar / CTA -->
-  {isAvailable ? (
-    <a
-      href={href}
-      class="flex items-center justify-between gap-2 px-6 py-4 font-bold text-white transition-opacity hover:opacity-90"
-      style={`background-color: ${color}`}
-    >
-      <span class="truncate">{course.data.title}</span>
-      <span class="flex-shrink-0">→</span>
-    </a>
-  ) : (
-    <div class="flex items-center justify-between gap-2 px-6 py-4 font-semibold text-gray-500 bg-gray-100">
-      <span class="truncate">{course.data.title}</span>
-      <span class="flex-shrink-0 text-xs font-medium">Notify me</span>
+    <div class="flex items-center justify-between gap-3 text-xs text-gray-500 mt-1 sm:mt-0">
+      <span>{!isAvailable && <span class="sm:hidden">Coming soon · </span>}{meta}</span>
+      {isAvailable && (
+        <span class="hidden sm:inline font-semibold flex-shrink-0 text-gray-700 group-hover:text-brand-700 transition-colors" aria-hidden="true">
+          View course →
+        </span>
+      )}
     </div>
-  )}
+  </div>
 </div>

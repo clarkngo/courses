@@ -1,4 +1,5 @@
 ---
+import SearchButton from '../../components/SearchButton.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
 
@@ -37,27 +38,21 @@ const lessonSlug = firstLesson?.slug.replace(courseSlug + '/', '');
 ---
 
 <BaseLayout title={`${course.data.title} | Courses`} description={course.data.description}>
-  <div class="min-h-screen bg-gray-50">
+  <div class="min-h-screen bg-gray-50" data-progress-scope>
 
     <!-- Nav -->
     <nav class="bg-white border-b border-gray-200 px-4 sm:px-6 py-3 flex items-center justify-between sticky top-0 z-10 gap-2">
       <div class="flex items-center gap-2 sm:gap-3 min-w-0">
         <a href={base} class="text-sm text-gray-500 hover:text-brand-600 transition-colors flex-shrink-0">← <span class="hidden sm:inline">All Courses</span></a>
-        <span class="text-gray-300 flex-shrink-0">›</span>
+        <span class="text-gray-300 flex-shrink-0" aria-hidden="true">›</span>
         <span class="text-sm font-semibold text-gray-800 truncate">{course.data.title}</span>
       </div>
-      <button
-        type="button"
-        data-search-open
-        class="flex items-center gap-2 text-sm text-gray-400 hover:text-gray-600 border border-gray-200 rounded-lg px-2.5 sm:px-3 py-1.5 transition-colors flex-shrink-0 ml-2"
-      >
-        🔍 <kbd class="text-xs bg-gray-100 border border-gray-200 rounded px-1.5 py-0.5 hidden sm:inline">⌘K</kbd>
-      </button>
+      <SearchButton class="ml-2" />
     </nav>
 
     <!-- Hero -->
     <section class="text-white px-4 sm:px-6 py-12 sm:py-16" style={`background: linear-gradient(135deg, ${course.data.color}dd, ${course.data.color}99)`}>
-      <div class="max-w-4xl mx-auto">
+      <div class="max-w-3xl mx-auto">
         <span class="text-5xl sm:text-6xl block mb-4">{course.data.icon}</span>
         <div class="inline-block bg-white/20 text-white text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full mb-4">
           For {course.data.audience}
@@ -65,14 +60,27 @@ const lessonSlug = firstLesson?.slug.replace(courseSlug + '/', '');
         <h1 class="text-3xl sm:text-4xl font-bold mb-4">{course.data.title}</h1>
         <p class="text-white/80 text-base sm:text-lg max-w-2xl leading-relaxed mb-8">{course.data.description}</p>
 
+        <!-- Shown once the learner has opened any lesson in this course -->
+        <div id="course-progress" class="max-w-md mb-6" hidden>
+          <div class="flex items-center justify-between text-sm mb-1.5">
+            <span class="font-semibold">Your progress</span>
+            <span data-progress-label="count" class="text-white/80"></span>
+          </div>
+          <div class="h-2 bg-white/25 rounded-full overflow-hidden">
+            <div data-progress-bar class="h-full rounded-full bg-white transition-all duration-500" style="width: 0%"></div>
+          </div>
+        </div>
+
         <div class="flex flex-wrap items-center gap-4">
           {firstLesson && (
             <a
+              id="course-cta"
               href={`${base}${courseSlug}/lessons/${lessonSlug}`}
-              class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-white font-bold shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-150 text-sm"
+              data-course-slug={courseSlug}
+              class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-white font-bold shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-150 text-sm max-w-full"
               style={`color: ${course.data.color}`}
             >
-              🚀 Start Course
+              <span class="truncate">Start course</span> <span aria-hidden="true">→</span>
             </a>
           )}
           <div class="text-white/70 text-sm">
@@ -99,7 +107,7 @@ const lessonSlug = firstLesson?.slug.replace(courseSlug + '/', '');
                 {modNum}
               </div>
               <div>
-                <p class="text-xs font-bold uppercase tracking-widest text-gray-400">Module {modNum}</p>
+                <p class="text-xs font-bold uppercase tracking-widest text-gray-500">Module {modNum}</p>
                 <p class="font-semibold text-gray-900">{mod.title}</p>
               </div>
             </div>
@@ -112,16 +120,18 @@ const lessonSlug = firstLesson?.slug.replace(courseSlug + '/', '');
                   <li>
                     <a
                       href={`${base}${courseSlug}/lessons/${slug}`}
+                      data-lesson-slug={lesson.slug}
+                      data-lesson-title={lesson.data.title}
+                      data-status="not-started"
                       class="flex items-center gap-4 px-6 py-3.5 hover:bg-gray-50 transition-colors group"
                     >
-                      <span class="text-gray-300 group-hover:text-gray-400 text-sm w-5 flex-shrink-0">
-                        {lesson.data.lesson}
-                      </span>
+                      <span class="status-mark" aria-hidden="true"></span>
+                      <span class="status-label sr-only">Not started</span>
                       <span class="flex-1 text-sm text-gray-700 group-hover:text-gray-900 font-medium transition-colors">
                         {lesson.data.title}
                       </span>
                       {lesson.data.duration && (
-                        <span class="text-xs text-gray-400 flex-shrink-0">{lesson.data.duration}</span>
+                        <span class="text-xs text-gray-500 flex-shrink-0">{lesson.data.duration}</span>
                       )}
                       <span class="text-gray-300 group-hover:text-brand-500 transition-colors">→</span>
                     </a>
@@ -134,7 +144,7 @@ const lessonSlug = firstLesson?.slug.replace(courseSlug + '/', '');
       </div>
 
       {courseLessons.length === 0 && (
-        <div class="text-center py-16 text-gray-400">
+        <div class="text-center py-16 text-gray-500">
           <p class="text-4xl mb-4">🚧</p>
           <p class="font-semibold">Lessons coming soon</p>
           <p class="text-sm mt-1">Check back shortly.</p>
@@ -142,7 +152,35 @@ const lessonSlug = firstLesson?.slug.replace(courseSlug + '/', '');
       )}
     </section>
 
-    <footer class="border-t border-gray-200 py-8 text-center text-sm text-gray-400">
+    <script>
+      import { getProgress, refreshProgressUI, resumeLesson } from '../../scripts/progress';
+
+      document.addEventListener('astro:page-load', () => {
+        const cta = document.getElementById('course-cta') as HTMLAnchorElement | null;
+        if (!cta) return; // not a course page
+
+        refreshProgressUI();
+
+        const courseSlug = cta.dataset.courseSlug!;
+        const lessons = [...document.querySelectorAll<HTMLAnchorElement>('a[data-lesson-slug]')];
+        const progress = getProgress();
+        if (!lessons.some(a => progress[a.dataset.lessonSlug!])) return; // fresh start
+
+        document.getElementById('course-progress')!.hidden = false;
+
+        const label = cta.querySelector('.truncate')!;
+        const resumeSlug = resumeLesson(courseSlug, lessons.map(a => a.dataset.lessonSlug!));
+        const target = lessons.find(a => a.dataset.lessonSlug === resumeSlug);
+        if (target) {
+          cta.href = target.href;
+          label.textContent = `Continue: ${target.dataset.lessonTitle}`;
+        } else {
+          label.textContent = 'Course complete — review from the start';
+        }
+      });
+    </script>
+
+    <footer class="border-t border-gray-200 py-8 text-center text-sm text-gray-500">
       Built by Clark Ngo · Built with Astro · Deployed on GitHub Pages ·
       <a href="https://github.com/clarkngo/courses" class="hover:text-brand-600 transition-colors">View on GitHub</a>
     </footer>
