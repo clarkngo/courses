@@ -15,14 +15,16 @@
   }
 
   body {
-    @apply bg-gray-50 text-gray-800;
+    @apply bg-gray-50 dark:bg-gray-950 text-gray-800 dark:text-gray-200;
   }
 
   /* Scrollbar styling */
   ::-webkit-scrollbar { width: 6px; height: 6px; }
-  ::-webkit-scrollbar-track { @apply bg-gray-100; }
-  ::-webkit-scrollbar-thumb { @apply bg-gray-300 rounded-full; }
+  ::-webkit-scrollbar-track { @apply bg-gray-100 dark:bg-gray-800; }
+  ::-webkit-scrollbar-thumb { @apply bg-gray-300 dark:bg-gray-700 rounded-full; }
   ::-webkit-scrollbar-thumb:hover { @apply bg-gray-400; }
+
+  html.dark { color-scheme: dark; }
 
   /* The native `hidden` attribute loses to a same-specificity Tailwind
      display utility (grid/flex) on the same element because both are
@@ -74,7 +76,7 @@
     @apply cursor-pointer text-sm font-semibold text-quiz-title hover:underline select-none;
   }
   .learning-block.quiz details > div {
-    @apply mt-3 pl-4 border-l-2 border-quiz-border text-gray-700 text-sm leading-relaxed;
+    @apply mt-3 pl-4 border-l-2 border-quiz-border text-gray-700 dark:text-gray-300 text-sm leading-relaxed;
   }
 
   /* Multi-question quiz (multiple choice) */
@@ -85,38 +87,38 @@
     @apply flex flex-col gap-2;
   }
   .quiz-mc-question {
-    @apply text-gray-800 font-medium text-sm;
+    @apply text-gray-800 dark:text-gray-200 font-medium text-sm;
   }
   .quiz-mc-options {
     @apply flex flex-col gap-2;
   }
   .quiz-mc-option {
-    @apply text-left text-sm px-3 py-2 rounded-lg border border-gray-300 bg-white
-           text-gray-700 hover:bg-gray-50 transition-colors duration-150;
+    @apply text-left text-sm px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900
+           text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors duration-150;
   }
   .quiz-mc-item[data-answered] .quiz-mc-option {
-    @apply cursor-default hover:bg-white;
+    @apply cursor-default hover:bg-white dark:hover:bg-gray-900;
   }
   .quiz-mc-option.is-correct {
-    @apply border-green-600 bg-green-50 text-green-800 font-semibold;
+    @apply border-green-600 bg-green-50 dark:bg-green-950/40 text-green-800 dark:text-green-300 font-semibold;
   }
   .quiz-mc-option.is-incorrect {
-    @apply border-red-500 bg-red-50 text-red-700;
+    @apply border-red-500 bg-red-50 dark:bg-red-950/40 text-red-700 dark:text-red-300;
   }
   .quiz-mc-explanation {
-    @apply mt-1 pl-4 border-l-2 border-quiz-border text-gray-700 text-sm leading-relaxed;
+    @apply mt-1 pl-4 border-l-2 border-quiz-border text-gray-700 dark:text-gray-300 text-sm leading-relaxed;
   }
 
   /* ── Sidebar nav items ───────────────────────────── */
   .nav-lesson {
-    @apply flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-600
-           hover:bg-brand-50 hover:text-brand-700 transition-colors duration-150 cursor-pointer;
+    @apply flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-400
+           hover:bg-brand-50 dark:hover:bg-brand-950/50 hover:text-brand-700 dark:hover:text-brand-300 transition-colors duration-150 cursor-pointer;
   }
   .nav-lesson.active {
-    @apply bg-brand-100 text-brand-800 font-semibold;
+    @apply bg-brand-100 dark:bg-brand-900/50 text-brand-800 dark:text-brand-200 font-semibold;
   }
   .nav-lesson.completed {
-    @apply text-gray-400;
+    @apply text-gray-400 dark:text-gray-500;
   }
 
   /* ── Lesson status marks ─────────────────────────── */
@@ -124,7 +126,7 @@
      empty ring = not started, half-filled = in progress, check = complete. */
   .status-mark {
     @apply relative inline-flex items-center justify-center w-4 h-4 rounded-full
-           border-2 border-gray-300 bg-white flex-shrink-0 transition-colors duration-150;
+           border-2 border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 flex-shrink-0 transition-colors duration-150;
   }
   [data-status="visited"] .status-mark {
     @apply border-brand-500;
@@ -149,8 +151,8 @@
            transition-all duration-150;
   }
   .btn-ghost {
-    @apply inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300
-           text-gray-700 font-medium text-sm hover:bg-gray-100 transition-colors duration-150;
+    @apply inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700
+           text-gray-700 dark:text-gray-300 font-medium text-sm hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-150;
   }
 
   /* ── Hero topic pills & CTAs (home page) ─────────── */
@@ -182,39 +184,87 @@
 
   /* ── View switcher (home page course catalog) ────── */
   .view-switcher-btn {
-    @apply px-3.5 py-1.5 rounded-md text-sm font-medium text-gray-500
-           hover:text-gray-800 transition-colors duration-150;
+    @apply px-3.5 py-1.5 rounded-md text-sm font-medium text-gray-500 dark:text-gray-400
+           hover:text-gray-800 dark:hover:text-gray-100 transition-colors duration-150;
   }
   .view-switcher-btn[aria-pressed="true"] {
-    @apply bg-white text-gray-900 shadow-sm;
+    @apply bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 shadow-sm;
   }
 
   /* ── Module cards (dashboard) ────────────────────── */
   .module-card {
-    @apply bg-white rounded-2xl border border-gray-200 shadow-sm p-6
+    @apply bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-sm p-6
            hover:shadow-md hover:-translate-y-0.5 transition-all duration-200;
   }
 
   /* ── Lesson content prose overrides ─────────────── */
   .lesson-prose {
-    @apply prose prose-gray max-w-none;
+    @apply prose prose-gray dark:prose-invert max-w-none;
   }
-  .lesson-prose h1 { @apply text-2xl sm:text-3xl font-bold text-gray-900 mb-2; }
-  .lesson-prose h2 { @apply text-lg sm:text-xl font-bold text-gray-900 mt-10 mb-3; }
-  .lesson-prose h3 { @apply text-base sm:text-lg font-semibold text-gray-800 mt-8 mb-2; }
-  .lesson-prose p  { @apply text-gray-700 leading-relaxed mb-4; }
-  .lesson-prose a  { @apply text-brand-600 underline underline-offset-2 hover:text-brand-800; }
-  .lesson-prose code { @apply bg-gray-100 text-gray-800 rounded px-1.5 py-0.5 text-sm font-mono; }
+  .lesson-prose h1 { @apply text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2; }
+  .lesson-prose h2 { @apply text-lg sm:text-xl font-bold text-gray-900 dark:text-gray-100 mt-10 mb-3; }
+  .lesson-prose h3 { @apply text-base sm:text-lg font-semibold text-gray-800 dark:text-gray-200 mt-8 mb-2; }
+  .lesson-prose p  { @apply text-gray-700 dark:text-gray-300 leading-relaxed mb-4; }
+  .lesson-prose a  { @apply text-brand-600 dark:text-brand-400 underline underline-offset-2 hover:text-brand-800 dark:hover:text-brand-200; }
+  .lesson-prose code { @apply bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 rounded px-1.5 py-0.5 text-sm font-mono; }
   .lesson-prose pre { @apply bg-gray-900 text-gray-100 rounded-xl p-4 overflow-x-auto text-sm; }
   .lesson-prose pre code { @apply bg-transparent text-gray-100 p-0; }
-  .lesson-prose ul { @apply list-disc list-inside space-y-1 text-gray-700; }
-  .lesson-prose ol { @apply list-decimal list-inside space-y-1 text-gray-700; }
-  .lesson-prose blockquote { @apply border-l-4 border-brand-300 pl-4 italic text-gray-500; }
+  .lesson-prose ul { @apply list-disc list-inside space-y-1 text-gray-700 dark:text-gray-300; }
+  .lesson-prose ol { @apply list-decimal list-inside space-y-1 text-gray-700 dark:text-gray-300; }
+  .lesson-prose blockquote { @apply border-l-4 border-brand-300 dark:border-brand-700 pl-4 italic text-gray-500 dark:text-gray-400; }
   .lesson-prose table { @apply text-sm border-collapse; display: block; max-width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
-  .lesson-prose th { @apply bg-gray-100 px-4 py-2 text-left font-semibold border border-gray-200; }
-  .lesson-prose td { @apply px-4 py-2 border border-gray-200; }
+  .lesson-prose th { @apply bg-gray-100 dark:bg-gray-800 px-4 py-2 text-left font-semibold border border-gray-200 dark:border-gray-800; }
+  .lesson-prose td { @apply px-4 py-2 border border-gray-200 dark:border-gray-800; }
   .lesson-prose img { @apply rounded-xl shadow-md my-6 w-full cursor-zoom-in; }
   .lesson-prose svg { max-width: 100%; height: auto; }
+  .lesson-prose h2, .lesson-prose h3 { scroll-margin-top: 5rem; }
+
+  /* ── Code block copy button (added by LessonLayout) ── */
+  .code-block { @apply relative; }
+  .copy-code {
+    @apply absolute top-2 right-2 text-xs font-medium px-2 py-1 rounded-md
+           bg-white/10 text-gray-200 border border-white/20 opacity-70
+           hover:opacity-100 hover:bg-white/20 focus-visible:opacity-100 transition;
+  }
+  .code-block:hover .copy-code { @apply opacity-100; }
+
+  /* ── "On this page" outline ─────────────────────── */
+  .toc-link {
+    @apply block -ml-px border-l-2 border-transparent pl-3 py-1 text-sm text-gray-500 dark:text-gray-400
+           hover:text-gray-900 dark:hover:text-white hover:border-gray-300 dark:hover:border-gray-700 transition-colors leading-snug;
+  }
+  .toc-link[aria-current="location"] {
+    @apply border-brand-600 text-brand-700 dark:text-brand-300 font-semibold;
+  }
+}
+
+/* ── Lesson columns: article + "On this page" outline ─ */
+/* Sized off the lesson's scroll container rather than the viewport, so the
+   outline appears whenever there's room — including when the sidebar is open. */
+#lesson-main { container-type: inline-size; }
+.lesson-toc { display: none; }
+@container (min-width: 68rem) {
+  .lesson-columns {
+    display: flex;
+    justify-content: center;
+    gap: 2.5rem;
+  }
+  .lesson-columns > article {
+    margin-inline: 0;
+    flex: 0 1 48rem;
+    min-width: 0;
+  }
+  .lesson-toc {
+    display: block;
+    position: sticky;
+    top: 4.5rem;
+    align-self: flex-start;
+    width: 13rem;
+    flex-shrink: 0;
+    max-height: calc(100vh - 6rem);
+    overflow-y: auto;
+    padding-top: 3rem;
+  }
 }
 
 /* ── Lightbox ─────────────────────────────────────── */
@@ -277,3 +327,38 @@
     transform: none !important;
   }
 }
+
+/* ── Dark theme: things without a Tailwind class to flip ── */
+/* Learning blocks: translucent tints of their accent colour, lighter titles. */
+.dark .learning-block.lab     { background-color: rgb(124 58 237 / 0.12); }
+.dark .learning-block.pitfall { background-color: rgb(234 88 12 / 0.12); }
+.dark .learning-block.quiz    { background-color: rgb(22 163 74 / 0.12); }
+.dark .learning-block.lab .learning-block-title     { color: #c4b5fd; }
+.dark .learning-block.pitfall .learning-block-title { color: #fdba74; }
+.dark .learning-block.quiz .learning-block-title,
+.dark .learning-block.quiz summary                  { color: #86efac; }
+
+/* Lesson diagrams (inline SVG in lesson content, LoopDiagram, AppPreview) are
+   drawn with fixed light-theme colours, so present them on a light card. */
+.dark .lesson-prose svg {
+  background-color: #fff;
+  border-radius: 0.75rem;
+  padding: 0.5rem;
+}
+
+/* Code blocks already use a dark theme; give them an edge against the dark page. */
+.dark .lesson-prose pre { box-shadow: 0 0 0 1px theme('colors.gray.800'); }
+
+/* Search modal (plain CSS in SearchModal.astro) */
+.dark #search-overlay { background: rgba(0, 0, 0, 0.6); }
+.dark #search-panel { background: theme('colors.gray.900'); box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6), 0 0 0 1px theme('colors.gray.800'); }
+.dark #search-input-row { border-bottom-color: theme('colors.gray.800'); }
+.dark #search-input { color: theme('colors.gray.100'); }
+.dark #search-esc { background: theme('colors.gray.800'); border-color: theme('colors.gray.700'); color: theme('colors.gray.400'); }
+.dark .search-result[aria-selected="true"] { background: rgb(28 56 196 / 0.3); }
+.dark .search-result-title { color: theme('colors.gray.100'); }
+.dark .search-result-title mark { background: rgb(96 138 255 / 0.3); color: theme('colors.brand.200'); }
+.dark .search-result-meta,
+.dark .search-section,
+.dark #search-hint { color: theme('colors.gray.400'); }
+.dark .search-result-type { color: theme('colors.gray.300'); }

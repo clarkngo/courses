@@ -1,0 +1,48 @@
+---
+const base = import.meta.env.BASE_URL;
+const REPO = 'https://github.com/clarkngo/courses';
+
+// Pre-fills a GitHub issue with the page it was reported from.
+const reportHref = `${REPO}/issues/new?${new URLSearchParams({
+  title: `Problem on ${Astro.url.pathname}`,
+  body: `Page: ${Astro.url.pathname}\n\nWhat went wrong:\n`,
+})}`;
+---
+<footer class="border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 py-10 grid gap-8 sm:grid-cols-[2fr_1fr_1fr] text-sm">
+    <div>
+      <a href={base} class="inline-flex items-center gap-2 font-bold text-gray-900 dark:text-gray-100">
+        <span class="w-7 h-7 rounded-lg bg-brand-600 flex items-center justify-center text-white text-xs" aria-hidden="true">C</span>
+        Clark's Courses
+      </a>
+      <p class="text-gray-600 dark:text-gray-400 mt-3 max-w-sm leading-relaxed">
+        Free, self-paced courses on AI and modern technology — built for complete beginners.
+      </p>
+    </div>
+
+    <nav aria-label="Explore">
+      <p class="font-semibold text-gray-900 dark:text-gray-100 mb-3">Explore</p>
+      <ul class="space-y-2 text-gray-600 dark:text-gray-400">
+        <li><a href={base} class="hover:text-brand-700 dark:hover:text-brand-300">All courses</a></li>
+        <li><a href={`${base}?filter=ai`} class="hover:text-brand-700 dark:hover:text-brand-300">AI courses</a></li>
+        <li><a href={`${base}zero-to-vibe/`} class="hover:text-brand-700 dark:hover:text-brand-300">New to tech? Start here</a></li>
+      </ul>
+    </nav>
+
+    <nav aria-label="Project">
+      <p class="font-semibold text-gray-900 dark:text-gray-100 mb-3">Project</p>
+      <ul class="space-y-2 text-gray-600 dark:text-gray-400">
+        <li><a href={REPO} class="hover:text-brand-700 dark:hover:text-brand-300">Source on GitHub</a></li>
+        <li><a href={reportHref} class="hover:text-brand-700 dark:hover:text-brand-300">Report a problem</a></li>
+      </ul>
+    </nav>
+  </div>
+
+  <div class="border-t border-gray-100 dark:border-gray-800">
+    <p class="max-w-6xl mx-auto px-4 sm:px-6 py-4 text-xs text-gray-500 dark:text-gray-400">
+      © 2026 Clark Ngo · Content licensed
+      <a href="https://creativecommons.org/licenses/by/4.0/" class="underline hover:text-brand-700 dark:hover:text-brand-300">CC BY 4.0</a>
+      · Built with Astro, deployed on GitHub Pages
+    </p>
+  </div>
+</footer>

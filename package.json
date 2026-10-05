@@ -16,6 +16,7 @@
     "@fontsource/plus-jakarta-sans": "^5.0.0",
     "@tailwindcss/typography": "^0.5.19",
     "astro": "^5.7.0",
+    "sharp": "^0.34.5",
     "tailwindcss": "^3.4.0"
   }
 }
