@@ -1,4 +1,6 @@
 ---
+import Icon from '../components/Icon.astro';
+import SearchButton from '../components/SearchButton.astro';
 import BaseLayout from './BaseLayout.astro';
 import Sidebar from '../components/Sidebar.astro';
 import YouTubeEmbed from '../components/YouTubeEmbed.astro';
@@ -38,6 +40,15 @@ const courseLessons = allLessons
   .sort((a, b) => a.data.module - b.data.module || a.data.lesson - b.data.lesson);
 
 const base = import.meta.env.BASE_URL;
+
+function lessonHref(fullSlug: string) {
+  return `${base}${courseSlug}/lessons/${fullSlug.replace(courseSlug + '/', '')}`;
+}
+
+const currentIdx = courseLessons.findIndex(l => l.slug === slug);
+const prevLesson = courseLessons[currentIdx - 1];
+const nextLesson = courseLessons[currentIdx + 1];
+const courseHref = `${base}${courseSlug}/`;
 ---
 
 <BaseLayout title={`${title} | ${courseTitle}`} description={description}>
@@ -64,27 +75,21 @@ const base = import.meta.env.BASE_URL;
             class="md:hidden -ml-1.5 flex-shrink-0 p-1.5 text-gray-500 hover:text-gray-800 rounded-lg hover:bg-gray-100"
             aria-label="Open lesson menu"
           >
-            <span class="text-lg leading-none">☰</span>
+            <Icon name="menu" class="w-5 h-5" />
           </button>
           <a href={base} class="hidden sm:inline hover:text-brand-600 font-medium flex-shrink-0">Home</a>
-          <span class="hidden sm:inline">›</span>
+          <span class="hidden sm:inline" aria-hidden="true">›</span>
           <a href={`${base}${courseSlug}/`} class="hidden sm:inline hover:text-brand-600 flex-shrink-0 truncate max-w-[120px]">{courseTitle}</a>
-          <span class="hidden sm:inline">›</span>
+          <span class="hidden sm:inline" aria-hidden="true">›</span>
           <span class="text-gray-800 font-semibold truncate">{title}</span>
         </div>
         <div class="flex items-center gap-2 sm:gap-3 flex-shrink-0 ml-2">
           {duration && (
-            <span class="hidden sm:inline-block text-xs font-medium text-gray-400 bg-gray-100 px-2.5 py-1 rounded-full">
-              ⏱ {duration}
+            <span class="hidden sm:inline-flex items-center gap-1 text-xs font-medium text-gray-600 bg-gray-100 px-2.5 py-1 rounded-full">
+              <Icon name="clock" class="w-3.5 h-3.5" /> {duration}
             </span>
           )}
-          <button
-            type="button"
-            data-search-open
-            class="flex items-center gap-2 text-sm text-gray-400 hover:text-gray-600 border border-gray-200 rounded-lg px-2.5 sm:px-3 py-1.5 transition-colors"
-          >
-            🔍 <kbd class="text-xs bg-gray-100 border border-gray-200 rounded px-1.5 py-0.5 hidden sm:inline">⌘K</kbd>
-          </button>
+          <SearchButton />
         </div>
       </header>
 
@@ -118,18 +123,49 @@ const base = import.meta.env.BASE_URL;
           <slot />
         </div>
 
-        <!-- Prev / Next navigation -->
-        <div class="mt-16 pt-8 border-t border-gray-200 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
-          <div id="prev-lesson-nav" class="flex-1"></div>
-          <button
-            id="complete-btn"
-            data-slug={slug}
-            class="btn-primary flex-shrink-0 w-full sm:w-auto justify-center"
-          >
-            ✅ Mark as Complete
-          </button>
-          <div id="next-lesson-nav" class="flex-1 flex sm:justify-end"></div>
-        </div>
+        <!-- End-of-lesson navigation: one primary action that marks the lesson
+             complete and moves on, with "previous" as a quieter secondary link. -->
+        <nav aria-label="Lesson navigation" class="mt-16 pt-8 border-t border-gray-200">
+          {nextLesson && (
+            <p class="text-sm text-gray-500 mb-3 sm:text-right">
+              Up next: <span class="font-semibold text-gray-700">{nextLesson.data.title}</span>
+            </p>
+          )}
+          <div class="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-between gap-3">
+            {prevLesson ? (
+              <a href={lessonHref(prevLesson.slug)} class="btn-ghost justify-center sm:justify-start min-w-0">
+                <span aria-hidden="true">←</span>
+                <span class="truncate"><span class="sr-only">Previous: </span>{prevLesson.data.title}</span>
+              </a>
+            ) : <span class="hidden sm:block"></span>}
+            <button
+              type="button"
+              id="complete-btn"
+              data-slug={slug}
+              data-next-href={nextLesson ? lessonHref(nextLesson.slug) : ''}
+              class="btn-primary justify-center flex-shrink-0 px-6 py-3 text-base"
+            >
+              {nextLesson ? 'Complete & continue →' : 'Finish course 🎉'}
+            </button>
+          </div>
+
+          {!nextLesson && (
+            <div
+              id="course-complete"
+              class="mt-8 rounded-2xl border border-green-200 bg-green-50 p-6 text-center"
+              role="status"
+              hidden
+            >
+              <p class="text-4xl mb-2" aria-hidden="true">🎉</p>
+              <p class="text-lg font-bold text-gray-900">You've reached the end of {courseTitle}</p>
+              <p id="course-complete-summary" class="text-sm text-gray-600 mt-1"></p>
+              <div class="mt-5 flex flex-col sm:flex-row gap-3 justify-center">
+                <a href={courseHref} class="btn-ghost justify-center bg-white">Review course</a>
+                <a href={base} class="btn-primary justify-center">Find your next course →</a>
+              </div>
+            </div>
+          )}
+        </nav>
       </article>
     </main>
   </div>
@@ -168,67 +204,46 @@ const base = import.meta.env.BASE_URL;
   }
 </script>
 
-<script define:vars={{ courseLessons: courseLessons.map(l => ({ slug: l.slug, title: l.data.title })), courseSlug, slug, base: import.meta.env.BASE_URL }}>
+<script>
+  import { navigate } from 'astro:transitions/client';
+  import { getProgress, markComplete, recordVisit, refreshProgressUI } from '../scripts/progress';
+
   document.addEventListener('astro:page-load', () => {
-    const STORAGE_KEY = 'course-progress';
+    const completeBtn = document.getElementById('complete-btn') as HTMLButtonElement | null;
+    if (!completeBtn) return; // not a lesson page
 
-    function getProgress() {
-      try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch { return {}; }
-    }
-    function setProgress(p) { localStorage.setItem(STORAGE_KEY, JSON.stringify(p)); }
+    const slug = completeBtn.dataset.slug!;
+    const nextHref = completeBtn.dataset.nextHref;
+    const completePanel = document.getElementById('course-complete');
 
-    // Mark visited
-    const completeBtn = document.getElementById('complete-btn');
-    if (slug) {
-      const progress = getProgress();
-      if (!progress[slug]) { progress[slug] = 'visited'; setProgress(progress); }
+    recordVisit(slug);
+    refreshProgressUI();
 
-      // Restore complete state
-      if (progress[slug] === 'complete') {
-        completeBtn.textContent = '✅ Completed!';
-        completeBtn.disabled = true;
-        completeBtn.classList.add('opacity-60');
+    function showCoursePanel() {
+      if (!completePanel) return;
+      const marks = document.querySelectorAll<HTMLElement>('#course-sidebar [data-lesson-slug]');
+      const done = [...marks].filter(el => el.dataset.status === 'complete').length;
+      const summary = document.getElementById('course-complete-summary');
+      if (summary) {
+        summary.textContent = done === marks.length
+          ? `All ${marks.length} lessons complete. Nice work!`
+          : `${done} of ${marks.length} lessons complete — the course page shows which ones are left.`;
       }
-
-      completeBtn?.addEventListener('click', () => {
-        const p = getProgress();
-        p[slug] = 'complete';
-        setProgress(p);
-        document.querySelectorAll(`[data-lesson-slug="${slug}"] .status-icon`).forEach(el => el.textContent = '✅');
-        completeBtn.textContent = '✅ Completed!';
-        completeBtn.disabled = true;
-        completeBtn.classList.add('opacity-60');
-      });
+      completePanel.hidden = false;
+      completeBtn!.hidden = true;
     }
 
-    // Build prev/next links
-    const currentIdx = courseLessons.findIndex(l => l.slug === slug);
-    const prev = courseLessons[currentIdx - 1];
-    const next = courseLessons[currentIdx + 1];
-
-    function lessonHref(fullSlug) {
-      const lessonSlug = fullSlug.replace(courseSlug + '/', '');
-      return `${base}${courseSlug}/lessons/${lessonSlug}`;
+    const alreadyComplete = getProgress()[slug] === 'complete';
+    if (alreadyComplete) {
+      if (nextHref) completeBtn.textContent = 'Continue to next lesson →';
+      else showCoursePanel();
     }
 
-    if (prev) {
-      document.getElementById('prev-lesson-nav').innerHTML =
-        `<a href="${lessonHref(prev.slug)}" class="btn-ghost text-sm w-full sm:w-auto justify-center">← ${prev.title}</a>`;
-    }
-    if (next) {
-      document.getElementById('next-lesson-nav').innerHTML =
-        `<a href="${lessonHref(next.slug)}" class="btn-primary text-sm w-full sm:w-auto justify-center">${next.title} →</a>`;
-    }
-
-    // Restore all sidebar states
-    const allProgress = getProgress();
-    document.querySelectorAll('[data-lesson-slug]').forEach(el => {
-      const s = el.getAttribute('data-lesson-slug');
-      if (s && allProgress[s]) {
-        el.setAttribute('data-status', allProgress[s]);
-        const icon = el.querySelector('.status-icon');
-        if (icon) icon.textContent = allProgress[s] === 'complete' ? '✅' : '📖';
-      }
+    completeBtn.addEventListener('click', () => {
+      markComplete(slug);
+      refreshProgressUI();
+      if (nextHref) navigate(nextHref);
+      else showCoursePanel();
     });
   });
 </script>

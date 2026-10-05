@@ -1,4 +1,5 @@
 ---
+import SearchButton from '../components/SearchButton.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import CourseCard from '../components/CourseCard.astro';
 import { getCollection } from 'astro:content';
@@ -77,6 +78,16 @@ const byCreated = [...courseMeta].sort((a, b) => {
 
 const availableCount = courses.filter(c => c.data.status === 'available').length;
 const totalCount = courses.length;
+const hasComingSoon = availableCount < totalCount;
+
+// Hero shortcuts go straight to a flagship course rather than a category anchor.
+const HERO_COURSES = [
+  { slug: 'physical-ai', label: '🤖 Physical AI' },
+  { slug: 'ai-first-responders', label: '🚨 AI for First Responders' },
+  { slug: 'secure-agentic-ai', label: '🛡️ Secure AI' },
+  { slug: 'web-development', label: '💻 Web Dev' },
+  { slug: 'ai-llm-skills', label: '🧠 LLMs' },
+].filter(({ slug }) => courses.some(c => c.slug === slug && c.data.status === 'available'));
 
 // Display order for categories; anything not listed here falls back to
 // alphabetical order after these, so a new category never disappears silently.
@@ -115,21 +126,15 @@ const coursesByCategory = categories.map(category => ({
   <div class="min-h-screen bg-gray-50">
 
     <!-- ── Nav ──────────────────────────────────────── -->
-    <nav class="bg-white border-b border-gray-200 px-4 sm:px-6 py-3 flex items-center justify-between sticky top-0 z-10 gap-2">
+    <nav class="bg-white border-b border-gray-200 px-4 sm:px-6 h-16 flex items-center justify-between sticky top-0 z-20 gap-2">
       <div class="flex items-center gap-2 min-w-0">
         <div class="w-8 h-8 rounded-lg bg-brand-600 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">C</div>
         <span class="font-bold text-gray-900 truncate">Clark's Courses</span>
       </div>
       <div class="flex items-center gap-2 sm:gap-4 flex-shrink-0">
-        <button
-          type="button"
-          data-search-open
-          class="flex items-center gap-2 text-sm text-gray-400 hover:text-gray-600 border border-gray-200 rounded-lg px-2.5 sm:px-3 py-1.5 transition-colors"
-        >
-          🔍 <span class="hidden sm:inline">Search</span> <kbd class="hidden sm:inline text-xs bg-gray-100 border border-gray-200 rounded px-1.5 py-0.5">⌘K</kbd>
-        </button>
+        <SearchButton showLabel />
         <div class="hidden sm:block text-sm text-gray-500 whitespace-nowrap">
-          {availableCount} of {totalCount} courses available
+          {hasComingSoon ? `${availableCount} of ${totalCount} courses available` : `${totalCount} free courses`}
         </div>
       </div>
     </nav>
@@ -147,12 +152,10 @@ const coursesByCategory = categories.map(category => ({
           Practical short courses on AI, modern technology, and applied systems —
           built for complete beginners, taught through real-world projects.
         </p>
-        <nav aria-label="Jump to course category" class="flex flex-wrap justify-center gap-2 sm:gap-3 mb-6">
-          <a href="#ai-machine-learning" class="hero-pill">🤖 Physical AI</a>
-          <a href="#ai-for-public-safety" class="hero-pill">🚨 First Responders</a>
-          <a href="#ai-machine-learning" class="hero-pill">🛡️ Secure AI</a>
-          <a href="#software-development" class="hero-pill">💻 Web Dev</a>
-          <a href="#ai-machine-learning" class="hero-pill">🧠 LLMs</a>
+        <nav aria-label="Popular courses" class="flex flex-wrap justify-center gap-2 sm:gap-3 mb-6">
+          {HERO_COURSES.map(({ slug, label }) => (
+            <a href={`${base}${slug}/`} class="hero-pill">{label}</a>
+          ))}
         </nav>
         <div class="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
           <a href="#all-courses" class="hero-cta-primary">
@@ -167,6 +170,18 @@ const coursesByCategory = categories.map(category => ({
           </a>
         </div>
       </div>
+    </section>
+
+    <!-- ── Continue learning (filled client-side from saved progress) ── -->
+    <section
+      id="continue-learning"
+      aria-labelledby="continue-learning-heading"
+      class="max-w-6xl mx-auto px-4 sm:px-6 pt-10 sm:pt-12"
+      data-index-url={`${base}course-index.json`}
+      hidden
+    >
+      <h2 id="continue-learning-heading" class="text-lg font-bold text-gray-900 mb-4">Continue learning</h2>
+      <div data-continue-list class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"></div>
     </section>
 
     <!-- ── Category jump nav ────────────────────────────── -->
@@ -189,7 +204,7 @@ const coursesByCategory = categories.map(category => ({
             data-category-pill={name}
             class="text-xs font-medium text-gray-500 hover:text-brand-600 hover:bg-brand-50 border border-gray-200 rounded-full px-3 py-1.5 transition-colors flex-shrink-0"
           >
-            {name} <span class="text-gray-400">· {catCourses.length}</span>
+            {name} <span class="text-gray-500">· {catCourses.length}</span>
           </a>
         ))}
       </div>
@@ -202,12 +217,12 @@ const coursesByCategory = categories.map(category => ({
           <h2 class="text-2xl font-bold text-gray-900">All Courses</h2>
           <p class="text-gray-500 mt-1">{totalCount} courses across {categories.length} categories · built for complete beginners</p>
         </div>
-        <div class="flex items-center gap-2">
+        {hasComingSoon && <div class="flex items-center gap-2">
           <span class="w-3 h-3 rounded-full bg-brand-500 inline-block"></span>
           <span class="text-sm text-gray-500">Available</span>
           <span class="w-3 h-3 rounded-full bg-gray-300 inline-block ml-3"></span>
           <span class="text-sm text-gray-500">Coming soon</span>
-        </div>
+        </div>}
       </div>
 
       <!-- View switcher -->
@@ -229,15 +244,16 @@ const coursesByCategory = categories.map(category => ({
           <div id={slug} data-category-section={name} class="scroll-mt-32">
             <div class="flex items-baseline gap-3 mb-6">
               <h3 class="text-lg font-bold text-gray-900">{name}</h3>
-              <span class="text-sm text-gray-400">{catCourses.length} course{catCourses.length !== 1 ? 's' : ''}</span>
+              <span class="text-sm text-gray-500">{catCourses.length} course{catCourses.length !== 1 ? 's' : ''}</span>
             </div>
 
-            <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <div class="grid gap-3 sm:gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {catCourses.map(course => (
                 <CourseCard
                   course={course}
                   count={lessonCount(course.slug)}
                   href={course.data.status === 'available' ? `${base}${course.slug}/` : undefined}
+                  headingLevel={4}
                 />
               ))}
             </div>
@@ -246,7 +262,7 @@ const coursesByCategory = categories.map(category => ({
       </div>
 
       <!-- Panel: Recently Modified -->
-      <div data-view-panel="modified" class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3" hidden>
+      <div data-view-panel="modified" class="grid gap-3 sm:gap-6 sm:grid-cols-2 lg:grid-cols-3" hidden>
         {byModified.map(({ course, modified }) => (
           <CourseCard
             course={course}
@@ -258,7 +274,7 @@ const coursesByCategory = categories.map(category => ({
       </div>
 
       <!-- Panel: Recently Created -->
-      <div data-view-panel="created" class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3" hidden>
+      <div data-view-panel="created" class="grid gap-3 sm:gap-6 sm:grid-cols-2 lg:grid-cols-3" hidden>
         {byCreated.map(({ course, created }) => (
           <CourseCard
             course={course}
@@ -271,88 +287,165 @@ const coursesByCategory = categories.map(category => ({
     </section>
 
     <script>
-      const buttons = document.querySelectorAll<HTMLButtonElement>('[data-view-btn]');
-      const panels = document.querySelectorAll<HTMLElement>('[data-view-panel]');
-      const jumpNav = document.getElementById('category-jump-nav');
+      // Bundled scripts run once under the client router, so (re)bind on every
+      // page load; the early return skips pages that aren't the catalog.
+      document.addEventListener('astro:page-load', () => {
+        if (!document.getElementById('view-switcher')) return;
 
-      function setView(view: string) {
-        panels.forEach(p => {
-          p.hidden = p.getAttribute('data-view-panel') !== view;
-        });
-        buttons.forEach(b => {
-          const active = b.getAttribute('data-view-btn') === view;
-          b.setAttribute('aria-pressed', String(active));
-        });
-        if (jumpNav) jumpNav.hidden = view !== 'category';
-      }
+        const buttons = document.querySelectorAll<HTMLButtonElement>('[data-view-btn]');
+        const panels = document.querySelectorAll<HTMLElement>('[data-view-panel]');
+        const jumpNav = document.getElementById('category-jump-nav');
 
-      buttons.forEach(btn => {
-        btn.addEventListener('click', () => setView(btn.getAttribute('data-view-btn')!));
-      });
-
-      // Smooth-scroll in-page anchors (hero pills, jump nav, "Browse" CTA)
-      // via JS rather than a global `scroll-behavior: smooth`, since Chrome
-      // can fail to honor an initial page-load's URL fragment when that CSS
-      // property is set on <html>.
-      document.querySelectorAll<HTMLAnchorElement>('a[href^="#"]').forEach(link => {
-        link.addEventListener('click', (e) => {
-          const id = link.getAttribute('href')!.slice(1);
-          const target = document.getElementById(id);
-          if (!target) return;
-          e.preventDefault();
-          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          history.pushState(null, '', `#${id}`);
-        });
-      });
-
-      // ── AI course filter ──────────────────────────────────
-      // Filters the catalog down to AI-related categories and mirrors the
-      // state in the URL (?filter=ai) so the filtered view can be shared or
-      // bookmarked, and re-applies itself on load when that param is present.
-      const AI_CATEGORY = /\bai\b/i;
-      const aiToggle = document.querySelector<HTMLButtonElement>('[data-ai-filter-toggle]');
-      const categorySections = document.querySelectorAll<HTMLElement>('[data-category-section]');
-      const categoryPills = document.querySelectorAll<HTMLAnchorElement>('[data-category-pill]');
-      const courseCards = document.querySelectorAll<HTMLElement>('.module-card[data-category]');
-
-      function isAICategory(name: string | null) {
-        return AI_CATEGORY.test(name ?? '');
-      }
-
-      function applyAIFilter(active: boolean, { updateUrl = true } = {}) {
-        categorySections.forEach(section => {
-          const match = isAICategory(section.getAttribute('data-category-section'));
-          section.style.display = active && !match ? 'none' : '';
-        });
-        categoryPills.forEach(pill => {
-          const match = isAICategory(pill.getAttribute('data-category-pill'));
-          pill.style.display = active && !match ? 'none' : '';
-        });
-        courseCards.forEach(card => {
-          const match = isAICategory(card.getAttribute('data-category'));
-          card.style.display = active && !match ? 'none' : '';
-        });
-        if (aiToggle) {
-          aiToggle.setAttribute('aria-pressed', String(active));
-          aiToggle.textContent = active ? '✕ Clear AI Filter' : '🤖 AI Courses Only';
+        function setView(view: string) {
+          panels.forEach(p => {
+            p.hidden = p.getAttribute('data-view-panel') !== view;
+          });
+          buttons.forEach(b => {
+            const active = b.getAttribute('data-view-btn') === view;
+            b.setAttribute('aria-pressed', String(active));
+          });
+          if (jumpNav) jumpNav.hidden = view !== 'category';
         }
-        if (updateUrl) {
-          const url = new URL(location.href);
-          if (active) url.searchParams.set('filter', 'ai');
-          else url.searchParams.delete('filter');
-          history.replaceState(null, '', url);
+
+        buttons.forEach(btn => {
+          btn.addEventListener('click', () => setView(btn.getAttribute('data-view-btn')!));
+        });
+
+        // Smooth-scroll in-page anchors (hero pills, jump nav, "Browse" CTA)
+        // via JS rather than a global `scroll-behavior: smooth`, since Chrome
+        // can fail to honor an initial page-load's URL fragment when that CSS
+        // property is set on <html>.
+        document.querySelectorAll<HTMLAnchorElement>('a[href^="#"]').forEach(link => {
+          link.addEventListener('click', (e) => {
+            const id = link.getAttribute('href')!.slice(1);
+            const target = document.getElementById(id);
+            if (!target) return;
+            e.preventDefault();
+            target.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+            history.pushState(null, '', `#${id}`);
+          });
+        });
+
+        // ── AI course filter ──────────────────────────────────
+        // Filters the catalog down to AI-related categories and mirrors the
+        // state in the URL (?filter=ai) so the filtered view can be shared or
+        // bookmarked, and re-applies itself on load when that param is present.
+        const AI_CATEGORY = /\bai\b/i;
+        const aiToggle = document.querySelector<HTMLButtonElement>('[data-ai-filter-toggle]');
+        const categorySections = document.querySelectorAll<HTMLElement>('[data-category-section]');
+        const categoryPills = document.querySelectorAll<HTMLAnchorElement>('[data-category-pill]');
+        const courseCards = document.querySelectorAll<HTMLElement>('.module-card[data-category]');
+
+        function isAICategory(name: string | null) {
+          return AI_CATEGORY.test(name ?? '');
         }
+
+        function applyAIFilter(active: boolean, { updateUrl = true } = {}) {
+          categorySections.forEach(section => {
+            const match = isAICategory(section.getAttribute('data-category-section'));
+            section.style.display = active && !match ? 'none' : '';
+          });
+          categoryPills.forEach(pill => {
+            const match = isAICategory(pill.getAttribute('data-category-pill'));
+            pill.style.display = active && !match ? 'none' : '';
+          });
+          courseCards.forEach(card => {
+            const match = isAICategory(card.getAttribute('data-category'));
+            card.style.display = active && !match ? 'none' : '';
+          });
+          if (aiToggle) {
+            aiToggle.setAttribute('aria-pressed', String(active));
+            aiToggle.textContent = active ? '✕ Clear AI Filter' : '🤖 AI Courses Only';
+          }
+          if (updateUrl) {
+            const url = new URL(location.href);
+            if (active) url.searchParams.set('filter', 'ai');
+            else url.searchParams.delete('filter');
+            history.replaceState(null, '', url);
+          }
+        }
+
+        aiToggle?.addEventListener('click', () => {
+          applyAIFilter(aiToggle.getAttribute('aria-pressed') !== 'true');
+        });
+
+        applyAIFilter(new URLSearchParams(location.search).get('filter') === 'ai', { updateUrl: false });
+      });
+    </script>
+
+    <script>
+      import { getLastVisited, getProgress, resumeLesson } from '../scripts/progress';
+
+      type IndexCourse = {
+        slug: string; title: string; icon: string; color: string; href: string;
+        lessons: { slug: string; title: string; href: string }[];
+      };
+
+      // Shows up to three in-progress courses, most recently visited first.
+      async function renderContinueLearning() {
+        const section = document.getElementById('continue-learning');
+        const list = section?.querySelector('[data-continue-list]');
+        if (!section || !list) return;
+
+        const progress = getProgress();
+        if (Object.keys(progress).length === 0) return;
+
+        let index: IndexCourse[];
+        try {
+          index = await (await fetch(section.dataset.indexUrl!)).json();
+        } catch { return; }
+
+        const lastVisited = getLastVisited();
+        const inProgress = index
+          .map(course => {
+            const slugs = course.lessons.map(l => l.slug);
+            const done = slugs.filter(s => progress[s] === 'complete').length;
+            const started = slugs.some(s => progress[s]);
+            const resume = course.lessons.find(l => l.slug === resumeLesson(course.slug, slugs));
+            return { course, done, started, resume, at: lastVisited[course.slug]?.at ?? 0 };
+          })
+          .filter(c => c.started && c.resume)
+          .sort((a, b) => b.at - a.at)
+          .slice(0, 3);
+
+        if (inProgress.length === 0) return;
+
+        list.replaceChildren(...inProgress.map(({ course, done, resume }) => {
+          const total = course.lessons.length;
+          const pct = Math.round((done / total) * 100);
+          const card = document.createElement('a');
+          card.href = resume!.href;
+          card.className = 'module-card flex items-center gap-4 p-4 min-w-0';
+          card.innerHTML = `
+            <span class="text-3xl flex-shrink-0" aria-hidden="true"></span>
+            <span class="flex-1 min-w-0">
+              <span class="block font-bold text-gray-900 truncate"></span>
+              <span class="block text-sm text-gray-500 truncate"></span>
+              <span class="mt-2 flex items-center gap-2">
+                <span class="flex-1 h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                  <span class="block h-full rounded-full" style="width: ${pct}%"></span>
+                </span>
+                <span class="text-xs font-semibold text-gray-500">${done}/${total}</span>
+              </span>
+            </span>
+            <span class="text-gray-400 flex-shrink-0" aria-hidden="true">→</span>`;
+          card.firstElementChild!.textContent = course.icon;
+          const texts = card.querySelectorAll('.truncate');
+          texts[0].textContent = course.title;
+          texts[1].textContent = `Next: ${resume!.title}`;
+          (card.querySelector('.rounded-full > .rounded-full') as HTMLElement).style.backgroundColor = course.color;
+          return card;
+        }));
+        section.hidden = false;
       }
 
-      aiToggle?.addEventListener('click', () => {
-        applyAIFilter(aiToggle.getAttribute('aria-pressed') !== 'true');
-      });
-
-      applyAIFilter(new URLSearchParams(location.search).get('filter') === 'ai', { updateUrl: false });
+      // Bundled scripts run once under the client router, so re-render on every
+      // page load (the function no-ops on pages without the section).
+      document.addEventListener('astro:page-load', renderContinueLearning);
     </script>
 
     <!-- ── Footer ────────────────────────────────────── -->
-    <footer class="border-t border-gray-200 py-8 text-center text-sm text-gray-400">
+    <footer class="border-t border-gray-200 py-8 text-center text-sm text-gray-500">
       Built by Clark Ngo · Built with Astro · Deployed on GitHub Pages ·
       <a href="https://github.com/clarkngo/courses" class="hover:text-brand-600 transition-colors">View on GitHub</a>
     </footer>
