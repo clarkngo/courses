@@ -7,6 +7,7 @@ lesson: 1
 duration: "40 min"
 ---
 
+import ProcessFlow from '@components/ProcessFlow.astro';
 import Quiz from '@components/Quiz.astro';
 
 ## What Are Couplings?
@@ -54,13 +55,70 @@ Used where crimping equipment is unavailable. Can be installed with a vise and c
 
 ## Coupling Identification
 
-![GlobalSpiral and MegaCrimp coupling styles showing straight, 45°, 90°, and tee configurations](/courses/images/hydraulic-hose-fittings/m4/coupling-gallery.webp)
+<svg viewBox="0 0 680 330" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Cutaway of a crimped two-piece coupling. The hose slides over a serrated stem until it bottoms out. A ferrule shell fits over the hose end and is crimped down so the stem and ferrule grip the hose. Behind the ferrule is the hex for wrenching, then the thread end and seat that connect to the port. In a one-piece MegaCrimp coupling the ferrule is permanently attached to the stem. Below, the common end configurations: straight, 45 degree, 90 degree, and tee.">
+  <g font-family="system-ui, -apple-system, sans-serif">
+    <rect x="20" y="94" width="290" height="22" fill="#374151"/>
+    <rect x="20" y="144" width="290" height="22" fill="#374151"/>
+    <rect x="20" y="112" width="290" height="6" fill="#e5b84b"/>
+    <rect x="20" y="142" width="290" height="6" fill="#e5b84b"/>
+    <rect x="150" y="118" width="250" height="24" fill="#cbd5e1" stroke="#64748b" stroke-width="1"/>
+    <polyline points="160,118 165,112 170,118 174,118 179,112 184,118 188,118 193,112 198,118 202,118 207,112 212,118 216,118 221,112 226,118 230,118 235,112 240,118 244,118 249,112 254,118 258,118 263,112 268,118 272,118 277,112 282,118 286,118 291,112 296,118" fill="#cbd5e1" stroke="#64748b" stroke-width="1"/>
+    <polyline points="160,142 165,148 170,142 174,142 179,148 184,142 188,142 193,148 198,142 202,142 207,148 212,142 216,142 221,148 226,142 230,142 235,148 240,142 244,142 249,148 254,142 258,142 263,148 268,142 272,142 277,148 282,142 286,142 291,148 296,142" fill="#cbd5e1" stroke="#64748b" stroke-width="1"/>
+    <g fill="#e2e8f0" stroke="#475569" stroke-width="1.5">
+      <rect x="170" y="80" width="150" height="14"/>
+      <rect x="170" y="166" width="150" height="14"/>
+      <rect x="310" y="80" width="14" height="38"/>
+      <rect x="310" y="142" width="14" height="38"/>
+    </g>
+    <g fill="#94a3b8" stroke="#475569" stroke-width="1.5">
+      <rect x="336" y="88" width="56" height="84" rx="3"/>
+    </g>
+    <g stroke="#64748b" stroke-width="1"><line x1="350" y1="88" x2="350" y2="172"/><line x1="378" y1="88" x2="378" y2="172"/></g>
+    <rect x="392" y="104" width="78" height="52" fill="#cbd5e1" stroke="#475569" stroke-width="1.5"/>
+    <g stroke="#64748b" stroke-width="1.5"><line x1="400" y1="104" x2="406" y2="156"/><line x1="409" y1="104" x2="415" y2="156"/><line x1="418" y1="104" x2="424" y2="156"/><line x1="427" y1="104" x2="433" y2="156"/><line x1="436" y1="104" x2="442" y2="156"/><line x1="445" y1="104" x2="451" y2="156"/><line x1="454" y1="104" x2="460" y2="156"/><line x1="463" y1="104" x2="469" y2="156"/></g>
+    <polygon points="470,104 492,118 492,142 470,156" fill="#94a3b8" stroke="#475569" stroke-width="1.5"/>
+    <g stroke="#334155" stroke-width="1.2" fill="none">
+      <polyline points="80,94 80,46"/>
+      <polyline points="210,118 210,46"/>
+      <polyline points="245,80 245,30 255,30"/>
+      <polyline points="364,88 364,46"/>
+      <polyline points="440,104 440,46"/>
+      <polyline points="250,180 250,206"/>
+    </g>
+    <text x="80" y="40" text-anchor="middle" fill="#0f172a" font-size="14" font-weight="700">Hose</text>
+    <text x="210" y="40" text-anchor="middle" fill="#0f172a" font-size="14" font-weight="700">Stem</text>
+    <text x="260" y="34" fill="#0f172a" font-size="14" font-weight="700">Ferrule</text>
+    <text x="364" y="40" text-anchor="middle" fill="#0f172a" font-size="14" font-weight="700">Hex</text>
+    <text x="440" y="40" text-anchor="middle" fill="#0f172a" font-size="14" font-weight="700">Thread end</text>
+    <text x="250" y="222" text-anchor="middle" fill="#475569" font-size="12">crimped down onto the hose</text>
+    <text x="508" y="110" fill="#c2410c" font-size="12" font-weight="700">Two-piece (PowerCrimp®)</text>
+    <text x="508" y="127" fill="#475569" font-size="12">separate stem + ferrule</text>
+    <text x="508" y="152" fill="#c2410c" font-size="12" font-weight="700">One-piece (MegaCrimp®)</text>
+    <text x="508" y="169" fill="#475569" font-size="12">ferrule fixed to stem</text>
+    <line x1="20" y1="246" x2="660" y2="246" stroke="#e2e8f0"/>
+    <g stroke="#475569" stroke-width="10" stroke-linecap="round" fill="none">
+      <line x1="60" y1="285" x2="140" y2="285"/>
+      <path d="M220,285 L270,285 L300,262"/>
+      <path d="M380,285 L430,285 Q450,285 450,265 L450,258"/>
+      <path d="M540,285 L620,285 M580,285 L580,258"/>
+    </g>
+    <g fill="#0f172a" font-size="13" font-weight="600" text-anchor="middle">
+      <text x="100" y="316">Straight</text><text x="260" y="316">45°</text><text x="420" y="316">90°</text><text x="580" y="316">Tee</text>
+    </g>
+  </g>
+</svg>
 
-To identify a coupling:
-1. **Measure the ID or OD**
-2. **Measure the threads per inch** (USA) or per millimeter (metric)
-3. **Measure the angle of the mating seat**
-4. **Compare all measurements** to the fitting dimensions in the Gates Hydraulics Catalog
+To identify a coupling, work through four measurements in order:
+
+<ProcessFlow
+  label="Coupling identification: measure the thread diameter, count the threads, measure the seat angle, then compare to the catalog."
+  steps={[
+    { title: 'Thread diameter', detail: 'Male OD or female ID with a caliper' },
+    { title: 'Thread count', detail: 'Threads per inch (USA) or pitch in mm (metric)' },
+    { title: 'Seat angle', detail: 'e.g. 37° JIC vs 45° SAE vs 24° DIN' },
+    { title: 'Compare', detail: 'Match all three to the Gates Hydraulics Catalog' },
+  ]}
+/>
 
 ---
 
@@ -70,7 +128,43 @@ Every Gates coupling follows a standardized part number that tells you exactly w
 
 ### Example: **12 GS - 12 FJX 90L**
 
-![Gates coupling part number diagram: 12 GS - 12 FJX 90L with annotations: 12 = Hose Dash Size (3/4"), GS = Stem Type (GlobalSpiral), 12 = Stem Size, F = Female, J = JIC, X = Swivel, 90 = Degree of Bend, L = Drop Length Long](/courses/images/hydraulic-hose-fittings/m4/coupling-part-number.webp)
+<svg viewBox="0 0 680 326" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Coupling part number 12GS-12FJX90L, broken down: 12 is the hose dash size, three-quarter inch. GS is the stem type, GlobalSpiral. After the dash, 12 is the stem size, F is female, J is JIC 37 degree flare, X is swivel, 90 is the degree of bend, and L is a long drop length.">
+  <g font-family="system-ui, -apple-system, sans-serif">
+    <text x="62" y="46" text-anchor="middle" fill="#c2410c" font-size="34" font-weight="800">12</text>
+    <line x1="43" y1="55" x2="81" y2="55" stroke="#0f172a" stroke-width="2"/>
+    <text x="114" y="46" text-anchor="middle" fill="#c2410c" font-size="34" font-weight="800">GS</text>
+    <line x1="95" y1="55" x2="133" y2="55" stroke="#0f172a" stroke-width="2"/>
+    <text x="155" y="46" text-anchor="middle" fill="#94a3b8" font-size="34" font-weight="800">-</text>
+    <text x="196" y="46" text-anchor="middle" fill="#c2410c" font-size="34" font-weight="800">12</text>
+    <line x1="177" y1="55" x2="215" y2="55" stroke="#0f172a" stroke-width="2"/>
+    <text x="237" y="46" text-anchor="middle" fill="#c2410c" font-size="34" font-weight="800">F</text>
+    <line x1="229" y1="55" x2="245" y2="55" stroke="#0f172a" stroke-width="2"/>
+    <text x="267" y="46" text-anchor="middle" fill="#c2410c" font-size="34" font-weight="800">J</text>
+    <line x1="259" y1="55" x2="275" y2="55" stroke="#0f172a" stroke-width="2"/>
+    <text x="297" y="46" text-anchor="middle" fill="#c2410c" font-size="34" font-weight="800">X</text>
+    <line x1="289" y1="55" x2="305" y2="55" stroke="#0f172a" stroke-width="2"/>
+    <text x="338" y="46" text-anchor="middle" fill="#c2410c" font-size="34" font-weight="800">90</text>
+    <line x1="319" y1="55" x2="357" y2="55" stroke="#0f172a" stroke-width="2"/>
+    <text x="379" y="46" text-anchor="middle" fill="#c2410c" font-size="34" font-weight="800">L</text>
+    <line x1="371" y1="55" x2="387" y2="55" stroke="#0f172a" stroke-width="2"/>
+    <polyline points="379,57 379,86 407,86" fill="none" stroke="#334155" stroke-width="1.4"/>
+    <text x="415" y="91" fill="#0f172a" font-size="14"><tspan font-weight="700">L</tspan> = drop length (long)</text>
+    <polyline points="338,57 338,116 407,116" fill="none" stroke="#334155" stroke-width="1.4"/>
+    <text x="415" y="121" fill="#0f172a" font-size="14"><tspan font-weight="700">90</tspan> = degree of bend</text>
+    <polyline points="297,57 297,146 407,146" fill="none" stroke="#334155" stroke-width="1.4"/>
+    <text x="415" y="151" fill="#0f172a" font-size="14"><tspan font-weight="700">X</tspan> = swivel</text>
+    <polyline points="267,57 267,176 407,176" fill="none" stroke="#334155" stroke-width="1.4"/>
+    <text x="415" y="181" fill="#0f172a" font-size="14"><tspan font-weight="700">J</tspan> = JIC (37° flare)</text>
+    <polyline points="237,57 237,206 407,206" fill="none" stroke="#334155" stroke-width="1.4"/>
+    <text x="415" y="211" fill="#0f172a" font-size="14"><tspan font-weight="700">F</tspan> = female</text>
+    <polyline points="196,57 196,236 407,236" fill="none" stroke="#334155" stroke-width="1.4"/>
+    <text x="415" y="241" fill="#0f172a" font-size="14"><tspan font-weight="700">12</tspan> = stem size</text>
+    <polyline points="114,57 114,266 407,266" fill="none" stroke="#334155" stroke-width="1.4"/>
+    <text x="415" y="271" fill="#0f172a" font-size="14"><tspan font-weight="700">GS</tspan> = stem type (GlobalSpiral™)</text>
+    <polyline points="62,57 62,296 407,296" fill="none" stroke="#334155" stroke-width="1.4"/>
+    <text x="415" y="301" fill="#0f172a" font-size="14"><tspan font-weight="700">12</tspan> = hose dash size (¾")</text>
+  </g>
+</svg>
 
 | Code | Meaning |
 |------|---------|
@@ -116,7 +210,36 @@ Every Gates coupling follows a standardized part number that tells you exactly w
 
 ## Thread Measurement
 
-![Thread measurement diagrams showing how to read male OD and female ID dimensions, and use of a pitch gauge for thread count identification](/courses/images/hydraulic-hose-fittings/m4/thread-measurement.webp)
+<svg viewBox="0 0 680 270" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Three thread measurements. Left: on a male thread, close the caliper's outside jaws on the thread crests and read the outside diameter (OD). Middle: on a female thread, open the caliper's inside jaws against the thread crests and read the inside diameter (ID). Right: lay a pitch gauge on the threads with its edge parallel to the thread axis and find the leaf that meshes with no gaps to read threads per inch or the metric pitch.">
+  <g font-family="system-ui, -apple-system, sans-serif">
+    <text x="110" y="24" text-anchor="middle" fill="#0f172a" font-size="14" font-weight="700">Male thread → read OD</text>
+    <circle cx="110" cy="130" r="52" fill="#e5b84b" stroke="#a16207" stroke-width="2"/>
+    <circle cx="110" cy="130" r="45" fill="none" stroke="#a16207" stroke-width="1.2" stroke-dasharray="4 3"/>
+    <circle cx="110" cy="130" r="22" fill="#fff" stroke="#a16207" stroke-width="1.5"/>
+    <rect x="44" y="96" width="14" height="68" fill="#475569"/>
+    <rect x="162" y="96" width="14" height="68" fill="#475569"/>
+    <g stroke="#c2410c" stroke-width="2"><line x1="62" y1="208" x2="158" y2="208"/><line x1="58" y1="200" x2="58" y2="216"/><line x1="162" y1="200" x2="162" y2="216"/></g>
+    <text x="110" y="232" text-anchor="middle" fill="#c2410c" font-size="13" font-weight="700">OD (outside jaws)</text>
+    <text x="330" y="24" text-anchor="middle" fill="#0f172a" font-size="14" font-weight="700">Female thread → read ID</text>
+    <polygon points="402.0,130.0 366.0,192.4 294.0,192.4 258.0,130.0 294.0,67.6 366.0,67.6" fill="#cbd5e1" stroke="#475569" stroke-width="2"/>
+    <circle cx="330" cy="130" r="40" fill="#fff" stroke="#a16207" stroke-width="2"/>
+    <circle cx="330" cy="130" r="46" fill="none" stroke="#a16207" stroke-width="1.2" stroke-dasharray="4 3"/>
+    <rect x="290" y="112" width="10" height="36" fill="#475569"/>
+    <rect x="360" y="112" width="10" height="36" fill="#475569"/>
+    <g stroke="#c2410c" stroke-width="2"><line x1="304" y1="130" x2="356" y2="130"/><polyline points="310,125 304,130 310,135" fill="none"/><polyline points="350,125 356,130 350,135" fill="none"/></g>
+    <text x="330" y="232" text-anchor="middle" fill="#c2410c" font-size="13" font-weight="700">ID (inside jaws)</text>
+    <text x="550" y="24" text-anchor="middle" fill="#0f172a" font-size="14" font-weight="700">Count threads → pitch gauge</text>
+    <rect x="460" y="150" width="170" height="40" fill="#e5b84b"/>
+    <polyline points="460,150 470,150 476,138 482,150 488,138 494,150 500,138 506,150 512,138 518,150 524,138 530,150 536,138 542,150 548,138 554,150 560,138 566,150 572,138 578,150 584,138 590,150 596,138 602,150 608,138 614,150 620,138 620,150" fill="#e5b84b" stroke="#a16207" stroke-width="1.5"/>
+    <rect x="460" y="150" width="170" height="40" fill="none" stroke="#a16207" stroke-width="1.5"/>
+    <polygon points="470,100 584,100 584,150 572,140 566,150 560,140 554,150 548,140 542,150 536,140 530,150 524,140 518,150 512,140 506,150 500,140 494,150 488,140 482,150 476,140 470,150" fill="#cbd5e1" stroke="#475569" stroke-width="1.5"/>
+    <text x="527" y="124" text-anchor="middle" fill="#334155" font-size="13" font-weight="700">14 TPI</text>
+    <line x1="450" y1="172" x2="640" y2="172" stroke="#16a34a" stroke-width="1.5" stroke-dasharray="6 4"/>
+    <text x="550" y="214" text-anchor="middle" fill="#15803d" font-size="12">keep the gauge parallel</text>
+    <text x="550" y="230" text-anchor="middle" fill="#15803d" font-size="12">to the thread axis</text>
+    <text x="550" y="254" text-anchor="middle" fill="#c2410c" font-size="13" font-weight="700">threads per inch / mm pitch</text>
+  </g>
+</svg>
 
 **Key rule:** When measuring threads with a pitch gauge, keep the **center lines parallel** — not at an angle — to get an accurate reading.
 

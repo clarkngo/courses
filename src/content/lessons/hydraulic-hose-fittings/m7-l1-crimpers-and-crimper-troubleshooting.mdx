@@ -13,7 +13,52 @@ import Quiz from '@components/Quiz.astro';
 
 A crimper is a **hydraulic ram**. Here's how it operates:
 
-![Crimper schematic showing: Motor → Pump → Reservoir (Tank); fluid flows to Cylinder extending Piston → Rod → Pusher down onto Tapered Die Cone → Die Cone forces Dies together → crimps the fitting](/courses/images/hydraulic-hose-fittings/m7/crimper-diagram.webp)
+<svg viewBox="0 0 680 400" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Crimper schematic. A motor drives a pump that draws fluid from the reservoir and sends it under pressure to the top of the cylinder. The pressure pushes the piston down; the piston drives the rod and pusher onto the dies. The dies sit in a tapered die cone, so as they are pushed down the taper squeezes them inward, crimping the ferrule onto the hose in the center.">
+  <defs>
+    <marker id="m7c-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#c2410c"/></marker>
+  </defs>
+  <g font-family="system-ui, -apple-system, sans-serif">
+    <rect x="160" y="40" width="140" height="130" fill="#f1f5f9" stroke="#475569" stroke-width="2.5"/>
+    <rect x="163" y="43" width="134" height="45" fill="#fed7aa"/>
+    <rect x="163" y="88" width="134" height="20" fill="#64748b"/>
+    <rect x="215" y="108" width="30" height="112" fill="#94a3b8" stroke="#475569" stroke-width="1.5"/>
+    <rect x="170" y="220" width="120" height="30" rx="3" fill="#64748b" stroke="#334155" stroke-width="1.5"/>
+    <polygon points="110,262 190,262 214,350 110,350" fill="#cbd5e1" stroke="#475569" stroke-width="2"/>
+    <polygon points="350,262 270,262 246,350 350,350" fill="#cbd5e1" stroke="#475569" stroke-width="2"/>
+    <polygon points="192,256 222,256 222,338 214,338" fill="#f59e0b" stroke="#92400e" stroke-width="1.5"/>
+    <polygon points="268,256 238,256 238,338 246,338" fill="#f59e0b" stroke="#92400e" stroke-width="1.5"/>
+    <rect x="223" y="250" width="14" height="140" fill="#374151"/>
+    <g stroke="#c2410c" stroke-width="2.5" fill="none">
+      <line x1="230" y1="60" x2="230" y2="80" marker-end="url(#m7c-arrow)"/>
+      <line x1="272" y1="116" x2="272" y2="158" marker-end="url(#m7c-arrow)"/>
+      <line x1="186" y1="300" x2="210" y2="300" marker-end="url(#m7c-arrow)"/>
+      <line x1="274" y1="300" x2="250" y2="300" marker-end="url(#m7c-arrow)"/>
+    </g>
+    <rect x="420" y="70" width="80" height="50" rx="4" fill="#e2e8f0" stroke="#475569" stroke-width="2"/>
+    <rect x="550" y="70" width="100" height="50" rx="4" fill="#e2e8f0" stroke="#475569" stroke-width="2"/>
+    <line x1="500" y1="95" x2="550" y2="95" stroke="#475569" stroke-width="4"/>
+    <rect x="400" y="180" width="120" height="60" fill="none" stroke="#475569" stroke-width="2"/>
+    <rect x="402" y="200" width="116" height="38" fill="#fed7aa"/>
+    <line x1="460" y1="120" x2="460" y2="225" stroke="#475569" stroke-width="3"/>
+    <path d="M420,85 L360,85 L360,55 L300,55" fill="none" stroke="#c2410c" stroke-width="4" marker-end="url(#m7c-arrow)"/>
+    <text x="460" y="100" text-anchor="middle" fill="#0f172a" font-size="14" font-weight="700">Pump</text>
+    <text x="600" y="100" text-anchor="middle" fill="#0f172a" font-size="14" font-weight="700">Motor</text>
+    <text x="460" y="262" text-anchor="middle" fill="#0f172a" font-size="14" font-weight="700">Reservoir (tank)</text>
+    <text x="365" y="44" fill="#c2410c" font-size="12">pressurized fluid</text>
+    <text x="230" y="30" text-anchor="middle" fill="#0f172a" font-size="14" font-weight="700">Cylinder</text>
+    <g fill="#0f172a" font-size="13">
+      <text x="150" y="102" text-anchor="end">Piston</text>
+      <text x="252" y="200">Rod</text>
+      <text x="160" y="240" text-anchor="end">Pusher</text>
+      <text x="100" y="310" text-anchor="end">Tapered</text>
+      <text x="100" y="326" text-anchor="end">die cone</text>
+      <text x="360" y="300">Dies close</text>
+      <text x="360" y="316">on the ferrule</text>
+      <text x="245" y="384">Hose + fitting</text>
+    </g>
+    <text x="310" y="142" fill="#c2410c" font-size="12">ram moves down</text>
+  </g>
+</svg>
 
 1. The **pump** pressurizes fluid
 2. Pressurized fluid flows to the **cylinder**, extending the piston
@@ -70,6 +115,47 @@ The **three most common crimper problem categories** are:
 1. **Cylinder seal** — seals between piston and cylinder may leak or roll over time
 2. **Electrical** — power source compatibility issues; wiring problems
 3. **Pump** — debris in fluid causing stuck valves; cold temperature thickening fluid; air in system
+
+<svg viewBox="0 0 680 270" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Crimper problem triage. Sort a crimper problem into one of three systems. Cylinder seal: ram stuck or not returning, fluid leaking at the cylinder, ram not fully extending; first check fluid level and temperature, then replace the seal kit. Electrical: display blank or wrong, crimper won't plug into the power unit, pump motor won't start; first check wiring and matching voltage, 115 or 230 volts. Pump: valves stuck by debris in the fluid, sluggish in the cold, air in the system; first clean the fluid, warm it up, and bleed the air.">
+  <defs><marker id="m7t-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#94a3b8"/></marker></defs>
+  <g font-family="system-ui, -apple-system, sans-serif">
+    <rect x="240" y="10" width="200" height="36" rx="18" fill="#0f172a"/>
+    <text x="340" y="33" text-anchor="middle" fill="#fff" font-size="14" font-weight="700">Crimper problem</text>
+    <rect x="10" y="70" width="210" height="190" rx="10" fill="#fff" stroke="#7c3aed" stroke-width="2"/>
+    <rect x="10" y="70" width="210" height="34" rx="10" fill="#7c3aed"/><rect x="10" y="90" width="210" height="14" fill="#7c3aed"/>
+    <text x="115" y="92" text-anchor="middle" fill="#fff" font-size="14" font-weight="700">Cylinder seal</text>
+    <text x="24" y="128" fill="#334155" font-size="12">• Ram stuck or won’t return</text>
+    <text x="24" y="152" fill="#334155" font-size="12">• Fluid leaking at cylinder</text>
+    <text x="24" y="176" fill="#334155" font-size="12">• Ram won’t fully extend</text>
+    <line x1="24" y1="196" x2="206" y2="196" stroke="#e2e8f0"/>
+    <text x="24" y="216" fill="#7c3aed" font-size="12" font-weight="700">First check:</text>
+    <text x="24" y="233" fill="#0f172a" font-size="12">Check fluid level + temp,</text>
+    <text x="24" y="249" fill="#0f172a" font-size="12">replace seal kit</text>
+    <line x1="340" y1="46" x2="115" y2="66" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#m7t-arrow)"/>
+    <rect x="235" y="70" width="210" height="190" rx="10" fill="#fff" stroke="#2563eb" stroke-width="2"/>
+    <rect x="235" y="70" width="210" height="34" rx="10" fill="#2563eb"/><rect x="235" y="90" width="210" height="14" fill="#2563eb"/>
+    <text x="340" y="92" text-anchor="middle" fill="#fff" font-size="14" font-weight="700">Electrical</text>
+    <text x="249" y="128" fill="#334155" font-size="12">• Display blank or wrong</text>
+    <text x="249" y="152" fill="#334155" font-size="12">• Won’t plug into power unit</text>
+    <text x="249" y="176" fill="#334155" font-size="12">• Pump motor won’t start</text>
+    <line x1="249" y1="196" x2="431" y2="196" stroke="#e2e8f0"/>
+    <text x="249" y="216" fill="#2563eb" font-size="12" font-weight="700">First check:</text>
+    <text x="249" y="233" fill="#0f172a" font-size="12">Check wiring and matching</text>
+    <text x="249" y="249" fill="#0f172a" font-size="12">voltage (115 V / 230 V)</text>
+    <line x1="340" y1="46" x2="340" y2="66" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#m7t-arrow)"/>
+    <rect x="460" y="70" width="210" height="190" rx="10" fill="#fff" stroke="#c2410c" stroke-width="2"/>
+    <rect x="460" y="70" width="210" height="34" rx="10" fill="#c2410c"/><rect x="460" y="90" width="210" height="14" fill="#c2410c"/>
+    <text x="565" y="92" text-anchor="middle" fill="#fff" font-size="14" font-weight="700">Pump</text>
+    <text x="474" y="128" fill="#334155" font-size="12">• Stuck valves (debris in fluid)</text>
+    <text x="474" y="152" fill="#334155" font-size="12">• Sluggish in the cold</text>
+    <text x="474" y="176" fill="#334155" font-size="12">• Air in the system</text>
+    <line x1="474" y1="196" x2="656" y2="196" stroke="#e2e8f0"/>
+    <text x="474" y="216" fill="#c2410c" font-size="12" font-weight="700">First check:</text>
+    <text x="474" y="233" fill="#0f172a" font-size="12">Clean fluid, warm up,</text>
+    <text x="474" y="249" fill="#0f172a" font-size="12">bleed air</text>
+    <line x1="340" y1="46" x2="565" y2="66" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#m7t-arrow)"/>
+  </g>
+</svg>
 
 ---
 

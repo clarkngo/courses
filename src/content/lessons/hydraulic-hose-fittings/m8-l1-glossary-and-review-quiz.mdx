@@ -7,7 +7,26 @@ lesson: 1
 duration: "30 min"
 ---
 
+import ProcessFlow from '@components/ProcessFlow.astro';
 import Quiz from '@components/Quiz.astro';
+
+## The Whole Job at a Glance
+
+Every module in this course is one stage in the life of a hose assembly. Use this map to place each glossary term in context as you review.
+
+<ProcessFlow
+  label="The life of a hydraulic hose assembly, one course module per stage: understand the hose, select it with STAMPED, match the application and fluid, identify the couplings, assemble and crimp, install and route, troubleshoot failures, and maintain the crimper."
+  steps={[
+    { badge: 'M1', title: 'Understand', detail: 'Tube, reinforcement, cover' },
+    { badge: 'M2', title: 'Select', detail: 'STAMPED + hose nomenclature' },
+    { badge: 'M3', title: 'Apply', detail: 'Pressure range, fluid, storage' },
+    { badge: 'M4', title: 'Identify', detail: 'Couplings, threads, seat angles' },
+    { badge: 'M5', title: 'Assemble', detail: 'Measure, cut, clean, crimp' },
+    { badge: 'M6', title: 'Install', detail: 'Ports, routing, troubleshooting' },
+    { badge: 'M7', title: 'Maintain', detail: 'Crimper care + calibration' },
+  ]}
+  loop="A failed assembly sends you back to Select: find the cause, then choose and build the right replacement."
+/>
 
 ## Key Glossary Terms
 

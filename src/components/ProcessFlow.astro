@@ -1,0 +1,54 @@
+---
+// A numbered left-to-right (wrapping) process flow for lesson content.
+// Steps wrap onto new rows on narrow screens, and an optional `loop` note
+// shows where a step sends you back (e.g. "out of tolerance → re-crimp").
+export interface Props {
+  label: string;
+  steps: { title: string; detail?: string; badge?: string }[];
+  color?: string;
+  loop?: string;
+}
+
+const { label, steps, color = '#c2410c', loop } = Astro.props;
+---
+
+<figure class="process-flow not-prose my-6" aria-label={label} style={`--flow-color: ${color}`}>
+  <ol class="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:gap-y-3">
+    {steps.map((step, i) => (
+      <li class="flex flex-col sm:flex-row items-stretch">
+        <div class="process-flow-step flex flex-col rounded-xl border px-3 py-2.5 bg-white dark:bg-gray-900 w-full sm:w-36 lg:w-40">
+          <div class="flex items-center gap-2">
+            <span class="process-flow-num flex-shrink-0 inline-flex items-center justify-center w-6 h-6 rounded-full text-xs font-bold text-white">
+              {step.badge ?? i + 1}
+            </span>
+            <span class="text-sm font-semibold text-gray-900 dark:text-gray-100 leading-tight">{step.title}</span>
+          </div>
+          {step.detail && (
+            <p class="mt-1.5 text-xs text-gray-600 dark:text-gray-400 leading-snug">{step.detail}</p>
+          )}
+        </div>
+        {i < steps.length - 1 && (
+          <span class="process-flow-arrow flex items-center justify-center py-0.5 sm:py-0 sm:px-1.5 text-lg font-bold" aria-hidden="true">
+            <span class="sm:hidden">↓</span><span class="hidden sm:inline">→</span>
+          </span>
+        )}
+      </li>
+    ))}
+  </ol>
+  {loop && (
+    <figcaption class="mt-3 inline-flex items-center gap-2 rounded-lg border border-dashed px-3 py-1.5 text-xs text-gray-700 dark:text-gray-300 process-flow-loop">
+      <span aria-hidden="true">↺</span>{loop}
+    </figcaption>
+  )}
+</figure>
+
+<style>
+  .process-flow-step { border-color: color-mix(in srgb, var(--flow-color) 35%, transparent); }
+  .process-flow-num { background-color: var(--flow-color); }
+  .process-flow-arrow { color: var(--flow-color); }
+  .process-flow-loop { border-color: var(--flow-color); }
+  /* Lesson prose styles target bare ol/li/p; keep them out of the flow cards. */
+  .process-flow ol { list-style: none; padding: 0; margin: 0; }
+  .process-flow li { margin: 0 !important; }
+  .process-flow p { margin: 0.375rem 0 0 !important; }
+</style>

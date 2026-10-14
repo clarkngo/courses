@@ -7,13 +7,25 @@ lesson: 1
 duration: "30 min"
 ---
 
+import ProcessFlow from '@components/ProcessFlow.astro';
 import Quiz from '@components/Quiz.astro';
 
 ## The STAMPED Method
 
 When selecting or replacing a hydraulic hose, use the acronym **STAMPED** as your checklist. It ensures you consider every critical factor before choosing a hose assembly.
 
-![STAMPED acronym checklist: S=Size, T=Temperature, A=Application, M=Material, P=Pressure, E=Ends of couplings, D=Delivery](/courses/images/hydraulic-hose-fittings/m2/stamped-acronym.webp)
+<ProcessFlow
+  label="The STAMPED hose selection checklist, worked through in order: Size, Temperature, Application, Material, Pressure, Ends, Delivery."
+  steps={[
+    { badge: 'S', title: 'Size', detail: 'Tube ID as a dash number' },
+    { badge: 'T', title: 'Temperature', detail: 'Fluid, ambient, and system heat' },
+    { badge: 'A', title: 'Application', detail: 'Equipment, routing, standards' },
+    { badge: 'M', title: 'Material', detail: 'Tube, cover, coupling, and O-ring compatibility' },
+    { badge: 'P', title: 'Pressure', detail: 'Working pressure ≥ system pressure + spikes' },
+    { badge: 'E', title: 'Ends', detail: 'Couplings that match the ports' },
+    { badge: 'D', title: 'Delivery', detail: 'ID sized for the required flow' },
+  ]}
+/>
 
 ---
 
@@ -173,7 +185,25 @@ Gates hose part numbers follow a standardized naming convention that tells you t
 
 ### Standard SAE Nomenclature — Example: **8G2**
 
-![Gates SAE hose nomenclature diagram showing 8G2: 8 = dash size (8/16 = ½"), G = SAE 100R Spec (SAE 100R2 two-wire), 2 = thin cover no skiving required](/courses/images/hydraulic-hose-fittings/m2/sae-nomenclature.webp)
+<svg viewBox="0 0 680 246" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Hose layline reading 8G2, broken down: 8 is the dash size in sixteenths of an inch, so 8/16 = one-half inch ID. G is the SAE 100R spec, here SAE 100R2 two-wire braid. 2 means a thin cover that needs no skiving.">
+  <g font-family="system-ui, -apple-system, sans-serif">
+    <rect x="30" y="14" width="620" height="46" rx="23" fill="#374151"/>
+    <ellipse cx="53" cy="37" rx="12" ry="23" fill="#4b5563"/><ellipse cx="53" cy="37" rx="6" ry="13" fill="#111827"/>
+    <text x="90" y="43" fill="#f9fafb" font-size="16" font-weight="600" letter-spacing="2">8G2 · SAE 100R2 · ½" ID</text>
+    <text x="52" y="116" text-anchor="middle" fill="#c2410c" font-size="38" font-weight="800">8</text>
+    <line x1="43" y1="125" x2="62" y2="125" stroke="#0f172a" stroke-width="2"/>
+    <text x="92" y="116" text-anchor="middle" fill="#c2410c" font-size="38" font-weight="800">G</text>
+    <line x1="82" y1="125" x2="101" y2="125" stroke="#0f172a" stroke-width="2"/>
+    <text x="130" y="116" text-anchor="middle" fill="#c2410c" font-size="38" font-weight="800">2</text>
+    <line x1="121" y1="125" x2="140" y2="125" stroke="#0f172a" stroke-width="2"/>
+    <polyline points="130,127 130,156 158,156" fill="none" stroke="#334155" stroke-width="1.4"/>
+    <text x="166" y="161" fill="#0f172a" font-size="14"><tspan font-weight="700">2</tspan> = thin cover, no skiving required</text>
+    <polyline points="92,127 92,186 158,186" fill="none" stroke="#334155" stroke-width="1.4"/>
+    <text x="166" y="191" fill="#0f172a" font-size="14"><tspan font-weight="700">G</tspan> = SAE 100R spec (SAE 100R2, two-wire braid)</text>
+    <polyline points="52,127 52,216 158,216" fill="none" stroke="#334155" stroke-width="1.4"/>
+    <text x="166" y="221" fill="#0f172a" font-size="14"><tspan font-weight="700">8</tspan> = dash size in 1/16" (8/16 = ½" ID)</text>
+  </g>
+</svg>
 
 | Position | Value | Meaning |
 |----------|-------|---------|
@@ -187,7 +217,34 @@ Gates hose part numbers follow a standardized naming convention that tells you t
 
 MegaSys® hoses have **half the bend radius** of their SAE counterpart — making them significantly more flexible.
 
-![MegaSys flexibility diagram showing a MegaSys hose requiring only 12" of length vs 22" for a standard SAE 100R4 hose between two ports](/courses/images/hydraulic-hose-fittings/m2/megasys-flex-diagram.webp)
+<svg viewBox="0 0 680 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Two ports 12 inches apart. A standard SAE 100R4 hose needs a tall, wide loop of about 22 inches to connect them. A MegaSys hose, with half the bend radius, connects the same ports with about 18 inches. A MegaSys hose can even make a U-turn between ports only 6 inches apart using about 12 inches of hose.">
+  <g font-family="system-ui, -apple-system, sans-serif">
+    <path d="M120,230 A240,190 0 0 1 600,230" fill="none" stroke="#94a3b8" stroke-width="14"/>
+    <path d="M120,230 A240,120 0 0 1 600,230" fill="none" stroke="#c2410c" stroke-width="14"/>
+    <path d="M120,230 A120,105 0 0 1 360,230" fill="none" stroke="#f59e0b" stroke-width="14"/>
+    <text x="360" y="28" text-anchor="middle" fill="#475569" font-size="14" font-weight="700">SAE 100R4 · ~22" of hose</text>
+    <text x="520" y="102" fill="#c2410c" font-size="14" font-weight="700">MegaSys · ~18"</text>
+    <text x="240" y="160" text-anchor="middle" fill="#b45309" font-size="14" font-weight="700">MegaSys</text>
+    <text x="240" y="178" text-anchor="middle" fill="#b45309" font-size="13">~12" of hose</text>
+    <g fill="#1f2937">
+      <rect x="102" y="230" width="36" height="16" rx="2"/>
+      <rect x="342" y="230" width="36" height="16" rx="2"/>
+      <rect x="582" y="230" width="36" height="16" rx="2"/>
+    </g>
+    <text x="120" y="262" text-anchor="middle" fill="#334155" font-size="12">port</text>
+    <text x="360" y="262" text-anchor="middle" fill="#334155" font-size="12">port</text>
+    <text x="600" y="262" text-anchor="middle" fill="#334155" font-size="12">port</text>
+    <g stroke="#334155" stroke-width="1.2">
+      <line x1="120" y1="276" x2="360" y2="276"/><line x1="120" y1="270" x2="120" y2="282"/><line x1="360" y1="270" x2="360" y2="282"/>
+      <line x1="360" y1="292" x2="600" y2="292" stroke-dasharray="4 3"/><line x1="600" y1="270" x2="600" y2="298"/>
+      <line x1="120" y1="292" x2="360" y2="292" stroke-dasharray="4 3"/><line x1="120" y1="286" x2="120" y2="298"/>
+    </g>
+    <rect x="222" y="268" width="36" height="16" fill="#fff"/>
+    <text x="240" y="281" text-anchor="middle" fill="#334155" font-size="12">6"</text>
+    <rect x="460" y="284" width="40" height="16" fill="#fff"/>
+    <text x="480" y="297" text-anchor="middle" fill="#334155" font-size="12">12"</text>
+  </g>
+</svg>
 
 ### Benefits of MegaSys®
 - Reduces hose length requirements **up to 47%**
@@ -198,7 +255,25 @@ MegaSys® hoses have **half the bend radius** of their SAE counterpart — makin
 
 ### MegaSys® Nomenclature — Example: **8M3K**
 
-![MegaSys nomenclature diagram showing 8M3K: 8 = dash size (8/16 = ½"), M = MegaSys designation (½ SAE bend radius), 3K = 3,000 psi working pressure](/courses/images/hydraulic-hose-fittings/m2/megasys-nomenclature.webp)
+<svg viewBox="0 0 680 246" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Hose layline reading 8M3K, broken down: 8 is the dash size, one-half inch ID. M marks a MegaSys hose with half the SAE bend radius. 3K is the 3,000 psi working pressure rating, where K stands for 1,000.">
+  <g font-family="system-ui, -apple-system, sans-serif">
+    <rect x="30" y="14" width="620" height="46" rx="23" fill="#374151"/>
+    <ellipse cx="53" cy="37" rx="12" ry="23" fill="#4b5563"/><ellipse cx="53" cy="37" rx="6" ry="13" fill="#111827"/>
+    <text x="90" y="43" fill="#f9fafb" font-size="16" font-weight="600" letter-spacing="2">8M3K · MegaSys · 3,000 psi</text>
+    <text x="52" y="116" text-anchor="middle" fill="#c2410c" font-size="38" font-weight="800">8</text>
+    <line x1="43" y1="125" x2="62" y2="125" stroke="#0f172a" stroke-width="2"/>
+    <text x="92" y="116" text-anchor="middle" fill="#c2410c" font-size="38" font-weight="800">M</text>
+    <line x1="82" y1="125" x2="101" y2="125" stroke="#0f172a" stroke-width="2"/>
+    <text x="143" y="116" text-anchor="middle" fill="#c2410c" font-size="38" font-weight="800">3K</text>
+    <line x1="121" y1="125" x2="165" y2="125" stroke="#0f172a" stroke-width="2"/>
+    <polyline points="143,127 143,156 171,156" fill="none" stroke="#334155" stroke-width="1.4"/>
+    <text x="179" y="161" fill="#0f172a" font-size="14"><tspan font-weight="700">3K</tspan> = 3,000 psi working pressure (K = 1,000)</text>
+    <polyline points="92,127 92,186 171,186" fill="none" stroke="#334155" stroke-width="1.4"/>
+    <text x="179" y="191" fill="#0f172a" font-size="14"><tspan font-weight="700">M</tspan> = MegaSys® (½ the SAE bend radius)</text>
+    <polyline points="52,127 52,216 171,216" fill="none" stroke="#334155" stroke-width="1.4"/>
+    <text x="179" y="221" fill="#0f172a" font-size="14"><tspan font-weight="700">8</tspan> = dash size (8/16 = ½" ID)</text>
+  </g>
+</svg>
 
 | Position | Value | Meaning |
 |----------|-------|---------|
