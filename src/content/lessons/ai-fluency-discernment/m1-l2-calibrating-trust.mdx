@@ -1,0 +1,128 @@
+---
+title: "Calibrating Trust: How Much Checking Is Enough?"
+description: "Match your level of scrutiny to the stakes, how checkable the output is, and how far it will travel, so you verify what matters without re-doing everything AI gives you."
+module: 1
+moduleTitle: "Why Wrong Sounds Right"
+lesson: 2
+duration: "20 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## Two Ways to Get Discernment Wrong
+
+There are two failure modes, and both are common:
+
+- **Under-checking:** trusting output because it looks finished. This is how fabricated citations end up in court filings and wrong figures end up in board decks.
+- **Over-checking:** verifying every word of every answer until AI saves you no time at all, then quietly giving up on checking entirely because it's exhausting.
+
+Good discernment is **calibrated**. You check harder where an error would hurt more, and you check smarter where errors are easy to spot.
+
+---
+
+## Three Questions That Set the Level
+
+Before you decide how to review a piece of AI output, ask:
+
+1. **Stakes:** What happens if this is wrong? Mild embarrassment, wasted time, money lost, someone harmed, a legal or safety problem?
+2. **Checkability:** How easily could I tell if it's wrong? Can I test it, compare it to a source, or recognize errors from my own expertise?
+3. **Reach:** Where will this go? Just me, my team, a client, the public, a permanent record?
+
+| Situation | Stakes | Checkability | Reach | Review level |
+|---|---|---|---|---|
+| Brainstormed names for a team event | Low | Easy (you'll just pick one) | Team | **Glance**: does it fit? |
+| Summary of a meeting you attended | Medium | Easy (you were there) | Team | **Skim and spot-check** key decisions and owners |
+| Explanation of a tax rule for your small business | High | Hard (you're not an expert) | You, then the tax office | **Verify** every claim against an official source or a professional |
+| Statistics in a public report | High | Medium | Public, permanent | **Verify every figure** at its original source |
+
+Notice the third row. **When stakes are high and you can't easily check, AI's answer is a starting point for finding the real answer**, not the answer itself.
+
+---
+
+## The Review Ladder
+
+<ProcessFlow
+  label="The review ladder, from lightest to heaviest: glance, spot-check, trace, verify, and expert review"
+  color="#0f766e"
+  steps={[
+    { title: "Glance", detail: "Does it fit the purpose? Anything obviously off?" },
+    { title: "Spot-check", detail: "Test a few specifics you can confirm quickly" },
+    { title: "Trace", detail: "Follow each key claim back to where it came from" },
+    { title: "Verify", detail: "Confirm every specific against independent sources" },
+    { title: "Expert review", detail: "Someone qualified signs off before it's used" },
+  ]}
+/>
+
+Climb the ladder as stakes rise and checkability falls. Two practical rules:
+
+- **Spot-checks reveal the error rate.** If you check three specifics and one is wrong, that tells you something about the rest. Move up a rung.
+- **The rung is set by the worst-case use.** A draft that "might" go to a client is reviewed as if it will.
+
+<Pitfall title="Letting Your Own Expertise Set the Bar">
+
+**Common mistake:** reviewing AI output on a topic you know well and then trusting it to the same degree on a topic you don't.
+
+In your own field, errors jump out at you. Outside it, the same rate of errors is invisible. If the AI got 1 in 10 details wrong in your specialty, assume something similar elsewhere, and check accordingly. Your sense of "this seems fine" is only as good as your knowledge of the topic.
+
+</Pitfall>
+
+<TryIt title="Calibrate Your Last Week of AI Use">
+
+1. List five things you (or someone you know) used AI for in the last week or two. If you haven't used AI much, ask an assistant: *"List ten common ways office workers use AI assistants."* and pick five.
+2. For each one, rate **Stakes**, **Checkability**, and **Reach** as low, medium, or high.
+3. Assign each a rung on the review ladder.
+4. Compare with how much checking actually happened. Circle any where the real review was lower than the rung you assigned.
+5. Pick one circled item. Ask an AI assistant:
+   ```text
+   Here's a task I used AI for: [describe it]. What are the most
+   likely kinds of errors in AI output for this task, and how could
+   I check for each one in under five minutes?
+   ```
+   Judge its suggestions. Which ones are realistic for you?
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "AI explains a medication interaction for an elderly relative. You have no medical background. What's the right approach?",
+    options: [
+      "Trust it if the explanation is detailed.",
+      "Ask the AI if it's sure.",
+      "Treat it as background and confirm with a pharmacist or doctor before acting.",
+      "Ignore it completely."
+    ],
+    correctIndex: 2,
+    explanation: "High stakes and low checkability call for the top of the ladder. The AI's answer can help you ask better questions, but a qualified person should confirm it."
+  },
+  {
+    question: "You spot-check four figures in an AI summary and one is wrong. What should you do?",
+    options: [
+      "Fix that one figure and move on.",
+      "Treat it as a signal about the rest and check the remaining figures more thoroughly.",
+      "Delete the whole summary.",
+      "Ask the AI to double-check its own numbers and accept the result."
+    ],
+    correctIndex: 1,
+    explanation: "A spot-check is a sample. One error in four suggests others are likely, so move up a rung on the review ladder."
+  },
+  {
+    question: "Which factor makes an AI-written draft need more review, even if the content seems low risk?",
+    options: [
+      "It uses bullet points.",
+      "It will be published publicly or kept as a permanent record.",
+      "It was written quickly.",
+      "It is shorter than one page."
+    ],
+    correctIndex: 1,
+    explanation: "Reach matters. The further output travels and the longer it lasts, the more costly an error becomes and the harder it is to correct."
+  }
+]} />
+
+---
+
+## Up Next
+
+Module 2 moves to product discernment: the practical techniques for checking facts, citations, and numbers against sources outside the AI.

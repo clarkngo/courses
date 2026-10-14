@@ -1,0 +1,142 @@
+---
+title: "Your Reusable Discernment Checklist"
+description: "Combine the course into one practical checklist covering product, process, and performance, then tailor it to the kinds of AI-assisted work you actually do."
+module: 4
+moduleTitle: "Discernment in Practice"
+lesson: 2
+duration: "25 min"
+---
+
+import LoopDiagram from '@components/LoopDiagram.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## Why a Checklist
+
+Pilots and surgeons use checklists not because they lack skill but because skilled people skip steps when they're busy, confident, or interrupted. Reviewing AI output has the same problem: by the tenth draft of the day, "it looks fine" starts to feel like a check.
+
+A good discernment checklist is **short**, **scaled to stakes**, and **tailored** to the work you do. Here's a general version to start from.
+
+---
+
+## The Discernment Checklist
+
+**0. Set the level** (Module 1)
+- [ ] What are the stakes, checkability, and reach? Which rung of the review ladder does this need?
+
+**1. Product: facts and numbers** (Module 2)
+- [ ] Have I extracted the load-bearing claims: names, dates, figures, quotes, citations?
+- [ ] Is each one confirmed against an independent source, not the AI?
+- [ ] Do citations exist *and* say what's claimed?
+- [ ] Do the numbers pass a sanity check for magnitude, units, and totals?
+
+**2. Product: fairness and completeness** (Module 2)
+- [ ] Did it cover everything I asked for?
+- [ ] Who is affected but missing? Whose context is treated as the default?
+- [ ] Would the swap test change anything important?
+
+**3. Process: reasoning** (Module 3)
+- [ ] Do I know what it assumed about my situation, and are those assumptions true?
+- [ ] Have I seen the strongest counter-argument?
+- [ ] Can I explain the reasoning in my own words?
+
+**4. Process: analysis and technical output** (Module 3)
+- [ ] Did it answer my actual question, with my definitions?
+- [ ] Were all the inputs used correctly?
+- [ ] Have I recomputed or tested at least one result myself?
+
+**5. Performance: the collaboration**
+- [ ] Was the AI just agreeing with me? Did I ask it for weaknesses?
+- [ ] Did it flag gaps and uncertainty, or fill them silently?
+
+**6. Ready to ship** (Module 4)
+- [ ] Is everything still unverified either removed or clearly flagged?
+- [ ] Does my reviewer know where AI was involved?
+- [ ] Would I put my name on this?
+
+You won't run every line every time. At the **glance** level you might use only items 0 and 6. At the **verify** level you run all of it.
+
+---
+
+## Tailor It to Your Work
+
+The general checklist is a starting point. Your version should reflect the errors that actually show up in *your* work. Use the loop:
+
+<LoopDiagram
+  label="Improving your checklist: use it on real work, log the errors you catch or miss, add a specific check for each new error type, and trim checks that never find anything"
+  colors={['#115e59', '#0f766e', '#14b8a6']}
+  steps={[
+    { title: "Use", subtitle: "on real work" },
+    { title: "Log", subtitle: "errors found" },
+    { title: "Add", subtitle: "new checks" },
+    { title: "Trim", subtitle: "dead checks" },
+  ]}
+/>
+
+Examples of tailored items:
+
+- A grant writer: *"Every funder requirement in the call matches the current call document, not last year's."*
+- A teacher: *"Reading level checked; examples reflect my actual students."*
+- An HR coordinator: *"Policy references match our current handbook, not generic employment law."*
+- A small-business owner: *"Prices, hours, and product names checked against our live website."*
+
+<Pitfall title="A Checklist That's Too Long to Use">
+
+**Common mistake:** building a 40-item checklist that covers everything, then never using it.
+
+If a checklist takes longer than the task, it gets skipped. Keep your everyday version to about one screen, with a short "glance" version for low-stakes work. Put the items that catch *your* most common errors at the top.
+
+</Pitfall>
+
+<TryIt title="Build and Test Your Personal Checklist">
+
+1. Copy the general checklist into a document.
+2. Think of the two kinds of AI-assisted work you do most often. For each, add at least two tailored items based on errors you've seen or the risks you identified in this course.
+3. Cut or merge items until the everyday version fits on one screen. Mark three items as your **glance** version.
+4. **Test it.** Ask an AI assistant to produce a realistic piece of your typical work, such as an email to a client, a lesson summary, or a project update, using real-sounding but non-sensitive details. Run your checklist on it.
+5. Note which items found something and which didn't. Adjust one item based on what you learned.
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "Why do experienced people still benefit from a discernment checklist?",
+    options: [
+      "Because they don't know how to review work.",
+      "Because busy, confident, or interrupted people skip steps, and 'it looks fine' starts to feel like a check.",
+      "Because checklists replace the need for judgment.",
+      "Because AI tools require them."
+    ],
+    correctIndex: 1,
+    explanation: "Checklists protect against predictable lapses, not lack of skill. They keep the important steps from being skipped."
+  },
+  {
+    question: "Which is the best example of a tailored checklist item?",
+    options: [
+      "'Check that it's good.'",
+      "'Make sure there are no errors.'",
+      "'Event dates and room numbers match the current booking system, not last term's schedule.'",
+      "'Read it carefully.'"
+    ],
+    correctIndex: 2,
+    explanation: "Tailored items are specific to the errors that actually happen in your work, which makes them quick to apply and likely to catch something."
+  },
+  {
+    question: "A checklist item hasn't found a problem in six months of use, on low-stakes work. What should you consider?",
+    options: [
+      "Adding five more items like it.",
+      "Trimming it or moving it to your high-stakes version, to keep the everyday checklist short.",
+      "Deleting the whole checklist.",
+      "Asking the AI to run the checklist for you."
+    ],
+    correctIndex: 1,
+    explanation: "Part of the improvement loop is trimming checks that never fire, so the checklist stays usable."
+  }
+]} />
+
+---
+
+## Up Next
+
+Time to put it all together in the course challenge.

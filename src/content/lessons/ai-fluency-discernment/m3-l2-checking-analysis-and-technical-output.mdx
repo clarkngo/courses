@@ -1,0 +1,124 @@
+---
+title: "Checking AI Data Analysis and Technical Output"
+description: "You don't need to be a data scientist or programmer to catch most errors in AI-generated analysis, spreadsheet formulas, charts, and scripts. Learn the non-technical checks that find them."
+module: 3
+moduleTitle: "Checking the Reasoning"
+lesson: 2
+duration: "30 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## Numbers Look Like Proof
+
+A table, a chart, or a formula feels more objective than a paragraph. That's what makes AI-generated analysis risky: it borrows the authority of math. But an analysis can be wrong in ways that have nothing to do with arithmetic. The AI might read the wrong column, silently drop rows, misunderstand what a field means, or answer a slightly different question than the one you asked.
+
+You don't need to read code to catch most of these. You need to know **what should be true** and test whether it is.
+
+---
+
+## The Non-Technical Analysis Check
+
+<ProcessFlow
+  label="Checking AI analysis without technical skills: restate the question, check the inputs, recompute a sample by hand, test against what you know, and stress the edge cases"
+  color="#0f766e"
+  steps={[
+    { title: "Question", detail: "Did it answer what I actually asked?" },
+    { title: "Inputs", detail: "Right file, all rows, right columns?" },
+    { title: "Hand check", detail: "Recompute one or two results yourself" },
+    { title: "Known facts", detail: "Does it match what I already know?" },
+    { title: "Edge cases", detail: "Blanks, duplicates, odd values?" },
+  ]}
+/>
+
+1. **Restate the question.** Ask the AI: *"In one sentence, what question did this analysis answer, and how did you define each term?"* "Top customers" by revenue, by order count, or by profit? "Last quarter" by order date or ship date? Mismatched definitions are the most common silent error.
+2. **Check the inputs.** Ask how many rows it read, which columns it used, and whether it excluded or changed anything. Compare to what you know about the file. If your spreadsheet has 1,240 rows and the AI analyzed 1,000, something was cut off.
+3. **Recompute a sample by hand.** Pick one or two results and calculate them yourself with a filter or a calculator. If the AI says the Northwest region averaged $412 per order, filter to Northwest and check.
+4. **Test against known facts.** You know roughly how many employees you have, what last year's revenue was, which product sells best. An analysis that contradicts solid knowledge needs explaining before it's believed.
+5. **Stress the edge cases.** Ask: *"How did you handle blank cells, duplicates, returns, text in number columns, and dates in different formats?"* Messy data is where analysis quietly breaks.
+
+## Charts
+
+Charts add their own ways to mislead:
+
+- **Axis:** Does the vertical axis start at zero? A truncated axis can make a 2% change look enormous.
+- **Scale:** Are two lines on different scales sharing one chart?
+- **Labels and units:** Are they present and correct?
+- **Selection:** Does the time range or category selection happen to support the conclusion?
+
+## Formulas, Scripts, and Other Code-Adjacent Output
+
+AI is often used to write spreadsheet formulas, automation steps, or short scripts for people who can't write them from scratch. You can still discern:
+
+- **Ask for a plain-language walkthrough.** *"Explain what this formula does, step by step, as if I've never used a spreadsheet function."* If the explanation doesn't match your intent, the formula probably doesn't either.
+- **Test with known answers.** Build a tiny test: five rows where you know the right result. Run the formula or script on that first.
+- **Try the awkward rows.** Include a blank, a zero, a very large number, and a duplicate in your test.
+- **Work on a copy.** Never run an AI-written script or bulk formula on your only copy of real data.
+- **Check what it touches.** For anything that sends, deletes, or changes data, ask exactly what it will affect before running it, and get someone qualified to review it when the stakes are real.
+
+<Pitfall title="Trusting a Result Because the Code Ran">
+
+**Common mistake:** "No error message, so it worked."
+
+A formula or script that runs without errors can still be completely wrong. It might sum the wrong column, skip the header row twice, or treat "N/A" as zero. "It ran" is a test of syntax. "It gave the right answer on cases I can check" is a test of correctness.
+
+</Pitfall>
+
+<TryIt title="Audit an AI Analysis With Data You Know">
+
+1. Create a small table you understand completely, about 15 rows. For example, a week of household spending with columns for **date**, **category**, **amount**, and **paid by**. Deliberately include one blank amount, one duplicate row, and one amount typed as text, such as "twelve".
+2. Paste it into an AI assistant and ask:
+   ```text
+   Analyze this spending data. What's the total by category, who
+   paid the most, and what's the average daily spend?
+   ```
+3. Run the five checks above. Especially: recompute at least two numbers by hand, and ask how it handled the blank, the duplicate, and "twelve."
+4. Ask it for a spreadsheet formula that computes total spending by category. Test the formula on your table in any free spreadsheet app.
+5. Record every discrepancy you found and what caused it.
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "An AI analysis of your sales file reports results from 1,000 rows, but your file has 1,240. What does this most likely indicate?",
+    options: [
+      "Nothing important; it's close enough.",
+      "Part of the data was cut off or excluded, so the results may be wrong.",
+      "The AI rounded the row count.",
+      "The extra rows were duplicates, so it's fine."
+    ],
+    correctIndex: 1,
+    explanation: "Checking inputs catches silent truncation or exclusion. Find out what was left out before trusting any result."
+  },
+  {
+    question: "What's the best non-technical way to check an AI-written spreadsheet formula?",
+    options: [
+      "Confirm it doesn't show an error.",
+      "Test it on a small sample where you already know the correct answer, including some awkward rows.",
+      "Ask the AI if the formula is correct.",
+      "Check that it's long enough to be sophisticated."
+    ],
+    correctIndex: 1,
+    explanation: "Testing against known answers checks correctness, not just whether the formula runs. Include blanks, zeros, and duplicates."
+  },
+  {
+    question: "An AI chart shows customer complaints 'skyrocketing' from 102 to 108, with the vertical axis starting at 100. What's the issue?",
+    options: [
+      "The chart should be a pie chart.",
+      "The truncated axis exaggerates a small change.",
+      "102 to 108 is a big jump.",
+      "Complaints should never be charted."
+    ],
+    correctIndex: 1,
+    explanation: "A 6% rise looks dramatic when the axis starts just below the data. Always check where the axis begins."
+  }
+]} />
+
+---
+
+## Up Next
+
+Module 4 takes discernment from personal habit to team practice, and turns everything you've learned into a reusable checklist.

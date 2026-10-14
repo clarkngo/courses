@@ -1,0 +1,147 @@
+---
+title: "Team Review Practices for AI-Assisted Work"
+description: "Discernment breaks down when everyone assumes someone else checked. Set up clear review ownership, AI-use notes, second-reader checks, and an error log so your team catches problems before they ship."
+module: 4
+moduleTitle: "Discernment in Practice"
+lesson: 1
+duration: "25 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## Everyone Thought Someone Else Checked
+
+On a team, AI errors rarely slip through because nobody cares. They slip through because of **diffused responsibility**:
+
+- The writer assumes the reviewer will catch problems.
+- The reviewer assumes the writer verified the facts, and reads for tone and flow.
+- The manager approves because two people have already looked at it.
+
+Each person did a reasonable job of what they *thought* their job was. Nobody checked the figures. AI makes this worse because drafts arrive faster and look more finished, so there's more to review and less obvious reason to dig in.
+
+The fix is not "everyone check everything." It's making review **explicit**.
+
+---
+
+## Practice 1: Name the Checker for Each Claim Type
+
+For any piece of work that matters, decide in advance who verifies what:
+
+| Check | Who owns it | Example |
+|---|---|---|
+| Facts, figures, citations | Usually the author | Every statistic traced to its source before review |
+| Fit for audience and purpose | Reviewer | Will this make sense to the client? |
+| Specialist content | Subject expert | Legal, medical, financial, or safety claims |
+| Final sign-off | One named person | Accountable for what goes out |
+
+Writing this down once, for recurring work types like client reports or policy updates, takes ten minutes and prevents the "I thought you checked" gap.
+
+## Practice 2: Add an AI-Use Note for Reviewers
+
+Reviewers judge better when they know where AI was involved. A short internal note, separate from any public disclosure, tells them where to look hardest:
+
+```text
+AI-use note (internal):
+- Sections 2 and 4 drafted with AI from my bullet notes.
+- Figures in Table 1: AI-extracted from the Q3 report; I verified
+  all 12 against the source.
+- Market sizing in Section 3: AI estimate, NOT yet verified.
+  Please flag if this needs a source before sending.
+```
+
+This turns review from "read it and see if anything seems wrong" into "check these specific things."
+
+## Practice 3: Second-Reader Checks for High-Stakes Work
+
+For high-stakes output, one person verifies claims **independently**. The second reader doesn't just read the author's version; they check a sample of claims against sources themselves. A fresh reader who didn't spend an hour with the AI is less anchored by its framing.
+
+## Practice 4: Keep an Error Log
+
+When an AI error is caught, or worse, missed, record it briefly:
+
+- What went wrong (a fabricated citation, a misread column, a wrong assumption)
+- Where it was caught, or where it surfaced
+- What check would have caught it earlier
+
+After a few months, the log shows your team's real risk areas, which should shape your checklist and training. Keep it blame-free: the goal is to fix the process, not to embarrass whoever used the AI.
+
+<ProcessFlow
+  label="A team review workflow: the author drafts with AI and verifies their claims, writes an AI-use note, a reviewer checks fit and flagged items, an expert reviews specialist content if needed, and one named person signs off"
+  color="#0f766e"
+  steps={[
+    { title: "Draft + verify", detail: "Author checks their own facts and figures" },
+    { title: "AI-use note", detail: "Where AI helped, what's unverified" },
+    { title: "Review", detail: "Fit, flagged items, sample of claims" },
+    { title: "Expert", detail: "Specialist claims, when needed" },
+    { title: "Sign-off", detail: "One named, accountable person" },
+  ]}
+/>
+
+<Pitfall title="Hiding AI Use to Avoid Scrutiny">
+
+**Common mistake:** not telling reviewers AI was involved, because people worry their work will be judged as less valuable.
+
+This removes the most useful signal reviewers have. Teams that treat AI use as normal and expected, and focus on whether the work is *verified*, get more honest notes and catch more errors. If your team stigmatizes AI use, raise it: the stigma itself is a quality risk.
+
+</Pitfall>
+
+<TryIt title="Design a Review Plan for One Recurring Deliverable">
+
+1. Pick a recurring piece of work your team or class produces where AI could help, such as a monthly report, a newsletter, meeting minutes, or a project proposal.
+2. Ask an AI assistant to help you think it through:
+   ```text
+   My team produces [deliverable] every [frequency]. We're starting
+   to use AI to help draft it. What kinds of errors is AI likely to
+   introduce in this type of document? Group them by type.
+   ```
+   Judge the list. Add anything it missed from your own experience, and cross out anything that doesn't apply.
+3. Fill in the ownership table from Practice 1 for this deliverable, with real roles.
+4. Write an AI-use note template your team could copy for it.
+5. Decide which error types, if any, need a second-reader check.
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "A report goes out with a wrong statistic. The writer assumed the reviewer would check figures; the reviewer read only for clarity. What's the underlying problem?",
+    options: [
+      "The AI tool was too old.",
+      "Review responsibilities weren't explicit, so nobody owned verifying the figures.",
+      "The reviewer should have rewritten the report.",
+      "Statistics should never be included in reports."
+    ],
+    correctIndex: 1,
+    explanation: "Diffused responsibility is the most common team failure. Naming who checks each type of claim closes the gap."
+  },
+  {
+    question: "What makes an internal AI-use note useful for a reviewer?",
+    options: [
+      "It proves the author worked hard.",
+      "It shows which parts AI helped with and which claims are verified or still unverified, so the reviewer knows where to focus.",
+      "It replaces the need for review.",
+      "It's required by every AI tool's terms of service."
+    ],
+    correctIndex: 1,
+    explanation: "The note turns a general read-through into targeted checks of the riskiest parts."
+  },
+  {
+    question: "What's the main purpose of a team AI error log?",
+    options: [
+      "To identify which employees make the most mistakes.",
+      "To reveal recurring risk areas so the team can improve its checks and checklist.",
+      "To prove AI shouldn't be used.",
+      "To report errors to the AI vendor."
+    ],
+    correctIndex: 1,
+    explanation: "A blame-free log turns individual catches into team learning about where AI errors actually occur."
+  }
+]} />
+
+---
+
+## Up Next
+
+The next lesson pulls the whole course into one reusable discernment checklist you can tailor to your own work.

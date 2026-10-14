@@ -1,0 +1,199 @@
+---
+title: "Course Challenge"
+description: "Test your discernment with ten scenario questions, then complete a capstone: a full discernment review of a realistic AI-generated document using your own checklist."
+module: 4
+moduleTitle: "Discernment in Practice"
+lesson: 3
+duration: "40 min"
+---
+
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## How the Challenge Works
+
+The challenge has two parts:
+
+1. **Knowledge check:** ten scenario questions covering every module. Aim for at least 8 out of 10. If you miss one, read the explanation and revisit that lesson.
+2. **Capstone task:** a full discernment review of a realistic AI-generated document, using the checklist you built in the previous lesson.
+
+This course is free and self-paced, so there's nothing to submit. The goal is a review habit you'll actually keep.
+
+---
+
+## Part 1: Knowledge Check
+
+<Quiz questions={[
+  {
+    question: "(Module 1) A colleague says, 'The AI's answer was so detailed and well written, it must be right.' What's the flaw in that reasoning?",
+    options: [
+      "Detailed answers are always wrong.",
+      "AI produces fluent, detailed text whether or not it's accurate, so polish isn't evidence.",
+      "Well-written answers are usually copied from somewhere.",
+      "There's no flaw."
+    ],
+    correctIndex: 1,
+    explanation: "This is the fluency trap. Fluency is the default for AI, so it can't distinguish true from false."
+  },
+  {
+    question: "(Module 1) You tell an AI, 'I think the deadline is March 15,' and it agrees. You later find the real deadline is March 1. Which habit was most likely at work?",
+    options: [
+      "Hallucination",
+      "Sycophancy",
+      "Truncated input",
+      "Single lens"
+    ],
+    correctIndex: 1,
+    explanation: "The AI went along with the date you suggested. Ask neutrally, or better, check the official source."
+  },
+  {
+    question: "(Module 1) Which situation calls for the highest rung of the review ladder?",
+    options: [
+      "Brainstorming a team lunch theme.",
+      "An AI-drafted summary of safety procedures that will be posted at a worksite.",
+      "Rewording an email to a friend.",
+      "Generating ideas for a blog title."
+    ],
+    correctIndex: 1,
+    explanation: "High stakes (safety), wide reach (everyone on site), and errors that are hard for readers to detect call for full verification and expert review."
+  },
+  {
+    question: "(Module 2) An AI-written article cites 'Chen & Ortiz (2021), Journal of Workplace Studies' for a key claim. You find the paper exists. What's next?",
+    options: [
+      "Nothing. It's verified.",
+      "Read the paper to confirm it actually supports the specific claim.",
+      "Check that the journal has a good website.",
+      "Ask the AI for a second citation."
+    ],
+    correctIndex: 1,
+    explanation: "Existence is only half the check. Citations often point to real papers that don't say what's claimed."
+  },
+  {
+    question: "(Module 2) An AI says remote workers are '73.4% more productive.' What's the best response?",
+    options: [
+      "Use it. The precision suggests careful research.",
+      "Treat the suspicious precision as a red flag and trace it to an original source, or remove it.",
+      "Round it to 70% and use it.",
+      "Ask the AI to confirm the number."
+    ],
+    correctIndex: 1,
+    explanation: "Exact-looking statistics without a source are a classic hallucination pattern. Find the original or drop it."
+  },
+  {
+    question: "(Module 2) You ask AI for ten examples of great inventors for a classroom poster. All ten are men from Europe or North America. What's the best fix?",
+    options: [
+      "Use the list. It's factually accurate.",
+      "Recognize the default-assumption pattern, ask specifically for a broader range, and verify the new examples.",
+      "Add 'be unbiased' and accept the next answer.",
+      "Remove the poster idea."
+    ],
+    correctIndex: 1,
+    explanation: "The list may be accurate but lopsided. Specific instructions work better than 'be unbiased,' and new examples still need fact-checking."
+  },
+  {
+    question: "(Module 3) An AI recommends a three-year expansion plan. You ask what it assumed and learn it assumed you have investor funding. You don't. What should you do?",
+    options: [
+      "Follow the plan anyway.",
+      "Correct the assumption and see whether the recommendation changes.",
+      "Ask the AI to sound more confident.",
+      "Find a different AI that agrees with the plan."
+    ],
+    correctIndex: 1,
+    explanation: "Surfacing and correcting assumptions, then running the premise-change test, shows whether the advice fits your actual situation."
+  },
+  {
+    question: "(Module 3) An AI analysis claims that customers who use your mobile app spend more, and recommends forcing all customers onto the app. What's the main reasoning concern?",
+    options: [
+      "The analysis is too short.",
+      "It treats correlation as cause; your most engaged customers may simply be the ones who download the app.",
+      "Mobile apps are always bad.",
+      "The AI used the wrong chart type."
+    ],
+    correctIndex: 1,
+    explanation: "Engaged customers may choose the app rather than the app creating engagement. Forcing everyone onto it may not raise spending."
+  },
+  {
+    question: "(Module 3) An AI-written spreadsheet formula runs without errors on your budget sheet. What does that prove?",
+    options: [
+      "That the results are correct.",
+      "Only that the formula is valid. You still need to test it on cases where you know the answer.",
+      "That the AI understood your budget.",
+      "That no rows were skipped."
+    ],
+    correctIndex: 1,
+    explanation: "Running without errors checks syntax, not correctness. Test with known answers and awkward rows."
+  },
+  {
+    question: "(Module 4) Your team's AI-assisted proposal includes an internal note: 'Market size in Section 3 is an AI estimate, not verified.' The reviewer approves without checking it. What went wrong?",
+    options: [
+      "The note shouldn't have been written.",
+      "The note flagged the risk, but no one owned resolving it before sign-off; unverified items must be checked, removed, or clearly labeled.",
+      "The AI should have verified the estimate itself.",
+      "Nothing. The note covers the team."
+    ],
+    correctIndex: 1,
+    explanation: "An AI-use note directs attention, but review only works when someone owns each flagged item. The checklist's 'ready to ship' step catches this."
+  }
+]} />
+
+---
+
+## Part 2: Capstone Task
+
+<TryIt title="A Full Discernment Review">
+
+You'll ask an AI to produce a realistic, substantial document, then review it as if your name were going on it.
+
+1. **Generate the document.** Choose a topic related to your work, studies, or community where facts can be checked publicly. Ask an AI assistant:
+   ```text
+   Write a 500-word briefing for [audience] on [topic]. Include at
+   least six specific facts or statistics with sources, one
+   recommendation with reasons, and one small table of figures.
+   ```
+2. **Set the level (Module 1).** Rate stakes, checkability, and reach as if this briefing were going to its real audience. Choose your rung.
+3. **Check the product (Module 2).**
+   - Extract and rank every specific claim.
+   - Verify the top six against independent sources. Check that every citation exists *and* supports its claim.
+   - Sanity-check the table's figures and totals.
+   - Run a gap test: who's affected but not represented?
+4. **Check the reasoning (Module 3).**
+   - Surface the assumptions behind the recommendation and mark which are true for the real audience.
+   - Get the strongest counter-argument in a new chat.
+   - Recompute at least one figure in the table yourself.
+5. **Check the performance.** Did the AI flag uncertainty? Did it agree too easily when you pushed back? Try one pushback on a claim you've verified as correct.
+6. **Apply your checklist (Module 4).** Run your personal checklist from the previous lesson. Write the AI-use note you'd attach for a reviewer.
+7. **Produce the corrected version.** Fix, flag, or remove every problem you found.
+
+**Self-assessment checklist.** You've completed the capstone when you can say yes to all of these:
+
+- I set a review level before I started, and can explain why.
+- I verified every load-bearing claim against a source outside the AI.
+- I checked at least one citation by reading the relevant part of the source.
+- I identified at least one assumption or missing perspective the AI didn't mention.
+- I tested at least one number or result myself.
+- My corrected version has no unverified claims presented as fact.
+- I'd put my name on the corrected version.
+
+</TryIt>
+
+---
+
+## Congratulations, You've Finished Discernment: Judging AI Output
+
+You can now:
+
+- Explain why AI output sounds right even when it isn't: **hallucination**, **sycophancy**, and **overconfidence**
+- **Calibrate** how much checking a piece of output deserves
+- **Verify** facts, citations, and numbers against independent sources
+- Spot **bias** and **missing perspectives** with swap and gap tests
+- Judge **reasoning** by surfacing assumptions and stress-testing conclusions
+- Check AI-generated **analysis, charts, and formulas** without needing to be technical
+- Set up **team review practices** and maintain your own **discernment checklist**
+
+### Where to Go Next
+
+- **Revisit the full framework:** [AI Fluency: Foundations](/courses/ai-fluency-foundations/) shows how discernment connects to Delegation, Description, and Diligence.
+- **Strengthen your prompts:** [AI Fundamentals](/courses/ai-fundamentals/) covers the CRAFT prompting method, which helps you get output that's easier to check in the first place.
+- **Keep the error log going.** Your checklist is only as good as the errors it's built from.
+
+*The 4D AI Fluency Framework was created by Rick Dakan and Joseph Feller with Anthropic and is released under [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/). See [aifluencyframework.org](https://aifluencyframework.org/). All content in this course is original.*
