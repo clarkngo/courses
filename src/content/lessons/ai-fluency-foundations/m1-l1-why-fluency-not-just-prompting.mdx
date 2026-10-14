@@ -1,0 +1,122 @@
+---
+title: "Why Fluency, Not Just Prompting"
+description: "Learn the difference between knowing a few AI tricks and being fluent with AI, and get a first look at the four competencies this course is built on: Delegation, Description, Discernment, and Diligence."
+module: 1
+moduleTitle: "What AI Fluency Is"
+lesson: 1
+duration: "15 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## Tricks Expire. Fluency Lasts.
+
+Most AI training online is a list of tricks: magic phrases, prompt templates, "10 prompts every marketer needs." Tricks help, but they have two problems:
+
+1. **They expire.** A trick that works with this month's model may be pointless next month. Interfaces, features, and model behavior keep changing.
+2. **They don't tell you what to do when the trick fails.** A template gets you started. It doesn't tell you whether AI should be doing the task at all, whether the output is any good, or who is responsible if it's wrong.
+
+Think about learning a language. A phrasebook gets you a coffee in a new city. **Fluency** means you can handle a conversation you've never had before: you understand how the language works well enough to adapt. AI fluency is the same idea. It is the ability to work with AI **effectively, efficiently, ethically, and safely**, in situations no template anticipated.
+
+---
+
+## The Four Competencies
+
+This course is built on the **4D AI Fluency Framework**, which breaks fluency into four competencies. Each one answers a question you face every time you use AI:
+
+<ProcessFlow
+  label="The four competencies of AI fluency: Delegation, Description, Discernment, and Diligence"
+  color="#0d9488"
+  steps={[
+    { title: "Delegation", detail: "Should AI do this, and which part?" },
+    { title: "Description", detail: "How do I explain what I need?" },
+    { title: "Discernment", detail: "Is what came back any good?" },
+    { title: "Diligence", detail: "Am I using it responsibly, and do I own the result?" },
+  ]}
+/>
+
+| Competency | In one sentence | What it looks like when it's missing |
+|---|---|---|
+| **Delegation** | Deciding whether, when, and how to bring AI into a piece of work. | Using AI for a task it's bad at, or handing off the part of the job you most needed to do yourself. |
+| **Description** | Explaining what you want clearly enough that AI can help. | Vague requests, generic results, and lots of "that's not what I meant." |
+| **Discernment** | Judging the quality of what AI produces and how it got there. | Pasting confident-sounding output into a report without checking it. |
+| **Diligence** | Taking responsibility for how you use AI and what you do with its output. | Sharing confidential data, hiding AI use when it matters, or blaming "the AI" for a mistake you published. |
+
+These are not steps you do once, in order. In practice they overlap: you describe, discern, describe again, rethink what to delegate, and keep diligence in mind throughout. The rest of this course gives each one its own module.
+
+<Pitfall title="Treating Fluency as Prompting">
+
+**Common mistake:** assuming "getting good at AI" means writing better prompts.
+
+Prompting is part of **Description**, which is only one of four competencies. A perfectly written prompt for a task you shouldn't have delegated, with output you never checked, shared in a way that breaks your organization's rules, is not fluent AI use. It just looks fluent.
+
+</Pitfall>
+
+---
+
+## How This Course Fits
+
+If you've taken **AI Fundamentals**, you already have a head start. Its CRAFT prompting method is a practical tool for Description, and its lessons on verification and responsible use touch on Discernment and Diligence. This course zooms out and gives you a way to reason about *any* AI interaction, including ones where the right answer is "don't use AI here."
+
+Every lesson includes a **Try It** exercise you can do in any free AI assistant (Claude, ChatGPT, Gemini, Copilot, or similar). Nothing in this course depends on a particular tool.
+
+<TryIt title="Run a Quick Fluency Self-Check">
+
+1. Think of the last three times you used AI (or would have liked to). Write each one down in a sentence.
+2. For each, answer four questions, one per competency:
+   - **Delegation:** Was AI a good fit for this task? Did you hand off the right part?
+   - **Description:** Did your first request get you close, or did it take several tries?
+   - **Discernment:** How did you check the output? What would have happened if it was wrong?
+   - **Diligence:** Was there anything you shouldn't have shared? Did anyone need to know AI was involved?
+3. Circle the competency where your answers were weakest. Keep this note: you'll revisit it at the end of the course.
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "What is the main difference between knowing AI tricks and being AI fluent?",
+    options: [
+      "Fluent users memorize more prompt templates.",
+      "Fluency means understanding AI well enough to adapt to new tools and situations, including deciding when not to use it.",
+      "Fluency requires coding skills.",
+      "Tricks are for free tools and fluency is for paid ones."
+    ],
+    correctIndex: 1,
+    explanation: "Tricks are tied to specific tools and moments. Fluency is a transferable way of thinking that covers whether to use AI, how to explain what you need, how to judge results, and how to stay responsible."
+  },
+  {
+    question: "A colleague pastes an AI-generated statistic into a client deck without checking where it came from. Which competency is weakest here?",
+    options: [
+      "Delegation",
+      "Description",
+      "Discernment",
+      "None. AI statistics are reliable."
+    ],
+    correctIndex: 2,
+    explanation: "Discernment is judging whether AI output is accurate and useful. An unchecked statistic in a client deck is a classic discernment gap, with a Diligence problem close behind, since the colleague still owns what they present."
+  },
+  {
+    question: "Which statement about the four competencies is most accurate?",
+    options: [
+      "You complete them once, in strict order.",
+      "Only Description matters for everyday use.",
+      "They overlap and repeat during real work, with Diligence present throughout.",
+      "Diligence only applies to technical teams."
+    ],
+    correctIndex: 2,
+    explanation: "Real AI work loops: you describe, judge, describe again, sometimes rethink what you're delegating, and stay responsible the whole time."
+  }
+]} />
+
+---
+
+## About the Framework
+
+The 4D AI Fluency Framework was created by **Rick Dakan and Joseph Feller** with **Anthropic**, and is released under the [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) license. This course's lessons, examples, and exercises are original. To read the framework in its authors' own words, visit [aifluencyframework.org](https://aifluencyframework.org/).
+
+## Up Next
+
+Before digging into the competencies, it helps to see the three different *ways* people work with AI. Each one changes what good delegation, description, discernment, and diligence look like.

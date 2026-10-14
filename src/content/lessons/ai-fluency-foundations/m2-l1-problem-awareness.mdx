@@ -1,0 +1,125 @@
+---
+title: "Problem Awareness: Know the Work Before You Hand It Off"
+description: "Good delegation starts with understanding your own goal: what success looks like, which parts of the work matter most, and which parts you need to do yourself."
+module: 2
+moduleTitle: "Delegation"
+lesson: 1
+duration: "20 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## Delegation Starts Before AI
+
+When a manager delegates badly, it's rarely because the employee was the wrong person. Usually the manager didn't know what they wanted, or handed off the part of the job they needed to own. Delegating to AI fails the same way.
+
+The framework splits Delegation into three parts:
+
+<ProcessFlow
+  label="The three parts of Delegation: problem awareness, platform awareness, and task delegation"
+  color="#0d9488"
+  steps={[
+    { title: "Problem awareness", detail: "What am I really trying to achieve?" },
+    { title: "Platform awareness", detail: "What can this AI do well, and badly?" },
+    { title: "Task delegation", detail: "Who does which part: me, AI, or both?" },
+  ]}
+/>
+
+This lesson covers the first part. The next lesson covers the other two.
+
+---
+
+## Three Questions Before You Open a Chat
+
+**Problem awareness** means understanding the work well enough to make smart decisions about it. Before reaching for AI, answer three questions:
+
+1. **What's the real goal?** Not the task, the goal. "Write a project update" is a task. "Get the steering committee to approve two more weeks without losing confidence in the team" is a goal. The goal changes what a good update looks like.
+2. **What does success look like?** How will you know the result is good? Who will judge it, and by what standard?
+3. **Which parts of this work matter most, and why?** Some parts are mechanical. Some require your judgment, relationships, or expertise. Some are the whole point, like an essay assignment designed to build *your* thinking.
+
+<Pitfall title="Delegating the Point of the Work">
+
+**Common mistake:** handing AI the part of a task that was the reason for doing it.
+
+A student who asks AI to write a reflective essay gets an essay but skips the reflection the assignment was designed to produce. A manager who has AI write performance reviews from bullet points gets reviews, but not the careful thinking about each person that reviews exist to force. Ask: *if AI does this part, what do I lose?*
+
+</Pitfall>
+
+---
+
+## Break the Work Into Pieces
+
+Most real tasks aren't one thing. Breaking them down shows which parts suit AI. Take "prepare a presentation for a new client":
+
+| Piece | Needs your judgment? | Easy to check? | Good AI candidate? |
+|---|---|---|---|
+| Research the client's industry | Partly | Hard: facts need verification | **Augment**: AI suggests, you verify |
+| Decide the key message | Yes, entirely | — | **You.** This is the point. |
+| Draft an outline | Somewhat | Yes | **Augment**: draft together |
+| Write speaker notes | Somewhat | Yes | **Automate**, then edit in your voice |
+| Format slides consistently | No | Yes | **Automate** |
+| Rehearse and get feedback | Yes | — | **Augment**: AI as a practice audience |
+
+Notice that the decision isn't "use AI or not." It's piece by piece. Some pieces are pure automation, some are partnership, and one stays entirely with you.
+
+<TryIt title="Map a Real Task Before Delegating">
+
+1. Pick a task you'll actually do this week that's bigger than a single email.
+2. Write one sentence for the **real goal** and one sentence for **what success looks like**.
+3. Break the task into four to seven pieces, using a table like the one above.
+4. Mark each piece **You**, **Augment**, or **Automate**, with a short reason.
+5. Optional: share your breakdown with an AI assistant and ask:
+   ```text
+   Here's a task I've broken into pieces, with my plan for which
+   pieces AI should help with. Challenge my plan: where am I handing
+   off something I should own, or doing by hand something AI could
+   speed up? Don't do any of the work yet.
+   ```
+   Decide for yourself whether its pushback is right.
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "Which is a goal rather than a task?",
+    options: [
+      "Write a newsletter.",
+      "Summarize the report.",
+      "Persuade long-time donors to renew this year despite the price increase.",
+      "Make five slides."
+    ],
+    correctIndex: 2,
+    explanation: "A goal names the outcome you're after and why it matters. That shapes what a good newsletter, summary, or slide deck would look like."
+  },
+  {
+    question: "A teacher assigns a reflective journal to help students process what they learned. A student uses AI to write all the entries. What's the delegation problem?",
+    options: [
+      "The AI's grammar may be too good.",
+      "The student delegated the part of the work that was the point of the assignment.",
+      "Journals are too short for AI.",
+      "There's no problem if the entries are accurate."
+    ],
+    correctIndex: 1,
+    explanation: "The journal exists to build the student's own reflection. Delegating it produces the artifact without the learning, which is the core of problem awareness: know what matters before you hand it off."
+  },
+  {
+    question: "What's the main benefit of breaking a task into pieces before using AI?",
+    options: [
+      "It makes prompts longer.",
+      "It reveals which parts suit automation, which suit collaboration, and which you should own.",
+      "It lets you use more AI tools at once.",
+      "It's required by most AI tools."
+    ],
+    correctIndex: 1,
+    explanation: "Delegation decisions are usually piece by piece, not all or nothing. Breaking work down makes those decisions visible."
+  }
+]} />
+
+---
+
+## Up Next
+
+Knowing your problem is half of delegation. The other half is knowing your tools: what current AI is good at, where it struggles, and how to split the work accordingly.

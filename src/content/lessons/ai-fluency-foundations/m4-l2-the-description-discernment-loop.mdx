@@ -1,0 +1,120 @@
+---
+title: "The Description–Discernment Loop"
+description: "Turn evaluation into better instructions. Learn to give specific, diagnostic feedback, know when to keep iterating versus restart or stop, and build a personal checklist for judging AI work."
+module: 4
+moduleTitle: "Discernment"
+lesson: 2
+duration: "25 min"
+---
+
+import LoopDiagram from '@components/LoopDiagram.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## Two Skills, One Loop
+
+Description and discernment aren't separate steps. They feed each other. Each time you judge a response, you learn something about what your description was missing. Each better description gives you something more useful to judge.
+
+<LoopDiagram
+  label="The description-discernment loop: you describe, AI responds, you discern what works and what doesn't, you diagnose why, and that improves your next description"
+  colors={['#0f766e', '#0d9488', '#14b8a6']}
+  steps={[
+    { title: "Describe", subtitle: "product, process, behavior" },
+    { title: "Respond", subtitle: "AI works" },
+    { title: "Discern", subtitle: "what's off?" },
+    { title: "Diagnose", subtitle: "why was it off?" },
+  ]}
+/>
+
+The step most people skip is **Diagnose**. "This isn't good, try again" gives the AI nothing to work with. Asking *why* it isn't good usually points to a specific gap in your description.
+
+---
+
+## From Reaction to Diagnosis
+
+| What you notice (discern) | Likely cause (diagnose) | Better feedback (describe) |
+|---|---|---|
+| "Too generic." | Missing context about audience or situation. | "Readers are night-shift nurses with ten minutes on break. Rewrite for them." |
+| "Wrong tone." | Tone wasn't specified, or the adjective was vague. | "Less formal, closer to this example: [paste]." |
+| "It made things up." | No source boundary; gaps were filled with guesses. | "Use only the attached notes. Put [CHECK] where you'd need information you don't have." |
+| "It missed half my requirements." | Instructions were long and unordered. | "Let's do this in parts. First, only section 1, covering points A and B." |
+| "It agreed with my bad idea." | No performance description inviting pushback. | "Critique this plan as a skeptical finance director. Name the weakest assumption." |
+
+**Specific feedback beats starting over.** In the same conversation, the AI can see both its draft and your critique, so revisions are targeted.
+
+## Iterate, Restart, or Stop?
+
+The loop isn't infinite. Know when to change course:
+
+- **Keep iterating** when each round gets closer and the problems are specific and fixable.
+- **Restart in a new chat** when the conversation has gone off track, filled up with failed attempts, or anchored on a bad early direction. Bring a better description built from what you learned.
+- **Stop and rethink delegation** when several rounds aren't converging, or when you realize the problem is the task, not the wording. Maybe this part should be yours, or needs a different tool. That's discernment feeding back into **delegation**.
+
+<Pitfall title="Polishing the Wrong Thing">
+
+**Common mistake:** spending ten rounds perfecting the wording of a draft whose core idea is wrong.
+
+Discern from the top down: first ask whether the overall approach and key claims are right, then the structure, and only then the sentence-level polish. Fixing commas in a flawed argument wastes your time and hides the real problem.
+
+</Pitfall>
+
+<TryIt title="Run the Loop and Build Your Checklist">
+
+1. Ask an AI for something moderately complex you actually need, such as a plan, a draft, or an explanation.
+2. Run the loop at least **three times**. Each time, write down:
+   - **Discern:** the single biggest problem with the current version.
+   - **Diagnose:** the gap in your description that caused it.
+   - **Describe:** the exact feedback you sent.
+3. Decide at the end: was this an **iterate**, **restart**, or **rethink delegation** situation?
+4. From what you noticed, write a **personal discernment checklist** of five to seven questions you'll ask about any important AI output. Start with these and adapt them:
+   - Are the specific facts verified against a real source?
+   - Did it do everything I asked?
+   - Is it right for the audience?
+   - What did it assume?
+   - Would I sign my name to this?
+5. Save the checklist somewhere you'll see it. You'll use it in the course challenge.
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "Which is the most useful feedback on a weak AI draft?",
+    options: [
+      "'Try again.'",
+      "'Make it better.'",
+      "'The audience is first-time homebuyers, so cut the finance jargon and explain escrow in one plain sentence.'",
+      "'This is bad.'"
+    ],
+    correctIndex: 2,
+    explanation: "Good feedback names the problem and its cause, which turns discernment into a better description the AI can act on."
+  },
+  {
+    question: "After eight rounds, the AI's market analysis still isn't converging, and you realize it has no access to the data the analysis needs. What should you do?",
+    options: [
+      "Keep rewording the request.",
+      "Rethink delegation: get the data yourself, provide it, or do this part differently.",
+      "Accept the latest version.",
+      "Ask the AI to try harder."
+    ],
+    correctIndex: 1,
+    explanation: "When the problem is the task and not the wording, more iteration won't help. Discernment feeds back into delegation."
+  },
+  {
+    question: "Why discern 'from the top down'?",
+    options: [
+      "Because AI writes from the top down.",
+      "So you catch a flawed overall approach before spending effort polishing sentences.",
+      "Because the bottom of a response is always correct.",
+      "It's faster to read that way."
+    ],
+    correctIndex: 1,
+    explanation: "Checking the core approach and claims first avoids wasting rounds on wording that won't survive a fix to the substance."
+  }
+]} />
+
+---
+
+## Up Next
+
+You can now delegate, describe, and discern. The final competency ties them together: **Diligence**, which means taking responsibility for how you use AI and what you do with its output.

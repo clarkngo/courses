@@ -1,0 +1,117 @@
+---
+title: "Judging the Product, the Process, and the Performance"
+description: "Evaluate AI work on three levels: is the output accurate and fit for purpose, was the reasoning behind it sound, and did the AI behave the way you needed it to?"
+module: 4
+moduleTitle: "Discernment"
+lesson: 1
+duration: "25 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## Fluent Isn't the Same as Right
+
+AI output almost always *sounds* good: well organized, confident, grammatically clean. That's exactly why discernment matters. Polish is not evidence of accuracy. Discernment is the skill of assessing AI's work **as carefully as you would a new colleague's**, and it mirrors the three types of description:
+
+| Type | Question | Red flags |
+|---|---|---|
+| **Product discernment** | Is the output accurate, complete, and fit for its purpose? | Unverifiable specifics, missing pieces, wrong audience, generic filler |
+| **Process discernment** | Was the reasoning sound? | Logical leaps, ignored sources, unstated assumptions, steps that don't connect |
+| **Performance discernment** | Did the AI behave the way I needed? | Agreeing with everything, not asking when it should have, overconfidence, drifting from instructions |
+
+---
+
+## Product Discernment: Check the Output
+
+Run through these checks, scaled to the stakes:
+
+1. **Accuracy.** Are the facts, figures, names, dates, quotes, and citations real? Verify specifics against a source you trust: the original document, an official site, or an expert. Be most suspicious of precise-looking details such as exact percentages, page numbers, and quotations.
+2. **Completeness.** Did it cover everything you asked for? AI often quietly drops a requirement, especially from long instructions.
+3. **Fit.** Is it right for *this* audience and purpose? A technically correct answer at the wrong reading level is still the wrong answer.
+4. **Substance.** Is there real content, or just confident-sounding generalities? Try summarizing the key point in one sentence. If you can't, there may not be one.
+
+## Process Discernment: Check the Reasoning
+
+When AI shows its work, or when you ask it to, look at *how* it got there:
+
+- Does each step actually follow from the previous one?
+- Did it use the sources you specified, or drift to general knowledge?
+- What did it assume? Are those assumptions true for your situation?
+- If it compared options, did it apply the same criteria to each?
+
+A right answer reached by bad reasoning is a warning sign. It won't stay right when the situation changes slightly.
+
+## Performance Discernment: Check the Behavior
+
+Step back from the content and ask how the collaboration went:
+
+- **Too agreeable?** AI assistants tend to go along with your framing. If it praised every idea you had, ask it directly for the weaknesses.
+- **Asked when it should have?** If key information was missing, did it flag the gap or quietly fill it?
+- **Honest about uncertainty?** Did it signal low confidence where appropriate, or present guesses as facts?
+- **Followed your performance description?** If you asked for hints and got answers, it drifted.
+
+<Pitfall title="Asking the Same AI to Verify Itself">
+
+**Common mistake:** asking "Are you sure?" or "Is that accurate?" and treating "Yes" as verification.
+
+AI may confidently confirm an error, or abandon a correct answer just because you questioned it. Neither tells you the truth. Asking for sources, reasoning, or counter-arguments can be useful **input** to your judgment, but real verification means checking against something outside the conversation.
+
+</Pitfall>
+
+<TryIt title="Audit an AI Answer on All Three Levels">
+
+1. Ask an AI assistant a question in an area you know well, ideally one with specifics, for example:
+   ```text
+   Explain the main rules for [a process you know well at work or
+   in a hobby], including any key numbers, deadlines, or names.
+   ```
+2. **Product:** Mark every specific claim as ✅ correct, ❌ wrong, or ❓ unsure. Count each.
+3. **Process:** Ask *"Walk me through how you arrived at that, and what you assumed."* Does the reasoning hold up?
+4. **Performance:** Push back on a claim you *know* is correct: *"I think that's wrong."* Does the AI hold its ground with reasoning, or cave immediately?
+5. Write two sentences on what this tells you about trusting this tool in an area you *don't* know well.
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "Which detail in an AI-written report deserves the most scrutiny?",
+    options: [
+      "A general statement that communication matters.",
+      "A precise statistic attributed to a named study with a specific year.",
+      "A transition sentence between sections.",
+      "The report's headings."
+    ],
+    correctIndex: 1,
+    explanation: "Precise-looking specifics, like exact figures, named sources, and dates, look authoritative and are the most likely to be fabricated or garbled. Verify them against the original source."
+  },
+  {
+    question: "You challenge a correct AI answer and it immediately says 'You're right, I apologize' and changes it. Which kind of discernment does this inform?",
+    options: [
+      "Product discernment",
+      "Process discernment",
+      "Performance discernment",
+      "Delegation"
+    ],
+    correctIndex: 2,
+    explanation: "This is about how the AI behaves as a collaborator. Here it is overly agreeable, which means you can't rely on it to defend correct answers or catch your mistakes."
+  },
+  {
+    question: "What counts as real verification of an AI-provided fact?",
+    options: [
+      "Asking the AI 'Are you sure?'",
+      "Asking the same question in a new chat with the same AI.",
+      "Checking it against a trusted source outside the conversation.",
+      "Noticing that the answer is well written."
+    ],
+    correctIndex: 2,
+    explanation: "Verification needs an independent source, such as an original document, an official website, or an expert. Re-asking the AI tests consistency, not truth."
+  }
+]} />
+
+---
+
+## Up Next
+
+Discernment and description work best as a loop: what you notice when judging output tells you what to describe better next time. The next lesson turns that loop into a habit.

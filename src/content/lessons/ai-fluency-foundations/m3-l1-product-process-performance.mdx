@@ -1,0 +1,123 @@
+---
+title: "Describe the Product, the Process, and the Performance"
+description: "Effective description covers three things: what you want produced, how you want AI to approach the work, and how you want it to behave while working with you."
+module: 3
+moduleTitle: "Description"
+lesson: 1
+duration: "20 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## More Than a Prompt
+
+Description is how you communicate with AI so it can actually help. Most prompting advice covers only one part of it: describing the output you want. The framework identifies **three things** worth describing:
+
+| Type | Question it answers | Example |
+|---|---|---|
+| **Product description** | *What* should the result be? | "A one-page memo for the operations director, under 400 words, with a recommendation in the first paragraph." |
+| **Process description** | *How* should AI approach the work? | "First list the three options with pros and cons. Then pick one and justify it. Flag any assumptions." |
+| **Performance description** | *How* should AI behave while working with me? | "Be direct and skeptical. Push back if my reasoning is weak. Ask before making assumptions about our budget." |
+
+Most disappointing AI results come from a missing type, not a badly worded sentence.
+
+---
+
+## Product Description
+
+Product description is the most familiar. It covers what the finished thing should be:
+
+- **Purpose and audience:** who it's for and what they need to do with it.
+- **Format and length:** memo, table, bullet list, script; word count or page count.
+- **Content and constraints:** what it must include, what it must avoid, and which sources to rely on.
+- **Style and tone:** plain, formal, warm, technical; reading level.
+- **Examples:** "Here's a past memo that hit the right tone." One good example often beats a paragraph of adjectives.
+
+If you've learned the **CRAFT** method in AI Fundamentals, its Context, Ask, and Format parts are mostly product description.
+
+## Process Description
+
+Process description tells AI **how to get there**. It matters most for complex or high-stakes work, where *how* the answer is reached affects whether you can trust it:
+
+- "Work step by step and show your reasoning before the final answer."
+- "Only use information from the attached policy document. If the answer isn't there, say so."
+- "Before drafting, ask me up to five clarifying questions."
+- "Give me three different approaches first. I'll pick one before you write anything."
+
+A good process description also makes **discernment** easier later, because you can see how the AI reached its answer instead of just the answer.
+
+## Performance Description
+
+Performance description sets how AI should **behave as a collaborator**. It's the least-used and often the most powerful:
+
+- "Act as a tough reviewer. Don't soften criticism."
+- "I'm learning this topic. Give hints, not answers."
+- "Keep responses short. I'll ask for detail if I need it."
+- "If you're not confident about a fact, tell me instead of guessing."
+
+Performance description becomes essential in **agency** mode. When you configure an assistant that others will use, its instructions are mostly performance description: how to respond, what to refuse, when to hand off to a human.
+
+<Pitfall title="Describing Only the Product">
+
+**Common mistake:** writing a detailed description of the output and saying nothing about process or performance, then being surprised when the AI fills gaps with confident guesses or agrees with every idea you have.
+
+If you need sources respected, reasoning shown, or honest pushback, say so explicitly. AI assistants tend to be agreeable and to keep going rather than stop and ask, unless you describe a different behavior.
+
+</Pitfall>
+
+<TryIt title="Add the Missing Two Types">
+
+1. Pick a real request you'd normally make in one sentence, for example "help me write a proposal for a new mentoring program."
+2. Expand it into a **product description**: audience, purpose, format, length, must-includes.
+3. Add a **process description** of two or three sentences about how the AI should work: steps, sources, whether to ask questions first.
+4. Add a **performance description** of one or two sentences about how it should behave with you.
+5. Send the full version in a new chat. Then send only the one-sentence version in a separate new chat. Compare:
+   - Which result needs less editing?
+   - Which one asked you useful questions or flagged assumptions?
+   - Which part of your description made the biggest difference?
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "'Only use the attached handbook, and say \"not found\" if the answer isn't in it.' Which type of description is this?",
+    options: [
+      "Product description",
+      "Process description",
+      "Performance description",
+      "None of these"
+    ],
+    correctIndex: 1,
+    explanation: "It tells the AI how to approach the work (which source to use and what to do when the answer is missing), so it's a process description."
+  },
+  {
+    question: "'Be blunt. If my argument has holes, tell me plainly.' Which type is this?",
+    options: [
+      "Product description",
+      "Process description",
+      "Performance description",
+      "Delegation"
+    ],
+    correctIndex: 2,
+    explanation: "It describes how the AI should behave as a collaborator, which is performance description."
+  },
+  {
+    question: "Why does process description help with discernment later?",
+    options: [
+      "It makes the output shorter.",
+      "It lets you see how the AI reached its answer, so you can judge the reasoning and not just the result.",
+      "It guarantees the answer is correct.",
+      "It switches the AI to a more powerful model."
+    ],
+    correctIndex: 1,
+    explanation: "When you ask for visible steps, sources, or assumptions, you get material to evaluate. Description and discernment reinforce each other."
+  }
+]} />
+
+---
+
+## Up Next
+
+The next lesson puts all three types to work on a realistic task, including when to give examples, how to describe what you *don't* want, and how to describe when you don't yet know what you want.

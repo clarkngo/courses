@@ -1,0 +1,141 @@
+---
+title: "Three Ways to Work With AI: Automation, Augmentation, Agency"
+description: "Recognize the three modes of human-AI interaction, from handing off a task to thinking alongside AI to setting AI up to act on your behalf, and how the right mode depends on the work."
+module: 1
+moduleTitle: "What AI Fluency Is"
+lesson: 2
+duration: "20 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## Same Tool, Different Relationships
+
+You can use the same AI assistant in very different ways. Asking it to reformat a spreadsheet, talking through a hard decision with it, and setting it up to answer customer questions while you sleep are three different relationships, with different risks. The 4D framework names three **modes** of interaction:
+
+| Mode | Who does what | Everyday example | Your main job |
+|---|---|---|---|
+| **Automation** | You define a task; AI carries it out. | "Turn these meeting notes into a bulleted action list." | Specify the task clearly and check the result. |
+| **Augmentation** | You and AI think together; neither could do it as well alone. | Brainstorming a project plan, debating options, getting critique on a draft. | Bring judgment and context; steer the conversation. |
+| **Agency** | You set AI up to act independently on future tasks, often for other people. | A support chatbot you configure, or an AI agent that triages your inbox each morning. | Design its behavior, set limits, and monitor what it does. |
+
+<svg viewBox="0 0 700 220" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A spectrum of human involvement. Automation: you direct each task. Augmentation: you and AI work side by side. Agency: AI acts on its own within limits you set. Moving right, AI acts more independently and the cost of a design mistake grows.">
+  <defs>
+    <linearGradient id="aff-mode-grad" x1="0" x2="1" y1="0" y2="0">
+      <stop offset="0" stop-color="#99f6e4"/>
+      <stop offset="1" stop-color="#0f766e"/>
+    </linearGradient>
+    <marker id="aff-mode-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#0f766e"/>
+    </marker>
+  </defs>
+  <g font-family="system-ui, -apple-system, sans-serif">
+    <rect x="30" y="40" width="640" height="16" rx="8" fill="url(#aff-mode-grad)"/>
+    <g text-anchor="middle">
+      <circle cx="120" cy="48" r="14" fill="#ffffff" stroke="#14b8a6" stroke-width="3"/>
+      <circle cx="350" cy="48" r="14" fill="#ffffff" stroke="#0d9488" stroke-width="3"/>
+      <circle cx="580" cy="48" r="14" fill="#ffffff" stroke="#0f766e" stroke-width="3"/>
+      <text x="120" y="95" font-size="16" font-weight="700" fill="#0f172a">Automation</text>
+      <text x="120" y="117" font-size="13" fill="#334155">You direct each task</text>
+      <text x="350" y="95" font-size="16" font-weight="700" fill="#0f172a">Augmentation</text>
+      <text x="350" y="117" font-size="13" fill="#334155">You and AI think together</text>
+      <text x="580" y="95" font-size="16" font-weight="700" fill="#0f172a">Agency</text>
+      <text x="580" y="117" font-size="13" fill="#334155">AI acts within limits you set</text>
+    </g>
+    <line x1="120" y1="165" x2="575" y2="165" stroke="#0f766e" stroke-width="2" marker-end="url(#aff-mode-arrow)"/>
+    <text x="350" y="192" text-anchor="middle" font-size="13" fill="#334155">More AI independence → more design up front and more monitoring after</text>
+  </g>
+</svg>
+
+None of these modes is "better." A fluent user moves between them deliberately, sometimes within a single project.
+
+---
+
+## Automation: Clear Task, Checkable Result
+
+Automation works best when the task is **well defined** and the result is **easy to check**: reformatting, summarizing a document you can skim, extracting dates from a list, translating a short note you can verify with a colleague.
+
+The risk in automation is complacency. Because it feels like a vending machine, it's tempting to stop checking. The fix is to keep automation for tasks where checking is quick, and to actually do the check.
+
+## Augmentation: Thinking Partner
+
+Augmentation is where most of the surprising value of AI shows up. You're not asking for a finished product; you're using AI to widen your options, test your reasoning, or see your work from another angle.
+
+- "Here's my plan for the training rollout. What are three ways it could fail?"
+- "Argue the opposite side of this decision as strongly as you can."
+- "I'm stuck on how to open this talk. Ask me questions until we find the angle."
+
+The risk in augmentation is **outsourcing the thinking you were supposed to be doing**. If AI makes every decision and you just nod along, you've slipped into automation without meaning to.
+
+## Agency: AI Acting on Your Behalf
+
+In agency mode, you're no longer in every conversation. You configure AI (with instructions, documents, tools, or permissions) and it handles future situations on its own: a custom assistant that answers staff questions about the employee handbook, or an agent that drafts replies to routine emails.
+
+The stakes rise because **mistakes repeat without you there to catch them**. Agency needs the most careful description (you're writing instructions for situations you can't fully predict) and ongoing discernment (you have to monitor what it actually does).
+
+<Pitfall title="Mode Drift">
+
+**Common mistake:** starting in augmentation ("help me think through this budget") and drifting into automation ("just finalize it") without noticing that you stopped thinking critically.
+
+A useful habit: when a conversation shifts from "help me think" to "just do it," pause and ask yourself whether the task is now well defined and easy to check. If it isn't, stay in augmentation.
+
+</Pitfall>
+
+<TryIt title="Sort Your Own Tasks by Mode">
+
+1. List six tasks from your work or studies that AI could plausibly help with.
+2. Label each one **Automation**, **Augmentation**, or **Agency**, based on how you'd want AI involved, not just what's possible.
+3. Pick one **Augmentation** task. Open an AI assistant and try this:
+   ```text
+   I want you to act as a thinking partner, not to do this for me.
+   Here's what I'm working on: [describe the task]. Ask me three
+   questions that would help me think it through more clearly.
+   Wait for my answers before giving any suggestions.
+   ```
+4. Answer the questions. Notice how the conversation feels different from asking for a finished product.
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "You set up an AI assistant with your team's FAQ document so new hires can ask it questions any time. Which mode is this?",
+    options: [
+      "Automation",
+      "Augmentation",
+      "Agency",
+      "None of these"
+    ],
+    correctIndex: 2,
+    explanation: "You configured AI to handle future conversations independently, for other people, without you present. That's agency."
+  },
+  {
+    question: "Which task is the best fit for automation?",
+    options: [
+      "Deciding which job candidate to hire.",
+      "Converting a list of 40 dates from MM/DD/YYYY to YYYY-MM-DD, which you can spot-check.",
+      "Developing your organization's five-year strategy.",
+      "Writing a personal apology to a client you upset."
+    ],
+    correctIndex: 1,
+    explanation: "Automation fits well-defined tasks with results that are easy to check. Hiring, strategy, and personal apologies all need your judgment and voice."
+  },
+  {
+    question: "Why does agency mode demand more care than automation?",
+    options: [
+      "Agency tools are more expensive.",
+      "Mistakes can repeat across many future interactions without you there to catch them.",
+      "Agency mode is always less accurate.",
+      "It doesn't. All three modes carry equal risk."
+    ],
+    correctIndex: 1,
+    explanation: "When AI acts on your behalf over time, a flaw in its setup gets repeated. That's why agency needs careful instructions up front and monitoring afterward."
+  }
+]} />
+
+---
+
+## Up Next
+
+Module 2 starts with the first competency, **Delegation**: knowing your own work well enough to decide what AI should and shouldn't do.

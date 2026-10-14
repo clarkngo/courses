@@ -1,0 +1,125 @@
+---
+title: "Description in Practice"
+description: "Apply product, process, and performance description to a realistic task, using examples, boundaries, and interviewing techniques for when you don't know exactly what you want yet."
+module: 3
+moduleTitle: "Description"
+lesson: 2
+duration: "25 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## Four Techniques That Make Description Work
+
+### 1. Show, Don't Just Tell
+
+Adjectives like "professional," "engaging," or "concise" mean different things to different people, and to AI. An **example** removes the guesswork:
+
+```text
+Here's a past announcement our staff liked. Match its length, tone,
+and structure, but not its content:
+
+[paste example]
+```
+
+Say clearly which qualities of the example to copy. Otherwise AI may copy the wrong ones, such as reusing its exact phrases.
+
+### 2. Describe the Boundaries
+
+What you *don't* want is often as important as what you do:
+
+- "Don't use jargon. Readers are new volunteers, not staff."
+- "Don't invent statistics. Leave a placeholder like [STAT] where a number should go."
+- "Don't change the meaning, only the wording."
+
+Placeholders are especially useful: they stop AI from filling gaps with plausible fiction and show you exactly what you need to supply.
+
+### 3. Let AI Interview You
+
+When you're not sure what you want, don't fake it. Use a performance description that turns the AI into an interviewer:
+
+```text
+I need to write a grant summary but I'm not sure what to emphasize.
+Ask me questions one at a time, up to eight, to figure out what
+matters most. After that, propose an outline for my approval.
+Don't write the summary yet.
+```
+
+This is description *and* augmentation together. The questions often clarify your own thinking.
+
+### 4. Describe in Layers
+
+For big tasks, don't describe everything at once. Describe the **plan** first, approve it, then describe each piece. A layered approach keeps you in control of the important decisions and makes errors easier to catch early.
+
+<Pitfall title="The Wall of Instructions">
+
+**Common mistake:** writing a 600-word prompt covering every possible detail, sending it, and then not being able to tell which instruction the AI ignored.
+
+Long descriptions are fine when they're organized. Group them under headings (Product, Process, Behavior), put the most important instruction first, and for complex work describe in layers instead of all at once.
+
+</Pitfall>
+
+---
+
+## Lab: Describe a Real Task Three Ways
+
+This lab uses a realistic scenario. Feel free to swap in your own.
+
+> **Scenario:** You coordinate a community library's volunteer program. Volunteer sign-ups have dropped 30% this year. You need to present options to the library board next month.
+
+<TryIt title="Build a Full Description, Layer by Layer">
+
+1. **Layer 1: interview.** Start a new chat and ask the AI to interview you about the situation (up to six questions, one at a time). Answer using the scenario, inventing reasonable details.
+2. **Layer 2: plan.** Ask for a proposed outline of the board presentation. Add a process description: *"Give three options for reversing the decline, each with cost, effort, and risk. Mark anything you're assuming."* Review the outline and change at least one thing.
+3. **Layer 3: product.** Ask for the presentation's opening section only. Include a product description (board audience, five-minute section, plain language) and a boundary: *"Use [STAT] placeholders instead of inventing numbers."*
+4. **Add a performance description:** *"Now act as a skeptical board member. What three questions would you ask about this proposal?"*
+5. **Reflect.** Write down:
+   - Which layer changed the result most?
+   - Where did the AI make assumptions you had to correct?
+   - What would you put in your first message next time to save a round?
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "Why ask AI to use placeholders like [STAT] instead of numbers?",
+    options: [
+      "Placeholders make the text shorter.",
+      "They stop AI from inventing plausible-sounding figures and show you exactly what you need to supply.",
+      "AI can't produce numbers.",
+      "Placeholders improve the tone."
+    ],
+    correctIndex: 1,
+    explanation: "Boundaries like placeholders prevent fabricated details and make gaps visible, which helps both description and discernment."
+  },
+  {
+    question: "You know you need help with a strategy memo but aren't sure what it should say. What's the most fluent first step?",
+    options: [
+      "Ask for 'a great strategy memo' and hope for the best.",
+      "Ask the AI to interview you with clarifying questions before proposing anything.",
+      "Skip AI entirely until you know exactly what you want.",
+      "Paste in a competitor's memo and ask for a copy."
+    ],
+    correctIndex: 1,
+    explanation: "Letting AI interview you turns uncertainty into a structured conversation, and it often clarifies your own thinking before any drafting starts."
+  },
+  {
+    question: "When you give an example to match, what should you also do?",
+    options: [
+      "Nothing. The example speaks for itself.",
+      "Say which qualities to copy (tone, length, structure) and which not to (its specific content).",
+      "Give at least ten examples.",
+      "Remove all formatting from the example."
+    ],
+    correctIndex: 1,
+    explanation: "Without guidance, AI may copy the wrong features of an example, like its exact wording or topic, instead of the qualities you care about."
+  }
+]} />
+
+---
+
+## Up Next
+
+You've described the work well, and something came back. Is it any good? Module 4 covers **Discernment**: judging the product, the process, and the performance.

@@ -1,0 +1,122 @@
+---
+title: "Diligence: Creation, Transparency, and Deployment"
+description: "Take responsibility at every stage: choose and use AI thoughtfully, be honest about AI's role where it matters, and own the output once it leaves your hands."
+module: 5
+moduleTitle: "Diligence"
+lesson: 1
+duration: "25 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## "The AI Did It" Is Never the Answer
+
+If a colleague's report contains an error, "my intern wrote that part" doesn't get them off the hook. They put their name on it. AI works the same way. **Diligence** is taking responsibility for what you do with AI and how you do it, and the framework breaks it into three stages:
+
+<ProcessFlow
+  label="The three stages of Diligence: creation, transparency, and deployment"
+  color="#0d9488"
+  steps={[
+    { title: "Creation diligence", detail: "Choose tools and use them thoughtfully" },
+    { title: "Transparency diligence", detail: "Be honest about AI's role where it matters" },
+    { title: "Deployment diligence", detail: "Own and verify what you share" },
+  ]}
+/>
+
+---
+
+## Creation Diligence: How You Work With AI
+
+Creation diligence is about the choices you make **while** working:
+
+- **Which tool, with which data?** Use tools your organization or school approves. Personal free accounts may handle data very differently from enterprise tools with data agreements.
+- **What are you sharing?** Don't paste confidential business information, personal data about others (health, finances, performance reviews), or anything you've promised to keep private into a tool not approved for it. When in doubt, remove identifying details or leave it out.
+- **Whose work is it built on?** Be careful asking AI to imitate a specific living creator's work, or to rework copyrighted material you don't have rights to use.
+- **Who could be affected?** Consider whether AI's known weaknesses, like bias in how it describes groups of people, could cause harm in this particular task.
+
+## Transparency Diligence: Being Honest About AI's Role
+
+Transparency means being **honest with the people who have a stake** in how the work was made. The right level depends on context:
+
+| Context | Typical expectation |
+|---|---|
+| School assignments | Follow your instructor's policy exactly. If none is stated, ask before using AI, and disclose how you used it. |
+| Published writing, research, journalism | Disclosure is often required by the publication or institution. Check its policy. |
+| Client or customer deliverables | Follow contracts and your organization's policy. Clients may have a right to know. |
+| Internal routine work (formatting, a first draft you rewrote) | Often no formal disclosure, but follow team norms and never misrepresent. |
+| Anything where the reader assumes it's personally yours (a condolence note, a reference letter) | Think hard. The value of the message may depend on it being genuinely yours. |
+
+The test: **would the people affected feel misled if they knew how this was made?** If yes, be transparent, or rethink the approach.
+
+## Deployment Diligence: Owning the Output
+
+Deployment diligence covers what happens when AI-assisted work **leaves your hands**: sent, published, submitted, or used to make decisions.
+
+- **Verify before you ship.** Apply your discernment checklist, scaled to the stakes. The higher the stakes, the more thorough the check.
+- **You are accountable.** Errors, bias, or plagiarism in AI-assisted work are yours to answer for.
+- **Agency raises the bar.** If you deploy an AI that acts for you, like a chatbot or an automated workflow, you're responsible for its ongoing behavior. Monitor it, and give people a way to reach a human.
+
+<Pitfall title="Disclosure as a Substitute for Checking">
+
+**Common mistake:** adding "This was generated with AI" to a document and treating that as permission to skip verification.
+
+Transparency and deployment diligence are separate duties. A disclosure tells readers how the work was made. It doesn't make errors acceptable. You still own the accuracy of what you share.
+
+</Pitfall>
+
+<TryIt title="Run a Diligence Review on Real Work">
+
+1. Pick a piece of AI-assisted work you've produced recently, or the output from an earlier Try It in this course.
+2. Answer in writing:
+   - **Creation:** Which tool did you use? Was it approved for this kind of data? Did you share anything you shouldn't have?
+   - **Transparency:** Who has a stake in this work? Would they feel misled if they knew AI was involved? What disclosure, if any, is expected?
+   - **Deployment:** What did you verify before sharing? What would happen if a specific claim was wrong?
+3. Look up your organization's or school's AI policy. If you can't find one, write down whom you'd ask.
+4. Note one change you'll make to how you work, based on this review.
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "You need help summarizing customer complaints that include names and account numbers. What's the most diligent approach?",
+    options: [
+      "Paste them into your personal AI account. Summaries are harmless.",
+      "Use your organization's approved AI tool, or remove names and account numbers before using AI.",
+      "Paste them into a temporary chat so nothing is saved.",
+      "Ask the AI to forget the data afterward."
+    ],
+    correctIndex: 1,
+    explanation: "Creation diligence means matching data to approved tools and removing identifying details when you can. Temporary chats and 'please forget' requests don't change the data terms of an unapproved tool."
+  },
+  {
+    question: "Which question best captures transparency diligence?",
+    options: [
+      "Was the AI output well written?",
+      "Would the people affected feel misled if they knew how this was made?",
+      "Did I use the newest AI model?",
+      "Was the AI tool free?"
+    ],
+    correctIndex: 1,
+    explanation: "Transparency is about honesty toward people with a stake in the work. Their reasonable expectations, and any formal policies, determine what disclosure is needed."
+  },
+  {
+    question: "A team deploys an AI assistant to answer benefits questions for employees. Who is responsible when it gives wrong answers?",
+    options: [
+      "The AI vendor, entirely.",
+      "No one. AI errors are unavoidable.",
+      "The team that deployed it, which should monitor its answers and give employees a way to reach a human.",
+      "The employees who asked the questions."
+    ],
+    correctIndex: 2,
+    explanation: "Deployment diligence means owning what you put into the world, including AI that acts on your behalf. That includes monitoring and human escalation paths."
+  }
+]} />
+
+---
+
+## Up Next
+
+The last lesson brings all four competencies together into a personal AI practice you can use every day, and a statement of how you'll use AI that you can share with your team, manager, or instructor.
