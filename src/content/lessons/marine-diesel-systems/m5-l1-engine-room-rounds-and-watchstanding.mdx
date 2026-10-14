@@ -1,0 +1,165 @@
+---
+title: "Engine Room Rounds and Watchstanding"
+description: "Learn how engineers and oilers stand watch: pre-start checks, starting and warm-up, systematic rounds using sight, sound, smell, and touch, keeping the engine log, responding to alarms, and handing over the watch."
+module: 5
+moduleTitle: "Operation and Maintenance"
+lesson: 1
+duration: "25 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## The Watch Keeps the Ship Running
+
+Whether it's a licensed engineer on a cargo ship or a deckhand-engineer on a crabber, someone is responsible for the machinery. Good watchstanding finds small problems **before** they become breakdowns at sea.
+
+---
+
+## Pre-Start Checks
+
+Before starting a main or generator engine (adapt to your vessel's checklist):
+
+- **Fluid levels:** lube oil, coolant expansion tank, reduction gear oil, fuel day tank
+- **Valves:** sea valves open, fuel valves open, exhaust and cooling valves set
+- **Drains:** water drained from fuel filters, air receivers
+- **Bilges:** dry and clean; check for new leaks
+- **Belts and guards:** in place and tight
+- **Turning gear:** **disengaged**
+- **Pre-lube:** run the pre-lube pump if fitted
+- **Indicator cocks** (on larger engines): blow the engine over on air with cocks open to expel any water or fuel from cylinders, then close them
+- **Communication:** tell the bridge or operator you're starting
+
+## Starting and Warm-Up
+
+After starting, check immediately:
+
+1. **Oil pressure** comes up within seconds
+2. **Raw water** discharge is flowing
+3. No unusual **noise, vibration, smoke, or leaks**
+
+Let the engine **warm up** at light load before applying full power. Cold engines wear faster and can seize pistons if loaded hard.
+
+---
+
+## Making Rounds
+
+Rounds are a planned walk through the machinery spaces at a regular interval (often hourly while underway).
+
+<ProcessFlow
+  label="An engine room round: check gauges and alarms, look for leaks and abnormal conditions, listen for changes in sound, smell for burning or fuel, feel temperatures carefully with a hand or IR thermometer, then record readings in the log."
+  color="#1e3a8a"
+  loop="Compare each round to the last. Changes from normal are what you're looking for."
+  steps={[
+    { title: 'Gauges', detail: 'Pressures, temps, levels, alarms' },
+    { title: 'Look', detail: 'Leaks, drips, smoke, bilge levels' },
+    { title: 'Listen', detail: 'Knocks, whines, changes in pitch' },
+    { title: 'Smell', detail: 'Hot oil, fuel, electrical burning' },
+    { title: 'Feel', detail: 'Temps (carefully) or IR thermometer' },
+    { title: 'Log', detail: 'Record readings and actions' },
+  ]}
+/>
+
+### What to Check on Each Round
+
+| System | Items |
+|---|---|
+| **Main engine** | Lube oil pressure and temperature, jacket water temperature, exhaust temperatures per cylinder, boost pressure, rpm, load |
+| **Reduction gear** | Oil pressure and temperature, sounds |
+| **Shafting** | Stern tube and line bearing temperatures, seal or packing leakage |
+| **Generators** | Voltage, frequency, load (kW), temperatures |
+| **Fuel** | Day tank level, filter differential pressures, separator operation, leaks |
+| **Cooling** | Sea strainer differential or condition, expansion tank levels |
+| **Bilges** | Levels and contents (oil? water? where from?) |
+| **Steering gear** | Hydraulic oil level, leaks, noise |
+| **Air** | Starting air receiver pressure, compressor operation |
+
+---
+
+## The Engine Log
+
+The log is a **legal and technical record**. Record:
+
+- Readings at set intervals
+- **Engine starts, stops, and speed changes** (often ordered by the bridge)
+- **Fuel and lube oil** soundings and transfers
+- **Alarms** and actions taken
+- **Maintenance** done during the watch
+- Unusual events
+
+Write clearly, in ink (or the electronic system), and never alter old entries. Corrections are lined through and initialed.
+
+---
+
+## Responding to Alarms
+
+1. **Silence** the audible alarm and **acknowledge** it.
+2. **Identify** what alarmed and check the actual condition (sensor fault or real problem?).
+3. **Act**: reduce load, start a standby pump, switch filters, or stop the engine if needed.
+4. **Inform** the chief engineer or the bridge as required.
+5. **Log** it.
+
+Some conditions cause **automatic shutdown or slowdown**, such as low lube oil pressure, overspeed, and high jacket water temperature. Never **override** a safety shutdown without authorization and a clear understanding of the risk.
+
+<Pitfall title="Silencing Without Investigating">
+
+**Common mistake:** an alarm goes off repeatedly for a "known" issue, so the watchkeeper silences it each time without looking.
+
+That one time it's real, a bearing runs hot or the bilge floods. Every alarm gets **checked**. If an alarm is truly faulty, **repair it** or formally report it. Don't train yourself to ignore it.
+
+</Pitfall>
+
+---
+
+## Handing Over the Watch
+
+The relieving watchkeeper should not take over until they understand:
+
+- Machinery running and on standby
+- Any **abnormal conditions** or ongoing work
+- **Orders** from the chief and bridge
+- Tank levels and transfers in progress
+- Any **lockouts** or isolations in place
+
+---
+
+## Key Takeaway
+
+Do **pre-start checks**, confirm **oil pressure and raw water** immediately after starting, and **warm up** before loading. Make regular **rounds** using all your senses and compare to **normal**. Keep a clear **log**. **Investigate every alarm**, and hand over the watch completely.
+
+<TryIt title="Build a Round Sheet">
+
+For a vessel or engine you know (or from a video tour), make a one-page round sheet with columns for each hour and rows for at least **12** readings: lube oil pressure, jacket water temperature, exhaust temperatures, gear oil pressure, generator kW, fuel day tank level, bilge level, and so on. Add a column for **normal range**.
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "What should you check immediately after starting a marine diesel?",
+      options: ["The paint", "The anchor", "The radar", "Oil pressure and raw water flow"],
+      correctIndex: 3,
+      explanation: "Oil pressure must come up quickly, and raw water must flow to prevent overheating and impeller damage."
+    },
+    {
+      question: "Why open the indicator cocks and blow the engine over on air before starting a large engine?",
+      options: ["To warm it up", "To test the alarm", "To fill the air receivers", "To expel any water or fuel that has collected in the cylinders"],
+      correctIndex: 3,
+      explanation: "Liquid in a cylinder can cause hydraulic lock and serious damage when the engine starts."
+    },
+    {
+      question: "How should an incorrect engine log entry be corrected?",
+      options: ["Line through it and initial the correction", "Erase it", "Tear out the page", "Leave it"],
+      correctIndex: 0,
+      explanation: "The log is a legal record. Corrections are lined through and initialed, never erased."
+    },
+    {
+      question: "An alarm keeps going off for a known minor issue. What should you do?",
+      options: ["Keep silencing it", "Disconnect the sensor", "Ignore it", "Check it every time, and repair or formally report a faulty alarm"],
+      correctIndex: 3,
+      explanation: "Every alarm must be investigated. Faulty alarms should be fixed, not ignored."
+    }
+  ]}
+/>

@@ -1,0 +1,129 @@
+---
+title: "Glossary and Course Review"
+description: "Review the vocabulary of marine diesel engineering, trace the engine's systems one more time, and test yourself across the whole course."
+module: 6
+moduleTitle: "Safety, Environment, and Review"
+lesson: 2
+duration: "30 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## The Engine and Its Systems
+
+<ProcessFlow
+  label="The marine diesel systems covered in this course: fuel delivered clean to the injectors, air packed in by the turbocharger, combustion in the cylinders, lube oil and cooling protecting the engine, exhaust leaving through the emission controls, and power flowing through the propulsion train to the propeller."
+  color="#1e3a8a"
+  loop="Rounds, logs, and planned maintenance keep every system in its normal range."
+  steps={[
+    { badge: 'M2', title: 'Fuel', detail: 'Clean, dry, right pressure' },
+    { badge: 'M4', title: 'Air', detail: 'Filter, turbo, charge cooler' },
+    { badge: 'M1', title: 'Combustion', detail: 'Compression ignition' },
+    { badge: 'M3', title: 'Lube + cooling', detail: 'Oil pressure, raw water' },
+    { badge: 'M4', title: 'Exhaust', detail: 'Wet/dry, SCR, scrubbers' },
+    { badge: 'M1', title: 'Propulsion', detail: 'Gear, thrust bearing, prop' },
+  ]}
+/>
+
+---
+
+## Glossary
+
+| Term | Meaning |
+|---|---|
+| **Azimuth drive** | Propulsion unit that rotates 360° to steer and thrust |
+| **BDN** | Bunker delivery note: fuel quantity, density, sulfur |
+| **Boost** | Charge air pressure from the turbocharger |
+| **Bunkering** | Taking fuel aboard |
+| **Charge air cooler** | Cools compressed intake air to increase density |
+| **Common rail** | High-pressure fuel rail with electronic injectors |
+| **CPP** | Controllable-pitch propeller |
+| **ECA** | Emission Control Area (0.10% sulfur; Tier III NOx for newer ships) |
+| **Keel cooler** | External hull-mounted coolant heat exchanger |
+| **Lash** | Valve clearance |
+| **MARPOL** | International convention on pollution from ships |
+| **MGO / HFO / VLSFO** | Marine gas oil / heavy fuel oil / very low sulfur fuel oil |
+| **Oil Record Book** | Required log of oil transfers, discharges, sludge |
+| **OWS** | Oily water separator (15 ppm discharge limit) |
+| **PMS** | Planned maintenance system |
+| **Purifier** | Centrifugal separator removing water and solids from fuel or oil |
+| **Raw water** | Seawater used for cooling |
+| **SCR** | Selective catalytic reduction (urea + catalyst for NOx) |
+| **TBN** | Total Base Number: oil's acid-neutralizing reserve |
+| **TDC** | Top dead center |
+| **Thrust bearing** | Transfers propeller thrust to the hull |
+| **Turning gear** | Slowly rotates the engine for maintenance; interlocked against starting |
+
+---
+
+## Quick Diagnostic Reference
+
+| Symptom | First checks |
+|---|---|
+| Won't start | Fuel (air in lines), cranking speed, air intake, compression |
+| Black smoke | Air supply, overload, injectors, hull/prop fouling |
+| Blue smoke | Oil burning: rings, guides, turbo seals |
+| White smoke | Cold, water in fuel, low compression, coolant leak |
+| Overheating | Raw water flow, strainer, impeller, coolant level, heat exchanger |
+| Low oil pressure | Stop or reduce load; level, dilution, filter, pump |
+| Power loss + vibration | Propeller fouling or damage |
+
+---
+
+<TryIt title="Capstone: Engine Room Familiarization">
+
+Choose a vessel you can visit (a ferry, workboat, fishing vessel, or your own boat), or use a detailed engine room video tour. Build a familiarization sheet:
+
+1. Main engine make, model, speed class, and power
+2. Propulsion train: gear, shaft seal, propeller or drive type
+3. Fuel path from tank to injector, with filter locations
+4. Cooling type: heat exchanger or keel cooler; sea valve and strainer locations
+5. Starting system: electric or air
+6. Exhaust type: wet or dry; any emission control
+7. Fire safety: remote shut-offs, fixed system, extinguishers, exits
+8. Five readings you'd log every round, with their normal ranges
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "Which engine type typically drives a large container ship's propeller directly, without a reduction gear?",
+      options: ["Low-speed two-stroke", "High-speed four-stroke", "Medium-speed four-stroke", "Gas turbine"],
+      correctIndex: 0,
+      explanation: "Low-speed two-stroke engines turn slowly enough to drive the propeller directly."
+    },
+    {
+      question: "A vessel is operating inside the North American ECA. What is the maximum fuel sulfur content (without a scrubber)?",
+      options: ["0.10%", "3.50%", "0.50%", "1.00%"],
+      correctIndex: 0,
+      explanation: "ECA sulfur limit is 0.10%."
+    },
+    {
+      question: "The jacket water temperature is rising and there's little water from the wet exhaust. What should you check first?",
+      options: ["Lube oil level", "The turbocharger", "Fuel filters", "Raw water flow: sea valve, strainer, and impeller"],
+      correctIndex: 3,
+      explanation: "Low raw water flow is the most common cause of overheating on wet exhaust engines."
+    },
+    {
+      question: "What does rising oil level combined with low viscosity suggest?",
+      options: ["Coolant leak", "Fuel dilution", "Normal operation", "Overfilling"],
+      correctIndex: 1,
+      explanation: "Fuel entering the sump thins the oil and raises its level."
+    },
+    {
+      question: "Why must high-pressure fuel leaks never be checked by hand?",
+      options: ["Fuel can be injected through the skin", "Fuel is cold", "It's dirty", "It voids warranty"],
+      correctIndex: 0,
+      explanation: "Fuel injection injuries are serious medical emergencies. Use cardboard or paper instead."
+    },
+    {
+      question: "Bypassing the oily water separator to discharge bilge water overboard is:",
+      options: ["Allowed in an emergency", "Normal practice", "A serious violation of MARPOL and U.S. law", "Allowed at night"],
+      correctIndex: 2,
+      explanation: "So-called 'magic pipe' cases have resulted in large fines and prison sentences."
+    }
+  ]}
+/>

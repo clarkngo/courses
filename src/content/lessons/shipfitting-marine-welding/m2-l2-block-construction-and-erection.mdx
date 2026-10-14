@@ -1,0 +1,127 @@
+---
+title: "Block Construction and Hull Erection"
+description: "See how modern ships are built in modules, moving from parts to panels to blocks to grand blocks to hull erection, and learn panel lines, pre-outfitting, accuracy control, block alignment, and the erection joint."
+module: 2
+moduleTitle: "Shipfitting"
+lesson: 2
+duration: "25 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Ships Are Built Like Building Blocks
+
+Modern ships aren't built frame by frame on a slipway. They're built as **blocks** (also called modules or units) in shops and staging areas, then lifted into place and joined.
+
+<ProcessFlow
+  label="Modular shipbuilding sequence: parts are cut, assembled into sub-assemblies, joined into flat or curved panels, built into blocks, outfitted with pipe and equipment, joined into grand blocks, then erected in the dock or on the ways and joined at erection joints."
+  color="#9a3412"
+  steps={[
+    { title: 'Parts', detail: 'CNC-cut plates and shapes' },
+    { title: 'Sub-assemblies', detail: 'Webs, brackets, small units' },
+    { title: 'Panels', detail: 'Plates + stiffeners on a panel line' },
+    { title: 'Blocks', detail: '3D units: bottoms, sides, decks' },
+    { title: 'Pre-outfit', detail: 'Pipe, cable trays, foundations' },
+    { title: 'Grand blocks', detail: 'Several blocks joined' },
+    { title: 'Erection', detail: 'Lifted into the dock; joined' },
+  ]}
+/>
+
+### Why Build This Way?
+
+- **Better access:** welding in the shop is often **downhand** (flat), faster and higher quality than overhead work in a finished hull.
+- **Parallel work:** many blocks are built at once.
+- **Pre-outfitting:** installing pipe, cable trays, and equipment foundations in the open block is far easier than in a closed compartment.
+- **Weather protection:** more work happens indoors.
+
+---
+
+## Panel Lines
+
+For flat panels (decks, bulkheads, flat side shell), many yards use a **panel line**:
+
+1. Plates are butt welded into a large flat panel, often by **submerged arc welding (SAW)** from one side.
+2. **Stiffeners** (longitudinals) are positioned and fillet welded, often by automatic **gantry welders**.
+3. Webs and other members are added.
+
+Curved shell blocks are built on adjustable **pin jigs** that hold plates at the correct curvature.
+
+---
+
+## Accuracy Control
+
+Every block must match the blocks around it within tight tolerances. If not, erection joints need **cutting, re-fitting, and extra welding**, which adds cost and distortion.
+
+Accuracy control includes:
+
+- **Shrinkage allowances**: parts cut slightly oversize because welding shrinks steel
+- **Excess stock** (extra material) left on some block edges, trimmed at erection
+- **Dimensional checks** with tapes, lasers, and **3D measurement** (total stations, laser trackers) at each stage
+- Feedback of measurements to **adjust** future cutting and shrinkage factors
+
+---
+
+## Erection
+
+Blocks are lifted by crane into the **building dock** or onto the **ways**, positioned to reference lines (centerline, baseline, frame marks), and supported on **blocks and shores**.
+
+Fitters then:
+
+- Align the block in **all three directions** (fore-aft, athwartships, height) and check **level and plumb**
+- Trim excess stock and prepare **erection joints** (often welded from both sides, or one side with backing)
+- Pull plates into alignment with jacks, dogs, and wedges
+- Tack, then welders complete the joint following the **welding sequence** designed to control distortion
+
+<Pitfall title="Forcing a Block into Place">
+
+**Common mistake:** a block is out of tolerance, so the crew uses heavy jacks and come-alongs to force it to fit, then welds it.
+
+That locks large **residual stresses** into the structure, which can cause distortion when nearby welding is done, or cracks later. Report out-of-tolerance blocks so engineering can approve a correction method, and feed the problem back to accuracy control.
+
+</Pitfall>
+
+---
+
+## Key Takeaway
+
+Ships are built from **parts → panels → blocks → grand blocks → erection**. Blocks allow **downhand welding**, **parallel work**, and **pre-outfitting**. **Accuracy control** with shrinkage allowances, excess stock, and 3D measurement keeps blocks fitting together. At erection, align to **reference lines**, prepare joints, and follow the **weld sequence**.
+
+<TryIt title="Plan a Block">
+
+You're building a flat **deck block**: 4 plates butt-welded together, 10 longitudinal stiffeners, and 2 transverse web frames, plus a pipe penetration and a cable tray.
+
+Order the work. *(Example: 1. Butt weld plates on the panel line. 2. Fit and weld longitudinals. 3. Fit and weld web frames. 4. Cut and fit the pipe penetration collar. 5. Install cable tray supports and foundations (pre-outfit). 6. Dimensional check. 7. Paint or prime as specified. 8. Lift to staging.)*
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "Why is welding in block construction often done 'downhand'?",
+      options: ["It's required by law", "Overhead welding is impossible", "Flat welding is faster and higher quality, and blocks can be oriented to allow it", "To save gas"],
+      correctIndex: 2,
+      explanation: "Blocks can be turned so most welds are flat, improving productivity and quality."
+    },
+    {
+      question: "What is pre-outfitting?",
+      options: ["Painting the finished ship", "Ordering steel", "Sea trials", "Installing pipe, cable trays, and foundations in blocks before erection"],
+      correctIndex: 3,
+      explanation: "Installing outfit items in open blocks is much easier than in closed compartments later."
+    },
+    {
+      question: "Why are some parts cut slightly oversize?",
+      options: ["Mistakes", "To add weight", "To allow for weld shrinkage", "For decoration"],
+      correctIndex: 2,
+      explanation: "Welding shrinks steel, so shrinkage allowances keep finished dimensions correct."
+    },
+    {
+      question: "What's the risk of forcing an out-of-tolerance block into place with heavy jacks?",
+      options: ["None", "Locked-in residual stresses that can cause distortion or cracking", "Faster welding", "Better alignment everywhere"],
+      correctIndex: 1,
+      explanation: "Forced fits lock in stress. Out-of-tolerance blocks need an engineered correction."
+    }
+  ]}
+/>

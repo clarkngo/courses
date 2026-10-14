@@ -1,0 +1,143 @@
+---
+title: "How a Diesel Engine Works"
+description: "Understand compression ignition, the four-stroke and two-stroke cycles, the main engine parts, and how marine diesels are classified as low-, medium-, and high-speed engines."
+module: 1
+moduleTitle: "Diesel and Propulsion Fundamentals"
+lesson: 1
+duration: "25 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Why Ships Run on Diesel
+
+From a 40-foot crab boat to a container ship longer than three football fields, most of the world's commercial vessels are powered by **diesel engines**. Diesels are:
+
+- **Efficient**: large marine diesels are among the most fuel-efficient engines ever built
+- **Durable**: designed to run for tens of thousands of hours
+- **Torque-rich**: ideal for turning propellers
+- **Fuel-flexible**: able to burn a range of fuels, from marine gas oil to heavy fuel oil
+
+---
+
+## Compression Ignition
+
+A gasoline engine uses a **spark plug** to ignite fuel. A diesel has no spark plug. It relies on **compression ignition**:
+
+1. The piston compresses **air** to a small fraction of its original volume (compression ratios are often somewhere around **14:1 to 22:1**, depending on design).
+2. Compressing air makes it **very hot**, hotter than the fuel's ignition temperature.
+3. Fuel is **injected** as a fine mist into that hot air near the top of the stroke.
+4. The fuel **ignites on its own**, and the expanding gases push the piston down.
+
+Because ignition depends on hot, compressed air, anything that reduces compression, such as worn rings, leaking valves, or a cold engine, makes starting harder.
+
+---
+
+## The Four-Stroke Cycle
+
+Most small and medium marine diesels are **four-stroke** engines. Each cylinder completes four piston strokes (two crankshaft revolutions) per power stroke.
+
+<ProcessFlow
+  label="The four-stroke diesel cycle: intake draws in air, compression squeezes and heats it, power begins when fuel is injected and ignites to push the piston down, and exhaust pushes the burned gases out."
+  color="#1e3a8a"
+  loop="Two crankshaft revolutions per cycle, then it repeats."
+  steps={[
+    { title: 'Intake', detail: 'Intake valve open; piston down; air in' },
+    { title: 'Compression', detail: 'Valves closed; piston up; air heats' },
+    { title: 'Power', detail: 'Fuel injected, ignites; piston pushed down' },
+    { title: 'Exhaust', detail: 'Exhaust valve open; piston up; gases out' },
+  ]}
+/>
+
+## The Two-Stroke Cycle
+
+Large ocean-going ships often use huge **two-stroke** engines. They produce a power stroke **every revolution**:
+
+- Near the bottom of the stroke, **scavenge ports** in the cylinder liner open, and pressurized air from the turbocharger blows exhaust out through an **exhaust valve** in the head (this is called **uniflow scavenging**).
+- The piston rises, compressing fresh air; fuel is injected and ignites near the top.
+
+These big engines are often **crosshead** designs, where a crosshead and guides take the side load off the piston, allowing very long strokes.
+
+---
+
+## Main Engine Parts
+
+| Part | Job |
+|---|---|
+| **Cylinder block / frame** | Holds everything in alignment |
+| **Cylinder liner** | Replaceable bore the piston runs in; surrounded by cooling water |
+| **Piston and rings** | Seal compression; transfer force; scrape oil |
+| **Connecting rod** | Links piston to crankshaft |
+| **Crankshaft** | Converts up-and-down motion into rotation |
+| **Cylinder head** | Holds intake and exhaust valves and the fuel injector |
+| **Camshaft** | Times the valves (and on many engines, the fuel pumps) |
+| **Injector** | Atomizes fuel into the cylinder |
+| **Flywheel** | Smooths rotation; turning gear engages it for maintenance |
+
+---
+
+## Speed Classes
+
+| Class | Typical speed | Typical design | Where you see it |
+|---|---|---|---|
+| **Low-speed** | Below about 300 rpm | Two-stroke crosshead, direct drive to the propeller | Large cargo ships, tankers, container ships |
+| **Medium-speed** | About 300–1,000 rpm | Four-stroke trunk piston, usually with a reduction gear | Ferries, cruise ships, tugs, generators |
+| **High-speed** | Above about 1,000 rpm | Four-stroke, compact | Fishing boats, workboats, yachts, emergency generators |
+
+Low-speed engines can turn the propeller directly. Faster engines need a **reduction gear** to bring speed down to an efficient propeller speed.
+
+<Pitfall title="Cranking a Hard-Starting Engine Forever">
+
+**Common mistake:** an engine won't fire, so someone keeps cranking until the batteries are dead or the air receivers are empty.
+
+A diesel needs **air, compression, and fuel at the right time**. If it doesn't fire after a few attempts, stop and check: Is fuel reaching the injectors (air in lines, closed valve, clogged filter)? Is the air intake clear? Is the engine too cold (pre-heat)? Is starting air pressure or battery voltage high enough to turn it fast enough to build compression heat?
+
+</Pitfall>
+
+---
+
+## Key Takeaway
+
+Diesels ignite fuel with the **heat of compression**, not a spark. **Four-stroke** engines fire every two revolutions; **two-stroke** engines fire every revolution. Low-speed two-strokes drive big ships directly, while medium- and high-speed four-strokes usually drive through a **reduction gear**. Starting needs **air, compression, and fuel at the right time**.
+
+<TryIt title="Classify the Engine">
+
+Classify each engine as low-, medium-, or high-speed, and say whether it likely needs a reduction gear:
+
+1. A 2-stroke engine turning 90 rpm on a bulk carrier. *(Low-speed; direct drive.)*
+2. A 4-stroke engine rated 750 rpm on a car ferry. *(Medium-speed; reduction gear.)*
+3. An 1,800 rpm engine on a seiner. *(High-speed; reduction gear.)*
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "What ignites the fuel in a diesel engine?",
+      options: ["A spark plug", "The heat of compressed air", "A glow plug at all times", "Exhaust gas"],
+      correctIndex: 1,
+      explanation: "Compressing air heats it above the fuel's ignition temperature, so injected fuel ignites on its own. Glow plugs only assist cold starts on some engines."
+    },
+    {
+      question: "How often does a two-stroke engine produce a power stroke in each cylinder?",
+      options: ["Every two revolutions", "Every revolution", "Every four revolutions", "Only at full load"],
+      correctIndex: 1,
+      explanation: "Two-stroke engines fire every revolution; four-stroke engines fire every two revolutions."
+    },
+    {
+      question: "Why do medium- and high-speed engines usually need a reduction gear?",
+      options: ["To increase speed", "To start the engine", "To cool the oil", "To reduce engine speed to an efficient propeller speed"],
+      correctIndex: 3,
+      explanation: "Propellers are most efficient at relatively low rpm, so faster engines drive through a reduction gear."
+    },
+    {
+      question: "Which condition makes a diesel hard to start?",
+      options: ["Warm engine", "Clean fuel filters", "Low compression from worn rings or leaking valves", "Full air receivers"],
+      correctIndex: 2,
+      explanation: "Compression ignition depends on heat from compression. Leaks reduce the heat available to ignite fuel."
+    }
+  ]}
+/>

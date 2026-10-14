@@ -1,0 +1,135 @@
+---
+title: "Container Securing and Other Cargo Types"
+description: "Learn how containers are secured aboard ship with cell guides, twistlocks, lashing rods, and turnbuckles, why the Cargo Securing Manual matters, how lashers work safely, and how breakbulk, ro-ro, and bulk cargo are handled."
+module: 5
+moduleTitle: "Cargo Handling and Safety"
+lesson: 1
+duration: "25 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Why Securing Matters
+
+At sea, ships **roll, pitch, and heave**. Stacks of containers experience huge forces, especially in heavy weather. Poor securing leads to **collapsed stacks** and **containers lost overboard**, a danger to the crew, other vessels, and the environment.
+
+---
+
+## Below Deck: Cell Guides
+
+In the holds of most container ships, containers drop into **cell guides**: vertical steel rails that hold the stacks in place. They need little or no lashing below deck. The crane operator lowers each box into the guides.
+
+## On Deck: Lashing Systems
+
+On deck, above the **hatch covers**, containers are held by a system of fittings:
+
+| Fitting | Job |
+|---|---|
+| **Stacking cones** | Locate containers on top of each other (mostly below deck or as specified) |
+| **Twistlocks** | Lock container corners together vertically; may be **manual**, **semi-automatic (SATL)**, or **fully automatic** |
+| **Lashing rods** | Long steel rods hooked into container corner castings, angled down to the deck or lashing bridge |
+| **Turnbuckles** | Tension the lashing rods |
+| **Lashing bridges** | Raised platforms between bays that let lashings reach higher tiers |
+| **Bridge fittings / buttresses** | Connect adjacent stacks or brace them |
+
+### Twistlock Types
+
+- **Manual**: lashers turn a handle to lock and unlock.
+- **Semi-automatic (SATL)**: locks automatically when a container is landed; must be **unlocked manually** (often with a pole) before discharge.
+- **Fully automatic**: locks and releases with crane movement, with no lasher needed at the corners.
+
+On the wharf, workers often **insert or remove twistlocks** from container corners as the crane hovers. This "**cone station**" or "**coning**" work requires strict procedures because people are working right under the load.
+
+---
+
+## The Cargo Securing Manual
+
+Every ship has an approved **Cargo Securing Manual (CSM)** (required under **SOLAS**) that specifies how cargo must be stowed and secured, including **stack weight limits**, **lashing patterns**, and **fittings**. The ship's **stowage plan** places heavy boxes low and respects limits for each stack.
+
+Overweight or misdeclared containers (see **VGM**, Lesson 2.2) can overload stacks and lashings even when the lashing is done right.
+
+---
+
+## Lashing Safely
+
+Lashing is one of the more hazardous waterfront jobs:
+
+| Hazard | Control |
+|---|---|
+| **Heavy rods and turnbuckles** | Proper technique, team handling, ergonomic tools |
+| **Working at height** on lashing bridges and hatch covers | Guardrails, fall protection where required, three points of contact on ladders |
+| **Falling objects** (twistlocks, rods, debris) | Hard hats; stay out from under crane operations |
+| **Moving containers overhead** | Coordinate with the crane and signal person; never be under a suspended load |
+| **Trip hazards** on deck | Housekeeping; lighting at night |
+| **Weather** | Wet, icy, windy conditions on open decks |
+
+---
+
+## Other Cargo Types
+
+| Type | Description | Handling |
+|---|---|---|
+| **Breakbulk** | Individual pieces: steel, lumber, machinery, project cargo | Cranes with slings and spreader bars; dunnage and lashing in holds |
+| **Ro-ro** (roll-on/roll-off) | Vehicles and rolling equipment driven aboard | Drivers, ramps; vehicles lashed to deck points |
+| **Dry bulk** | Grain, coal, ore, potash | Conveyors, ship loaders, grab cranes; dust and engulfment hazards |
+| **Liquid bulk** | Oil, chemicals, LNG | Pipelines, loading arms; strict fire and spill controls |
+| **Project / heavy lift** | Very large or heavy items (wind turbine parts, modules) | Engineered lift plans, often tandem or ship's heavy-lift cranes |
+
+The Pacific Northwest handles all of these, from containers and autos to grain export terminals along the Columbia River.
+
+<Pitfall title="Discharging Without Unlocking">
+
+**Common mistake:** a crane tries to lift a container from a deck stack, but a **semi-automatic twistlock** at a bottom corner was missed during unlocking.
+
+The crane lifts the container **and** pulls on the one below, potentially damaging the ship, overloading the crane, or dropping a box. Lashers must **confirm all corners unlocked**, and operators must lift slowly and stop at any sign of resistance.
+
+</Pitfall>
+
+---
+
+## Key Takeaway
+
+Below deck, **cell guides** hold containers. On deck, **twistlocks, lashing rods, turnbuckles, and lashing bridges** secure the stacks per the ship's **Cargo Securing Manual**. **Semi-automatic twistlocks** must be unlocked before discharge. Lashing involves **heavy gear, heights, and overhead loads**. Other cargo includes **breakbulk, ro-ro, dry bulk, liquid bulk, and project cargo**.
+
+<TryIt title="Find the Fittings">
+
+Watch a video of container ship loading or discharge (many ports and shipping lines publish them). Identify:
+
+1. Cell guides in the hold
+2. Twistlocks being inserted or removed on the wharf
+3. Lashing rods and turnbuckles on deck
+4. A lashing bridge
+5. The signal person or hatch tender
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "What holds containers in place below deck in most container ships?",
+      options: ["Lashing rods", "Cell guides", "Ropes", "Nothing"],
+      correctIndex: 1,
+      explanation: "Vertical cell guides in the holds keep stacks aligned and secure."
+    },
+    {
+      question: "What document specifies how cargo must be secured aboard a ship?",
+      options: ["The bill of lading", "The crane log", "The Cargo Securing Manual", "The gate receipt"],
+      correctIndex: 2,
+      explanation: "SOLAS requires an approved Cargo Securing Manual on board."
+    },
+    {
+      question: "What must be done with semi-automatic twistlocks before discharging a deck container?",
+      options: ["Nothing", "Weld them", "Paint them", "Unlock them manually"],
+      correctIndex: 3,
+      explanation: "SATLs lock automatically but must be manually unlocked before discharge."
+    },
+    {
+      question: "Ro-ro cargo refers to:",
+      options: ["Vehicles and rolling equipment driven aboard", "Grain", "Liquid chemicals", "Containers only"],
+      correctIndex: 0,
+      explanation: "Roll-on/roll-off cargo is driven on and off the ship."
+    }
+  ]}
+/>

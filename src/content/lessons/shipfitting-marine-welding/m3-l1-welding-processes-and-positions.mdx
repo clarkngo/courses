@@ -1,0 +1,139 @@
+---
+title: "Welding Processes and Positions"
+description: "Compare SMAW, FCAW, GMAW, GTAW, and SAW and where each is used in shipyards, decode electrode and wire classifications like E7018 and E71T-1, and learn the AWS welding positions 1G through 4G and 1F through 4F."
+module: 3
+moduleTitle: "Welding for Ships"
+lesson: 1
+duration: "30 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Arc Welding Basics
+
+Arc welding uses an electric arc between an electrode and the work to melt the base metal and filler metal together. The molten pool must be **shielded** from the air, or oxygen and nitrogen cause porosity and brittle welds. Processes differ in how they **feed filler** and **shield** the pool.
+
+---
+
+## The Main Processes
+
+| Process | Common name | Shielding | Where it shines in a shipyard |
+|---|---|---|---|
+| **SMAW** | Stick | Flux coating on the electrode | Repairs, outdoor work, tight spots, all positions; portable |
+| **FCAW** | Flux-core | Flux inside a tubular wire (often plus CO₂ or mixed gas) | **The workhorse** of most steel shipyards: fast, all-position, tolerant of conditions |
+| **GMAW** | MIG | Shielding gas (Ar/CO₂ mixes) | Thin steel, **aluminum** (pulsed spray), robotic welding |
+| **GTAW** | TIG | Argon | Pipe roots, stainless, copper-nickel, critical thin work; slow but precise |
+| **SAW** | Sub-arc | Granular flux blanket | **Panel lines**: long, flat, thick butt and fillet welds; very high deposition |
+
+Other processes you'll see: **electrogas** and **electroslag** for vertical seams on thick side shell, **stud welding** for insulation pins and fasteners, and **friction stir welding** for aluminum panels.
+
+### DCEP, DCEN, AC
+
+- **DCEP** (electrode positive, "reverse polarity"): deeper penetration; used for most SMAW and GMAW and many FCAW wires
+- **DCEN** (electrode negative): used for some FCAW self-shielded wires and GTAW of steel
+- **AC**: some stick electrodes and GTAW of aluminum
+
+Always set polarity as the electrode or wire manufacturer and the **welding procedure** specify.
+
+---
+
+## Decoding Filler Classifications (AWS)
+
+### Stick Electrode: E7018
+
+| Part | Meaning |
+|---|---|
+| **E** | Electrode |
+| **70** | Minimum tensile strength **70 ksi** |
+| **1** | **All positions** (a 2 means flat and horizontal only) |
+| **8** | Coating type and current: **low-hydrogen**, iron powder, AC or DCEP |
+
+E7018 is a **low-hydrogen** electrode, important for avoiding hydrogen cracking in ship steels. It must be kept **dry** in a rod oven once the can is opened.
+
+### Flux-Cored Wire: E71T-1
+
+| Part | Meaning |
+|---|---|
+| **E** | Electrode |
+| **7** | **70 ksi** minimum tensile |
+| **1** | **All positions** (a 0 means flat and horizontal) |
+| **T** | **Tubular** (flux-cored) |
+| **-1** | Usability group (here, gas-shielded, typically with CO₂) |
+
+Additional suffixes (like **C** or **M** for gas type, and **H8** for diffusible hydrogen) appear on many wires.
+
+### Solid Wire: ER70S-6
+
+**ER** = electrode or rod, **70** = 70 ksi, **S** = solid, **6** = chemistry (extra deoxidizers for welding over light mill scale).
+
+---
+
+## Welding Positions
+
+| Code | Groove (plate) | Fillet |
+|---|---|---|
+| **1** | **1G** Flat | **1F** Flat |
+| **2** | **2G** Horizontal | **2F** Horizontal |
+| **3** | **3G** Vertical (up or down) | **3F** Vertical |
+| **4** | **4G** Overhead | **4F** Overhead |
+
+Pipe positions include **5G** (horizontal fixed pipe, weld goes around) and **6G** (pipe fixed at 45°). A welder qualified in harder positions is often qualified for easier ones too, according to the applicable code.
+
+Shipbuilding involves lots of **vertical and overhead** welding at erection joints, which is why welder qualifications in **3G and 4G** (or 3F and 4F) are valued.
+
+<Pitfall title="Rod Oven? It's Just a Box">
+
+**Common mistake:** leaving E7018 electrodes out on the deck overnight in humid Northwest air, then using them in the morning.
+
+Low-hydrogen coatings absorb moisture, which puts **hydrogen** into the weld and can cause **delayed cracking** hours or days later, especially on higher-strength or thick steel. Store electrodes in a **rod oven** at the specified temperature, follow exposure limits, and re-bake or discard as the procedure requires.
+
+</Pitfall>
+
+---
+
+## Key Takeaway
+
+**FCAW** is the shipyard workhorse; **SAW** runs panel lines; **SMAW** handles repairs; **GMAW** does aluminum and robotics; **GTAW** does pipe roots and special metals. **E7018** = 70 ksi, all-position, low-hydrogen. **E71T-1** = 70 ksi, all-position, flux-cored. Positions run **1 (flat) to 4 (overhead)**, **G** for groove and **F** for fillet. Keep low-hydrogen consumables **dry**.
+
+<TryIt title="Choose the Process">
+
+Pick the most likely process:
+
+1. Butt welding 3/4-inch deck plates on a panel line. *(SAW.)*
+2. Overhead fillet welds at a block erection joint. *(FCAW.)*
+3. Repairing a cracked bracket on a fishing boat at the dock, outdoors, in wind. *(SMAW, or self-shielded FCAW.)*
+4. Welding 5083 aluminum superstructure. *(GMAW, typically pulsed.)*
+5. Root pass on a copper-nickel seawater pipe. *(GTAW.)*
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "What does the '1' in E7018 indicate?",
+      options: ["1 mm diameter", "First pass only", "All-position electrode", "1% carbon"],
+      correctIndex: 2,
+      explanation: "The third digit indicates position usability; 1 means all positions."
+    },
+    {
+      question: "Which process is most common for long, flat butt welds on a panel line?",
+      options: ["SMAW", "GTAW", "Oxy-fuel", "SAW"],
+      correctIndex: 3,
+      explanation: "Submerged arc welding provides very high deposition for long, flat welds."
+    },
+    {
+      question: "What is the 4G position?",
+      options: ["Flat groove", "Horizontal groove", "Overhead groove", "Vertical groove"],
+      correctIndex: 2,
+      explanation: "4G is the overhead groove weld position."
+    },
+    {
+      question: "Why must E7018 electrodes be stored in a rod oven?",
+      options: ["To keep them warm for comfort", "To straighten them", "To increase amperage", "Low-hydrogen coatings absorb moisture, which can cause hydrogen cracking"],
+      correctIndex: 3,
+      explanation: "Moisture introduces hydrogen into the weld, which can cause delayed cracking."
+    }
+  ]}
+/>

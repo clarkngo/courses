@@ -1,0 +1,139 @@
+---
+title: "How a Container Port Works"
+description: "Follow a container from ship to truck or train through a marine terminal's berth, yard, gate, and rail areas, and learn TEUs, dwell time, and the Pacific Northwest's gateway ports."
+module: 1
+moduleTitle: "The Port System"
+lesson: 1
+duration: "20 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## The Box That Changed the World
+
+Before standardized shipping containers, cargo was loaded piece by piece (**breakbulk**), which took days or weeks per ship. The **intermodal container** changed that. A sealed steel box moves from factory to ship to train to truck without its contents being handled.
+
+Today, much of the world's general cargo moves in containers, and a modern terminal can move thousands of boxes a day.
+
+### Container Units
+
+| Unit | Meaning |
+|---|---|
+| **TEU** | Twenty-foot equivalent unit: one 20-ft container |
+| **FEU** | Forty-foot equivalent unit: one 40-ft container (= 2 TEU) |
+| **High cube** | Taller container (9 ft 6 in instead of 8 ft 6 in) |
+| **Reefer** | Refrigerated container that needs power at the terminal and aboard |
+
+Ship capacity and port volume are counted in **TEUs**.
+
+---
+
+## Inside a Terminal
+
+<ProcessFlow
+  label="Import container flow through a marine terminal: the ship berths, ship-to-shore cranes discharge containers, yard tractors or straddle carriers move them to the container yard, yard cranes stack them, then they leave by truck through the gate or by on-dock rail."
+  color="#0f766e"
+  loop="Exports flow the other way: gate or rail in, yard, then crane loads the ship."
+  steps={[
+    { title: 'Berth', detail: 'Ship moored at the wharf' },
+    { title: 'STS crane', detail: 'Discharges and loads boxes' },
+    { title: 'Horizontal transport', detail: 'Yard tractors, straddle carriers' },
+    { title: 'Container yard', detail: 'Stacked by RTG, RMG, or top-pick' },
+    { title: 'Gate', detail: 'Trucks check in and out' },
+    { title: 'Rail', detail: 'On-dock or near-dock intermodal' },
+  ]}
+/>
+
+| Area | What happens |
+|---|---|
+| **Berth / wharf** | Ships tie up; ship-to-shore cranes work the vessel |
+| **Apron** | Space under and behind the cranes where boxes are handed off to transport |
+| **Container yard (CY)** | Rows of stacked containers, organized by ship, destination, weight, and type |
+| **Reefer racks** | Power outlets and monitoring for refrigerated containers |
+| **Gate** | Truck check-in and check-out; inspections and paperwork |
+| **Rail yard** | Building and unloading intermodal trains |
+| **Maintenance and repair (M&R)** | Repair of equipment and containers |
+
+### The Terminal Operating System
+
+A **terminal operating system (TOS)** tracks every container's location and plans every move: which crane, which truck, which stack slot. Equipment operators get work instructions on in-cab screens.
+
+### Dwell Time
+
+**Dwell time** is how long a container sits in the yard. Long dwell clogs the yard and slows everything, which is why terminals track it closely.
+
+---
+
+## The Pacific Northwest Gateway
+
+The ports of **Seattle and Tacoma** manage their container business jointly through the **Northwest Seaport Alliance**, formed in **2015**, making the region one of the largest container gateways in North America. Cargo moves inland largely by **rail**, connecting Asia trade to the Midwest. The region also handles **grain** exports (especially on the Columbia River), **autos**, **breakbulk**, and **Alaska** trade.
+
+---
+
+## Key Players
+
+| Player | Role |
+|---|---|
+| **Port authority** | Owns land and infrastructure; leases terminals |
+| **Terminal operator** | Runs daily operations under the lease |
+| **Shipping line** | Owns or charters ships; books cargo |
+| **Longshore workers** | Load and unload ships and operate terminal equipment; on the U.S. West Coast, represented by the **ILWU** |
+| **Truckers, railroads** | Move containers inland |
+| **U.S. Customs and Border Protection (CBP)** | Clears imports; screens cargo |
+| **U.S. Coast Guard** | Port safety and security |
+
+<Pitfall title="Treating the Terminal Like a Parking Lot">
+
+**Common mistake:** a new worker walks across a container yard to save time.
+
+Terminals are busy industrial sites with **large machines that have big blind spots**, moving fast and constantly. Stay in **designated pedestrian routes**, wear **high-visibility gear**, and never enter operating areas without authorization and communication.
+
+</Pitfall>
+
+---
+
+## Key Takeaway
+
+Containers are counted in **TEUs**. A terminal moves boxes **berth → apron → yard → gate or rail** under a **terminal operating system**. Seattle and Tacoma operate as the **Northwest Seaport Alliance**. Ports involve **port authorities, terminal operators, shipping lines, longshore workers, carriers, CBP, and the Coast Guard**.
+
+<TryIt title="Count the TEUs">
+
+A ship discharges **1,200 forty-foot containers** and **600 twenty-foot containers**. How many TEUs?
+
+1,200 × 2 + 600 × 1 = **3,000 TEU**.
+
+If the terminal's cranes average **30 moves per hour** each (a move is one container), and four cranes work the ship, how long does discharge take? 1,800 moves ÷ (4 × 30) = **15 hours**.
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "How many TEUs is a 40-foot container?",
+      options: ["2", "1", "4", "40"],
+      correctIndex: 0,
+      explanation: "One 40-foot container equals two twenty-foot equivalent units."
+    },
+    {
+      question: "What does a terminal operating system (TOS) do?",
+      options: ["Fuels ships", "Tracks container locations and plans equipment moves", "Repairs cranes", "Clears customs"],
+      correctIndex: 1,
+      explanation: "The TOS is the terminal's planning and tracking brain."
+    },
+    {
+      question: "Which ports formed the Northwest Seaport Alliance?",
+      options: ["Portland and Vancouver", "Everett and Bellingham", "Long Beach and Los Angeles", "Seattle and Tacoma"],
+      correctIndex: 3,
+      explanation: "The ports of Seattle and Tacoma joined their container operations in 2015."
+    },
+    {
+      question: "What is dwell time?",
+      options: ["Time a ship spends at sea", "Crane cycle time", "Truck driving time", "How long a container sits in the terminal yard"],
+      correctIndex: 3,
+      explanation: "Long dwell times congest yards and slow terminal throughput."
+    }
+  ]}
+/>

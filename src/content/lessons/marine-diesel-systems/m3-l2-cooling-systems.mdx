@@ -1,0 +1,153 @@
+---
+title: "Cooling Systems: Raw Water, Fresh Water, and Keel Coolers"
+description: "Understand closed fresh-water jacket cooling and open sea-water circuits, heat exchangers and keel coolers, raw water pumps and impellers, sea chests and strainers, thermostats, coolant treatment, and sacrificial anodes."
+module: 3
+moduleTitle: "Lube Oil and Cooling"
+lesson: 2
+duration: "25 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Getting Rid of Heat
+
+Only part of the fuel's energy turns into shaft power. A large share leaves as **heat** in the exhaust and cooling water. The cooling system keeps metal temperatures in a safe, steady range: hot enough for efficient combustion, cool enough to protect liners, heads, and oil.
+
+---
+
+## Two Circuits
+
+Most marine diesels use **indirect (two-circuit) cooling**:
+
+<svg viewBox="0 0 700 240" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Indirect marine cooling system. On the left, a closed fresh-water circuit runs from the engine jackets through a thermostat to a heat exchanger and back via a circulating pump, with an expansion tank. On the right, sea water enters through a sea chest and strainer, is pumped by a raw water pump through the heat exchanger to absorb heat from the fresh water, and is discharged overboard.">
+  <defs>
+    <marker id="cl-a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#dc2626"/></marker>
+    <marker id="cl-b" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#0369a1"/></marker>
+  </defs>
+  <g font-family="system-ui, -apple-system, sans-serif" font-size="12">
+    <rect x="30" y="70" width="130" height="90" rx="8" fill="#1e3a8a"/>
+    <text x="95" y="112" text-anchor="middle" fill="#fff" font-weight="700">engine</text>
+    <text x="95" y="128" text-anchor="middle" fill="#fff">jackets + head</text>
+    <rect x="300" y="80" width="110" height="70" rx="6" fill="#e2e8f0" stroke="#0f172a" stroke-width="2"/>
+    <text x="355" y="112" text-anchor="middle" fill="#0f172a" font-weight="700">heat</text>
+    <text x="355" y="128" text-anchor="middle" fill="#0f172a" font-weight="700">exchanger</text>
+    <line x1="160" y1="85" x2="296" y2="85" stroke="#dc2626" stroke-width="3" marker-end="url(#cl-a)"/>
+    <text x="230" y="76" text-anchor="middle" fill="#dc2626" font-weight="700">hot fresh water</text>
+    <circle cx="225" cy="85" r="7" fill="#fff" stroke="#dc2626" stroke-width="2"/>
+    <text x="225" y="60" text-anchor="middle" fill="#475569">thermostat</text>
+    <line x1="300" y1="145" x2="164" y2="145" stroke="#0369a1" stroke-width="3" marker-end="url(#cl-b)"/>
+    <text x="230" y="170" text-anchor="middle" fill="#0369a1" font-weight="700">cooled fresh water</text>
+    <circle cx="200" cy="145" r="10" fill="#0369a1"/>
+    <text x="200" y="190" text-anchor="middle" fill="#475569">circulating pump</text>
+    <rect x="80" y="20" width="40" height="26" fill="#cbd5e1" stroke="#0f172a"/>
+    <text x="135" y="38" fill="#475569">expansion tank</text>
+    <line x1="100" y1="46" x2="100" y2="70" stroke="#0f172a"/>
+    <text x="95" y="215" text-anchor="middle" fill="#1e3a8a" font-weight="700">CLOSED fresh-water circuit</text>
+    <rect x="580" y="190" width="80" height="30" fill="#0369a1" opacity="0.3"/>
+    <text x="620" y="210" text-anchor="middle" fill="#0369a1" font-weight="700">sea chest</text>
+    <line x1="620" y1="190" x2="620" y2="150" stroke="#0369a1" stroke-width="3" marker-end="url(#cl-b)"/>
+    <rect x="600" y="130" width="40" height="20" fill="#94a3b8"/>
+    <text x="660" y="144" fill="#475569">strainer</text>
+    <line x1="620" y1="130" x2="620" y2="100" stroke="#0369a1" stroke-width="3"/>
+    <circle cx="620" cy="92" r="10" fill="#0369a1"/>
+    <text x="640" y="80" fill="#475569">raw water</text>
+    <text x="640" y="66" fill="#475569">pump</text>
+    <line x1="610" y1="92" x2="414" y2="100" stroke="#0369a1" stroke-width="3" marker-end="url(#cl-b)"/>
+    <line x1="410" y1="135" x2="520" y2="200" stroke="#dc2626" stroke-width="3" marker-end="url(#cl-a)"/>
+    <text x="500" y="230" text-anchor="middle" fill="#dc2626" font-weight="700">overboard (wet exhaust or discharge)</text>
+    <text x="560" y="30" text-anchor="middle" fill="#0369a1" font-weight="700">OPEN sea-water circuit</text>
+  </g>
+</svg>
+
+- **Fresh-water (jacket) circuit:** a **closed** loop of treated coolant circulates through the engine block, liners, and heads. It stays clean, so corrosion and scale are controlled.
+- **Sea-water (raw water) circuit:** an **open** loop draws seawater through a **sea chest** and **strainer**, pumps it through the **heat exchanger** (and often oil and charge air coolers), and discharges it overboard. On many small vessels, it's injected into the **wet exhaust** to cool it.
+
+### Keel Coolers and Box Coolers
+
+Many workboats, tugs, and fishing vessels use **keel coolers**: tubes or channels mounted **outside the hull** below the waterline. Engine coolant flows through them and sheds heat directly to the surrounding sea. No raw water pump, strainer, or heat exchanger is needed for the jacket water, which means fewer clogging problems in silty or icy water. **Box coolers** do the same inside a recessed hull box.
+
+Keel coolers lose efficiency when **fouled** with marine growth or painted with the wrong coating.
+
+---
+
+## Key Components
+
+| Component | Notes |
+|---|---|
+| **Sea chest and sea valve** | Hull opening for seawater; valve must be operable (and is a critical watertight boundary) |
+| **Sea strainer** | Catches debris, kelp, jellyfish; check and clean regularly |
+| **Raw water pump** | Often a **flexible rubber impeller** pump on small engines; impellers wear and fail if run dry |
+| **Heat exchanger** | Tube bundle; seawater in the tubes, coolant around them (or plate types) |
+| **Thermostat** | Bypasses the cooler until the engine reaches operating temperature |
+| **Expansion tank** | Allows for coolant expansion; check level here |
+| **Sacrificial anodes (zincs)** | Corrode instead of engine metals; inspect and replace on schedule |
+
+---
+
+## Coolant Treatment
+
+Fresh water coolant must be **treated** with corrosion inhibitors (and antifreeze where needed) per the engine maker. Test regularly for **inhibitor concentration**, **pH**, and **chlorides**. Rising chlorides suggest **seawater leaking** into the closed circuit through a heat exchanger failure.
+
+---
+
+## Overheating: A Quick Checklist
+
+1. **Raw water flow:** Is water coming out of the exhaust or discharge? Is the sea valve open? Is the strainer clogged? Has the impeller failed?
+2. **Coolant level:** Check the expansion tank (only when safe; never open a hot pressurized cap).
+3. **Heat exchanger:** Fouled or plugged tubes?
+4. **Thermostat:** Stuck closed?
+5. **Load:** Overloaded engine, fouled hull, or wrong propeller?
+6. **Keel cooler:** Fouling or air trapped in the circuit?
+
+<Pitfall title="Running a Dry Impeller">
+
+**Common mistake:** starting the engine with the sea valve closed after maintenance, or with a clogged strainer.
+
+A flexible impeller running dry can be destroyed in **seconds**, and its broken vanes travel downstream to block the heat exchanger. Check the sea valve and strainer **before starting**, and confirm water flow immediately after. Carry **spare impellers** and know how to change one.
+
+</Pitfall>
+
+---
+
+## Key Takeaway
+
+Most marine engines use a **closed fresh-water circuit** cooled by an **open sea-water circuit** through a **heat exchanger**, or by **keel coolers** outside the hull. Watch the **sea strainer**, **raw water impeller**, **anodes**, and **coolant chemistry**. When overheating, check **raw water flow first**.
+
+<TryIt title="Engine Overheat Drill">
+
+You're on watch. The main engine's jacket water temperature alarm sounds, and there's **less water than usual** coming out of the wet exhaust.
+
+Write your first three actions. *(Example: Reduce load and notify the operator/bridge. Check the sea strainer and sea valve. Check the raw water pump and impeller. Do NOT open the hot expansion tank cap.)*
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "In a two-circuit cooling system, which circuit flows through the engine block?",
+      options: ["Treated fresh water (closed circuit)", "Raw sea water", "Exhaust gas", "Fuel"],
+      correctIndex: 0,
+      explanation: "Treated fresh water circulates through the engine. Seawater cools it via a heat exchanger."
+    },
+    {
+      question: "What is a keel cooler?",
+      options: ["A cooling fan in the engine room", "Tubes outside the hull below the waterline where coolant sheds heat to the sea", "A refrigeration unit", "A fuel cooler"],
+      correctIndex: 1,
+      explanation: "Keel coolers transfer engine heat directly to surrounding seawater without pumping seawater inside."
+    },
+    {
+      question: "Rising chloride levels in the fresh-water coolant suggest:",
+      options: ["Seawater leaking into the closed circuit", "Normal aging", "Too much antifreeze", "A new thermostat"],
+      correctIndex: 0,
+      explanation: "Chlorides come from seawater, often through a leaking heat exchanger."
+    },
+    {
+      question: "Why are sacrificial anodes (zincs) fitted?",
+      options: ["To add weight", "To filter water", "To corrode instead of more valuable engine and hull metals", "To raise temperature"],
+      correctIndex: 2,
+      explanation: "Anodes are a less noble metal that corrodes preferentially, protecting the rest of the system."
+    }
+  ]}
+/>

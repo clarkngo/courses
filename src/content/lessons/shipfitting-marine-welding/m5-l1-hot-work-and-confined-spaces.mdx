@@ -1,0 +1,140 @@
+---
+title: "Hot Work, Fire Watch, and Confined Spaces"
+description: "Learn how shipyards control the fire and atmosphere hazards of welding and cutting aboard ships, including OSHA 1915 Subpart B testing, marine chemist certificates, hot work permits, fire watches, oxy-fuel safety, and entering tanks and voids."
+module: 5
+moduleTitle: "Shipyard Safety"
+lesson: 1
+duration: "30 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Why Ships Are Different
+
+Welding on a ship means working inside **steel boxes** that once held fuel, cargo, or sewage, with flammable insulation, paint, and wiring on the **other side** of the plate you're heating. Fires and explosions during shipyard hot work have killed many workers. The controls exist because of those losses.
+
+In the U.S., shipyard work falls under **OSHA 29 CFR Part 1915**. **Subpart B** covers **confined and enclosed spaces and other dangerous atmospheres**, and **Subpart P** covers **fire protection** in shipyard employment.
+
+---
+
+## Testing Before Hot Work
+
+Before hot work in or on certain spaces, especially those that held **flammable or combustible liquids or gases** (fuel tanks, cargo tanks, pump rooms) and adjacent spaces, the atmosphere must be **tested and certified** by the right person:
+
+| Who | Role |
+|---|---|
+| **Marine chemist** | Certified (under NFPA's marine chemist program) to test and issue certificates for hot work in and around tanks that held flammables, among other situations required by OSHA |
+| **Shipyard competent person** | Trained employee who tests and inspects spaces as allowed by Subpart B, and maintains conditions after a marine chemist's certificate |
+| **Coast Guard authorized person** | In some locations where a marine chemist isn't reasonably available |
+
+Marine chemist certificates use standard designations (from **NFPA 306**), such as:
+
+- **Safe for Workers:** oxygen and toxic levels acceptable for entry
+- **Safe for Hot Work:** flammable vapors below the required limit, and residues cleaned, so welding and cutting can proceed
+- **Not Safe for Workers / Not Safe for Hot Work**
+
+Conditions can change, so certificates carry **conditions and limits**, and the competent person re-tests as required, for example after breaks, ventilation changes, or new work.
+
+---
+
+## The Hot Work Permit Process
+
+<ProcessFlow
+  label="Hot work permit process: confirm testing and certification, clear or protect combustibles on both sides of the work, post a trained fire watch with an extinguisher, ventilate, perform the hot work, and maintain the fire watch for at least 30 minutes after work ends."
+  color="#9a3412"
+  loop="Re-test and re-inspect after breaks, shift changes, or any change in conditions."
+  steps={[
+    { title: 'Test + certify', detail: 'Competent person or marine chemist' },
+    { title: 'Clear both sides', detail: 'Combustibles removed or protected' },
+    { title: 'Fire watch', detail: 'Trained, equipped, in place' },
+    { title: 'Ventilate', detail: 'Fumes out; never use oxygen' },
+    { title: 'Hot work', detail: 'Within permit limits' },
+    { title: 'Watch after', detail: 'At least 30 minutes' },
+  ]}
+/>
+
+### Fire Watch
+
+A **fire watch** is a trained person whose only job is to watch for and put out fires during hot work. OSHA Subpart P requires fire watches in specific situations, such as when there's slag or sparks that could reach combustibles, or heat conducted through bulkheads or decks. The fire watch:
+
+- Has **extinguishing equipment** ready and knows how to use it
+- Can **communicate** with the hot work operator and sound an alarm
+- Watches **both sides** of the bulkhead or deck being heated, if needed
+- Stays for at least **30 minutes after hot work ends**, unless the area is surveyed and determined to have no further fire hazard
+
+### Heat Goes Through Steel
+
+Welding or cutting on one side of a bulkhead can heat the other side enough to ignite **insulation, paint, wiring, or stored materials**. Check the other side **before** you strike an arc.
+
+---
+
+## Oxy-Fuel Safety
+
+- Inspect hoses, regulators, and torches; use **flashback arrestors**.
+- **Remove torches and hoses** from confined spaces at breaks and at the end of a shift (or disconnect at the supply) so leaking gas can't accumulate.
+- **Never use oxygen to ventilate** or "freshen" a space, or to blow off clothing. Oxygen-enriched atmospheres make clothing and materials burn violently.
+- Secure cylinders upright, valves closed when not in use, caps on for transport.
+
+---
+
+## Confined and Enclosed Spaces
+
+Double bottoms, tanks, voids, and cofferdams can be:
+
+- **Oxygen deficient** (rust consumes oxygen; inert gas)
+- **Toxic** (hydrogen sulfide in sewage or fish holds, solvent vapors, welding fumes, carbon monoxide)
+- **Flammable** (fuel residues)
+
+Never enter a space unless it's been **tested and labeled** safe for entry, and follow your yard's entry and rescue procedures. **Most confined space fatalities include would-be rescuers.** Don't go in after someone without proper equipment and a plan.
+
+<Pitfall title="'It Was Safe This Morning'">
+
+**Common mistake:** a tank was certified Safe for Hot Work at 7 a.m., and at 2 p.m. a welder starts cutting after the ventilation was moved for another job.
+
+Conditions change. Vapors can return from residues or adjacent tanks, and ventilation changes affect fumes and oxygen. Check that the **certificate and its conditions are still valid**, and get the space **re-tested** when anything changes.
+
+</Pitfall>
+
+---
+
+## Key Takeaway
+
+Shipyard hot work falls under **OSHA 1915**. Spaces that held flammables need **testing and certification** by a **marine chemist** or **competent person** (**Safe for Workers**, **Safe for Hot Work**). Clear **both sides** of the work, post a **fire watch** that stays at least **30 minutes** after, remove hoses from confined spaces at breaks, **never ventilate with oxygen**, and **re-test** whenever conditions change.
+
+<TryIt title="Pre-Hot Work Walkdown">
+
+You're assigned to weld a bracket on a bulkhead between an engine room and a fuel tank. List what you'd confirm before striking an arc. *(Example: marine chemist certificate covering the fuel tank and the work area, still valid; other side inspected and combustibles removed or protected; fire watch posted on both sides; ventilation and fume control; hot work permit signed; extinguishers in place; hoses and cylinders in good condition.)*
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "Which OSHA part covers shipyard employment?",
+      options: ["1910", "1915", "1926", "1917"],
+      correctIndex: 1,
+      explanation: "29 CFR Part 1915 covers shipyard employment, including confined spaces and fire protection."
+    },
+    {
+      question: "What does a 'Safe for Hot Work' designation mean?",
+      options: ["The space is cold", "Anyone can enter without testing", "Hot work is permitted forever", "Flammable vapors and residues are controlled so welding and cutting can proceed, within stated conditions"],
+      correctIndex: 3,
+      explanation: "It certifies conditions for hot work at the time of testing, with conditions and limits."
+    },
+    {
+      question: "How long must a fire watch generally remain after hot work ends?",
+      options: ["No time", "At least 30 minutes, unless the area is surveyed and found free of fire hazard", "5 minutes", "Until the end of the week"],
+      correctIndex: 1,
+      explanation: "Smoldering fires can start after work ends. At least 30 minutes is the standard."
+    },
+    {
+      question: "Why must you never use oxygen to ventilate a confined space?",
+      options: ["Oxygen-enriched air makes materials and clothing burn violently", "It's expensive", "It's too cold", "It smells bad"],
+      correctIndex: 0,
+      explanation: "Oxygen enrichment turns a small spark into an intense fire."
+    }
+  ]}
+/>

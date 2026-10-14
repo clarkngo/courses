@@ -1,0 +1,113 @@
+---
+title: "Crane Signals and Communication"
+description: "Learn the standard ASME hand signals for crane operation, the role of the qualified signal person, radio communication discipline, and the rule that anyone can call a stop."
+module: 4
+moduleTitle: "Lifting Operations"
+lesson: 1
+duration: "25 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Why Signals Matter
+
+Crane operators often **can't see** the load or the landing spot, especially when working deep in a ship's hold, behind a stack, or on the far side of a vessel. The **signal person** is the operator's eyes. Clear, standard communication prevents collisions, crushed hands, and dropped loads.
+
+---
+
+## The Signal Person
+
+- Must be **qualified**: knows the standard signals, crane motions, and the hazards of the operation, as required by the applicable rules and site procedures.
+- There should be **one designated signal person** giving directions at a time, so the operator isn't getting conflicting signals.
+- Must be **clearly visible** to the operator (high-visibility gear or gloves) or in clear radio contact.
+- Must have a **clear view** of the load and path, or relay through another qualified person.
+
+### Anyone Can Stop
+
+The operator follows only the designated signal person, **except for STOP**. **Anyone** who sees danger may signal **STOP** or **EMERGENCY STOP**, and the operator must obey immediately.
+
+---
+
+## Standard Hand Signals
+
+These are based on the standard signals published in the **ASME B30** crane standards. Charts are usually **posted** on or near the crane. Learn them exactly.
+
+| Command | Signal |
+|---|---|
+| **Hoist** | Forearm vertical, forefinger pointing **up**, move hand in small **horizontal circles** |
+| **Lower** | Arm extended **down**, forefinger pointing down, move hand in small **horizontal circles** |
+| **Stop** | Arm extended, palm **down**, move arm **back and forth horizontally** |
+| **Emergency stop** | **Both** arms extended, palms down, move arms **back and forth horizontally** |
+| **Dog everything** (pause all motions) | Clasp hands in front of the body |
+| **Swing** (slewing cranes) | Arm extended, point finger in the direction to swing |
+| **Trolley travel** | Palm up, fingers closed, thumb pointing in direction of travel, jerk hand horizontally |
+| **Bridge / gantry travel** | Arm extended forward, hand open and slightly raised, make a pushing motion in the direction of travel |
+| **Move slowly** | Use one hand for the motion signal and place the other hand motionless in front of it (e.g., above the hoist signal hand) |
+| **Raise boom** | Arm extended, fingers closed, thumb pointing up |
+| **Lower boom** | Arm extended, fingers closed, thumb pointing down |
+
+Port terminals may have **additional site-specific signals** for spreader operations and ship work. Use the site's posted chart.
+
+---
+
+## Radio Communication
+
+On ships and in terminals, many lifts use **radios** because of distance and noise.
+
+- Use a **dedicated channel** for the lift when possible.
+- **Identify** the crane and signal person at the start ("Crane 7, this is the hatch").
+- Use **short, standard words**: "hoist," "lower," "stop," "trolley in," "trolley out."
+- Many sites use **continuous talk** during the lift (e.g., "lower, lower, lower… slow… stop") so that if the radio goes silent, the operator **stops**.
+- **Test radios** before the lift and carry spare batteries.
+- If communication is lost, **STOP**.
+
+<Pitfall title="Two People Signaling at Once">
+
+**Common mistake:** the hatch tender signals "lower" while a lasher on deck waves the operator to "come this way."
+
+The operator has to guess, and guessing with a 30-ton box overhead is how people get hurt. Establish **one signal person** before each operation, and everyone else uses only **STOP**.
+
+</Pitfall>
+
+---
+
+## Key Takeaway
+
+The **qualified signal person** is the operator's eyes. Use **one designated signaler** at a time, but **anyone can call STOP**. Learn the **ASME standard hand signals** exactly. On radio, use a **dedicated channel**, **standard words**, and **continuous talk**; if communication is lost, **stop**.
+
+<TryIt title="Signal Drill">
+
+With a partner, practice each signal from the table. One person signals, the other calls out the command. Then add radio practice: talk a "load" (a box on a rope) down onto a mark using continuous voice commands, and have the "operator" stop the moment you go silent.
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "Who may give the crane operator a STOP signal?",
+      options: ["Only the signal person", "Only the supervisor", "Only the operator", "Anyone who sees danger"],
+      correctIndex: 3,
+      explanation: "Anyone may signal STOP or EMERGENCY STOP, and the operator must obey immediately."
+    },
+    {
+      question: "What does the signal 'both arms extended, palms down, moving back and forth horizontally' mean?",
+      options: ["Emergency stop", "Hoist", "Lower", "Swing"],
+      correctIndex: 0,
+      explanation: "Both arms moving horizontally with palms down is the emergency stop signal."
+    },
+    {
+      question: "During a radio-directed lift, the radio goes silent. What should the operator do?",
+      options: ["Continue the last motion", "Stop", "Speed up", "Lower the load to the ground fast"],
+      correctIndex: 1,
+      explanation: "Loss of communication means stop until communication is restored."
+    },
+    {
+      question: "Why should only one designated person give signals during a lift?",
+      options: ["To reduce noise", "It's cheaper", "To prevent conflicting directions to the operator", "Operators prefer it"],
+      correctIndex: 2,
+      explanation: "Conflicting signals force the operator to guess. One signaler, but anyone can call STOP."
+    }
+  ]}
+/>

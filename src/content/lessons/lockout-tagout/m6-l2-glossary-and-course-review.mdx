@@ -91,8 +91,8 @@ Then have an authorized coworker perform it while you observe, and fix what you 
   questions={[
     {
       question: "What is the correct order of these lockout steps?",
-      options: ["Isolate → shut down → verify → lock", "Shut down → isolate → lock → stored energy → verify", "Lock → shut down → isolate → verify", "Verify → lock → isolate → shut down"],
-      correctIndex: 1,
+      options: ["Shut down → isolate → lock → stored energy → verify", "Isolate → shut down → verify → lock", "Lock → shut down → isolate → verify", "Verify → lock → isolate → shut down"],
+      correctIndex: 0,
       explanation: "Shut down normally, isolate each source, apply locks, control stored energy, then verify."
     },
     {
@@ -103,26 +103,26 @@ Then have an authorized coworker perform it while you observe, and fix what you 
     },
     {
       question: "Which is NOT an energy-isolating device?",
-      options: ["Disconnect switch", "Line valve", "Blank flange", "PLC stop button"],
-      correctIndex: 3,
+      options: ["PLC stop button", "Disconnect switch", "Line valve", "Blank flange"],
+      correctIndex: 0,
       explanation: "PLC stop buttons are control devices that depend on logic. They don't physically isolate energy."
     },
     {
       question: "A hydraulic system is isolated and the pump gauge reads zero. Before opening a line, what else must you check?",
-      options: ["Nothing", "Accumulators, trapped pressure, and gravity-loaded cylinders", "Motor color", "Oil brand"],
-      correctIndex: 1,
+      options: ["Nothing", "Motor color", "Oil brand", "Accumulators, trapped pressure, and gravity-loaded cylinders"],
+      correctIndex: 3,
       explanation: "Accumulators and cylinders can hold pressure downstream of the pump gauge, and gravity loads may drop."
     },
     {
       question: "During a shift change on a group lockout, what's the safe sequence?",
-      options: ["Outgoing removes lock first", "Incoming applies lock first, then outgoing removes", "Everyone removes locks for a moment", "Supervisor holds all keys"],
-      correctIndex: 1,
+      options: ["Incoming applies lock first, then outgoing removes", "Outgoing removes lock first", "Everyone removes locks for a moment", "Supervisor holds all keys"],
+      correctIndex: 0,
       explanation: "Lock-on before lock-off maintains continuous protection."
     },
     {
       question: "Who must perform the annual periodic inspection of a procedure?",
-      options: ["The person using the procedure", "An authorized employee other than those using the procedure", "An affected employee", "Any manager"],
-      correctIndex: 1,
+      options: ["The person using the procedure", "An affected employee", "Any manager", "An authorized employee other than those using the procedure"],
+      correctIndex: 3,
       explanation: "The inspector must be an authorized employee who isn't using the procedure being inspected."
     }
   ]}

@@ -1,0 +1,130 @@
+---
+title: "Load Charts, Capacity, and Knowing the Weight"
+description: "Read a crane load chart, understand how radius and load moment limit capacity, subtract rigging weight, use rated capacity indicators, and learn why verified gross mass (VGM) and CSC plates matter for every container lift."
+module: 2
+moduleTitle: "Cranes"
+lesson: 2
+duration: "30 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Capacity Isn't One Number
+
+A crane's capacity depends on **how far out** the load is (the **radius**) and the crane's **configuration**. For mobile and harbor cranes, this is shown on the **load chart**. STS cranes have a rated capacity **under the spreader** (and sometimes a different rating under the cargo beam or hook).
+
+### Load Moment
+
+Tipping and structural stress depend on **load × distance**, called the **load moment**.
+
+**Load moment = load weight × radius**
+
+A 10-ton load at 50 feet creates the same moment as a 25-ton load at 20 feet (500 ton-feet). That's why capacity **drops** as radius **increases**.
+
+---
+
+## Reading a Load Chart
+
+A simplified mobile harbor crane chart:
+
+| Radius (ft) | Capacity (lb) |
+|---|---|
+| 40 | 200,000 |
+| 60 | 140,000 |
+| 80 | 100,000 |
+| 100 | 75,000 |
+| 120 | 58,000 |
+
+Rules for using a chart:
+
+1. Use the chart for the crane's **actual configuration** (outriggers, counterweight, boom length, operating area such as over the side vs. over the rear).
+2. Find the **radius**, measured from the center of rotation to the center of the load, **not** the boom length.
+3. If your radius falls **between** two rows, use the **larger radius** (the lower capacity). Don't interpolate.
+4. Subtract **everything below the boom tip** from the chart capacity: hook block, headache ball, slings, shackles, spreader bars. These are **deductions**.
+5. The remaining number is the maximum **load** you may lift.
+
+---
+
+## Rated Capacity Indicators
+
+Most modern cranes have a **rated capacity indicator / limiter (RCI/RCL)**, sometimes called a load moment indicator (LMI). It measures load and radius and warns, or stops motions that increase the load moment, as the crane approaches its limit.
+
+The RCI is a **backup**, not a planning tool. Plan the lift with the chart; the RCI catches mistakes.
+
+---
+
+## Knowing the Weight
+
+You can't stay within capacity if you don't know the weight.
+
+### Containers: VGM
+
+Since **July 1, 2016**, international rules (**SOLAS**) have required that every packed export container have a **Verified Gross Mass (VGM)** before it's loaded on a ship. The shipper determines it by:
+
+- **Method 1:** weighing the **whole packed container**, or
+- **Method 2:** weighing **all contents** (including packing and securing material) and adding the container's **tare** weight, using a certified method
+
+Misdeclared weights have contributed to stack collapses, ship stability problems, and accidents.
+
+### The CSC Plate
+
+Every container in international service carries a **CSC Safety Approval Plate** (from the Convention for Safe Containers) showing its **maximum gross mass**, allowable **stacking** load, and approval details. A container must not be loaded beyond its rated gross mass.
+
+### Other Loads
+
+For breakbulk and project cargo: use **shipping documents**, **manufacturer data**, **calculation** from dimensions and material, or **load cells**. When unsure, **don't guess**.
+
+<Pitfall title="Forgetting the Rigging Weight">
+
+**Common mistake:** a load weighs 70,000 lb, and the chart shows 75,000 lb at the planned radius, so the lift seems fine. But the spreader bar, slings, shackles, and hook block weigh 7,000 lb.
+
+Total = 77,000 lb, which is **over capacity**. Always add rigging, or subtract it from the chart capacity, before deciding a lift is within limits.
+
+</Pitfall>
+
+---
+
+## Key Takeaway
+
+Capacity falls as **radius** grows because **load moment = weight × radius**. Use the chart for the **actual configuration**, round to the **next larger radius**, and **deduct rigging**. The **RCI** is a backup. Containers must have a **VGM** before loading, and the **CSC plate** shows maximum gross mass. Never lift an **unknown** weight.
+
+<TryIt title="Plan the Pick">
+
+Using the chart above, a breakbulk generator weighs **82,000 lb**. Rigging (spreader bar, slings, shackles, hook block) weighs **6,500 lb**. The radius to the ship's hatch is **72 ft**.
+
+1. Which chart row? *(Round up to **80 ft** → 100,000 lb.)*
+2. Total load? 82,000 + 6,500 = **88,500 lb**.
+3. Within capacity? *(Yes, 88,500 < 100,000, at about 89% of chart. Many sites require a **critical lift plan** above a set percentage. Check your site rules. See Lesson 4.2.)*
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "Why does crane capacity decrease as radius increases?",
+      options: ["Load moment (weight × radius) increases", "The boom gets shorter", "The hook gets heavier", "Wind is stronger far out"],
+      correctIndex: 0,
+      explanation: "The farther out the load, the greater the tipping and structural moment for the same weight."
+    },
+    {
+      question: "Your radius is 65 ft and the chart lists 60 ft and 80 ft. Which capacity do you use?",
+      options: ["80 ft", "60 ft", "Average of the two", "Whichever is higher"],
+      correctIndex: 0,
+      explanation: "Use the next larger radius (the lower capacity). Don't interpolate."
+    },
+    {
+      question: "What is a VGM?",
+      options: ["Vessel general manifest", "Verified gross mass of a packed container, required before loading", "Very good maintenance", "Variable gantry motion"],
+      correctIndex: 1,
+      explanation: "SOLAS requires a verified gross mass for packed export containers since July 1, 2016."
+    },
+    {
+      question: "What must be added to the load weight when checking capacity?",
+      options: ["The weight of all rigging below the boom tip", "Nothing", "Operator weight", "Wind speed"],
+      correctIndex: 0,
+      explanation: "Hook blocks, slings, shackles, and spreaders all count against capacity."
+    }
+  ]}
+/>

@@ -1,0 +1,134 @@
+---
+title: "Glossary and Course Review"
+description: "Review the vocabulary of port terminals, cranes, and rigging, walk through a lift from planning to landing, and test yourself across the whole course."
+module: 6
+moduleTitle: "The Future Waterfront and Review"
+lesson: 2
+duration: "30 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## A Lift, Start to Finish
+
+<ProcessFlow
+  label="The steps of a safe cargo lift covered in this course: know the weight from VGM or documents, check crane capacity at the radius with rigging deductions, select and inspect rigging and calculate sling angles, plan the lift and set the exclusion zone, communicate with one signal person, make a test lift, and land and secure the cargo."
+  color="#0f766e"
+  loop="Any surprise during the lift means STOP, set down if safe, and re-plan."
+  steps={[
+    { badge: 'M2', title: 'Weight', detail: 'VGM, documents, CSC plate' },
+    { badge: 'M2', title: 'Capacity', detail: 'Radius, chart, deductions' },
+    { badge: 'M3', title: 'Rigging', detail: 'WLL, inspection, sling angles' },
+    { badge: 'M4', title: 'Plan + zone', detail: 'Critical? Barricade' },
+    { badge: 'M4', title: 'Signals', detail: 'One signaler; anyone can stop' },
+    { badge: 'M4', title: 'Test lift', detail: 'Level, seated, brakes hold' },
+    { badge: 'M5', title: 'Land + secure', detail: 'Twistlocks, lashings' },
+  ]}
+/>
+
+---
+
+## Glossary
+
+| Term | Meaning |
+|---|---|
+| **AGV** | Automated guided vehicle |
+| **Backreach / outreach** | How far a crane reaches landside / over the water |
+| **Basket / choker / vertical hitch** | Ways to rig a sling |
+| **Cell guides** | Vertical rails holding containers in a ship's hold |
+| **CG** | Center of gravity |
+| **Corner casting** | Reinforced fitting at each container corner for lifting and securing |
+| **CSC plate** | Container safety approval plate showing max gross mass |
+| **Critical lift** | Lift requiring a formal written plan due to weight, method, or hazards |
+| **Dwell time** | Time a container stays in the terminal |
+| **FEU / TEU** | Forty- / twenty-foot equivalent unit |
+| **Gantry / trolley / hoist** | Crane travel along rails / along the boom / up and down |
+| **ILWU** | International Longshore and Warehouse Union (U.S. West Coast longshore workers) |
+| **Lashing rod / turnbuckle** | Deck securing gear for containers |
+| **Load moment** | Load × radius |
+| **NWSA** | Northwest Seaport Alliance (Seattle and Tacoma) |
+| **RCI / LMI** | Rated capacity indicator / load moment indicator |
+| **RTG / RMG** | Rubber-tired / rail-mounted gantry crane |
+| **SATL** | Semi-automatic twistlock |
+| **Spreader** | Frame that locks onto a container's corner castings |
+| **STS crane** | Ship-to-shore container crane |
+| **TOS** | Terminal operating system |
+| **TWIC** | Transportation Worker Identification Credential |
+| **VGM** | Verified gross mass of a packed container |
+| **WLL** | Working load limit |
+
+---
+
+## Formulas to Remember
+
+| What | Formula |
+|---|---|
+| TEU count | 20-ft boxes × 1 + 40-ft boxes × 2 |
+| Load moment | Load × radius |
+| Total hook load | Load + all rigging below the boom tip |
+| Sling leg tension | (Load ÷ legs) ÷ sin(angle from horizontal) |
+| Load angle factor | 60° = 1.155 · 45° = 1.414 · 30° = 2.000 |
+
+---
+
+<TryIt title="Capstone: Plan a Breakbulk Lift">
+
+A **36,000 lb** piece of machinery must be lifted from a ship's deck to a flatbed truck using a mobile harbor crane.
+
+- Rigging: spreader bar (1,200 lb), four slings and shackles (600 lb), hook block (1,800 lb)
+- The worst-case radius is **74 ft**; the chart lists **70 ft: 48,000 lb** and **80 ft: 40,000 lb**
+- Two lifting lugs on the machine; slings from the spreader bar will be **vertical**
+
+Work it out:
+
+1. Total hook load? 36,000 + 1,200 + 600 + 1,800 = **39,600 lb**
+2. Chart capacity to use? Round up to **80 ft → 40,000 lb**
+3. Percent of capacity? 39,600 ÷ 40,000 = **99%**. Far too close. *(Most sites would call this critical and require changes: reduce the radius by repositioning the crane or ship, use a larger crane, or lighten the rigging.)*
+4. If the crane moves closer so the worst radius is **65 ft** (use the 70 ft row, 48,000 lb): 39,600 ÷ 48,000 = **83%**. Still a critical lift under many company rules, needing a written plan.
+
+Write the remaining parts of the plan: exclusion zone, signal person and radio channel, wind limit, ship stability coordination, and test lift.
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "A ship discharges 500 forty-foot and 300 twenty-foot containers. How many TEUs?",
+      options: ["800", "1,300", "1,000", "1,600"],
+      correctIndex: 1,
+      explanation: "500 × 2 + 300 × 1 = 1,300 TEU."
+    },
+    {
+      question: "Which STS crane motion moves the entire crane along the wharf?",
+      options: ["Hoist", "Gantry", "Trolley", "Boom hoist"],
+      correctIndex: 1,
+      explanation: "Gantry travel moves the whole crane along its rails."
+    },
+    {
+      question: "A two-leg bridle lifts 8,000 lb at 30° from horizontal. What is the tension per leg?",
+      options: ["8,000 lb", "4,000 lb", "4,620 lb", "5,656 lb"],
+      correctIndex: 0,
+      explanation: "(8,000 ÷ 2) × 2.000 = 8,000 lb per leg."
+    },
+    {
+      question: "Who can signal an emergency stop to the crane operator?",
+      options: ["Only the signal person", "Anyone", "Only the foreman", "Only the ship's captain"],
+      correctIndex: 1,
+      explanation: "Anyone who sees danger may signal stop, and the operator must obey."
+    },
+    {
+      question: "What must happen before a packed export container is loaded on a ship?",
+      options: ["It must be painted", "It must be empty", "It must have a verified gross mass (VGM)", "Nothing"],
+      correctIndex: 2,
+      explanation: "SOLAS requires a VGM for packed export containers before loading."
+    },
+    {
+      question: "Which OSHA standard covers work on the marine terminal (land side)?",
+      options: ["1910", "1915", "1926", "1917"],
+      correctIndex: 3,
+      explanation: "Part 1917 covers marine terminals; Part 1918 covers longshoring aboard vessels."
+    }
+  ]}
+/>

@@ -1,0 +1,133 @@
+---
+title: "Marine Terminal Safety"
+description: "Understand OSHA's marine terminal and longshoring standards, and manage the waterfront's biggest hazards: vehicle and pedestrian traffic, suspended loads, falls into the water, hazardous and fumigated cargo, weather, and fatigue."
+module: 5
+moduleTitle: "Cargo Handling and Safety"
+lesson: 2
+duration: "25 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## The Rules
+
+In the U.S., two OSHA standards cover most waterfront cargo work:
+
+| Standard | Covers |
+|---|---|
+| **29 CFR 1917, Marine Terminals** | Work on the terminal: shore cranes, cargo handling equipment, terminal facilities, and operations on the land side |
+| **29 CFR 1918, Longshoring** | Work **aboard vessels**: loading, unloading, and moving cargo on ships, including ship's gear |
+
+The **U.S. Coast Guard** oversees port security and vessel safety, and terminal operators have their own detailed safety rules.
+
+---
+
+## The Big Hazards
+
+### 1. Vehicles and Mobile Equipment
+
+Yard tractors, straddle carriers, top handlers, trucks, and cranes are constantly moving. **Struck-by** incidents are a leading cause of serious waterfront injuries.
+
+- Separate **pedestrians and vehicles** with marked walkways and controlled crossings.
+- Wear **high-visibility** clothing, day and night.
+- Make **eye contact** with drivers; assume they **can't** see you.
+- Obey **speed limits** and traffic patterns; no phone use while driving.
+- Use **spotters** in congested areas.
+
+### 2. Suspended Loads
+
+Containers, spreaders, and cargo move overhead all day. **Never** walk or stand under a load. Watch for **swinging** spreaders and **falling** twistlocks or debris.
+
+### 3. Falls, Including Into the Water
+
+- Falls from **ladders, gangways, hatch covers, lashing bridges**, and container tops
+- **Falling into the water** between ship and wharf: cold Northwest water causes **cold shock** and hypothermia quickly
+- Controls: guardrails, safe gangways with **nets**, fall protection, **life rings** and ladders along the wharf, and **PFDs** where required near the edge
+
+### 4. Hazardous Cargo
+
+Dangerous goods move under the **IMDG Code** (International Maritime Dangerous Goods) and U.S. hazardous materials rules.
+
+- Learn the **placards** and **labels** on containers.
+- Report **leaks, odors, or damage** immediately; don't investigate on your own.
+- Know the terminal's **emergency response** procedures and segregation areas.
+
+### 5. Fumigated and Poorly Ventilated Containers
+
+Containers may be **fumigated** with toxic gases, or contain gases released by cargo. Opening a closed container can expose you to a **toxic atmosphere**. Look for **fumigation warning signs**, and follow procedures for **ventilating and testing** before entry.
+
+### 6. Weather, Darkness, and Fatigue
+
+- **Wind** stops crane work at set limits; rain and ice make decks slick.
+- **Night operations** need good lighting.
+- Long shifts and rotating schedules cause **fatigue**, a hidden contributor to incidents.
+
+### 7. Maintenance Hazards
+
+Crane and equipment maintenance involves **heights, high-voltage systems, hydraulics, and moving machinery**. Use **lockout/tagout** before servicing (see the Lockout/Tagout course), and follow fall protection rules on crane structures.
+
+<Pitfall title="Shortcut Across the Stack Row">
+
+**Common mistake:** a worker cuts between container rows to reach a vessel faster.
+
+Yard equipment like RTGs and straddle carriers operate in those rows, often with limited visibility, and stacks can block the operator's view. Use **designated routes** and **transport**, even when it takes longer.
+
+</Pitfall>
+
+---
+
+## Building a Safety Culture
+
+- **Stop work authority**: anyone can stop unsafe work.
+- **Pre-shift safety talks** cover the day's hazards (weather, special cargo, ship type).
+- **Near-miss reporting** finds hazards before injuries do.
+- **Training and certification** for every machine and task.
+
+---
+
+## Key Takeaway
+
+**OSHA 1917** covers marine terminals and **1918** covers longshoring aboard ships. The biggest hazards are **vehicles, suspended loads, falls (including into cold water), hazardous and fumigated cargo, weather, fatigue, and maintenance energy**. Separate people from machines, never stand under loads, wear **high-vis**, report hazards, and use **stop work authority**.
+
+<TryIt title="Hazard Map">
+
+Sketch a simple terminal layout: berth, apron, yard, gate, and walkways. Mark:
+
+1. Where pedestrians and vehicles cross
+2. Areas with overhead loads
+3. Where someone could fall into the water
+4. Where hazardous cargo is staged
+5. One improvement you'd suggest for each
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "Which OSHA standard covers cargo work aboard vessels?",
+      options: ["1910", "1915", "1917", "1918"],
+      correctIndex: 3,
+      explanation: "Part 1918 covers longshoring aboard vessels. Part 1917 covers marine terminals."
+    },
+    {
+      question: "What is a leading cause of serious injuries in container terminals?",
+      options: ["Paper cuts", "Being struck by vehicles and mobile equipment", "Sunburn only", "Computer use"],
+      correctIndex: 1,
+      explanation: "Struck-by incidents involving yard equipment and trucks are a major waterfront hazard."
+    },
+    {
+      question: "A container has a fumigation warning sign. What should you do?",
+      options: ["Open it and look", "Ignore it", "Spray water inside", "Follow procedures to ventilate and test before entry"],
+      correctIndex: 3,
+      explanation: "Fumigants are toxic. Containers must be ventilated and tested before entry."
+    },
+    {
+      question: "Why is falling between the ship and wharf especially dangerous in the Pacific Northwest?",
+      options: ["Warm water", "Shallow water", "No risk", "Cold water causes cold shock and rapid hypothermia, plus crushing between hull and wharf"],
+      correctIndex: 3,
+      explanation: "Cold water and the risk of being crushed by a moving hull make these falls life-threatening."
+    }
+  ]}
+/>

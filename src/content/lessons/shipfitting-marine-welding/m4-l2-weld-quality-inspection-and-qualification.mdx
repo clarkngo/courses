@@ -1,0 +1,127 @@
+---
+title: "Weld Quality, Inspection, and Qualification"
+description: "Recognize common weld defects and their causes, learn how VT, MT, PT, UT, and RT find them, and understand the WPS, PQR, and welder qualification system that class societies and the Navy require."
+module: 4
+moduleTitle: "Materials and Quality"
+lesson: 2
+duration: "30 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Common Weld Defects
+
+| Defect | What it is | Common causes |
+|---|---|---|
+| **Porosity** | Gas pockets in the weld | Wind blowing away shielding gas, moisture, dirty surface, wrong gas flow |
+| **Undercut** | Groove melted into base metal at the toe and not filled | Too much amperage, wrong angle, too fast travel |
+| **Overlap (cold lap)** | Weld metal rolls over the base metal without fusing | Too slow travel, low heat, wrong angle |
+| **Incomplete fusion** | Weld didn't melt into base metal or previous pass | Low heat, poor technique, mill scale, wrong angle |
+| **Incomplete penetration** | Weld didn't reach through the root | Tight gap, thick land, low heat |
+| **Slag inclusion** | Trapped flux in the weld | Poor interpass cleaning, wrong technique |
+| **Cracks** | Fractures in the weld or HAZ | Hydrogen, high restraint, wrong filler, fast cooling, crater cracks from stopping abruptly |
+| **Excessive reinforcement / convexity** | Too much weld built up | Technique; creates stress concentration |
+| **Arc strikes** | Arc touched base metal outside the joint | Carelessness; can start cracks in some steels |
+
+**Cracks are never acceptable** in structural welds. Most other defects have **acceptance limits** set by the applicable rules or specifications.
+
+---
+
+## Inspection Methods
+
+| Method | Abbreviation | Finds | Notes |
+|---|---|---|---|
+| **Visual testing** | VT | Surface defects, size, profile | The first and most important inspection; done on 100% of welds |
+| **Magnetic particle** | MT | Surface and slightly subsurface cracks | Ferromagnetic steel only |
+| **Liquid (dye) penetrant** | PT | Surface-breaking defects | Works on aluminum, stainless, and steel |
+| **Ultrasonic testing** | UT | Internal defects, lack of fusion | Requires skilled technicians; phased array (PAUT) is common |
+| **Radiographic testing** | RT | Internal porosity, slag, lack of penetration | X-ray or gamma; radiation safety exclusion zones |
+
+Classification rules and contracts specify **which welds** get which NDT, and **how much** (often a percentage of critical joints, plus 100% of specific locations).
+
+---
+
+## The Qualification System
+
+Before production welding, the yard proves that its **procedure** works and that its **welders** can perform it.
+
+<ProcessFlow
+  label="Welding qualification chain: a preliminary procedure is drafted, a test weld is made and tested, results are recorded in the Procedure Qualification Record, the approved Welding Procedure Specification is issued, welders are qualified by test welds, and production welds follow the WPS and are inspected."
+  color="#9a3412"
+  steps={[
+    { title: 'Draft pWPS', detail: 'Proposed parameters' },
+    { title: 'Test weld', detail: 'Coupons cut and tested' },
+    { title: 'PQR', detail: 'Records actual results' },
+    { title: 'WPS', detail: 'Approved instructions for production' },
+    { title: 'Welder qualified', detail: 'Test weld passes (WPQ)' },
+    { title: 'Production + inspect', detail: 'Follow the WPS' },
+  ]}
+/>
+
+| Document | What it is |
+|---|---|
+| **WPS (Welding Procedure Specification)** | The instruction sheet: process, base metal, filler, position, preheat, amperage range, travel speed, gas, joint design |
+| **PQR (Procedure Qualification Record)** | Proof: the actual test weld parameters and mechanical test results (tensile, bend, impact) that support the WPS |
+| **WPQ (Welder Performance Qualification)** | Proof that a specific welder can make sound welds in the given process, position, and thickness range |
+
+### Who Sets the Rules?
+
+- **Commercial ships:** classification society rules (**ABS, DNV, Lloyd's Register**, and others), often with **AWS** standards for structural welding
+- **U.S. Navy ships:** **NAVSEA** technical publications (for example, the welding qualification standard known in yards as **"Tech Pub 248"**) and related military standards
+- **U.S. Coast Guard** oversight for many U.S.-flagged commercial vessels
+
+Welders must stay within their **qualified ranges** and maintain **continuity** (welding regularly in the process) or requalify.
+
+<Pitfall title="Grinding a Crack Smooth">
+
+**Common mistake:** a welder sees a small crack in a crater, grinds the surface smooth so it "looks fine," and welds over it.
+
+Cracks can run deeper than they look and will grow under load. The crack must be **completely removed** (verified by MT or PT), then repaired following an **approved repair procedure**, and re-inspected.
+
+</Pitfall>
+
+---
+
+## Key Takeaway
+
+Know the defects: **porosity, undercut, overlap, incomplete fusion and penetration, slag, and cracks**. **Cracks are never acceptable.** **VT** is first and always; **MT/PT** find surface cracks; **UT/RT** find internal defects. Production welds follow an approved **WPS**, backed by a **PQR**, made by a **qualified welder**, under **class society, NAVSEA, or USCG** rules.
+
+<TryIt title="Diagnose the Defect">
+
+1. A fillet weld on an outdoor deck is full of small round holes. *(Porosity, likely wind blowing away shielding gas. Use screens or windbreaks, or switch to a self-shielded process approved for the job.)*
+2. A groove weld's root isn't fused on the back side. *(Incomplete penetration: check root gap, land, amperage, and technique.)*
+3. A notch runs along the toe of a fillet weld. *(Undercut: lower amperage, adjust the angle, slow down slightly.)*
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "Which NDT method works on aluminum to find surface-breaking cracks?",
+      options: ["Magnetic particle (MT)", "Neither", "Liquid penetrant (PT)", "Only RT"],
+      correctIndex: 2,
+      explanation: "MT requires ferromagnetic material. PT works on aluminum, stainless, and steel."
+    },
+    {
+      question: "What does a PQR document?",
+      options: ["A welder's personal skills", "Daily production", "The actual test weld parameters and mechanical test results supporting a WPS", "Shipping schedule"],
+      correctIndex: 2,
+      explanation: "The Procedure Qualification Record is the evidence that a welding procedure produces sound welds."
+    },
+    {
+      question: "What's the most common cause of porosity in outdoor gas-shielded welding?",
+      options: ["Too much amperage", "Wrong position", "Wind blowing away the shielding gas", "Thick plate"],
+      correctIndex: 2,
+      explanation: "Drafts strip shielding gas from the weld pool, allowing air to contaminate it."
+    },
+    {
+      question: "A crack is found in a structural weld. What is the correct response?",
+      options: ["Grind it smooth and paint it", "Weld over it", "Ignore it if small", "Remove it completely, verify by NDT, repair per approved procedure, re-inspect"],
+      correctIndex: 3,
+      explanation: "Cracks are unacceptable and must be fully removed and properly repaired."
+    }
+  ]}
+/>

@@ -1,0 +1,150 @@
+---
+title: "Joint Design and Distortion Control"
+description: "Learn the basic joint types, groove geometry, fillet weld leg and throat, one-sided welding on ceramic backing, and the shrinkage forces that cause distortion, plus the sequencing techniques shipyards use to keep plates flat and true."
+module: 3
+moduleTitle: "Welding for Ships"
+lesson: 2
+duration: "30 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Joint Types
+
+| Joint | Description | Ship examples |
+|---|---|---|
+| **Butt** | Two plates edge to edge in the same plane | Shell seams and butts, deck plating |
+| **Tee** | One plate perpendicular to another | Stiffeners to plating, bulkheads to decks |
+| **Corner** | Two plates meeting at a corner | Box structures, foundations |
+| **Lap** | Overlapping plates | Doublers, some repairs (used with care) |
+| **Edge** | Edges of parallel plates | Thin sheet, rarely structural |
+
+---
+
+## Groove Geometry
+
+Thick butt joints are **beveled** so the weld can fuse through the full thickness.
+
+| Term | Meaning |
+|---|---|
+| **Bevel angle** | Angle cut on one plate edge |
+| **Groove (included) angle** | Total angle between both bevels (e.g., two 30° bevels = 60° V) |
+| **Root face (land)** | Small unbeveled flat at the bottom of the bevel |
+| **Root opening (gap)** | Space between plates at the root |
+| **Backing** | Material behind the root: steel backing bar, **ceramic backing tape**, or back-gouging and welding the other side |
+
+**One-sided welding on ceramic backing** is common in shipyards: ceramic tiles are taped behind the joint, the welder makes a full-penetration weld from one side, and the ceramic is removed afterward. It avoids turning blocks or back-gouging in tight spaces.
+
+---
+
+## Fillet Welds: Leg and Throat
+
+<svg viewBox="0 0 680 230" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Cross-section of a fillet weld joining a vertical stiffener to a horizontal plate. The weld is a right triangle filling the corner. The leg is the length of each side along the plates. The theoretical throat is the shortest distance from the root to the face of the weld, about 0.707 times the leg for an equal-leg fillet.">
+  <g font-family="system-ui, -apple-system, sans-serif" font-size="13">
+    <rect x="80" y="160" width="400" height="30" fill="#cbd5e1" stroke="#0f172a" stroke-width="2"/>
+    <rect x="250" y="30" width="24" height="130" fill="#cbd5e1" stroke="#0f172a" stroke-width="2"/>
+    <polygon points="274,160 274,90 344,160" fill="#9a3412" opacity="0.85"/>
+    <line x1="274" y1="160" x2="309" y2="125" stroke="#fff" stroke-width="2.5" stroke-dasharray="5 3"/>
+    <line x1="274" y1="205" x2="344" y2="205" stroke="#0f172a" stroke-width="1.5"/>
+    <line x1="274" y1="198" x2="274" y2="212" stroke="#0f172a" stroke-width="1.5"/>
+    <line x1="344" y1="198" x2="344" y2="212" stroke="#0f172a" stroke-width="1.5"/>
+    <text x="309" y="225" text-anchor="middle" fill="#0f172a" font-weight="700">leg</text>
+    <line x1="360" y1="90" x2="360" y2="160" stroke="#0f172a" stroke-width="1.5"/>
+    <line x1="353" y1="90" x2="367" y2="90" stroke="#0f172a" stroke-width="1.5"/>
+    <text x="372" y="130" fill="#0f172a" font-weight="700">leg</text>
+    <text x="440" y="80" fill="#9a3412" font-weight="700">throat ≈ 0.707 × leg</text>
+    <line x1="436" y1="84" x2="305" y2="128" stroke="#9a3412" stroke-width="1.5"/>
+    <text x="150" y="60" fill="#475569">stiffener</text>
+    <text x="150" y="182" fill="#475569">plate</text>
+  </g>
+</svg>
+
+- **Leg:** distance from the root to the toe along each plate. Fillet size on drawings is usually the **leg**.
+- **Throat:** shortest distance from the root to the weld face. For an equal-leg fillet, the theoretical throat ≈ **0.707 × leg**. The throat is what actually carries the load.
+- **Oversized fillets** waste weld metal, add heat, and increase distortion without proportional benefit. **Undersized fillets** are a structural defect.
+
+Use a **fillet weld gauge** to check leg size and convexity or concavity.
+
+---
+
+## Why Steel Distorts
+
+As a weld cools, it **shrinks**. The hot weld and the nearby steel want to contract, but the surrounding cold steel resists. The result:
+
+| Distortion | What you see |
+|---|---|
+| **Longitudinal shrinkage** | Members get shorter along the weld |
+| **Transverse shrinkage** | Plates pull together across the weld |
+| **Angular distortion** | Plates bend up toward the weld side ("V" shape) |
+| **Buckling** | Thin plate waves between stiffeners ("hungry horse" look) |
+
+Thin plates, large welds, and high heat input make it worse.
+
+---
+
+## Controlling Distortion
+
+- **Weld only as much as needed:** correct fillet size, minimal groove volume, no oversized gaps.
+- **Balance welding:** weld alternately on both sides of a joint or the neutral axis (for example, a double-V groove welded alternately from each side).
+- **Sequence:** weld from the **center outward** toward free edges, so shrinkage isn't locked in.
+- **Back-step welding:** make each short segment in the opposite direction to the overall progress.
+- **Skip (wandering) welding:** spread heat by welding short segments in different places.
+- **Preset:** position parts slightly out of alignment so shrinkage pulls them into place.
+- **Restraint:** strongbacks and fixtures hold parts, but too much restraint raises cracking risk.
+- **Lower heat input:** use procedures with appropriate amperage and travel speed.
+- **Intermittent fillets** where the design allows.
+
+<Pitfall title="Welding From One End to the Other">
+
+**Common mistake:** welding a long deck seam in one continuous run from one end to the other, then welding the stiffeners.
+
+Shrinkage accumulates toward the finish end, plates bow and wave, and stiffener welds lock the distortion in. Follow the yard's **welding sequence plan**: seams before butts or butts before seams as specified, center out, balanced, and plate joints before stiffener welds where required.
+
+</Pitfall>
+
+---
+
+## Key Takeaway
+
+Know your **joint types** and **groove geometry** (angle, land, root opening, backing). Fillets are sized by **leg**, but the **throat ≈ 0.707 × leg** carries the load. Welds **shrink**, causing longitudinal, transverse, angular, and buckling distortion. Control it with **minimum weld volume, balance, center-out sequencing, back-step and skip welding, presetting, and the yard's sequence plan**.
+
+<TryIt title="Fillet Math">
+
+A drawing calls for a **5/16-inch** fillet weld. What's the theoretical throat?
+
+0.707 × 0.3125 ≈ **0.22 inch**.
+
+If a welder lays down a 7/16-inch fillet instead, how much more weld metal does that use? Fillet area scales with the leg squared: (7/16 ÷ 5/16)² = (1.4)² ≈ **1.96**, nearly **twice** the weld metal and heat for a weld that was already strong enough.
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "For an equal-leg fillet weld, the theoretical throat is about:",
+      options: ["0.5 × leg", "1.0 × leg", "1.414 × leg", "0.707 × leg"],
+      correctIndex: 3,
+      explanation: "The throat of a 45° fillet is leg × sin 45° ≈ 0.707 × leg."
+    },
+    {
+      question: "What is the purpose of ceramic backing tape?",
+      options: ["Insulating the deck", "Supporting the root for full-penetration welds from one side", "Preventing rust", "Marking layout lines"],
+      correctIndex: 1,
+      explanation: "Ceramic backing lets welders make full-penetration welds from one side, then is removed."
+    },
+    {
+      question: "Why should long seams generally be welded from the center outward?",
+      options: ["So shrinkage can move toward free edges instead of being locked in", "It looks better", "To use less gas", "It's faster"],
+      correctIndex: 0,
+      explanation: "Center-out sequencing lets plates shrink toward unrestrained edges, reducing distortion."
+    },
+    {
+      question: "What happens when a fillet weld is significantly oversized?",
+      options: ["Nothing", "More weld metal, more heat, and more distortion without proportional benefit", "Less distortion", "Lower cost"],
+      correctIndex: 1,
+      explanation: "Weld volume grows with the square of leg size, increasing heat and distortion."
+    }
+  ]}
+/>

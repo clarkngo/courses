@@ -1,0 +1,154 @@
+---
+title: "How a Hull Is Built: Ship Structure Basics"
+description: "Learn the main structural members of a steel hull, including the keel, frames, longitudinals, floors, bulkheads, shell plating, and decks, and how transverse and longitudinal framing systems carry the loads a ship faces."
+module: 1
+moduleTitle: "Ship Structure and Drawings"
+lesson: 1
+duration: "25 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## A Ship Is a Beam That Floats
+
+A ship's hull acts like a long hollow **beam**. Waves lift it in the middle (**hogging**) and then at the ends (**sagging**), bending it thousands of times a day. Cargo and water push on the sides and bottom. The hull's structure must carry these loads while staying **watertight**.
+
+Shipfitters and welders build that structure. Knowing what each piece does tells you why fit-up, weld quality, and alignment matter.
+
+---
+
+## The Main Structural Members
+
+<svg viewBox="0 0 700 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Simplified midship cross-section of a steel hull with a double bottom. Labeled parts: the keel at the bottom centerline, bottom shell plating, inner bottom (tank top) above the double bottom, floors running across the double bottom, side shell plating with frames, the bilge curve where bottom meets side, the main deck with deck beams, and longitudinal stiffeners running fore and aft.">
+  <g font-family="system-ui, -apple-system, sans-serif" font-size="12">
+    <path d="M150 50 L150 200 Q150 240 190 240 L510 240 Q550 240 550 200 L550 50" fill="#f1f5f9" stroke="#0f172a" stroke-width="5"/>
+    <line x1="150" y1="50" x2="550" y2="50" stroke="#0f172a" stroke-width="5"/>
+    <line x1="160" y1="200" x2="540" y2="200" stroke="#475569" stroke-width="4"/>
+    <g stroke="#94a3b8" stroke-width="3">
+      <line x1="230" y1="200" x2="230" y2="240"/>
+      <line x1="300" y1="200" x2="300" y2="240"/>
+      <line x1="400" y1="200" x2="400" y2="240"/>
+      <line x1="470" y1="200" x2="470" y2="240"/>
+    </g>
+    <line x1="350" y1="200" x2="350" y2="240" stroke="#9a3412" stroke-width="5"/>
+    <rect x="335" y="240" width="30" height="10" fill="#9a3412"/>
+    <g stroke="#475569" stroke-width="3">
+      <line x1="150" y1="80" x2="170" y2="80"/><line x1="150" y1="120" x2="170" y2="120"/><line x1="150" y1="160" x2="170" y2="160"/>
+      <line x1="550" y1="80" x2="530" y2="80"/><line x1="550" y1="120" x2="530" y2="120"/><line x1="550" y1="160" x2="530" y2="160"/>
+    </g>
+    <g fill="#ca8a04">
+      <rect x="215" y="50" width="6" height="14"/><rect x="285" y="50" width="6" height="14"/><rect x="410" y="50" width="6" height="14"/><rect x="480" y="50" width="6" height="14"/>
+    </g>
+    <text x="350" y="40" text-anchor="middle" fill="#0f172a" font-weight="700">main deck (with deck longitudinals)</text>
+    <text x="350" y="275" text-anchor="middle" fill="#9a3412" font-weight="700">keel + center girder</text>
+    <text x="350" y="190" text-anchor="middle" fill="#475569" font-weight="700">inner bottom (tank top)</text>
+    <text x="265" y="225" text-anchor="middle" fill="#475569">floor</text>
+    <text x="350" y="125" text-anchor="middle" fill="#475569">cargo hold / engine room</text>
+    <text x="60" y="125" text-anchor="middle" fill="#0f172a" font-weight="700">side shell</text>
+    <text x="60" y="141" text-anchor="middle" fill="#475569">with frames</text>
+    <line x1="100" y1="130" x2="148" y2="130" stroke="#0f172a"/>
+    <text x="620" y="235" text-anchor="middle" fill="#0f172a" font-weight="700">bilge</text>
+    <line x1="595" y1="232" x2="548" y2="222" stroke="#0f172a"/>
+    <text x="620" y="190" text-anchor="middle" fill="#475569">double bottom</text>
+    <line x1="580" y1="194" x2="545" y2="220" stroke="#475569"/>
+    <text x="620" y="75" text-anchor="middle" fill="#ca8a04" font-weight="700">longitudinals</text>
+    <line x1="575" y1="70" x2="490" y2="58" stroke="#ca8a04"/>
+  </g>
+</svg>
+
+| Member | Direction | Job |
+|---|---|---|
+| **Keel** | Fore and aft, bottom centerline | The ship's backbone |
+| **Shell plating** | Outer skin | Keeps water out; carries hull bending loads |
+| **Frames** | Transverse (around the hull) | Stiffen the side shell; give the hull its shape |
+| **Longitudinals** | Fore and aft | Stiffen plating and carry hull bending loads |
+| **Floors** | Transverse, in the double bottom | Connect bottom shell, inner bottom, and keel |
+| **Girders** | Fore and aft, deep members | Support longitudinals and decks over long spans |
+| **Bulkheads** | Transverse or longitudinal walls | Divide the hull into watertight compartments; add strength |
+| **Decks** | Horizontal | Close the top of the hull beam; carry loads |
+| **Double bottom** | Between bottom shell and inner bottom | Protects against grounding; holds ballast, fuel, or water |
+
+**Brackets** connect members at their ends, and **web frames** are deep, heavy frames placed at intervals to support lighter members.
+
+---
+
+## Framing Systems
+
+### Transverse Framing
+
+Many closely spaced **transverse frames** with fewer longitudinals. Common on **smaller vessels** such as tugs, fishing boats, and workboats. Easier to build for curved hulls.
+
+### Longitudinal Framing
+
+Many **longitudinal stiffeners** supported by widely spaced **web frames**. Used on **large ships** (tankers, bulk carriers, container ships) because longitudinals directly resist the **hull bending** that matters most on long vessels.
+
+### Combined (Mixed) Framing
+
+Longitudinal framing in the bottom and deck, where bending stresses are highest, and transverse framing on the sides. Common on many cargo ships.
+
+---
+
+## Watertight Integrity
+
+**Watertight bulkheads** split the hull so one flooded compartment doesn't sink the ship. Every penetration through them (pipes, cables, doors) must keep watertight integrity. That means:
+
+- Approved **penetration fittings** (collars, multi-cable transits)
+- **Continuous, sound welds** with no gaps
+- No unauthorized holes
+
+<Pitfall title="Cutting a Hole for a Pipe">
+
+**Common mistake:** a fitter burns a hole through a bulkhead to run a new pipe or cable without checking whether it's a watertight or structural boundary.
+
+Unauthorized holes can compromise watertight subdivision, fire boundaries, or structural strength, and may violate classification rules. **Any** cut in structure needs an approved drawing or engineering approval, plus the proper penetration fitting and inspection.
+
+</Pitfall>
+
+---
+
+## Key Takeaway
+
+A hull is a floating **beam** that hogs and sags. The **keel, shell, frames, longitudinals, floors, girders, bulkheads, and decks** work together to carry loads and keep water out. **Transverse** framing suits small vessels; **longitudinal** framing suits long ships. **Watertight bulkheads** must never be cut without approval.
+
+<TryIt title="Name That Member">
+
+Look at photos of a ship under construction or in drydock (many shipyards share them online). Identify:
+
+1. Shell plating
+2. Frames or longitudinals (which framing system does it use?)
+3. A bulkhead
+4. The double bottom or floors
+5. A bracket at a member's end
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "What is 'hogging'?",
+      options: ["The ship sinking at the bow", "Rolling side to side", "Taking on fuel", "The hull bending with the middle lifted by a wave crest"],
+      correctIndex: 3,
+      explanation: "In hogging, a wave crest lifts the middle of the ship, bending the ends down."
+    },
+    {
+      question: "Why do large ships often use longitudinal framing?",
+      options: ["Longitudinals directly resist hull bending, which dominates on long ships", "It's cheaper for small boats", "It's quieter", "It requires no welding"],
+      correctIndex: 0,
+      explanation: "Longitudinal stiffeners carry the bending loads that are critical on long hulls."
+    },
+    {
+      question: "What does a double bottom provide?",
+      options: ["Extra cargo space only", "Protection against grounding plus tank space for ballast, fuel, or water", "A second propeller", "Engine cooling"],
+      correctIndex: 1,
+      explanation: "The double bottom adds a second watertight layer and serves as tankage."
+    },
+    {
+      question: "Before cutting a penetration through a bulkhead, a fitter should:",
+      options: ["Cut wherever is convenient", "Ask a deckhand", "Use a smaller torch", "Confirm it's approved on drawings and use the proper penetration fitting"],
+      correctIndex: 3,
+      explanation: "Bulkheads may be watertight, fire, or structural boundaries. Penetrations need approval and proper fittings."
+    }
+  ]}
+/>

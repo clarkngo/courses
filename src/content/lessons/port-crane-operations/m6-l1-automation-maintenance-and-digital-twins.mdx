@@ -1,0 +1,128 @@
+---
+title: "Automation, Crane Maintenance, and Digital Twins"
+description: "See how ports are adopting remote-operated cranes, automated stacking, OCR gates, and electrification; how cranes are maintained and monitored; and how simulators and digital twins train operators and plan operations."
+module: 6
+moduleTitle: "The Future Waterfront and Review"
+lesson: 1
+duration: "25 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## The Changing Waterfront
+
+Ports are adopting new technology to move more cargo with less emissions and better safety. The changes vary widely from terminal to terminal.
+
+| Technology | What it does |
+|---|---|
+| **Remote-operated STS cranes** | Operators work from a control room using cameras and sensors, instead of a cab high above the ship |
+| **Automated stacking cranes (ASC)** | Yard cranes that stack and retrieve containers automatically, with humans supervising and handling exceptions |
+| **Automated guided vehicles (AGVs) / automated straddle carriers** | Driverless horizontal transport in fenced, controlled zones |
+| **OCR and gate automation** | Cameras read container numbers, seals, and truck plates; kiosks speed trucks through |
+| **Spreader and crane sensors** | Detect container position, twistlock status, and load weight |
+| **Electrification** | Electric RTGs and yard equipment; **shore power** so ships can shut down engines at berth |
+
+Automation is also a **labor issue**. On the U.S. West Coast, its introduction has been a central topic in negotiations between longshore unions and employers. Many terminals use **semi-automation**, where technology assists skilled workers rather than replacing them.
+
+---
+
+## Keeping Cranes Running
+
+An STS crane out of service can delay a ship and cost a terminal heavily. Crane maintenance crews (mechanics and electricians) handle:
+
+| System | Key maintenance |
+|---|---|
+| **Wire ropes** | Regular visual inspection, lubrication, scheduled replacement; some terminals use **magnetic rope testing** to find internal broken wires |
+| **Hoist and trolley drives** | Gearbox oil and condition monitoring, motor and VFD maintenance |
+| **Brakes** | Inspection and testing; brakes hold the load and the crane in wind |
+| **Spreaders** | Twistlocks, flippers, telescopic systems, hydraulics, and sensors; high-wear components |
+| **Structure** | Inspection for **fatigue cracks** in welds, especially at the boom and connections |
+| **Electrical** | High-voltage supply, cable reels, collector systems, drives, PLCs |
+| **Safety systems** | Limit switches, anti-collision, overload protection, wind alarms |
+
+The skills from earlier courses all apply: **power transmission, hydraulics, bearings, lubrication, condition monitoring, and lockout/tagout** for work on high-voltage and stored-energy systems.
+
+<ProcessFlow
+  label="Crane condition monitoring loop: sensors collect data on vibration, temperature, load, and motor current, the data is trended and compared to baselines, alerts flag abnormal patterns, maintenance is planned and performed during scheduled windows, and results feed back into the model."
+  color="#0f766e"
+  loop="Every repair and inspection result improves the baseline and the predictions."
+  steps={[
+    { title: 'Sense', detail: 'Vibration, temp, load, current' },
+    { title: 'Trend', detail: 'Compare to baselines' },
+    { title: 'Alert', detail: 'Flag abnormal patterns' },
+    { title: 'Plan', detail: 'Schedule between vessel calls' },
+    { title: 'Repair + record', detail: 'Feed results back' },
+  ]}
+/>
+
+---
+
+## Simulators and Digital Twins
+
+**Crane simulators** let new operators practice hoist, trolley, and gantry control, sway management, and emergencies **without risk** to people, ships, or cargo. Many terminals use them for initial training and refreshers.
+
+A **digital twin** is a live virtual model of a physical system, kept up to date with real data. At ports, digital twins can model:
+
+- **Terminal operations**: simulate yard layouts, equipment assignments, and vessel schedules before trying them for real
+- **Crane health**: combine sensor data with models to predict failures
+- **Berth and traffic planning**: forecast congestion at gates and rail
+- **Energy use and emissions**: plan electrification and charging
+
+To go deeper on AI, sensors, and autonomy at sea and in ports, see the [Physical AI with Maritime](/courses/physical-ai-maritime/) course.
+
+<Pitfall title="Trusting the Screen Over the Situation">
+
+**Common mistake:** a remote operator or supervisor trusts the system's display that says a twistlock is unlocked or a lane is clear, without checking cameras or confirming with people on the ground.
+
+Sensors fail, cameras get dirty, and software has bugs. Automated and remote systems need **human verification** at key moments, clear **stop authority**, and procedures for **exceptions**.
+
+</Pitfall>
+
+---
+
+## Key Takeaway
+
+Ports are adopting **remote-operated cranes, automated stacking, AGVs, OCR gates, and electrification**, often as **semi-automation** alongside skilled workers. Crane maintenance covers **wire ropes, drives, brakes, spreaders, structure, electrical, and safety systems**, using the same skills as plant maintenance. **Simulators** train operators, and **digital twins** help plan operations and predict failures.
+
+<TryIt title="Design a Monitoring Plan">
+
+Pick one STS crane system, such as the **main hoist**. List:
+
+1. Three failure modes (e.g., gearbox bearing wear, wire rope fatigue, brake lining wear)
+2. A sensor or inspection that would detect each early
+3. How often you'd check each
+4. What threshold would trigger planned maintenance
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "What is a digital twin?",
+      options: ["A backup crane", "A twin-lift spreader", "A second operator", "A live virtual model of a physical system kept updated with real data"],
+      correctIndex: 3,
+      explanation: "Digital twins mirror real systems with live data for simulation, planning, and prediction."
+    },
+    {
+      question: "What can magnetic rope testing find that visual inspection may miss?",
+      options: ["Paint color", "Rope length", "Crane speed", "Internal broken wires and corrosion inside the rope"],
+      correctIndex: 3,
+      explanation: "Magnetic testing detects internal damage that isn't visible on the surface."
+    },
+    {
+      question: "What does shore power allow a ship to do at berth?",
+      options: ["Load faster", "Avoid customs", "Raise its cranes", "Shut down its engines and plug into the grid, reducing emissions"],
+      correctIndex: 3,
+      explanation: "Shore power lets ships turn off auxiliary engines while docked."
+    },
+    {
+      question: "Why do automated systems still need human verification?",
+      options: ["Regulations ban automation", "Sensors, cameras, and software can fail, so people confirm key conditions and handle exceptions", "Humans are faster", "It's tradition"],
+      correctIndex: 1,
+      explanation: "Automation reduces risk but doesn't eliminate failures. Human checks and stop authority remain essential."
+    }
+  ]}
+/>

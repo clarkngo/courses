@@ -1,0 +1,151 @@
+---
+title: "Sling Angles, Center of Gravity, and Load Control"
+description: "Calculate sling leg tension at different angles, see why low sling angles are dangerous, place the hook over the center of gravity, handle multi-leg and unequal-leg rigging, and control loads with tag lines and edge protection."
+module: 3
+moduleTitle: "Rigging"
+lesson: 2
+duration: "30 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Angles Multiply Tension
+
+When sling legs angle out from the hook, each leg carries **more** than its share of the load. The flatter the angle, the higher the tension.
+
+<svg viewBox="0 0 700 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Two two-leg bridle hitches lifting the same 10,000 pound load. On the left, legs at 60 degrees from horizontal each carry about 5,775 pounds. On the right, legs at 30 degrees from horizontal each carry 10,000 pounds, double the vertical share, because of the flat angle.">
+  <g font-family="system-ui, -apple-system, sans-serif" font-size="13">
+    <circle cx="170" cy="40" r="8" fill="#0f172a"/>
+    <line x1="170" y1="40" x2="100" y2="160" stroke="#0f766e" stroke-width="4"/>
+    <line x1="170" y1="40" x2="240" y2="160" stroke="#0f766e" stroke-width="4"/>
+    <rect x="80" y="160" width="180" height="50" fill="#cbd5e1" stroke="#0f172a" stroke-width="2"/>
+    <text x="170" y="190" text-anchor="middle" fill="#0f172a" font-weight="700">10,000 lb</text>
+    <path d="M128 160 A 28 28 0 0 0 114 136" fill="none" stroke="#dc2626" stroke-width="2"/>
+    <text x="70" y="140" fill="#dc2626" font-weight="700">60°</text>
+    <text x="170" y="235" text-anchor="middle" fill="#0f766e" font-weight="700">≈ 5,775 lb per leg</text>
+    <circle cx="510" cy="91" r="8" fill="#0f172a"/>
+    <line x1="510" y1="91" x2="390" y2="160" stroke="#dc2626" stroke-width="4"/>
+    <line x1="510" y1="91" x2="630" y2="160" stroke="#dc2626" stroke-width="4"/>
+    <rect x="370" y="160" width="280" height="50" fill="#cbd5e1" stroke="#0f172a" stroke-width="2"/>
+    <text x="510" y="190" text-anchor="middle" fill="#0f172a" font-weight="700">10,000 lb</text>
+    <path d="M432 160 A 42 42 0 0 0 426 139" fill="none" stroke="#dc2626" stroke-width="2"/>
+    <text x="438" y="150" fill="#dc2626" font-weight="700">30°</text>
+    <text x="510" y="235" text-anchor="middle" fill="#dc2626" font-weight="700">10,000 lb per leg (2× the share)</text>
+    <text x="510" y="70" text-anchor="middle" fill="#475569">flat angle, same load</text>
+  </g>
+</svg>
+
+### The Formula
+
+**Tension per leg = (load ÷ number of legs) ÷ sin(angle from horizontal)**
+
+Or use the **load angle factor** (1 ÷ sin of the angle):
+
+| Angle from horizontal | Load angle factor |
+|---|---|
+| 90° (vertical) | 1.000 |
+| 60° | 1.155 |
+| 45° | 1.414 |
+| 30° | **2.000** |
+
+### Worked Example
+
+A **10,000 lb** load on a two-leg bridle at **45°**:
+
+(10,000 ÷ 2) × 1.414 = **7,070 lb per leg**
+
+Each sling, shackle, and lifting point must be rated for at least that.
+
+### Rules of Thumb
+
+- Keep sling angles **at or above 45°** from horizontal when possible.
+- Avoid angles **below 30°**. Tension climbs extremely fast, and many standards and companies prohibit them without engineering.
+- Use a **spreader bar** or **lifting beam** to keep slings vertical on wide loads.
+
+---
+
+## Center of Gravity (CG)
+
+The **center of gravity** is the balance point of the load. When lifted, a load will swing until its CG is **directly below the hook**.
+
+- If the hook isn't over the CG, the load **tilts** and may **shift, slide, or swing** into people or structures.
+- Determine CG from **drawings, markings, or shipping documents** (heavy cargo is often stenciled with a CG mark), or by calculation.
+- **Test lift**: raise the load a few inches, check balance and rigging, then continue.
+
+### Unequal Legs
+
+When the CG is closer to one lifting point, the **shorter / steeper leg nearer the CG carries more** of the load. Rigging must be sized for the **highest-loaded** leg, not an average.
+
+### Multi-Leg Slings
+
+With three- or four-leg slings, legs rarely share load equally because of small length differences and rigid loads. A common practice is to **assume only two legs carry the load** unless an engineer determines otherwise.
+
+---
+
+## Protecting the Rigging
+
+- **Edge protection** (corner pads, sleeves, wear pads) on sharp edges. Synthetics can be cut through instantly.
+- Respect **D/d ratio**: bending wire rope around a small diameter (a thin pin or sharp corner) reduces its strength.
+- Don't **drag** slings, and don't pull slings out from under a resting load.
+
+## Controlling the Load
+
+- **Tag lines** let workers guide and stop rotation **from a distance**, never by hand on the load.
+- Never wrap a tag line around your hand or body.
+- Keep **clear of pinch points** between the load and fixed objects.
+- **Never stand under a suspended load.**
+
+<Pitfall title="Short Slings on a Wide Load">
+
+**Common mistake:** using short slings on a long, wide piece of cargo so the crane has more lift height.
+
+The result is a very flat sling angle, sometimes under 30°, which can **double or triple** the tension in each leg and overload slings, shackles, and lifting lugs. Use **longer slings** or a **spreader bar**.
+
+</Pitfall>
+
+---
+
+## Key Takeaway
+
+Sling tension = **(load ÷ legs) ÷ sin(angle)**. At **30°**, each leg carries **double** its share. Stay at **45° or more**, and use **spreader bars** for wide loads. Put the **hook over the CG**, make a **test lift**, size for the **most heavily loaded leg**, assume **two legs** carry multi-leg loads, protect **edges**, and control the load with **tag lines**.
+
+<TryIt title="Calculate the Leg Tension">
+
+A **24,000 lb** transformer is lifted with a two-leg bridle at **60°** from horizontal.
+
+(24,000 ÷ 2) × 1.155 = **13,860 lb per leg**.
+
+If the only available slings make a **30°** angle instead, what's the tension? (24,000 ÷ 2) × 2.000 = **24,000 lb per leg**. That's the **entire load** in each leg.
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "What is the load angle factor at 30° from horizontal?",
+      options: ["1.000", "1.155", "1.414", "2.000"],
+      correctIndex: 3,
+      explanation: "1 ÷ sin 30° = 2.0, so each leg carries twice its vertical share."
+    },
+    {
+      question: "A 6,000 lb load is lifted with two legs at 45°. What's the tension per leg?",
+      options: ["About 4,240 lb", "3,000 lb", "6,000 lb", "12,000 lb"],
+      correctIndex: 0,
+      explanation: "(6,000 ÷ 2) × 1.414 ≈ 4,242 lb per leg."
+    },
+    {
+      question: "Where must the hook be placed relative to the load's center of gravity?",
+      options: ["Anywhere", "At one end", "Directly above it", "Below it"],
+      correctIndex: 2,
+      explanation: "The load swings until its CG is under the hook. Rig it there to keep it level and stable."
+    },
+    {
+      question: "When rigging a rigid load with a four-leg sling, what's the common conservative assumption?",
+      options: ["All four legs share equally", "One leg carries it all", "Legs don't matter", "Only two legs carry the load"],
+      correctIndex: 3,
+      explanation: "Small length differences mean legs don't share evenly, so two legs are commonly assumed to carry the load."
+    }
+  ]}
+/>

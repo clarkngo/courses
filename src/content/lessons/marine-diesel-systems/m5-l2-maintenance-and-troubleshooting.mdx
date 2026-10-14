@@ -1,0 +1,137 @@
+---
+title: "Planned Maintenance and Troubleshooting"
+description: "Use a planned maintenance system, perform common tasks such as valve lash adjustment, injector service, and filter changes, and work through the classic marine diesel faults: won't start, overheating, low oil pressure, loss of power, and vibration."
+module: 5
+moduleTitle: "Operation and Maintenance"
+lesson: 2
+duration: "30 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Planned Maintenance Systems
+
+Vessels run a **planned maintenance system (PMS)** that schedules tasks by **running hours** or **calendar time**, based on the maker's manuals, classification society requirements, and the operator's experience. The PMS tracks:
+
+- Tasks due and overdue
+- Work done, by whom, with what parts
+- Spare parts inventory
+- Running hours for each machine
+
+Under the **ISM Code** (International Safety Management), ships covered by it must maintain equipment per documented procedures, and maintenance records are part of audits and inspections.
+
+---
+
+## Common Maintenance Tasks
+
+| Task | Typical trigger | Notes |
+|---|---|---|
+| **Oil and filter change** | Running hours or oil analysis | Take an oil sample first; check old filter for metal |
+| **Fuel filter change** | Hours or differential pressure | Bleed the system afterward |
+| **Raw water impeller** | Hours or annually | Carry spares; check for missing vanes downstream |
+| **Zincs / anodes** | Inspection; replace when about half consumed (or per maker) | Clean the contact surface |
+| **Valve lash (clearance) adjustment** | Running hours | Engine **cold**, cylinder at **TDC on compression**, use feeler gauges per maker spec |
+| **Injector testing / overhaul** | Hours or symptoms | Check opening (pop) pressure, spray pattern, leakage on a test bench |
+| **Heat exchanger cleaning** | Hours or rising temperatures | Rod or chemically clean tubes; replace gaskets and zincs |
+| **Belt inspection** | Regularly | Tension, cracks, glazing |
+| **Turbo wash** | Per maker | Compressor and turbine side |
+| **Air filter** | Differential pressure or hours | Never run without one |
+
+### Valve Lash
+
+Valves need a small clearance ("lash") between the rocker arm and valve stem so they **close fully** when the engine is hot.
+
+- **Too little clearance:** valves may not seat when hot, causing burned valves, low compression, and hard starting.
+- **Too much clearance:** noisy valve train, valves open late and close early, power loss, and wear.
+
+---
+
+## Troubleshooting the Classic Faults
+
+### Won't Start (Cranks but Doesn't Fire)
+
+| Check | Possible problem |
+|---|---|
+| Fuel reaching injectors? | Empty tank, closed valve, clogged filter, **air in lines**, fuel shutoff solenoid not energized |
+| Cranking speed fast enough? | Weak batteries, low starting air pressure |
+| Air intake clear? | Blocked filter, closed damper |
+| Engine cold? | Use pre-heat or glow plugs if fitted |
+| Compression OK? | Worn rings, burnt valves, wrong lash |
+
+### Overheating
+
+See Lesson 3.2: check **raw water flow first** (sea valve, strainer, impeller), then coolant level, heat exchanger, thermostat, and load.
+
+### Low Oil Pressure
+
+**Reduce load or stop.** Then check oil level, oil dilution (smell for fuel; check for milky coolant), filter condition, pressure sensor accuracy (compare to a mechanical gauge), and pump and bearing wear.
+
+### Loss of Power
+
+- **Fuel:** restricted filter, air in fuel, bad injector, contaminated fuel
+- **Air:** dirty filter, turbo or cooler fouling
+- **Exhaust:** high back pressure
+- **External:** fouled hull or propeller, line or net in the prop, wrong propeller
+- **Governor or controls** problem
+
+### Vibration
+
+- **Engine mounts** loose or failed
+- **Shaft misalignment** between engine/gear and shaft (soft mounts and hull flex make alignment critical)
+- **Damaged propeller** (bent blade, missing piece, fouling)
+- A **misfiring cylinder**
+- **Coupling** wear
+
+<Pitfall title="Changing Parts at Sea Without Isolating">
+
+**Common mistake:** changing a fuel filter on the running generator because "it's a duplex filter, it's fine," or working on the raw water strainer with the sea valve open.
+
+Duplex filters and strainers can be changed in service **only** by following the correct changeover and isolation procedure. A sea strainer opened with the sea valve open will **flood the engine room**. Know which valves isolate what, and follow your vessel's lockout and isolation procedures (see the Lockout/Tagout course).
+
+</Pitfall>
+
+---
+
+## Key Takeaway
+
+A **PMS** schedules work by **hours and calendar** and keeps records. Core tasks include **oil and filters, impellers, zincs, valve lash, injectors, and heat exchangers**. Troubleshoot systematically: **won't start** (fuel, cranking speed, air, heat, compression), **overheating** (raw water first), **low oil pressure** (stop or reduce load), **loss of power** (fuel, air, exhaust, hull and prop), and **vibration** (mounts, alignment, prop).
+
+<TryIt title="Troubleshoot at Sea">
+
+A fishing vessel's main engine suddenly **loses power** and develops a new **vibration** while the boat is hauling gear. Engine temperatures and oil pressure are normal.
+
+What's the most likely cause? *(Something in the propeller, such as a line, net, or kelp, or a damaged blade.)*
+What do you do first? *(Reduce power, put the gear in neutral, and inform the skipper. Check over the stern if safe, and plan to clear the prop safely, never with the engine able to turn the shaft.)*
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "Valve lash is usually adjusted with the engine:",
+      options: ["Cold, with the cylinder at TDC on the compression stroke", "Hot and running", "At full load", "Underwater"],
+      correctIndex: 0,
+      explanation: "Maker specifications are typically for a cold engine with that cylinder's valves fully closed at TDC compression."
+    },
+    {
+      question: "What can too little valve clearance cause?",
+      options: ["Valves not seating when hot, leading to burned valves and low compression", "A quiet valve train", "Better fuel economy", "Lower exhaust temperatures"],
+      correctIndex: 0,
+      explanation: "As parts expand with heat, too little lash can hold valves slightly open, burning them."
+    },
+    {
+      question: "An engine cranks but won't fire, and the fuel filters were just changed. What's the most likely cause?",
+      options: ["Air in the fuel lines", "Worn rings", "Dirty hull", "Broken propeller"],
+      correctIndex: 0,
+      explanation: "Filter changes often introduce air, which must be bled out before the engine will run."
+    },
+    {
+      question: "What happens if a sea strainer is opened with the sea valve open?",
+      options: ["Nothing", "The engine speeds up", "It cleans itself", "Seawater floods in, potentially flooding the engine room"],
+      correctIndex: 3,
+      explanation: "The sea valve must be closed before opening a strainer below the waterline."
+    }
+  ]}
+/>
