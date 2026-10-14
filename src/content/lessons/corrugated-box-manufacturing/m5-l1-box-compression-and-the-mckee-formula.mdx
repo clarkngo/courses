@@ -1,0 +1,157 @@
+---
+title: "Box Compression Strength and the McKee Formula"
+description: "Estimate a box's compression strength with the McKee formula, then derate it for humidity, time, stacking pattern, and pallet overhang to find a safe stacking load."
+module: 5
+moduleTitle: "Performance and Testing"
+lesson: 1
+duration: "35 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## What BCT Means
+
+**Box Compression Test (BCT)** strength is the top-to-bottom load an empty box can carry before it buckles, measured in a compression tester under standard conditions (23 °C, 50% RH).
+
+BCT is the number that matters on a pallet: the bottom box in a stack carries the weight of everything above it — sometimes for weeks.
+
+Where does a box's strength come from? Mostly the **corners and the panels near them**. The center of each panel bulges and carries little load. That's why a box's **perimeter** and the board's **stiffness** matter so much.
+
+---
+
+## The McKee Formula
+
+In 1963, McKee, Gander, and Wachuta published a simplified formula that's still used across the industry to estimate BCT for RSCs:
+
+> **BCT ≈ 5.87 × ECT × √(caliper × perimeter)**
+
+| Term | Meaning | Units (U.S.) |
+|---|---|---|
+| **BCT** | Box compression strength | lbf |
+| **ECT** | Edge crush test value of the board | lb/in |
+| **caliper** | Board thickness | in |
+| **perimeter** | 2 × (L + W) of the box | in |
+
+The constant 5.87 is for these U.S. units. The formula works best for RSCs of ordinary proportions.
+
+### Worked Example
+
+A **12 × 10 × 8 in** RSC made of **32 ECT C-flute** board, caliper **0.16 in**:
+
+1. Perimeter = 2 × (12 + 10) = **44 in**
+2. caliper × perimeter = 0.16 × 44 = 7.04
+3. √7.04 ≈ **2.65**
+4. BCT ≈ 5.87 × 32 × 2.65 ≈ **498 lbf**
+
+So in the lab, this box should hold roughly **500 pounds** before it collapses.
+
+### What the Formula Tells You
+
+- **ECT is linear:** doubling ECT doubles BCT. Board grade is your biggest lever.
+- **Caliper matters (square root):** crushed board loses BCT. Converting crush and flat crush both hurt.
+- **Perimeter matters (square root):** bigger boxes are stronger — but carry heavier loads above them, too.
+- **Depth isn't in the formula** for typical proportions — though very tall boxes do weaken.
+
+---
+
+## The Real World Is Not a Lab
+
+That 498 lbf is under ideal conditions: a fresh box, 50% RH, a short test. In a real warehouse, the same box can lose more than half its strength. Packaging engineers apply **environmental factors** (multipliers) to find a safe working load.
+
+Typical rule-of-thumb multipliers (actual values vary by source and design):
+
+| Condition | Approximate multiplier |
+|---|---|
+| **Storage time:** 10 days / 30 days / 90 days | ~0.63 / ~0.60 / ~0.55 |
+| **Humidity:** 50% / 70% / 80% / 90% RH | 1.00 / ~0.80 / ~0.68 / ~0.50 |
+| **Column-stacked** (corners aligned) | ~1.00 |
+| **Misaligned** column stacking | ~0.70–0.90 |
+| **Interlocked** (brick) stacking | ~0.50–0.60 |
+| **Pallet overhang** | ~0.70–0.80 |
+| **Pallet deck gaps** under the boxes | ~0.75–0.90 |
+
+<ProcessFlow
+  label="Steps to determine a safe stacking load for a box."
+  color="#a16207"
+  steps={[
+    { title: 'Estimate BCT', detail: 'McKee or lab test' },
+    { title: 'Apply factors', detail: 'Multiply by time, humidity, stacking, pallet' },
+    { title: 'Required load', detail: 'Weight of boxes stacked above the bottom box' },
+    { title: 'Compare', detail: 'Derated BCT ÷ required load = safety margin' },
+  ]}
+/>
+
+### Example, Continued
+
+Our 498 lbf box sits **30 days** in a **70% RH** warehouse, **interlocked** on the pallet, with some **overhang**:
+
+498 × 0.60 (time) × 0.80 (humidity) × 0.55 (interlock) × 0.75 (overhang) ≈ **99 lbf**
+
+The box lost about **80%** of its lab strength. If each box weighs 25 lb and the stack is 5 high, the bottom box carries 4 × 25 = **100 lb** — right at its limit. It will likely fail.
+
+The fixes, in order of cost:
+1. **Column-stack** instead of interlock, and **eliminate overhang** — free.
+2. Control **warehouse humidity** or stack lower.
+3. Use a **higher ECT** board, or redesign so the product shares the load.
+
+<Pitfall title="Specifying Board Without Knowing the Pallet Pattern">
+
+**Common mistake:** choosing 44 ECT "to be safe" without asking how the boxes will be stacked and stored.
+
+An interlocked pattern with overhang can cost half the box's strength — more than any upgrade in board grade can buy back economically. Fixing the **pallet pattern** is usually the cheapest strength upgrade in packaging. Ask for the pallet configuration before choosing the board.
+
+</Pitfall>
+
+---
+
+## Key Takeaway
+
+**BCT** is a box's top-to-bottom crush strength. The **McKee formula** estimates it from **ECT, caliper, and perimeter**. Real-world factors — **time, humidity, stacking pattern, pallet overhang** — can remove most of that strength, so engineers derate BCT and compare it to the actual load with a safety margin.
+
+<TryIt title="Run the Numbers">
+
+Calculate McKee BCT for a **16 × 12 × 10 in** RSC made from **44 ECT** C-flute board, caliper **0.17 in**.
+
+Perimeter = 2 × (16 + 12) = 56 in. caliper × perimeter = 9.52. √9.52 ≈ 3.09. BCT ≈ 5.87 × 44 × 3.09 ≈ **797 lbf**.
+
+Now derate it for 90 days at 80% RH, column-stacked, no overhang: 797 × 0.55 × 0.68 ≈ **298 lbf**. How many 30-lb boxes can safely sit on top of it?
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "Which three board and box properties appear in the McKee formula?",
+      options: ["Mullen, depth, weight", "ECT, caliper, perimeter", "Basis weight, flute, color", "Moisture, length, depth"],
+      correctIndex: 1,
+      explanation: "BCT ≈ 5.87 × ECT × √(caliper × perimeter)."
+    },
+    {
+      question: "If ECT doubles and everything else stays the same, BCT…",
+      options: ["Stays the same", "Increases by about 41%", "Doubles", "Quadruples"],
+      correctIndex: 2,
+      explanation: "BCT is directly proportional to ECT."
+    },
+    {
+      question: "What is the perimeter of a 14 × 10 × 6 RSC?",
+      options: ["30 in", "48 in", "24 in", "60 in"],
+      correctIndex: 1,
+      explanation: "Perimeter = 2 × (L + W) = 2 × (14 + 10) = 48 in. Depth isn't used."
+    },
+    {
+      question: "Which stacking pattern typically preserves the most box strength?",
+      options: ["Interlocked (brick)", "Column-stacked with corners aligned", "Random", "Pinwheel with overhang"],
+      correctIndex: 1,
+      explanation: "Aligned columns put load on the strong corners. Interlocking can cut strength roughly in half."
+    },
+    {
+      question: "Why does a box lose strength in high humidity?",
+      options: ["The ink softens", "Paper absorbs moisture, weakening fiber bonds and stiffness", "The box gets heavier", "Starch hardens"],
+      correctIndex: 1,
+      explanation: "Moisture weakens the hydrogen bonds and stiffness of paper, so compression strength drops."
+    }
+  ]}
+/>

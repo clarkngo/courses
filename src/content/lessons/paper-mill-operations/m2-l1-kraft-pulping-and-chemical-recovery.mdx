@@ -1,0 +1,143 @@
+---
+title: "Kraft Pulping and the Chemical Recovery Loop"
+description: "See how the kraft process cooks wood chips into strong pulp, and how a mill recovers over 95% of its cooking chemicals while generating most of its own energy."
+module: 2
+moduleTitle: "Making Pulp"
+lesson: 1
+duration: "30 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import LoopDiagram from '@components/LoopDiagram.astro';
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## From Log to Chip
+
+Before any chemistry happens, the **woodyard** turns logs into uniform chips.
+
+<ProcessFlow
+  label="Woodyard steps from incoming logs to chips stored in the chip pile."
+  color="#047857"
+  steps={[
+    { title: 'Debarking', detail: 'Logs tumble in a rotating drum; bark goes to the power boiler as fuel' },
+    { title: 'Chipping', detail: 'A spinning disc of knives cuts chips ~20–25 mm long' },
+    { title: 'Screening', detail: 'Oversize chips re-chipped; fines and sawdust removed' },
+    { title: 'Chip pile', detail: 'Stored outdoors; reclaimed to the digester on demand' },
+  ]}
+/>
+
+**Chip thickness** matters more than length. Cooking liquor penetrates a chip from all sides, so thick chips come out with a hard, uncooked center — called **rejects** or **knots** — while thin chips overcook.
+
+---
+
+## The Kraft Cook
+
+About 80% of the world's chemical pulp is made by the **kraft** (sulfate) process. "Kraft" is German for *strength* — and kraft pulp is the strongest pulp there is.
+
+In a **digester**, chips are cooked under pressure with **white liquor**, a solution of two chemicals:
+
+- **Sodium hydroxide (NaOH)** — the main delignifying agent
+- **Sodium sulfide (Na₂S)** — speeds delignification while protecting the cellulose
+
+Typical conditions are roughly **150–170 °C** for a couple of hours. Digesters run either as large **batch** vessels or as tall **continuous** towers where chips flow down while liquor circulates.
+
+The cook dissolves most of the lignin. What comes out is:
+
+- **Brown stock** — a slurry of separated fibers
+- **Black liquor** — spent cooking chemicals plus dissolved lignin and wood organics
+
+Kraft pulp yield is only about **45–55%** of the wood's dry weight — the rest is dissolved into the black liquor. That sounds wasteful, but nothing goes to waste, as you'll see next.
+
+The brown stock is **washed** to separate it from the black liquor, then **screened** to remove knots and shives (small bundles of uncooked fibers). Unbleached brown stock goes straight to linerboard. For white grades, it continues to the bleach plant (next lesson).
+
+### Kappa Number
+
+Operators control the cook with the **kappa number**, a lab measure of how much lignin remains in the pulp.
+
+- **Higher kappa** (≈ 70–100) = more lignin left, higher yield, stiffer fiber → typical for linerboard
+- **Lower kappa** (≈ 25–35) = more lignin removed, lower yield → typical for pulp that will be bleached
+
+Hitting the kappa target consistently is one of the most important jobs in the fiberline.
+
+---
+
+## The Chemical Recovery Loop
+
+A kraft mill can't afford to throw away its cooking chemicals. Instead, it runs a closed **recovery loop** that regenerates white liquor and burns the dissolved wood organics for energy.
+
+<LoopDiagram
+  label="The kraft chemical recovery loop: the digester produces black liquor, evaporators concentrate it, the recovery boiler burns it to produce steam and smelt, the smelt dissolves into green liquor, and causticizing converts green liquor back into white liquor for the digester."
+  colors={['#047857', '#065f46', '#0f766e']}
+  steps={[
+    { title: 'Digester', subtitle: 'white → black' },
+    { title: 'Evaporators', subtitle: 'to 70%+ solids' },
+    { title: 'Boiler', subtitle: 'steam + smelt' },
+    { title: 'Green liquor', subtitle: 'smelt dissolved' },
+    { title: 'Causticizer', subtitle: 'lime → white' },
+  ]}
+/>
+
+1. **Evaporators** — Weak black liquor (~15% solids) is concentrated in multiple-effect evaporators to 70% or more solids so it will burn.
+2. **Recovery boiler** — The concentrated liquor is sprayed into the furnace. The organics burn, producing high-pressure **steam** for the mill. The inorganic chemicals melt and drain from the floor as **smelt** (mainly sodium carbonate and sodium sulfide).
+3. **Dissolving tank** — Smelt dissolves in water to make **green liquor**.
+4. **Causticizing** — Lime (CaO) is added. It converts sodium carbonate back into sodium hydroxide, regenerating **white liquor**. The byproduct is **lime mud** (CaCO₃).
+5. **Lime kiln** — A side loop: the lime mud is burned in a rotary kiln to turn it back into lime (CaO) for reuse.
+
+A well-run mill recovers **over 95%** of its cooking chemicals, and burning black liquor plus bark often supplies **most of the mill's steam and electricity**.
+
+<Pitfall title="Water in the Recovery Boiler">
+
+**Critical hazard:** if water reaches the molten smelt bed — from a tube leak or liquor that is too dilute — it can flash to steam instantly and cause a **smelt-water explosion**.
+
+That's why recovery boilers have strict firing-solids limits, emergency drain procedures, and dedicated safety standards (in North America, guidance from BLRBAC, the Black Liquor Recovery Boiler Advisory Committee). Operators treat any suspected tube leak as an emergency, not a maintenance ticket.
+
+</Pitfall>
+
+---
+
+## Key Takeaway
+
+Kraft pulping cooks chips in white liquor to dissolve lignin, giving strong brown pulp at roughly half the wood's weight. The **recovery loop** — evaporators, recovery boiler, causticizing, lime kiln — turns spent black liquor back into white liquor and turns dissolved wood into energy. The recovery boiler is the heart of the mill, both economically and from a safety standpoint.
+
+<TryIt title="Trace the Sodium">
+
+On a sheet of paper, follow one sodium atom around the loop. Start in white liquor (as NaOH). Where does it go in the digester? What form is it in when it leaves the recovery boiler? What converts it back? Write one sentence per stop. If you can do this without looking, you understand the recovery cycle better than many new hires.
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "What are the two active chemicals in kraft white liquor?",
+      options: ["Sodium hydroxide and sodium sulfide", "Chlorine and hydrogen peroxide", "Calcium oxide and sodium carbonate", "Sulfuric acid and starch"],
+      correctIndex: 0,
+      explanation: "White liquor is NaOH plus Na₂S. Calcium oxide (lime) is used later, in causticizing."
+    },
+    {
+      question: "What does a higher kappa number indicate?",
+      options: ["Brighter pulp", "More residual lignin in the pulp", "Longer fibers", "Lower yield"],
+      correctIndex: 1,
+      explanation: "Kappa number measures residual lignin. Higher kappa means less cooking, more lignin left, and higher yield — common for unbleached linerboard."
+    },
+    {
+      question: "What is produced at the bottom of the recovery boiler?",
+      options: ["Lime mud", "White liquor", "Molten smelt", "Brown stock"],
+      correctIndex: 2,
+      explanation: "Inorganic chemicals melt and drain from the furnace floor as smelt, which is dissolved to make green liquor."
+    },
+    {
+      question: "What is the purpose of the lime kiln?",
+      options: ["To dry the paper", "To burn lime mud back into reusable lime (CaO)", "To bleach pulp", "To concentrate black liquor"],
+      correctIndex: 1,
+      explanation: "Causticizing turns lime into lime mud (CaCO₃). The kiln calcines it back to CaO so the lime is reused."
+    },
+    {
+      question: "Why is a suspected tube leak in a recovery boiler treated as an emergency?",
+      options: ["It lowers steam pressure slightly", "Water contacting molten smelt can cause an explosion", "It changes the kappa number", "It wastes white liquor"],
+      correctIndex: 1,
+      explanation: "Smelt-water contact can flash to steam explosively. Recovery boilers have emergency drain procedures for exactly this reason."
+    }
+  ]}
+/>

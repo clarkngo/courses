@@ -1,0 +1,170 @@
+---
+title: "The Corrugator, Part 1: Wet End and Single Facer"
+description: "Walk the wet end of a corrugator — roll stands, splicers, preheaters, the single facer, and the bridge — and learn how starch adhesive forms the bond."
+module: 2
+moduleTitle: "The Corrugator"
+lesson: 1
+duration: "30 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## The Machine That Makes the Board
+
+A **corrugator** is a continuous line — often 100 meters or more long — that turns rolls of linerboard and medium into flat sheets of corrugated board. A modern corrugator can run at **300+ meters per minute** and make board for hundreds of different orders in a single shift.
+
+The line has two halves:
+
+- **Wet end:** unwinds paper, conditions it, forms the flutes, and glues the first liner on.
+- **Dry end:** glues the second liner, cures the bond, cools the board, and cuts it into sheets.
+
+<svg viewBox="0 0 700 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Layout of a single-wall corrugator from left to right. Wet end: liner and medium roll stands with splicers, preheaters, and the single facer, which flutes the medium and glues it to one liner. The single-face web climbs to the bridge, where it accumulates in loose folds. Dry end: the inside liner joins at the glue machine and double backer, then the board passes the slitter-scorer, cut-off knife, and stacker.">
+  <defs>
+    <marker id="corr-a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#a16207"/></marker>
+  </defs>
+  <g font-family="system-ui, -apple-system, sans-serif">
+    <rect x="10" y="20" width="300" height="26" rx="6" fill="#fef3c7"/>
+    <text x="160" y="38" text-anchor="middle" fill="#92400e" font-size="13" font-weight="700">WET END</text>
+    <rect x="320" y="20" width="370" height="26" rx="6" fill="#e0f2fe"/>
+    <text x="505" y="38" text-anchor="middle" fill="#0369a1" font-size="13" font-weight="700">DRY END</text>
+    <circle cx="40" cy="190" r="22" fill="#d6c3a5" stroke="#92400e" stroke-width="2"/>
+    <text x="40" y="232" text-anchor="middle" fill="#0f172a" font-size="11" font-weight="700">medium</text>
+    <circle cx="40" cy="110" r="22" fill="#d6c3a5" stroke="#92400e" stroke-width="2"/>
+    <text x="40" y="78" text-anchor="middle" fill="#0f172a" font-size="11" font-weight="700">liner</text>
+    <rect x="80" y="96" width="40" height="28" rx="4" fill="#fca5a5"/>
+    <rect x="80" y="176" width="40" height="28" rx="4" fill="#fca5a5"/>
+    <text x="100" y="152" text-anchor="middle" fill="#0f172a" font-size="11" font-weight="700">preheaters</text>
+    <circle cx="170" cy="150" r="18" fill="#94a3b8"/>
+    <circle cx="200" cy="168" r="18" fill="#64748b"/>
+    <circle cx="200" cy="132" r="14" fill="#cbd5e1"/>
+    <text x="185" y="214" text-anchor="middle" fill="#0f172a" font-size="11" font-weight="700">single facer</text>
+    <path d="M62 110 L80 110 M120 110 L185 130 M62 190 L80 190 M120 190 L170 168" stroke="#a16207" stroke-width="2" fill="none"/>
+    <path d="M218 150 L250 80 L330 80" stroke="#a16207" stroke-width="2.5" fill="none"/>
+    <path d="M250 80 Q262 100 274 80 Q286 100 298 80 Q310 100 322 80" stroke="#ca8a04" stroke-width="2" fill="none"/>
+    <text x="290" y="66" text-anchor="middle" fill="#0f172a" font-size="11" font-weight="700">bridge</text>
+    <path d="M330 80 L360 150" stroke="#a16207" stroke-width="2.5" fill="none"/>
+    <circle cx="350" cy="200" r="20" fill="#d6c3a5" stroke="#92400e" stroke-width="2"/>
+    <text x="350" y="240" text-anchor="middle" fill="#0f172a" font-size="11" font-weight="700">inside liner</text>
+    <rect x="370" y="135" width="38" height="30" rx="4" fill="#fde68a"/>
+    <text x="389" y="124" text-anchor="middle" fill="#0f172a" font-size="11" font-weight="700">glue</text>
+    <rect x="415" y="138" width="130" height="24" rx="4" fill="#fca5a5"/>
+    <text x="480" y="124" text-anchor="middle" fill="#0f172a" font-size="11" font-weight="700">double backer</text>
+    <text x="480" y="178" text-anchor="middle" fill="#475569" font-size="10">hot plates + cooling</text>
+    <rect x="555" y="138" width="34" height="24" rx="4" fill="#94a3b8"/>
+    <text x="572" y="124" text-anchor="middle" fill="#0f172a" font-size="11" font-weight="700">slit/score</text>
+    <rect x="598" y="138" width="24" height="24" rx="4" fill="#64748b"/>
+    <text x="610" y="190" text-anchor="middle" fill="#0f172a" font-size="11" font-weight="700">knife</text>
+    <rect x="632" y="140" width="50" height="8" fill="#a16207"/><rect x="632" y="150" width="50" height="8" fill="#a16207"/><rect x="632" y="160" width="50" height="8" fill="#a16207"/>
+    <text x="657" y="190" text-anchor="middle" fill="#0f172a" font-size="11" font-weight="700">stacker</text>
+    <path d="M370 210 L370 165" stroke="#a16207" stroke-width="2" fill="none"/>
+    <line x1="420" y1="250" x2="680" y2="250" stroke="#a16207" stroke-width="2" marker-end="url(#corr-a)"/>
+    <text x="550" y="244" text-anchor="middle" fill="#a16207" font-size="11" font-weight="700">board travel</text>
+  </g>
+</svg>
+
+This lesson covers the wet end. The next lesson covers the dry end.
+
+---
+
+## 1. Roll Stands and Splicers
+
+Each paper — medium, single-face liner, and double-backer liner — feeds from a **roll stand** holding two rolls. When the running roll nears its end, an **automatic splicer** joins the new roll to the running web at full speed, so the corrugator never stops for a roll change.
+
+Order changes often also mean paper changes (a different liner weight or color), which the splicer handles as well.
+
+## 2. Preheaters
+
+Paper is wrapped around large steam-heated **preheater** drums. Preheating:
+- Brings the paper to the right **temperature** for the starch to gel quickly
+- Drives off and **balances moisture**
+
+The operator controls heat with the **wrap angle** — how much of the drum's surface the paper contacts. More wrap = more heat. This is a key lever for preventing **warp**, which you'll study next lesson.
+
+The medium often also passes a **steam shower** to soften it so it forms flutes without cracking.
+
+---
+
+## 3. The Single Facer
+
+The **single facer** is the heart of the corrugator.
+
+1. The medium passes between two hot, fluted **corrugating rolls** that mesh like gears, forming it into flutes.
+2. A **glue roll** applies a thin line of starch to the flute tips on one side.
+3. A **pressure roll** (or pressure belt) presses the liner against the glued flute tips while they're still held in the corrugating roll.
+4. Heat gels the starch, creating the **single-face web** — one liner + one fluted medium.
+
+Corrugating rolls are made in a specific flute profile. Changing from C to B flute means changing the roll set — many corrugators have **two single facers** (for example, one B and one C) so they can make double-wall board or switch flutes quickly.
+
+## 4. The Bridge
+
+The single-face web climbs up to the **bridge**, an overhead conveyor where it lies in loose, overlapping folds. The bridge acts as a **buffer**, decoupling the single facer's speed from the dry end, and lets the starch bond set a bit before the web moves on.
+
+---
+
+## Starch: The Glue
+
+Corrugating adhesive is a **starch** made from corn, wheat, or tapioca — cheap, renewable, and safe. The classic recipe (the **Stein-Hall** system) has two parts:
+
+- A **carrier** — a small amount of cooked starch that makes the mix thick enough to stay on the glue roll
+- **Raw (uncooked) starch** suspended in the carrier
+- **Caustic soda** to lower the gel temperature
+- **Borax** to boost tack and viscosity
+
+When the glue line hits a hot flute tip, the raw starch reaches its **gel point** (typically around 140–150 °F / 60–65 °C), swells, and turns into a strong, clear bond almost instantly.
+
+<Pitfall title="Fixing Bond Problems With More Glue">
+
+**Common mistake:** when bonding is weak, opening up the glue gap to apply more starch.
+
+Excess starch adds water to the board, which needs more heat to cure and causes **warp** and **washboarding** (the liner sinking between flutes). Weak bonds are often a **heat or speed** problem — the starch never reached its gel point — or a **starch quality** problem like wrong viscosity or gel temperature. Check those first. Good corrugators run the *minimum* glue that makes a full-fiber-tear bond.
+
+</Pitfall>
+
+---
+
+## Key Takeaway
+
+The wet end unwinds and splices paper, **preheats** it to control temperature and moisture, and the **single facer** forms flutes and glues the first liner on. The **bridge** buffers the web. Starch adhesive bonds when heat brings it to its **gel point** — and too much starch causes more problems than it solves.
+
+<TryIt title="Check the Bond">
+
+Take a piece of corrugated board and peel the liner off the flutes slowly. A good bond tears **fibers** from the liner and medium — you'll see fuzzy brown paper stuck to the flute tips. A poor bond peels cleanly, leaving shiny starch lines. This **fiber-tear** check is exactly what corrugator operators do on the floor.
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "What does the single facer produce?",
+      options: ["Finished double-wall board", "A single-face web: one liner glued to a fluted medium", "Printed sheets", "Starch adhesive"],
+      correctIndex: 1,
+      explanation: "The single facer forms flutes and glues one liner to them, producing single-face web."
+    },
+    {
+      question: "Why do corrugators use automatic splicers?",
+      options: ["To print the board", "To join a new roll at full speed so the line doesn't stop", "To cut the board into sheets", "To apply starch"],
+      correctIndex: 1,
+      explanation: "Splicers allow continuous running through roll and paper changes."
+    },
+    {
+      question: "How does an operator adjust preheater heat?",
+      options: ["By changing the flute profile", "By changing the wrap angle of paper on the drum", "By adding borax", "By slowing the stacker"],
+      correctIndex: 1,
+      explanation: "More wrap means more contact with the hot drum, adding more heat and drying."
+    },
+    {
+      question: "What makes the starch bond form at the flute tips?",
+      options: ["Air drying on the bridge", "Heat raising the raw starch to its gel point", "Pressure alone", "UV light"],
+      correctIndex: 1,
+      explanation: "Raw starch swells and gels when it reaches its gel temperature, creating the bond."
+    },
+    {
+      question: "A good bond, when the liner is peeled off, shows…",
+      options: ["Clean, shiny starch lines", "Torn fibers stuck to the flute tips", "No glue at all", "Wet starch"],
+      correctIndex: 1,
+      explanation: "Fiber tear means the bond is stronger than the paper itself."
+    }
+  ]}
+/>

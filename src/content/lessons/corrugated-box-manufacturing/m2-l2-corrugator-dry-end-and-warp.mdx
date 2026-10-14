@@ -1,0 +1,159 @@
+---
+title: "The Corrugator, Part 2: Dry End, Scheduling, and Warp"
+description: "Follow the board through the glue machine, double backer, slitter-scorer, knife, and stacker — then learn how corrugators schedule orders and diagnose warp and other board defects."
+module: 2
+moduleTitle: "The Corrugator"
+lesson: 2
+duration: "30 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## The Dry End
+
+<ProcessFlow
+  label="Dry end of a corrugator from the bridge to the stacker."
+  color="#a16207"
+  steps={[
+    { title: 'Glue machine', detail: 'Starch applied to the exposed flute tips of the single-face web' },
+    { title: 'Double backer', detail: 'Inside liner joins; hot plates cure the bond under light pressure' },
+    { title: 'Cooling section', detail: 'Board is pulled through by belts and cools' },
+    { title: 'Slitter-scorer', detail: 'Slits to width and adds scores for flaps' },
+    { title: 'Cut-off knife', detail: 'Rotary knife cuts sheets to length' },
+    { title: 'Stacker', detail: 'Sheets stacked, counted, and sent to converting' },
+  ]}
+/>
+
+### Glue Machine and Double Backer
+
+At the **glue machine**, starch is applied to the exposed flute tips of the single-face web. Then the **inside liner** (the "double-back" liner) meets the web at the **double backer**.
+
+The board slides over a long row of steam-heated **hot plates** while a belt and ballast rolls or pressure shoes hold it down — gently, because too much pressure would crush the flutes. The heat gels the starch and drives out moisture.
+
+For **double-wall** board, two single-face webs (from two single facers) are glued together and to the inside liner in the same step.
+
+### Slitter-Scorer
+
+The **slitter-scorer** does two jobs at once, across the width of the web:
+
+- **Slitting:** rotating knives cut the web into one or more **outs** — separate sheets side by side.
+- **Scoring:** rounded scoring heads crease the board along the lines where the **flaps** will fold.
+
+On the corrugator, the flutes run **across** the web (cross direction), while slitter-scorer creases run **along** it (machine direction) — so corrugator scores are always **perpendicular to the flutes**. In a regular slotted box, these become the **flap scores**. The other folds, the **panel scores**, are added later in converting.
+
+### Cut-off Knife and Stacker
+
+A **rotary cut-off knife** cuts the board to sheet length. Modern lines can change sheet length on the fly. The **stacker** builds stacks, counts sheets, and sends **loads** onward to converting by conveyor or forklift.
+
+---
+
+## Orders, Trim, and Scheduling
+
+A corrugator is fed by a **schedule** that groups orders to maximize output and minimize waste.
+
+- **Trim:** paper rolls come in fixed widths. If an order's sheets are 1,200 mm wide and the paper is 2,500 mm wide, running **two outs** uses 2,400 mm and trims off 100 mm. Schedulers combine orders side by side to use the paper width efficiently — trim waste of a few percent is a common goal.
+- **Grade grouping:** orders that use the same papers and flute run together to avoid splices.
+- **Order changes:** modern corrugators change orders at full speed, so short runs are practical.
+
+---
+
+## Warp
+
+**Warp** — board that isn't flat — is the most common corrugator quality problem. Warped board jams in converting machines, misprints, and makes boxes that won't erect properly.
+
+The root cause is almost always **moisture imbalance**: when one liner holds more moisture than the other, it later shrinks more as it dries, pulling the board into a curve toward that side.
+
+<svg viewBox="0 0 680 220" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Four warp types sketched as side views of a corrugated sheet. Up-warp curves upward at the ends, toward the top liner. Down-warp curves down. S-warp curves one way and then the other. Twist warp has diagonally opposite corners raised.">
+  <g font-family="system-ui, -apple-system, sans-serif">
+    <text x="85" y="30" text-anchor="middle" fill="#0f172a" font-size="14" font-weight="700">Up-warp</text>
+    <path d="M20 70 Q85 120 150 70" stroke="#a16207" stroke-width="8" fill="none" stroke-linecap="round"/>
+    <text x="85" y="140" text-anchor="middle" fill="#475569" font-size="11">top liner wetter than bottom</text>
+    <text x="85" y="156" text-anchor="middle" fill="#475569" font-size="11">→ shrinks more, curls up</text>
+    <text x="255" y="30" text-anchor="middle" fill="#0f172a" font-size="14" font-weight="700">Down-warp</text>
+    <path d="M190 105 Q255 55 320 105" stroke="#a16207" stroke-width="8" fill="none" stroke-linecap="round"/>
+    <text x="255" y="140" text-anchor="middle" fill="#475569" font-size="11">the reverse</text>
+    <text x="425" y="30" text-anchor="middle" fill="#0f172a" font-size="14" font-weight="700">S-warp</text>
+    <path d="M360 85 Q392 50 425 85 Q458 120 490 85" stroke="#a16207" stroke-width="8" fill="none" stroke-linecap="round"/>
+    <text x="425" y="140" text-anchor="middle" fill="#475569" font-size="11">uneven moisture across</text>
+    <text x="425" y="156" text-anchor="middle" fill="#475569" font-size="11">the width or length</text>
+    <text x="595" y="30" text-anchor="middle" fill="#0f172a" font-size="14" font-weight="700">Twist</text>
+    <path d="M530 100 L560 60 L660 70 L630 110 Z" fill="#fde68a" stroke="#a16207" stroke-width="3"/>
+    <line x1="560" y1="60" x2="560" y2="45" stroke="#dc2626" stroke-width="2"/>
+    <line x1="630" y1="110" x2="630" y2="95" stroke="#dc2626" stroke-width="2"/>
+    <text x="595" y="140" text-anchor="middle" fill="#475569" font-size="11">opposite corners lift;</text>
+    <text x="595" y="156" text-anchor="middle" fill="#475569" font-size="11">often MD/CD fiber angle</text>
+    <text x="340" y="200" text-anchor="middle" fill="#0f172a" font-size="13" font-weight="700">Board warps toward the side that dries and shrinks more — usually the side that was wetter.</text>
+  </g>
+</svg>
+
+**Warp fixes** usually involve rebalancing heat and moisture between the two liners: changing **preheater wrap**, adjusting **steam showers**, reducing **glue** application, or changing **double-backer heat and speed**. Moisture also arrives with the paper rolls — rolls stored in a humid warehouse corner can cause warp on the next order.
+
+<Pitfall title="Fixing Warp at the Stacker">
+
+**Common mistake:** waiting until warped board is stacked, then trying to flatten it with weight or time.
+
+By then, the moisture difference is locked in. Warp has to be corrected **upstream** in real time — at the preheaters, showers, and glue gap — while watching the board as it leaves the double backer. The best operators read the board's shape continuously and make small adjustments before warp shows up in converting.
+
+</Pitfall>
+
+---
+
+## Other Board Defects
+
+| Defect | Looks like | Common causes |
+|---|---|---|
+| **Delamination / poor bond** | Liner peels cleanly from flutes | Not enough heat or time; low starch gel quality; glue starvation |
+| **Washboarding** | Liner sinks between flutes, ridged surface | Too much glue/water; lightweight liner; excess heat |
+| **High-low flutes** | Uneven flute heights | Worn corrugating rolls; poor medium moisture/tension |
+| **Crushed board** | Low caliper, flattened flutes | Excess pressure in double backer or at feed rolls |
+| **Blisters** | Unbonded bubbles | Uneven glue application; trapped steam |
+
+---
+
+## Key Takeaway
+
+The dry end glues on the inside liner at the **double backer**, cures it on hot plates, then **slits, scores, cuts, and stacks** the board. Schedulers combine orders to minimize **trim**. **Warp** is a moisture-balance problem that must be fixed upstream, in real time.
+
+<TryIt title="Create Warp on Purpose">
+
+Cut two 6-inch squares of corrugated board. Lightly mist the **top** liner of one square with water and leave the other dry. Let them sit flat for an hour or two. As the wet side dries and shrinks, the misted square curls. Notice which way — that's the same physics that warps board on the corrugator.
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "Where is the inside liner bonded to the single-face web?",
+      options: ["Single facer", "Double backer", "Slitter-scorer", "Stacker"],
+      correctIndex: 1,
+      explanation: "The double backer joins the inside liner and cures the bond on hot plates."
+    },
+    {
+      question: "What two operations does the slitter-scorer perform?",
+      options: ["Printing and gluing", "Slitting to width and scoring fold lines", "Splicing and preheating", "Counting and bundling"],
+      correctIndex: 1,
+      explanation: "It slits the web into outs and creases the flap score lines."
+    },
+    {
+      question: "What is the root cause of most warp?",
+      options: ["Dull knives", "Moisture imbalance between the liners", "Too few flutes per foot", "Ink coverage"],
+      correctIndex: 1,
+      explanation: "The wetter side shrinks more as it dries, curving the board."
+    },
+    {
+      question: "Why do schedulers combine orders side by side?",
+      options: ["To print faster", "To use the paper width efficiently and reduce trim waste", "To reduce starch use", "To increase flute height"],
+      correctIndex: 1,
+      explanation: "Running multiple outs across the web minimizes the unused trim strip."
+    },
+    {
+      question: "Washboarding is often caused by…",
+      options: ["Too little glue", "Too much glue or water combined with light liner", "Low preheater wrap only", "Twisted fibers"],
+      correctIndex: 1,
+      explanation: "Excess glue and water let the liner draw down between flutes, especially on lightweight liners."
+    }
+  ]}
+/>

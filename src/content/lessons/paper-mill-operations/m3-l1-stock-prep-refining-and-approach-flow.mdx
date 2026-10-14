@@ -1,0 +1,179 @@
+---
+title: "Stock Prep, Refining, and the Approach Flow"
+description: "Learn how refining develops fiber for bonding, why freeness is the number everyone watches, and how stock is blended, cleaned, and delivered to the headbox."
+module: 3
+moduleTitle: "Stock Prep and the Wet End"
+lesson: 1
+duration: "25 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Meet the Paper Machine
+
+Before diving into stock prep, here's the whole machine in one picture. Notice how the **solids content** climbs from left to right — every section's job is to remove water.
+
+<svg viewBox="0 0 700 270" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Side view of a Fourdrinier paper machine. From left to right: the headbox at under 1 percent solids; the forming section, a long wire where water drains, reaching about 20 percent solids; the press section, with felted roll nips, reaching about 40 to 50 percent; the dryer section, rows of steam-heated cans, reaching about 92 to 95 percent; and the reel where the parent roll is wound.">
+  <defs>
+    <marker id="pm-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#047857"/></marker>
+  </defs>
+  <g font-family="system-ui, -apple-system, sans-serif">
+    <path d="M20 70 L70 70 L80 95 L30 110 Z" fill="#64748b"/>
+    <text x="50" y="40" text-anchor="middle" fill="#0f172a" font-size="13" font-weight="700">Headbox</text>
+    <ellipse cx="90" cy="110" rx="12" ry="12" fill="#94a3b8"/>
+    <ellipse cx="250" cy="110" rx="12" ry="12" fill="#94a3b8"/>
+    <line x1="90" y1="98" x2="250" y2="98" stroke="#0369a1" stroke-width="3"/>
+    <line x1="90" y1="122" x2="250" y2="122" stroke="#0369a1" stroke-width="3"/>
+    <g fill="#38bdf8"><circle cx="120" cy="132" r="3"/><circle cx="150" cy="138" r="3"/><circle cx="180" cy="134" r="3"/><circle cx="210" cy="140" r="3"/><circle cx="135" cy="146" r="2.5"/><circle cx="195" cy="150" r="2.5"/></g>
+    <text x="170" y="40" text-anchor="middle" fill="#0f172a" font-size="13" font-weight="700">Forming (wire)</text>
+    <circle cx="300" cy="96" r="16" fill="#94a3b8"/><circle cx="300" cy="130" r="16" fill="#64748b"/>
+    <circle cx="350" cy="96" r="16" fill="#94a3b8"/><circle cx="350" cy="130" r="16" fill="#64748b"/>
+    <text x="325" y="40" text-anchor="middle" fill="#0f172a" font-size="13" font-weight="700">Press</text>
+    <g fill="#cbd5e1" stroke="#64748b" stroke-width="1.5">
+      <circle cx="405" cy="88" r="15"/><circle cx="445" cy="88" r="15"/><circle cx="485" cy="88" r="15"/><circle cx="525" cy="88" r="15"/><circle cx="565" cy="88" r="15"/>
+      <circle cx="425" cy="132" r="15"/><circle cx="465" cy="132" r="15"/><circle cx="505" cy="132" r="15"/><circle cx="545" cy="132" r="15"/>
+    </g>
+    <text x="485" y="40" text-anchor="middle" fill="#0f172a" font-size="13" font-weight="700">Dryer section</text>
+    <circle cx="645" cy="110" r="30" fill="#d6c3a5" stroke="#92400e" stroke-width="2"/>
+    <circle cx="645" cy="110" r="6" fill="#92400e"/>
+    <text x="645" y="40" text-anchor="middle" fill="#0f172a" font-size="13" font-weight="700">Reel</text>
+    <path d="M80 98 L250 98 L300 112 L350 112 L405 103 L565 103 L615 110" stroke="#92400e" stroke-width="2" fill="none" stroke-dasharray="5 3"/>
+    <line x1="20" y1="200" x2="680" y2="200" stroke="#047857" stroke-width="2" marker-end="url(#pm-arrow)"/>
+    <text x="350" y="190" text-anchor="middle" fill="#047857" font-size="12" font-weight="700">solids content rises →</text>
+    <g font-size="13" font-weight="700" fill="#0f172a" text-anchor="middle">
+      <text x="50" y="228">&lt;1%</text>
+      <text x="170" y="228">~20%</text>
+      <text x="325" y="228">40–50%</text>
+      <text x="485" y="228">92–95%</text>
+      <text x="645" y="228">parent roll</text>
+    </g>
+    <g font-size="11" fill="#475569" text-anchor="middle">
+      <text x="50" y="246">jet onto wire</text>
+      <text x="170" y="246">gravity + vacuum</text>
+      <text x="325" y="246">squeeze in nips</text>
+      <text x="485" y="246">evaporate with steam</text>
+      <text x="645" y="246">wound at speed</text>
+    </g>
+  </g>
+</svg>
+
+This module covers the left end: preparing the **stock** (the fiber–water slurry) and getting it onto the wire.
+
+---
+
+## Refining: Developing the Fiber
+
+Pulp straight from the digester or pulper doesn't bond well. **Refining** fixes that. Stock is pumped between two discs (or a cone and shell) covered in metal **bars**, rotating against each other at a very small gap.
+
+Refining does three things to fibers:
+
+1. **Internal fibrillation** — loosens the fiber wall so the fiber becomes flexible and collapses flat.
+2. **External fibrillation** — raises tiny fibrils on the surface, like fraying a rope, giving far more bonding area.
+3. **Cutting** — shortens fibers. Usually undesirable for strength grades.
+
+More refining means **more bonding → higher tensile and burst strength, a denser, smoother sheet**. But it comes at a cost.
+
+### Freeness: The Number Everyone Watches
+
+**Freeness** measures how quickly water drains from a pulp sample. In North America it's reported as **Canadian Standard Freeness (CSF)** in milliliters. (Europe uses Schopper-Riegler, °SR, which runs in the opposite direction.)
+
+- **High CSF** = drains fast = lightly refined
+- **Low CSF** = drains slowly = heavily refined
+
+Refining creates a tug-of-war:
+
+| More refining (lower CSF) | Effect |
+|---|---|
+| ✅ | Stronger, denser, smoother sheet |
+| ❌ | Water drains slower on the wire |
+| ❌ | Wetter sheet entering the dryers → more steam, or a slower machine |
+| ❌ | More refiner electricity |
+
+<Pitfall title="Refining Your Way Out of a Strength Problem">
+
+**Common mistake:** a burst test comes back low, so the refiner load gets cranked up.
+
+Strength improves — but freeness drops, the wire can't drain the stock, the sheet hits the dryers wetter, and the machine has to slow down. You traded a quality problem for a production problem. Before adding refining, check the fiber furnish, starch dosage, and wet-end chemistry. Refining is a lever, not a cure-all.
+
+</Pitfall>
+
+---
+
+## Blending and the Approach Flow
+
+After refining, stocks are combined in a **blend chest** — softwood, hardwood, recycled fiber, and **broke** (the mill's own off-spec or trimmed paper, repulped and reused). Additives are dosed here or just downstream.
+
+The **approach flow** is the final stretch from the **machine chest** to the headbox. Its job is to deliver perfectly uniform, clean, pulse-free stock.
+
+<ProcessFlow
+  label="The approach flow from the machine chest to the headbox."
+  color="#047857"
+  steps={[
+    { title: 'Machine chest', detail: 'Stock at ~3% consistency, steady level' },
+    { title: 'Basis weight valve', detail: 'Meters the exact fiber flow' },
+    { title: 'Fan pump', detail: 'Dilutes with white water to <1% and pumps to headbox' },
+    { title: 'Cleaners', detail: 'Centrifugal cleaners remove dirt and grit' },
+    { title: 'Pressure screen', detail: 'Last chance to catch shives and debris' },
+    { title: 'Headbox', detail: 'Spreads stock evenly across the full width' },
+  ]}
+/>
+
+**White water** — the water that drains through the wire — is collected in the **wire pit** and reused to dilute the incoming stock at the fan pump. This short circulation loop saves water and recaptures fine fibers and fillers that drained through.
+
+### The Headbox
+
+The **headbox** turns a pipe of stock into a thin, perfectly even **jet** as wide as the machine — sometimes over 10 meters. Inside, a tube bank and turbulence generators break up fiber clumps (**flocs**). The jet exits through an adjustable **slice lip**.
+
+Modern headboxes use **dilution control**: dozens of small valves across the width add white water locally to fine-tune basis weight in the **cross-machine direction (CD)**.
+
+---
+
+## Key Takeaway
+
+**Refining** develops bonding at the expense of drainage, and **freeness (CSF)** tracks that trade-off. Stocks are blended, then the **approach flow** meters, dilutes, cleans, and screens the stock before the **headbox** delivers an even jet onto the wire.
+
+<TryIt title="See Freeness in Your Kitchen">
+
+Tear a sheet of paper towel and a sheet of copy paper into small pieces. Soak each in a separate cup of water and blend or stir hard until mushy. Pour each slurry through a kitchen strainer and watch the drainage.
+
+The towel pulp (lightly refined, bulky) drains fast — high freeness. The copy paper pulp (more refined, more fines) drains slower — lower freeness.
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "What is the main purpose of refining?",
+      options: ["To remove lignin", "To develop fibers so they bond better", "To bleach the pulp", "To remove water before the press"],
+      correctIndex: 1,
+      explanation: "Refining fibrillates and flexes fibers, increasing bonding area and therefore strength."
+    },
+    {
+      question: "A lower CSF (Canadian Standard Freeness) number means the pulp…",
+      options: ["Drains faster", "Drains slower", "Has more lignin", "Has longer fibers"],
+      correctIndex: 1,
+      explanation: "CSF measures drainage. Low CSF = slow drainage = more heavily refined."
+    },
+    {
+      question: "What is 'broke'?",
+      options: ["A sheet break on the machine", "Off-spec or trimmed paper repulped and reused", "Damaged refiner bars", "Fiber lost to the sewer"],
+      correctIndex: 1,
+      explanation: "Broke is the mill's own paper — trim, reel turn-ups, off-spec — repulped and blended back into the furnish."
+    },
+    {
+      question: "Where is the stock diluted with white water to below 1% consistency?",
+      options: ["In the digester", "At the fan pump", "In the dryer section", "At the reel"],
+      correctIndex: 1,
+      explanation: "The fan pump mixes thick stock with white water from the wire pit and pumps the dilute stock to the headbox."
+    },
+    {
+      question: "What does headbox dilution control adjust?",
+      options: ["Machine speed", "Steam pressure", "Cross-machine basis weight profile", "Refiner gap"],
+      correctIndex: 2,
+      explanation: "Small dilution valves across the width fine-tune local consistency to level the CD basis weight profile."
+    }
+  ]}
+/>

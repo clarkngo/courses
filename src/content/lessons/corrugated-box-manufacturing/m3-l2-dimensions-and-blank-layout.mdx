@@ -1,0 +1,180 @@
+---
+title: "Dimensions, Blank Layout, and Structural Design"
+description: "State box dimensions correctly, lay out an RSC blank and calculate its size, understand caliper allowances and the manufacturer's joint, and see how structural designers move from CAD to sample."
+module: 3
+moduleTitle: "Box Design"
+lesson: 2
+duration: "35 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Stating Box Dimensions
+
+Box dimensions are always given as **Length × Width × Depth**, and always as **inside dimensions** — the space available for the product.
+
+- **Length (L):** the **longer** side of the opening
+- **Width (W):** the **shorter** side of the opening
+- **Depth (D):** the distance between the openings (sometimes called height)
+
+So a box described as **18 × 12 × 10** has an 18 × 12 opening and is 10 deep. A box that is 12 × 18 × 10 is **not** a valid description — the first number is always the longer side of the opening.
+
+<Pitfall title="Measuring the Outside and Calling It the Size">
+
+**Common mistake:** measuring a sample box on the outside and ordering "the same size."
+
+Outside dimensions include the board thickness on both sides — up to about ¼ inch (6 mm) larger per dimension for C flute, and more for double wall. A box made to your outside measurements as inside dimensions will be too big; the product rattles, and you pay for extra board and void fill. Always measure and specify **inside**.
+
+</Pitfall>
+
+---
+
+## Laying Out an RSC Blank
+
+A box starts life as a flat **blank**. For an RSC, the blank is a long strip with four **panels** side by side plus a **joint tab**, and flaps above and below.
+
+<svg viewBox="0 0 700 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Flat blank of a regular slotted container. Across the blank from left to right: a narrow joint tab, then panels of length L, width W, length L, and width W. Above and below each panel is a flap whose depth equals half the width. Slots separate the flaps. The total blank length is about 2L plus 2W plus the joint, and the blank height is about D plus W. Dashed score lines mark the folds. Flutes run vertically, parallel to the depth.">
+  <g font-family="system-ui, -apple-system, sans-serif">
+    <path d="M40 90 L60 80 L60 170 L40 160 Z" fill="#e8c27a" stroke="#78350f" stroke-width="1.5"/>
+    <g fill="#e8c27a" stroke="#78350f" stroke-width="1.5">
+      <rect x="60" y="40" width="200" height="40"/>
+      <rect x="264" y="40" width="116" height="40"/>
+      <rect x="384" y="40" width="200" height="40"/>
+      <rect x="588" y="40" width="96" height="40"/>
+      <rect x="60" y="80" width="204" height="90"/>
+      <rect x="264" y="80" width="120" height="90"/>
+      <rect x="384" y="80" width="204" height="90"/>
+      <rect x="588" y="80" width="96" height="90"/>
+      <rect x="60" y="170" width="200" height="40"/>
+      <rect x="264" y="170" width="116" height="40"/>
+      <rect x="384" y="170" width="200" height="40"/>
+      <rect x="588" y="170" width="96" height="40"/>
+    </g>
+    <g stroke="#1d4ed8" stroke-width="1.5" stroke-dasharray="5 4">
+      <line x1="60" y1="80" x2="684" y2="80"/>
+      <line x1="60" y1="170" x2="684" y2="170"/>
+      <line x1="60" y1="80" x2="60" y2="170"/>
+      <line x1="264" y1="80" x2="264" y2="170"/>
+      <line x1="384" y1="80" x2="384" y2="170"/>
+      <line x1="588" y1="80" x2="588" y2="170"/>
+    </g>
+    <g font-size="15" font-weight="700" fill="#0f172a" text-anchor="middle">
+      <text x="160" y="131">L</text><text x="324" y="131">W</text><text x="486" y="131">L</text><text x="636" y="131">W</text>
+    </g>
+    <g font-size="11" fill="#475569" text-anchor="middle">
+      <text x="160" y="64">flap = W/2</text><text x="324" y="64">flap</text><text x="486" y="64">flap</text><text x="636" y="64">flap</text>
+      <text x="160" y="194">flap = W/2</text><text x="324" y="194">flap</text><text x="486" y="194">flap</text><text x="636" y="194">flap</text>
+      <text x="40" y="186">joint</text>
+    </g>
+    <line x1="40" y1="236" x2="684" y2="236" stroke="#334155" stroke-width="1.2"/>
+    <line x1="40" y1="230" x2="40" y2="242" stroke="#334155" stroke-width="1.2"/>
+    <line x1="684" y1="230" x2="684" y2="242" stroke="#334155" stroke-width="1.2"/>
+    <text x="362" y="256" text-anchor="middle" fill="#0f172a" font-size="13" font-weight="700">Blank length ≈ joint + L + W + L + W</text>
+    <line x1="20" y1="40" x2="20" y2="210" stroke="#334155" stroke-width="1.2"/>
+    <line x1="14" y1="40" x2="26" y2="40" stroke="#334155" stroke-width="1.2"/>
+    <line x1="14" y1="210" x2="26" y2="210" stroke="#334155" stroke-width="1.2"/>
+    <text x="12" y="125" text-anchor="middle" fill="#0f172a" font-size="12" font-weight="700" transform="rotate(-90 12 125)">≈ D + W</text>
+    <text x="362" y="282" text-anchor="middle" fill="#1d4ed8" font-size="12">dashed = score lines · gaps between flaps = slots · flutes run vertically (parallel to D)</text>
+  </g>
+</svg>
+
+For an RSC with inside dimensions L × W × D:
+
+- **Blank length** ≈ 2L + 2W + joint tab (typically ~1¼–1½ in / 30–40 mm)
+- **Blank width** ≈ D + W (flap depth W/2 on top + depth D + flap depth W/2 on bottom)
+
+### Worked Example
+
+Inside dimensions **18 × 12 × 10 in**, joint tab 1.5 in:
+
+- Blank length ≈ 2(18) + 2(12) + 1.5 = **61.5 in**
+- Blank width ≈ 10 + 12 = **22 in**
+- Board area ≈ 61.5 × 22 = 1,353 in² ≈ **9.4 ft²** per box
+
+That area, multiplied by the order quantity and board price per thousand square feet (**MSF**), drives most of the box cost. Designers usually reduce cost by shrinking the box, not by cutting board grade.
+
+### Caliper Allowances
+
+Real blanks are a bit larger than these formulas. Because the board has thickness, the **score-to-score** panel dimensions are increased by an **allowance** so the *inside* dimensions come out right after folding. Allowances depend on the flute (for example, a fraction of an inch more per panel for C flute than for E flute). Every box plant has its own allowance tables matched to its equipment.
+
+---
+
+## Flute Direction and the Manufacturer's Joint
+
+In an RSC, **flutes run vertically** — parallel to the depth — so each wall acts like a row of columns. That's what gives a box its stacking strength.
+
+The **manufacturer's joint** closes the tube. It can be:
+
+- **Glued** — the most common; fast and strong
+- **Taped** — for some heavy-duty or specialty applications
+- **Stitched** — metal staples, often for heavy double- and triple-wall boxes
+
+---
+
+## From Idea to Box: The Design Workflow
+
+<ProcessFlow
+  label="The structural design workflow for a new corrugated box."
+  color="#a16207"
+  loop="Sample fails a test or a packing trial? Revise the CAD and cut a new sample."
+  steps={[
+    { title: 'Brief', detail: 'Product size, weight, fragility, distribution, quantity' },
+    { title: 'CAD design', detail: 'Structural software (e.g., ArtiosCAD) draws the blank from a style library' },
+    { title: 'Sample', detail: 'A CAD sample table cuts and creases a real prototype' },
+    { title: 'Test & trial', detail: 'Pack product, compression and drop tests' },
+    { title: 'Spec & tooling', detail: 'Approve the spec; order dies and print plates' },
+    { title: 'Production', detail: 'Corrugator + converting' },
+  ]}
+/>
+
+Structural designers also add **inserts, partitions, and pads**, and work with graphic designers so artwork lands on the right panels.
+
+---
+
+## Key Takeaway
+
+Always specify **inside dimensions as L × W × D**, with L the longer side of the opening. An RSC blank is about **2L + 2W + joint** long and **D + W** high, with caliper allowances added. Flutes run vertically for stacking strength. New boxes move from **brief → CAD → sample → test → spec**.
+
+<TryIt title="Lay Out Your Own Blank">
+
+Pick a product at home — a stack of books works well — and measure it. Add about ¼ inch to each dimension for clearance. Calculate the RSC blank size and the square footage per box. Then try a different orientation of the product (swap which dimension is the depth). Does the square footage change? Usually it does — and that's a free cost saving designers look for.
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "How are box dimensions conventionally stated?",
+      options: ["Outside, W × L × D", "Inside, L × W × D with L the longer side of the opening", "Outside, D × W × L", "Inside, any order"],
+      correctIndex: 1,
+      explanation: "Inside dimensions, Length × Width × Depth, with Length the longer side of the opening."
+    },
+    {
+      question: "What is the approximate blank length of an RSC?",
+      options: ["L + W + D", "2L + 2W + joint tab", "2L + 2D", "4W"],
+      correctIndex: 1,
+      explanation: "The four panels (L, W, L, W) plus the joint tab make up the blank length."
+    },
+    {
+      question: "For a 16 × 10 × 8 RSC, what is the approximate blank width (height of the flat blank)?",
+      options: ["16 in", "18 in", "26 in", "10 in"],
+      correctIndex: 1,
+      explanation: "Blank width ≈ D + W = 8 + 10 = 18 in (two W/2 flaps plus the depth)."
+    },
+    {
+      question: "In an RSC, flutes normally run…",
+      options: ["Horizontally around the box", "Vertically, parallel to the depth", "Diagonally", "Randomly"],
+      correctIndex: 1,
+      explanation: "Vertical flutes act as columns, giving the walls stacking strength."
+    },
+    {
+      question: "What is a CAD sample table used for?",
+      options: ["Printing graphics", "Cutting and creasing prototype boxes from the CAD design", "Testing ECT", "Gluing the manufacturer's joint in production"],
+      correctIndex: 1,
+      explanation: "Sample tables cut and crease real prototypes directly from the structural design file."
+    }
+  ]}
+/>

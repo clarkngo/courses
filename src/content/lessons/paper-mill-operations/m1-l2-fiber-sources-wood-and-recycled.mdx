@@ -1,0 +1,115 @@
+---
+title: "Fiber Sources: Softwood, Hardwood, and Recycled"
+description: "Learn what a wood fiber is made of, why softwood and hardwood fibers behave so differently, and how recycled fiber (OCC) has become the backbone of containerboard."
+module: 1
+moduleTitle: "Fiber and the Big Picture"
+lesson: 2
+duration: "20 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## What's Inside Wood
+
+Wood is roughly made of three things:
+
+| Component | Share of dry wood | Role in the tree | Role in papermaking |
+|---|---|---|---|
+| **Cellulose** | ~40–50% | Long, strong chains — the "rebar" | The fiber you want. Forms bonds. |
+| **Hemicellulose** | ~20–30% | Shorter, branched chains | Helps fibers swell and bond |
+| **Lignin** | ~20–30% | The "glue" that cements fibers together and stiffens the tree | Mostly unwanted — yellows in light, blocks bonding |
+
+The core question of pulping is simple: **how do you separate the fibers from each other?** You can either dissolve the lignin away chemically, or tear the fibers apart mechanically. That choice is the subject of Module 2.
+
+---
+
+## Softwood vs. Hardwood
+
+Papermakers sort trees into two groups, and the difference is all about **fiber length**.
+
+<svg viewBox="0 0 680 220" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Fiber length comparison drawn to scale. A softwood fiber is about 3 to 4 millimeters long and ribbon-like. A hardwood fiber is about 1 millimeter long. A recycled fiber is shorter and more worn than the virgin fibers it came from.">
+  <g font-family="system-ui, -apple-system, sans-serif">
+    <text x="20" y="50" fill="#0f172a" font-size="15" font-weight="700">Softwood</text>
+    <text x="20" y="68" fill="#475569" font-size="12">pine, spruce, fir</text>
+    <rect x="170" y="40" width="440" height="16" rx="8" fill="#92400e"/>
+    <text x="620" y="53" fill="#92400e" font-size="13" font-weight="700">3–4 mm</text>
+    <text x="20" y="120" fill="#0f172a" font-size="15" font-weight="700">Hardwood</text>
+    <text x="20" y="138" fill="#475569" font-size="12">oak, maple, eucalyptus</text>
+    <rect x="170" y="112" width="130" height="12" rx="6" fill="#b45309"/>
+    <text x="310" y="123" fill="#b45309" font-size="13" font-weight="700">~1 mm</text>
+    <text x="20" y="190" fill="#0f172a" font-size="15" font-weight="700">Recycled</text>
+    <text x="20" y="208" fill="#475569" font-size="12">shorter each cycle</text>
+    <path d="M170 186 L230 182 L246 190 L320 184" stroke="#a8a29e" stroke-width="12" stroke-linecap="round" fill="none"/>
+    <text x="335" y="190" fill="#78716c" font-size="13" font-weight="700">cut, worn, stiffer</text>
+  </g>
+</svg>
+
+- **Softwood (conifers)** has long fibers — roughly 3–4 mm. Long fibers form a strong, tear-resistant network. Linerboard and sack paper rely on softwood.
+- **Hardwood (deciduous)** has short fibers — about 1 mm. Short fibers pack together tightly, giving a smooth, even, opaque sheet. Printing papers and tissue use a lot of hardwood for that reason.
+
+Most grades use a **blend**: softwood for strength, hardwood for formation and smoothness. Adjusting that blend is one of the main levers a mill has.
+
+---
+
+## Recycled Fiber and OCC
+
+**Old corrugated containers (OCC)** — used boxes — are the single most important raw material for North American containerboard. Recycled fiber is cheaper than virgin pulp, uses less energy, and keeps material out of landfills.
+
+But recycling changes the fiber:
+
+- **Shorter:** pulping and screening cut fibers each cycle.
+- **Hornified:** each drying cycle stiffens the fiber wall so it swells and bonds less the next time.
+- **Contaminated:** tape, staples, plastic film, wax, hot-melt glue ("stickies"), and sand must be removed.
+
+A cellulose fiber can typically be recycled about **five to seven times** before it's too short and weak to be useful. That's why the paper industry always needs some virgin fiber entering the loop.
+
+<Pitfall title="Treating All Recycled Fiber as the Same">
+
+**Common mistake:** buying the cheapest bale and expecting the same machine performance.
+
+OCC grades vary widely in moisture, contaminant level, and how much short fiber they contain. A bale of "double-lined kraft" clippings from a box plant is clean and strong. Mixed residential OCC may carry more plastic and food contamination. Bale quality shows up later as stickies on the machine felts, holes in the sheet, and lost strength.
+
+</Pitfall>
+
+---
+
+## Key Takeaway
+
+Pulping is about separating cellulose fibers from lignin. **Softwood gives strength, hardwood gives smoothness, and recycled fiber gives economy** — at the cost of shorter, stiffer, dirtier fibers. Every grade is a recipe that balances the three.
+
+<TryIt title="Read the Box">
+
+Grab any shipping box. Look for a printed recycling symbol or a "made with X% recycled content" statement. Then tear a corner and look at the edge. Recycled liner often looks grayer and the fibers feel shorter; virgin kraft liner is browner and tears with long, stringy fibers. You're doing a crude fiber analysis.
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "Which wood component is mostly removed in chemical pulping because it blocks bonding and yellows the paper?",
+      options: ["Cellulose", "Hemicellulose", "Lignin", "Starch"],
+      correctIndex: 2,
+      explanation: "Lignin cements fibers together in the tree. Chemical pulping dissolves it so the fibers can separate."
+    },
+    {
+      question: "Why does linerboard rely heavily on softwood fiber?",
+      options: ["Softwood fibers are shorter and smoother", "Softwood fibers are longer, giving strength and tear resistance", "Softwood contains no lignin", "Softwood is always recycled"],
+      correctIndex: 1,
+      explanation: "Long softwood fibers (3–4 mm) form a strong network, which strength grades like linerboard need."
+    },
+    {
+      question: "What does OCC stand for?",
+      options: ["Old corrugated containers", "Optimized cellulose content", "Office copy cuttings", "Organic chemical cellulose"],
+      correctIndex: 0,
+      explanation: "OCC means old corrugated containers — used boxes collected for recycling."
+    },
+    {
+      question: "Roughly how many times can a cellulose fiber be recycled before it becomes too short and weak?",
+      options: ["Once", "Five to seven times", "About 20 times", "Indefinitely"],
+      correctIndex: 1,
+      explanation: "Each cycle shortens and stiffens fibers. Five to seven cycles is the commonly cited range, which is why virgin fiber must keep entering the system."
+    }
+  ]}
+/>

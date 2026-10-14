@@ -1,0 +1,132 @@
+---
+title: "Mechanical Pulping, Recycled Fiber, and Bleaching"
+description: "Compare high-yield mechanical pulp with chemical pulp, follow OCC through a recycled-fiber line, and learn how modern ECF bleaching makes white pulp."
+module: 2
+moduleTitle: "Making Pulp"
+lesson: 2
+duration: "25 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Mechanical Pulping: Tear Instead of Dissolve
+
+Mechanical pulping separates fibers by brute force instead of chemistry. Because the lignin stays in, **yield is about 90–95%** — nearly double kraft.
+
+- **Stone groundwood (SGW):** logs pressed against a rotating grindstone. The original method, now rare.
+- **Thermomechanical pulp (TMP):** chips are steamed to soften the lignin, then shredded between rotating discs in a **refiner**. The dominant mechanical process today.
+- **Chemi-thermomechanical pulp (CTMP):** a light chemical pretreatment before refining for stronger, cleaner fiber.
+
+The trade-off:
+
+| | Mechanical pulp (TMP) | Chemical pulp (kraft) |
+|---|---|---|
+| Yield | ~90–95% | ~45–55% |
+| Strength | Low — fibers are damaged and stiff | High |
+| Opacity & bulk | High | Lower |
+| Brightness stability | Poor — lignin yellows in sunlight | Good once bleached |
+| Energy | Very high electricity use in refiners | Largely self-supplied via recovery boiler |
+| Typical use | Newsprint, magazine papers, paperboard middle plies | Linerboard, sack, fine papers, tissue |
+
+That's why an old newspaper left in the sun turns yellow: the lignin was never removed.
+
+---
+
+## The Recycled Fiber Line
+
+A **recycled fiber (RCF) mill** replaces the woodyard and digester with a line designed to turn bales of OCC into clean pulp.
+
+<ProcessFlow
+  label="A recycled fiber line for OCC, from bale to clean stock."
+  color="#047857"
+  steps={[
+    { title: 'Pulper', detail: 'Bales slushed in water by a rotor; a ragger rope pulls out wire and plastic' },
+    { title: 'Junk trap', detail: 'Heavy debris — staples, rocks, glass — drops out' },
+    { title: 'HD cleaning', detail: 'Centrifugal cleaners spin out sand and grit' },
+    { title: 'Coarse screens', detail: 'Holes reject large plastics and flakes' },
+    { title: 'Fine screens', detail: 'Narrow slots reject stickies and shives' },
+    { title: 'Thickening', detail: 'Clean fiber concentrated for storage' },
+  ]}
+/>
+
+Printing-grade recycling (old newspapers, office paper) adds a **deinking** step, usually **flotation**: air bubbles are blown through the stock, ink particles attach to the bubbles, and the froth is skimmed off.
+
+### Stickies
+
+**Stickies** are tacky contaminants — pressure-sensitive label adhesive, hot-melt glue, wax, and coatings. They pass through screens when soft, then deposit on wires, felts, and dryer cans. The result is holes, sheet breaks, and downtime for cleaning. Controlling stickies is one of the biggest challenges in any recycled mill.
+
+---
+
+## Bleaching
+
+Unbleached kraft pulp is brown. For white grades, the remaining lignin must be removed or brightened in a **bleach plant** — a series of towers and washers, each running a different chemical stage.
+
+Modern mills use **ECF (elemental chlorine free)** bleaching, built around **chlorine dioxide (ClO₂)**. A typical sequence looks like this:
+
+<ProcessFlow
+  label="A typical ECF bleaching sequence for kraft pulp, with washing between stages."
+  color="#047857"
+  steps={[
+    { badge: 'O', title: 'Oxygen delig.', detail: 'Removes ~40–50% of remaining lignin before bleaching' },
+    { badge: 'D₀', title: 'Chlorine dioxide', detail: 'Main delignifying stage' },
+    { badge: 'E', title: 'Alkaline extraction', detail: 'Washes out dissolved lignin; often boosted with O₂ or H₂O₂' },
+    { badge: 'D₁', title: 'Chlorine dioxide', detail: 'Brightening stage' },
+    { badge: 'D₂', title: 'Final ClO₂ / P', detail: 'Final brightness, ~88–90% ISO' },
+  ]}
+/>
+
+- **ECF** eliminated elemental chlorine gas (Cl₂), dramatically cutting dioxin formation.
+- **TCF (totally chlorine free)** uses only oxygen, ozone, and peroxide. It's used by some mills, especially in Europe, but is more expensive and harder to reach high brightness.
+- Mechanical pulp is bleached differently — with **hydrogen peroxide** or **hydrosulfite** — which brightens the lignin without removing it (so yield is preserved, but the brightness can revert).
+
+<Pitfall title="Chasing Brightness in the Bleach Plant">
+
+**Common mistake:** overdosing chlorine dioxide to fix low brightness at the end of the line.
+
+Brightness problems usually start upstream — a high or variable kappa number from the digester, or poor brown-stock washing that carries black liquor into the bleach plant ("carryover"). Throwing chemical at the final stage costs money and can damage fiber strength. Check washing and incoming kappa first.
+
+</Pitfall>
+
+---
+
+## Key Takeaway
+
+**Mechanical pulp** keeps the lignin: high yield and opacity, low strength, yellows with age. **Recycled fiber lines** clean OCC with pulpers, cleaners, and screens, fighting stickies all the way. **Bleaching** removes or brightens lignin; modern kraft mills use ECF sequences built on chlorine dioxide and oxygen.
+
+<TryIt title="The Sunlight Test">
+
+Cut a strip of newspaper (or the brown inner ply of a cereal box) and a strip of white copy paper. Cover half of each with a coin and leave them in direct sunlight for two or three days. Compare the covered and uncovered halves. The mechanical-pulp newsprint yellows visibly; the bleached kraft copy paper barely changes.
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "Why does mechanical pulp have a much higher yield than kraft pulp?",
+      options: ["It uses a hotter digester", "The lignin stays in the pulp instead of being dissolved", "It's made only from softwood", "It's bleached with chlorine dioxide"],
+      correctIndex: 1,
+      explanation: "Mechanical pulping tears fibers apart without dissolving lignin, so about 90–95% of the wood ends up as pulp."
+    },
+    {
+      question: "What is the job of the ragger in an OCC pulper?",
+      options: ["To add chemicals", "To pull out wire, plastic, and stringy debris as a rope", "To measure brightness", "To refine the fiber"],
+      correctIndex: 1,
+      explanation: "Wire, tape, and plastic wrap around a rope that is slowly pulled from the pulper — the ragger."
+    },
+    {
+      question: "What are 'stickies'?",
+      options: ["Fibers that bond too strongly", "Tacky contaminants such as adhesives, hot melts, and wax", "Lumps of starch in the size press", "A type of wet-strength resin"],
+      correctIndex: 1,
+      explanation: "Stickies come from adhesives and coatings in recovered paper. They deposit on machine fabrics and cause holes and breaks."
+    },
+    {
+      question: "What chemical is the backbone of ECF bleaching?",
+      options: ["Elemental chlorine gas", "Chlorine dioxide", "Sodium sulfide", "Calcium carbonate"],
+      correctIndex: 1,
+      explanation: "ECF (elemental chlorine free) bleaching replaced chlorine gas with chlorine dioxide, greatly reducing dioxin formation."
+    }
+  ]}
+/>

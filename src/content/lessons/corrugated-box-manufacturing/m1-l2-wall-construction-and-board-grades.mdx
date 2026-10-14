@@ -1,0 +1,175 @@
+---
+title: "Wall Construction and Board Grades: ECT vs. Mullen"
+description: "Compare single-face, single-wall, double-wall, and triple-wall board, decode a board grade, and understand the difference between Mullen (burst) and Edge Crush Test (ECT) ratings."
+module: 1
+moduleTitle: "Corrugated Board Basics"
+lesson: 2
+duration: "25 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Wall Constructions
+
+Add more layers of medium and liner and you get heavier-duty board.
+
+<svg viewBox="0 0 680 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Four corrugated constructions in cross-section. Single face: one liner with one fluted medium. Single wall: a medium between two liners. Double wall: two mediums and three liners. Triple wall: three mediums and four liners.">
+  <defs>
+    <pattern id="cw-c" width="40" height="30" patternUnits="userSpaceOnUse">
+      <path d="M0 15 Q5 2 10 2 Q15 2 20 15 Q25 28 30 28 Q35 28 40 15" fill="none" stroke="#ca8a04" stroke-width="2.5"/>
+    </pattern>
+    <pattern id="cw-b" width="30" height="22" patternUnits="userSpaceOnUse">
+      <path d="M0 11 Q3.75 2 7.5 2 Q11.25 2 15 11 Q18.75 20 22.5 20 Q26.25 20 30 11" fill="none" stroke="#ca8a04" stroke-width="2.5"/>
+    </pattern>
+  </defs>
+  <g font-family="system-ui, -apple-system, sans-serif">
+    <text x="20" y="40" fill="#0f172a" font-size="15" font-weight="700">Single face</text>
+    <text x="20" y="57" fill="#475569" font-size="12">1 liner + 1 medium</text>
+    <rect x="200" y="22" width="440" height="30" fill="url(#cw-c)"/>
+    <rect x="200" y="52" width="440" height="5" fill="#a16207"/>
+    <text x="20" y="104" fill="#0f172a" font-size="15" font-weight="700">Single wall</text>
+    <text x="20" y="121" fill="#475569" font-size="12">2 liners + 1 medium</text>
+    <rect x="200" y="84" width="440" height="5" fill="#a16207"/>
+    <rect x="200" y="89" width="440" height="30" fill="url(#cw-c)"/>
+    <rect x="200" y="119" width="440" height="5" fill="#a16207"/>
+    <text x="20" y="176" fill="#0f172a" font-size="15" font-weight="700">Double wall</text>
+    <text x="20" y="193" fill="#475569" font-size="12">3 liners + 2 mediums (e.g., BC)</text>
+    <rect x="200" y="148" width="440" height="5" fill="#a16207"/>
+    <rect x="200" y="153" width="440" height="22" fill="url(#cw-b)"/>
+    <rect x="200" y="175" width="440" height="5" fill="#a16207"/>
+    <rect x="200" y="180" width="440" height="30" fill="url(#cw-c)"/>
+    <rect x="200" y="210" width="440" height="5" fill="#a16207"/>
+    <text x="20" y="260" fill="#0f172a" font-size="15" font-weight="700">Triple wall</text>
+    <text x="20" y="277" fill="#475569" font-size="12">4 liners + 3 mediums</text>
+    <rect x="200" y="230" width="440" height="4" fill="#a16207"/>
+    <rect x="200" y="234" width="440" height="18" fill="url(#cw-b)"/>
+    <rect x="200" y="252" width="440" height="4" fill="#a16207"/>
+    <rect x="200" y="256" width="440" height="18" fill="url(#cw-b)"/>
+    <rect x="200" y="274" width="440" height="4" fill="#a16207"/>
+    <rect x="200" y="278" width="440" height="18" fill="url(#cw-b)"/>
+    <rect x="200" y="296" width="440" height="4" fill="#a16207"/>
+  </g>
+</svg>
+
+| Construction | Layers | Typical uses |
+|---|---|---|
+| **Single face** | One liner + one fluted medium | Wrapping, cushioning rolls, bottle sleeves |
+| **Single wall** | Medium between two liners | The vast majority of boxes |
+| **Double wall** | Two mediums, three liners (e.g., **BC**, **EB**) | Heavy products, appliances, long stacking times |
+| **Triple wall** | Three mediums, four liners (e.g., **AAC**) | Bulk bins, machinery, a substitute for wooden crates |
+
+Double-wall flute combinations are named with the two flutes, such as **BC** (B flute on one side, C on the other) or **EB** for a thinner, printable double wall.
+
+---
+
+## Specifying the Paper
+
+A board is fully described by the papers in it. A common shorthand lists **liner / medium / liner** basis weights in **lb/1,000 ft²**:
+
+> **42 / 26 / 42 C** = 42-lb liner, 26-lb medium, 42-lb liner, C flute
+
+Heavier and stronger papers mean stronger board. The box plant chooses papers to hit a **board grade** at the lowest cost.
+
+---
+
+## Two Ways to Rate Board: Mullen vs. ECT
+
+In North America, board grades are usually stated one of two ways. You'll see one of them printed on the bottom flap of most boxes.
+
+### Mullen (Burst Test)
+
+The **Mullen test** pushes a rubber diaphragm against the board until it bursts. The result is reported in **pounds per square inch**, e.g., **200# test**.
+
+- Measures resistance to **puncture and rough handling**
+- Driven mostly by the **linerboard** strength
+- The traditional rating, still preferred for boxes that face rough handling, heavy individual loads, or export
+
+### Edge Crush Test (ECT)
+
+The **ECT** stands a small sample of board on its edge — flutes vertical — and crushes it. The result is reported in **pounds per lineal inch**, e.g., **32 ECT**.
+
+- Measures **stacking strength** — the most important property for most warehouse and pallet use
+- Depends on the **compression strength of all components**, so a box plant can hit an ECT target with lighter, higher-performance papers
+- Allows **lighter boxes** for the same stacking strength — less fiber, lower cost
+
+### Common Equivalents
+
+These are the commonly cited **typical** pairings, not exact conversions — they measure different things.
+
+| Wall | Mullen | Typical ECT | Rule-of-thumb max box weight* |
+|---|---|---|---|
+| Single | 125# | 23 ECT | 20 lb |
+| Single | 175# | 29 ECT | 50 lb |
+| Single | **200#** | **32 ECT** | **65 lb** |
+| Single | 275# | 44 ECT | 95 lb |
+| Double | 200# | 42 ECT | 80 lb |
+| Double | 275# | 48 ECT | 100 lb |
+| Double | 350# | 51 ECT | 120 lb |
+| Double | 400# | 61 ECT | 140 lb |
+
+*Max gross weight per box from historical carrier packaging rules. These are guidance values — actual stacking performance depends on box size, environment, and handling, which you'll calculate in Module 5.
+
+**200# / 32 ECT single wall C flute** is the workhorse shipping box of North America.
+
+<Pitfall title="Converting Mullen to ECT Like Units">
+
+**Common mistake:** treating "200# test" and "32 ECT" as the same box.
+
+They're tested differently. A box rated by ECT may be made of lighter papers than a Mullen-rated box and therefore have **lower burst** strength. That's fine for stacking on a pallet — but if the product is a dense, heavy item that could punch through the side, or the box will be handled roughly in parcel networks, burst may matter. Specify the property that matches the risk.
+
+</Pitfall>
+
+---
+
+## The Box Maker's Certificate
+
+The round stamp on the bottom flap of many boxes is a **Box Maker's Certificate (BMC)**. It names the manufacturer and states the board's rating — either burst (Mullen) or ECT — along with size and gross weight limits. It originated in rail and motor carrier rules (Rule 41 and Item 222) that once required certified packaging for freight shipments.
+
+---
+
+## Key Takeaway
+
+**Single wall** covers most boxes; **double** and **triple wall** add strength for heavy or long-term loads. Board is specified by its **papers and flute** and rated by **Mullen (burst)** or **ECT (edge crush)**. ECT predicts stacking strength and allows lighter boxes; Mullen protects against puncture and rough handling.
+
+<TryIt title="Read the Certificate">
+
+Find three boxes at home or work and look for the Box Maker's Certificate on the bottom flap. For each, record: Mullen or ECT? Single or double wall? Max gross weight? Compare a box from an online retailer with one from a furniture or appliance delivery. Which one is rated more heavily, and why does that make sense?
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "How many liners does double-wall board have?",
+      options: ["One", "Two", "Three", "Four"],
+      correctIndex: 2,
+      explanation: "Double wall has two fluted mediums and three liners — outer, center, and inner."
+    },
+    {
+      question: "What does the Edge Crush Test (ECT) primarily predict?",
+      options: ["Puncture resistance", "Stacking (compression) strength", "Printability", "Moisture resistance"],
+      correctIndex: 1,
+      explanation: "ECT crushes board on edge with flutes vertical, which correlates strongly with box stacking strength."
+    },
+    {
+      question: "A Mullen rating is reported in…",
+      options: ["Pounds per lineal inch", "Pounds per square inch", "Grams per square meter", "Newtons per box"],
+      correctIndex: 1,
+      explanation: "Mullen burst is a pressure, in psi (lb/in²). ECT is in lb per lineal inch."
+    },
+    {
+      question: "What is the typical ECT counterpart of a 200# single-wall box?",
+      options: ["23 ECT", "32 ECT", "44 ECT", "61 ECT"],
+      correctIndex: 1,
+      explanation: "200# test single wall is commonly paired with 32 ECT — the North American workhorse box."
+    },
+    {
+      question: "What does '42/26/42 C' describe?",
+      options: ["Box dimensions in inches", "Liner/medium/liner basis weights with C flute", "ECT, Mullen, and weight limit", "A FEFCO style code"],
+      correctIndex: 1,
+      explanation: "It's the board combination: 42-lb liners on each side of a 26-lb medium, formed with C flute."
+    }
+  ]}
+/>

@@ -1,0 +1,122 @@
+---
+title: "Sustainable Box Design and Box Plant Safety"
+description: "Design boxes that use less material and ship less air, understand corrugated's recycling loop, and recognize the key hazards on a corrugator and converting floor."
+module: 6
+moduleTitle: "Sustainability, Safety, and Review"
+lesson: 1
+duration: "30 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## The Corrugated Loop
+
+Corrugated is one of the most recycled packaging materials. Used boxes (**OCC**) are baled at stores, warehouses, and recycling facilities, pulped at containerboard mills, and made into new linerboard and medium — often within weeks.
+
+Fibers shorten each cycle, so the loop needs a steady stream of **virgin kraft** fiber too. That's why linerboard typically blends virgin and recycled fiber, and why many boxes carry both a recycled-content claim and a forest certification (FSC, SFI, or PEFC).
+
+> Want to see what happens inside the mill? The companion course *From Pulp to Parent Roll* walks through it step by step.
+
+---
+
+## Design Moves That Cut Material and Cost
+
+The most sustainable box is usually also the **cheapest** one — because it uses less board and ships less air.
+
+| Move | How it helps |
+|---|---|
+| **Right-size the box** | Less board, less void fill, more boxes per pallet and per truck. Carriers charge by **dimensional weight**, so shipping air costs money. |
+| **Pick the right orientation** | Swapping which product dimension is the depth can change board area noticeably. |
+| **Use the right grade, not the heaviest** | Use McKee and real-world factors to hit the needed BCT — no more. |
+| **Let the product share the load** | Rigid products (cans, bottles in tight packs) can carry stacking load, allowing lighter board. |
+| **Fix the pallet pattern** | Column stacking and no overhang can recover strength without adding fiber. |
+| **Choose high-performance papers** | Lighter, stronger liners can hit the same ECT with less fiber. |
+| **Design for recyclability** | Avoid plastic laminations, heavy wax, and mixed materials that complicate recycling. Use paper tape where possible. |
+
+### Dimensional Weight
+
+Parcel carriers bill by whichever is greater: actual weight or **dimensional (DIM) weight**:
+
+> DIM weight = (L × W × H, in inches) ÷ DIM divisor
+
+The divisor is set by the carrier (139 is a common value for U.S. commercial parcel rates). A light product in an oversized box can be billed at several times its actual weight — a powerful financial reason to right-size.
+
+<Pitfall title="Lightweighting Without Retesting">
+
+**Common mistake:** cutting from 44 ECT to 32 ECT to hit a sustainability goal, without re-running stacking calculations or transit tests.
+
+If the box then fails in the warehouse, the damaged product — with all the energy, materials, and emissions it took to make — is a far bigger environmental cost than the fiber saved. Lightweight **with data**: recalculate BCT, check the pallet pattern, and retest.
+
+</Pitfall>
+
+---
+
+## Box Plant Safety
+
+> **Note:** This is an orientation only. Follow your plant's training, procedures, and lockout rules.
+
+Box plants combine high-speed rotating equipment, sharp tooling, steam, and constant forklift traffic.
+
+| Hazard | Where | Key controls |
+|---|---|---|
+| **In-running nips** | Corrugator rolls, FFG feed and pull rolls, die cutter cylinders | Guards, interlocks, never reach in while running |
+| **Hazardous energy** | All equipment; stored energy in pneumatics, steam, and coasting rolls | Lockout/tagout with verification before clearing jams or changing tooling |
+| **Cuts** | Slitter-scorer knives, cut-off knife, rule dies, strapping | Cut-resistant gloves where allowed, blade guards, safe die handling |
+| **Steam and hot surfaces** | Preheaters, single facer, double backer hot plates | Insulation, guarding, treat all lines as live |
+| **Starch kitchen chemicals** | Caustic soda, borax | Eye and skin protection, eyewash stations |
+| **Forklifts and clamp trucks** | Roll handling, finished-goods loads | Pedestrian lanes, eye contact, horn at intersections |
+| **Paper dust** | Dry end, converting, trim systems | Housekeeping, dust collection — dust is a fire hazard |
+| **Noise** | Corrugator, trim systems, FFGs | Hearing protection |
+
+### Jam Clearing: The Most Dangerous Routine Task
+
+Many serious box plant injuries happen when a worker reaches into a machine to clear a **jam** — a misfed sheet or a wrapped roll — without locking it out. The machine is "stopped," but a sensor, an operator, or stored energy restarts it.
+
+**Rule:** if your hand goes past a guard, the machine is locked out — no matter how quick the job seems.
+
+---
+
+## Key Takeaway
+
+Corrugated is highly recycled but still needs virgin fiber. The best sustainable designs **right-size, use the right grade, fix pallet patterns, and stay recyclable** — and they save money, especially under **dimensional-weight** pricing. On the floor, **nips, stored energy, knives, steam, and forklifts** are the major hazards; jam clearing requires lockout every time.
+
+<TryIt title="Right-Size a Shipment">
+
+A 2-lb product ships in a 16 × 12 × 10 in box. With a DIM divisor of 139, DIM weight = 1,920 ÷ 139 ≈ **13.8 lb → billed as 14 lb**.
+
+Redesign: the product fits in a 12 × 9 × 6 in box. DIM weight = 648 ÷ 139 ≈ **4.7 lb → billed as 5 lb**. Same product, roughly a third of the billable weight, less board, and less void fill.
+
+Now try it with a product you recently received in a box that was too big.
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "Why does corrugated recycling still need virgin fiber?",
+      options: ["Recycled boxes can't be pulped", "Fibers shorten and weaken each time they're recycled", "Virgin fiber is cheaper", "Laws require 50% virgin"],
+      correctIndex: 1,
+      explanation: "Recycling degrades fibers, so fresh fiber must keep entering the loop."
+    },
+    {
+      question: "What is dimensional weight based on?",
+      options: ["Actual weight only", "Box volume divided by a carrier divisor", "ECT grade", "Number of flaps"],
+      correctIndex: 1,
+      explanation: "DIM weight = L × W × H ÷ divisor; carriers bill the greater of DIM or actual weight."
+    },
+    {
+      question: "Which is usually the cheapest way to recover lost stacking strength?",
+      options: ["Upgrade to triple wall", "Fix the pallet pattern (column-stack, no overhang)", "Add more ink", "Use a FOL style"],
+      correctIndex: 1,
+      explanation: "Pallet pattern changes cost nothing and can recover a large share of box strength."
+    },
+    {
+      question: "Before reaching past a guard to clear a jam, you must…",
+      options: ["Slow the machine down", "Lock out and verify zero energy", "Ask a coworker to watch", "Wear thicker gloves"],
+      correctIndex: 1,
+      explanation: "Jam clearing past a guard requires lockout/tagout with verification every time."
+    }
+  ]}
+/>

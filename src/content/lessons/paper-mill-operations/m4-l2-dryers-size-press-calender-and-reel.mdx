@@ -1,0 +1,137 @@
+---
+title: "Dryers, Size Press, Calender, and Reel"
+description: "Learn how steam-heated dryer cans evaporate the last water, what the size press and calender add, and how the sheet is wound into a parent roll and slit into customer rolls."
+module: 4
+moduleTitle: "Pressing, Drying, and Finishing"
+lesson: 2
+duration: "30 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## The Dryer Section
+
+The dryer section is the longest, most expensive part of the paper machine. A large linerboard machine may have **50 to 100+ dryer cans** — cast-iron or steel cylinders, often 1.5–1.8 m in diameter, heated from inside by **steam**.
+
+The sheet snakes over and under the cans, held tight against them by **dryer fabrics**. Heat passes from the steam, through the can shell, into the sheet, and the water evaporates into the surrounding air. A **hood** encloses the section and captures that moist air for heat recovery.
+
+### Getting Water and Heat Out of the Cans
+
+Inside each can, the steam gives up heat and condenses. If the **condensate** isn't removed, it forms a layer that insulates the shell and reduces drying. A **siphon** picks up the condensate, and a **steam-and-condensate system** cascades steam from higher-pressure sections to lower ones.
+
+Dryers are grouped into **sections** with separate steam pressures so operators can control the **drying curve** — gentle at the wet end to avoid picking and sticking, hotter in the middle, and controlled at the end to hit target moisture.
+
+### Typical Targets
+
+Paper leaves the dryers at about **5–8% moisture** (92–95% solids). Too dry wastes steam and makes the sheet brittle; too wet risks mold, curl, and poor converting.
+
+<Pitfall title="Overdrying to Be Safe">
+
+**Common mistake:** running a couple of points drier than target "just in case."
+
+Overdrying wastes steam (the most expensive water you'll ever remove), makes containerboard brittle so it cracks on the corrugator's scores, and sells less water — paper is sold by weight, so overdrying literally gives product away. Hit the target, and level the **CD moisture profile** instead of drying everything to protect the wettest streak.
+
+</Pitfall>
+
+---
+
+## The Size Press
+
+Partway through the dryers, many machines have a **size press**, where a starch solution is applied to the sheet surface and then re-dried.
+
+- **Puddle size press:** the sheet passes through a pond of starch between two rolls. Simple but can cause sheet breaks at high speed.
+- **Metering (film) size press:** a thin, measured film of starch is applied to the rolls first, then transferred to the sheet. Handles high speed and gives more uniform pickup.
+
+Surface starch increases **surface strength** (so ink doesn't pick fibers off), **stiffness**, and for containerboard, **compression strength** — critical for box performance.
+
+---
+
+## Calendering
+
+A **calender** is a stack of hard rolls that the dry sheet passes through. Pressure smooths the surface and evens out thickness.
+
+- Improves **smoothness** and **printability**
+- Levels the **caliper** (thickness) profile across the width
+- But reduces **bulk** and **stiffness** — so board grades are calendered lightly
+
+Glossy coated papers often go through a **supercalender** or **soft-nip calender** offline or online for a high-gloss finish.
+
+---
+
+## Reel and Winder
+
+At the end of the machine, the sheet is wound onto a steel spool at the **reel** (often a **Pope reel**) to make a **parent roll** (also called a jumbo roll or machine reel). A full parent roll can be the full machine width and weigh **tens of tons**. When it's full, the sheet is transferred to a new spool at full speed — a **turn-up**.
+
+The parent roll goes to the **winder**, which unwinds it and slits it into **customer rolls** of the ordered widths and diameters.
+
+<ProcessFlow
+  label="From parent roll to shipped customer roll."
+  color="#047857"
+  steps={[
+    { title: 'Parent roll', detail: 'Full machine width, wound at the reel' },
+    { title: 'Unwind', detail: 'Parent roll mounted on the winder unwind stand' },
+    { title: 'Slit', detail: 'Rotating knives cut the web to ordered widths' },
+    { title: 'Rewind', detail: 'Sets of rolls wound on cores to target diameter' },
+    { title: 'Wrap & label', detail: 'Rolls wrapped, weighed, and barcoded' },
+    { title: 'Ship', detail: 'Clamp trucks load trucks and railcars' },
+  ]}
+/>
+
+Planners use **deckle** (trim) optimization to combine customer orders across the parent roll width while minimizing waste. The narrow edge strips left over become **trim** that's repulped as broke.
+
+### Roll Quality
+
+A customer roll must unwind smoothly on a corrugator or press. Winders control **wound-in tension** to avoid:
+- **Soft rolls** that go out of round in storage
+- **Hard rolls** that crack or burst at the core
+- **Telescoping** layers and **crepe wrinkles**
+
+---
+
+## Key Takeaway
+
+**Steam-heated dryer cans** evaporate the last ~50% water — the most expensive water removal in the mill. The **size press** adds surface starch for strength, the **calender** smooths and levels caliper at some cost to bulk, and the **reel and winder** turn the sheet into customer rolls.
+
+<TryIt title="Read a Roll Tag">
+
+Look up a photo of a paper roll label online (search "paper roll label linerboard"). Identify the grade, basis weight or grammage, width, diameter, weight, and roll ID. Every one of those fields was set at the reel or winder. The roll ID lets the mill trace any customer complaint back to the exact parent roll and time it was made.
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "What heats a typical paper machine dryer can?",
+      options: ["Electric coils", "Steam inside the can", "Natural gas burners on the shell", "Infrared lamps"],
+      correctIndex: 1,
+      explanation: "Steam condenses inside the cans, releasing heat through the shell into the sheet."
+    },
+    {
+      question: "Why must condensate be removed from dryer cans?",
+      options: ["It rusts the cans", "It insulates the shell and reduces heat transfer", "It increases sheet strength", "It lowers steam pressure to zero"],
+      correctIndex: 1,
+      explanation: "A layer of condensate acts as an insulating blanket. Siphons remove it to keep drying efficient."
+    },
+    {
+      question: "What does surface starch at the size press improve in containerboard?",
+      options: ["Brightness only", "Surface strength, stiffness, and compression strength", "Wet strength in water", "Freeness"],
+      correctIndex: 1,
+      explanation: "Surface starch strengthens the surface and improves stiffness and compression — critical for boxes."
+    },
+    {
+      question: "What is a trade-off of heavy calendering?",
+      options: ["Rougher surface", "Lower bulk and stiffness", "Higher moisture", "More two-sidedness"],
+      correctIndex: 1,
+      explanation: "Calendering compresses the sheet, improving smoothness but reducing bulk and stiffness."
+    },
+    {
+      question: "What does the winder do?",
+      options: ["Forms the sheet", "Slits the parent roll into customer rolls of ordered widths and diameters", "Dries the sheet", "Applies starch"],
+      correctIndex: 1,
+      explanation: "The winder unwinds the parent roll, slits it, and rewinds customer rolls."
+    }
+  ]}
+/>

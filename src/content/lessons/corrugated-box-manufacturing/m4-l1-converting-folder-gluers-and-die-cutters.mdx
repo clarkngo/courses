@@ -1,0 +1,126 @@
+---
+title: "Converting: Flexo Folder-Gluers and Die Cutters"
+description: "See how flat sheets become boxes on flexo folder-gluers, rotary die cutters, and flatbed die cutters — and how to choose between them while protecting board strength."
+module: 4
+moduleTitle: "Converting and Printing"
+lesson: 1
+duration: "30 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## What "Converting" Means
+
+The corrugator makes flat **sheets**. **Converting** turns sheets into finished boxes: printing, slotting, scoring panels, die-cutting, folding, gluing, and bundling.
+
+Box plants come in two types:
+- **Corrugator plants:** run a corrugator to make their own board, then convert it.
+- **Sheet plants:** buy sheets from corrugator plants and focus on converting — often shorter runs and specialty work.
+
+---
+
+## The Flexo Folder-Gluer (FFG)
+
+For RSCs and other slotted boxes, the workhorse is the **flexo folder-gluer**. A sheet goes in one end and a glued, folded, counted box comes out the other — at speeds of hundreds of boxes per minute.
+
+<ProcessFlow
+  label="Sections of a flexo folder-gluer, from sheet feeding to bundled boxes."
+  color="#a16207"
+  steps={[
+    { title: 'Feeder', detail: 'Lead-edge feeder pushes one sheet at a time' },
+    { title: 'Print units', detail: 'One flexo unit per color' },
+    { title: 'Slotter-scorer', detail: 'Cuts flap slots and creases panel scores' },
+    { title: 'Die-cut (optional)', detail: 'Rotary section for handholes, vents' },
+    { title: 'Folder-gluer', detail: 'Glues the joint tab and folds the box flat' },
+    { title: 'Counter-ejector', detail: 'Counts and stacks bundles' },
+    { title: 'Bundling', detail: 'Strapping and palletizing' },
+  ]}
+/>
+
+Notice the division of labor:
+- The **corrugator** made the **flap scores** (parallel to the length of the sheet).
+- The **FFG** makes the **panel scores** and cuts the **slots** between flaps.
+
+### Crush: The Hidden Cost of Converting
+
+Every time the sheet passes through **feed rolls**, print cylinders, and pull rolls, it can be squeezed. Too much **gap closure** crushes the flutes and lowers caliper — and **lost caliper means lost box compression strength**.
+
+Modern FFGs use **vacuum transfer** (holding the sheet against a belt or anvil by suction) instead of pinch rolls to reduce crush. Operators set gaps to the actual board caliper for every order.
+
+<Pitfall title="Closing the Gaps to Fix Registration">
+
+**Common mistake:** tightening feed and pull roll gaps to stop print or slot registration from wandering.
+
+It often works — but it crushes the board. Research and plant experience show converting crush can cost a meaningful share of a box's compression strength. Fix registration with proper vacuum, clean and correctly set feed equipment, and flat board (no warp) instead of squeezing harder.
+
+</Pitfall>
+
+---
+
+## Die Cutters
+
+For boxes that aren't simple rectangles — mailers, trays, displays, handholes, interlocking features — the shape is cut by a **die**: steel cutting and creasing rules set into a base.
+
+| | Rotary die cutter (RDC) | Flatbed die cutter |
+|---|---|---|
+| **How it cuts** | Curved die on a rotating cylinder against a soft anvil | Flat die pressed down onto the sheet |
+| **Speed** | Fast | Slower |
+| **Precision** | Good; can stretch slightly | Very precise; intricate shapes |
+| **Tooling cost** | Lower-to-moderate | Higher |
+| **Printing** | Often has inline flexo units | Usually prints elsewhere (or uses litho-laminated sheets) |
+| **Best for** | High-volume trays, mailers, simple die-cuts | Complex displays, tight tolerances, high-graphics retail |
+
+After die cutting, a **stripping** step removes the waste pieces, and the pieces may go to a **specialty folder-gluer** for more complex glued styles (crash-lock bottoms, for example).
+
+---
+
+## Other Converting Steps
+
+- **Partition assemblers** make the slotted dividers inside wine and bottle shippers.
+- **Stitchers** close heavy boxes with metal staples.
+- **Laminators** combine sheets or glue litho-printed paper to board (next lesson).
+- **Bundling and palletizing:** finished boxes are strapped in bundles and loaded onto pallets for delivery — usually flat ("knocked down") so they ship efficiently.
+
+---
+
+## Key Takeaway
+
+**Converting** turns sheets into boxes. The **flexo folder-gluer** prints, slots, scores panels, glues, and counts RSCs at high speed. **Rotary** die cutters are fast; **flatbed** die cutters are precise. Protect board **caliper** throughout — crushed flutes mean weaker boxes.
+
+<TryIt title="Find the Converting Marks">
+
+Take a shipping box apart at its manufacturer's joint and flatten it. Look for: the slots between flaps (made on the FFG), the scores between panels (FFG) and between panels and flaps (corrugator), and the glue lines on the joint. Run a fingertip across the board near the score lines — any flattened bands are signs of crush from feed rolls.
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "Which machine typically prints, slots, and glues RSCs in one pass?",
+      options: ["Corrugator", "Flexo folder-gluer", "Flatbed die cutter", "Partition assembler"],
+      correctIndex: 1,
+      explanation: "The flexo folder-gluer handles printing, slotting, panel scoring, folding, gluing, and counting."
+    },
+    {
+      question: "Why does converting crush matter?",
+      options: ["It changes the print color", "Lost caliper reduces box compression strength", "It makes boxes heavier", "It improves stacking"],
+      correctIndex: 1,
+      explanation: "Crushed flutes reduce caliper, and caliper is a key factor in box compression strength."
+    },
+    {
+      question: "Compared with a rotary die cutter, a flatbed die cutter is…",
+      options: ["Faster and less precise", "Slower but more precise for intricate shapes", "Only for RSCs", "Unable to cut corrugated board"],
+      correctIndex: 1,
+      explanation: "Flatbeds trade speed for precision and are favored for complex, tight-tolerance work."
+    },
+    {
+      question: "How do modern FFGs reduce crush?",
+      options: ["By printing only one color", "By using vacuum transfer instead of pinch rolls", "By skipping the slotter", "By running wetter board"],
+      correctIndex: 1,
+      explanation: "Vacuum transfer holds and moves the sheet without squeezing it."
+    }
+  ]}
+/>

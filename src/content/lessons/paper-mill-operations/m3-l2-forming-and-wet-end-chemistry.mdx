@@ -1,0 +1,152 @@
+---
+title: "Forming the Sheet and Wet-End Chemistry"
+description: "Follow the jet onto the wire, learn how Fourdrinier and twin-wire formers drain water, why fiber orientation creates MD and CD, and how retention aids, sizing, and strength additives work."
+module: 3
+moduleTitle: "Stock Prep and the Wet End"
+lesson: 2
+duration: "30 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## The Forming Section
+
+The headbox jet lands on the **forming fabric** (still called the **wire**, even though modern fabrics are woven plastic). In a few meters and a fraction of a second, the stock goes from ~99% water to a self-supporting wet web at roughly 20% solids.
+
+Water is removed by elements under the fabric, in this order:
+
+| Element | How it drains |
+|---|---|
+| **Forming board** | Supports the fabric where the jet lands; gentle initial drainage |
+| **Foils** | Angled blades that create a mild vacuum as the fabric passes; also agitate stock to break up flocs |
+| **Vacuum boxes** | Suction boxes that pull harder once a mat has formed |
+| **Couch roll** | A perforated suction roll at the end; the web is transferred off the wire here |
+
+You'll often see a **dry line** partway down the table — the point where the glossy water layer on top disappears and the sheet turns matte. Operators watch it: if the dry line moves, drainage has changed.
+
+### Fourdrinier vs. Twin-Wire Formers
+
+- **Fourdrinier:** a single flat wire; water drains downward only. Simple and still common for containerboard.
+- **Gap and hybrid formers:** the jet is caught between **two fabrics**, draining water from both sides. This gives better **formation** (evenness), less **two-sidedness** (different top and bottom surfaces), and much higher speed. Most new printing-paper and tissue machines use twin-wire forming.
+- **Multi-ply forming:** board machines often form two or three plies separately — for example, a cheaper recycled middle ply between clean outer plies — and combine them while wet.
+
+---
+
+## Machine Direction and Cross Direction
+
+Because the jet is moving at nearly the same speed as the wire, most fibers line up pointing **downstream**. That gives every sheet of paper a "grain."
+
+<svg viewBox="0 0 680 230" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A sheet of paper viewed from above with fibers mostly aligned in the machine direction, running along the length of the paper machine. The cross direction runs across the width. Tensile strength is higher in MD; paper expands more with moisture in CD.">
+  <defs>
+    <marker id="mdcd-a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#047857"/></marker>
+    <marker id="mdcd-b" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#b45309"/></marker>
+  </defs>
+  <g font-family="system-ui, -apple-system, sans-serif">
+    <rect x="60" y="40" width="300" height="150" rx="6" fill="#fef3c7" stroke="#d6a85a"/>
+    <g stroke="#92400e" stroke-width="3" stroke-linecap="round">
+      <line x1="80" y1="60" x2="150" y2="64"/><line x1="170" y1="58" x2="250" y2="55"/><line x1="270" y1="64" x2="340" y2="60"/>
+      <line x1="90" y1="90" x2="160" y2="96"/><line x1="185" y1="88" x2="260" y2="92"/><line x1="280" y1="86" x2="345" y2="94"/>
+      <line x1="75" y1="120" x2="140" y2="118"/><line x1="160" y1="126" x2="240" y2="122"/><line x1="255" y1="118" x2="335" y2="124"/>
+      <line x1="85" y1="152" x2="155" y2="148"/><line x1="175" y1="155" x2="250" y2="150"/><line x1="270" y1="150" x2="340" y2="156"/>
+      <line x1="200" y1="70" x2="215" y2="110"/><line x1="110" y1="135" x2="130" y2="170"/>
+    </g>
+    <line x1="60" y1="210" x2="360" y2="210" stroke="#047857" stroke-width="3" marker-end="url(#mdcd-a)"/>
+    <text x="210" y="226" text-anchor="middle" fill="#047857" font-size="13" font-weight="700">MD — machine direction (direction of travel)</text>
+    <line x1="30" y1="190" x2="30" y2="44" stroke="#b45309" stroke-width="3" marker-end="url(#mdcd-b)"/>
+    <text x="18" y="120" text-anchor="middle" fill="#b45309" font-size="13" font-weight="700" transform="rotate(-90 18 120)">CD — cross direction</text>
+    <g font-size="13" fill="#0f172a">
+      <text x="400" y="60" font-weight="700">Stronger in MD</text>
+      <text x="400" y="78" fill="#475569" font-size="12">tensile, stiffness along the fibers</text>
+      <text x="400" y="112" font-weight="700">Moves more in CD</text>
+      <text x="400" y="130" fill="#475569" font-size="12">fibers swell in width, not length,</text>
+      <text x="400" y="146" fill="#475569" font-size="12">so moisture changes show up as CD growth</text>
+      <text x="400" y="180" font-weight="700">Why you care</text>
+      <text x="400" y="198" fill="#475569" font-size="12">box strength, curl, printing registration</text>
+    </g>
+  </g>
+</svg>
+
+- **MD (machine direction):** the direction the paper travels. Higher tensile strength and stiffness.
+- **CD (cross direction):** across the width. More expansion and shrinkage with moisture.
+
+The **jet-to-wire speed ratio** controls how strongly fibers align. In corrugated board, the corrugator runs the paper so the flutes go across it — you'll see why that matters in the box course.
+
+---
+
+## Wet-End Chemistry
+
+The **wet end** is where chemistry happens. Small doses of additives make a huge difference.
+
+### Retention Aids
+Fines, fillers, and additives are tiny — many would drain straight through the wire. **Retention aids** (usually cationic polymers, sometimes paired with microparticles like bentonite or colloidal silica) flocculate those small particles onto fibers so they stay in the sheet. Better retention means a cleaner white-water loop and less waste.
+
+### Sizing
+Untreated paper wicks water like a paper towel. **Internal sizing** makes it water-resistant:
+- **AKD (alkyl ketene dimer)** and **ASA (alkenyl succinic anhydride)** react with the cellulose in neutral/alkaline papermaking — the modern standard.
+- **Rosin size** with alum is the traditional acidic system, still used in some containerboard.
+
+**Surface sizing** — starch applied at the size press — is covered in the next module.
+
+### Strength Additives
+- **Cationic starch** (dry strength) — the most common additive in containerboard.
+- **Wet-strength resins** (such as PAE) — for towel, liquid packaging, and labels that must survive getting wet.
+
+### Fillers
+Printing papers add mineral **fillers** — precipitated calcium carbonate (PCC), ground calcium carbonate (GCC), clay, or titanium dioxide — for opacity, brightness, and smoothness. Fillers are cheaper than fiber but weaken bonding, so there's always a trade-off.
+
+<Pitfall title="Ignoring Charge Balance">
+
+**Common mistake:** adding more and more cationic polymer when retention drops.
+
+Cellulose fibers and many contaminants are **anionic** (negatively charged). Recycled furnish brings in a lot of dissolved and colloidal "anionic trash" that soaks up cationic additives before they reach the fiber. Mills measure the **charge demand** of the white water (and the **zeta potential** of the fibers). When charge balance drifts, the fix might be a cheap fixative to neutralize the trash first — not more expensive retention aid.
+
+</Pitfall>
+
+---
+
+## Key Takeaway
+
+The **forming section** drains stock from ~99% to ~80% water with foils, vacuum, and the couch. **Twin-wire formers** drain from both sides for better formation and speed. Fiber alignment creates **MD and CD** properties every converter cares about. **Wet-end chemistry** — retention aids, sizing, starch, and fillers — tunes the sheet, and depends on keeping the system's charge in balance.
+
+<TryIt title="Find the Grain">
+
+Take a sheet of copy paper. Tear it slowly lengthwise, then across. One tear runs straight and clean — that's **with** the grain (MD). The other wanders. Next, wet one edge of a strip cut each way and watch which one curls more. You've just found MD and CD without a lab.
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "What does the 'dry line' on a Fourdrinier table indicate?",
+      options: ["Where the dryer section begins", "The point where the surface water layer disappears from the forming web", "The edge trim location", "The end of the felt run"],
+      correctIndex: 1,
+      explanation: "The dry line is where the glossy water layer vanishes. A shifting dry line signals a change in drainage."
+    },
+    {
+      question: "Why do twin-wire formers produce less two-sidedness than a Fourdrinier?",
+      options: ["They use stronger fibers", "Water drains from both sides of the sheet", "They run slower", "They skip the press section"],
+      correctIndex: 1,
+      explanation: "Draining from both sides keeps fines and fillers more evenly distributed between top and bottom surfaces."
+    },
+    {
+      question: "In which direction is paper typically stronger in tension?",
+      options: ["Cross direction (CD)", "Machine direction (MD)", "Equal in both", "Thickness (Z) direction"],
+      correctIndex: 1,
+      explanation: "Most fibers align with the direction of travel, so MD tensile strength is higher."
+    },
+    {
+      question: "What do AKD and ASA do?",
+      options: ["Increase brightness", "Provide internal sizing (water resistance)", "Act as retention aids", "Bleach the pulp"],
+      correctIndex: 1,
+      explanation: "AKD and ASA are reactive internal sizing agents used in neutral/alkaline papermaking."
+    },
+    {
+      question: "Why can recycled furnish make cationic retention aids less effective?",
+      options: ["Recycled fiber has no charge", "It carries anionic trash that consumes cationic polymer", "It is too dry", "It contains too much lignin"],
+      correctIndex: 1,
+      explanation: "Dissolved and colloidal anionic material uses up cationic additives. Measuring charge demand helps diagnose this."
+    }
+  ]}
+/>
