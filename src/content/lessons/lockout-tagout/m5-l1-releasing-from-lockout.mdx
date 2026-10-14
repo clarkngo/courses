@@ -1,0 +1,133 @@
+---
+title: "Releasing from Lockout and Restoring Energy"
+description: "Follow the required steps to safely restore equipment to service, including inspecting the machine, accounting for every person, notifying affected employees, and removing your own lock, plus the strict procedure for removing an absent worker's lock."
+module: 5
+moduleTitle: "Release and Inspection"
+lesson: 1
+duration: "25 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Restart Is a Hazard Too
+
+The job is done, everyone's ready to run, and production is waiting. That pressure is exactly when people get hurt: a guard left off, a wrench left on a shaft, a coworker still inside the machine.
+
+OSHA requires a specific release procedure before locks come off.
+
+<ProcessFlow
+  label="Release from lockout: inspect the machine and remove tools, reinstall guards, account for every person and make sure all are clear, notify affected employees, each authorized employee removes their own lock, restore energy in a safe order, then notify that the machine is back in service."
+  color="#b91c1c"
+  steps={[
+    { title: 'Inspect machine', detail: 'Tools out; parts intact' },
+    { title: 'Guards on', detail: 'Reinstall and secure' },
+    { title: 'Account for people', detail: 'Everyone clear and safe' },
+    { title: 'Notify', detail: 'Tell affected employees' },
+    { title: 'Remove own lock', detail: 'Only the person who applied it' },
+    { title: 'Restore energy', detail: 'In a safe order' },
+  ]}
+/>
+
+---
+
+## Step by Step
+
+### 1. Inspect the Machine
+
+- Remove **nonessential items**: tools, rags, parts, blocks, and shims.
+- Make sure components are **operationally intact**, meaning bolts tight, belts on, couplings connected.
+- Reinstall and secure **guards** and safety devices.
+- Remove **blocks and pins** used for stored energy, in the correct order (only after it's safe to let the load be supported by the system again).
+
+### 2. Account for Everyone
+
+- Check that all employees are **safely positioned or removed** from the machine area.
+- Use the **group lockbox sign-in board** or a headcount.
+- Physically **look** inside enclosures, pits, and behind the machine.
+
+### 3. Notify Affected Employees
+
+After locks are removed and **before** the machine starts, affected employees must be told that the lockout devices have been removed.
+
+### 4. Remove Your Own Lock
+
+Each lockout or tagout device must be removed **by the authorized employee who applied it**. Nobody else removes your lock, and you never remove anyone else's.
+
+### 5. Restore Energy Safely
+
+- Return controls to **OFF** before restoring power (they should already be, from verification).
+- Restore energy in a **safe order**. For example, restore air with a **soft-start**, and know whether any double-solenoid valves will move cylinders when air returns.
+- Stand clear and watch the first cycle.
+
+---
+
+## When the Person Who Applied the Lock Is Gone
+
+Sometimes a lock is left on and its owner has gone home, is on vacation, or has left the company. OSHA allows removal by someone else **only** under the employer's direction, using a **specific documented procedure** with **specific training**. At a minimum, the procedure must include:
+
+1. **Verification** by the employer that the authorized employee who applied the device is **not at the facility**
+2. **All reasonable efforts to contact** that employee to tell them their lock is being removed
+3. Making sure the employee **knows the lock was removed before they resume work** at the facility
+
+Most plants add more: a supervisor and a second authorized person **inspect the machine together**, confirm no one is inside, and document every step.
+
+<Pitfall title="Bolt Cutters Without the Procedure">
+
+**Common mistake:** a supervisor cuts a lock because "they must have forgotten it and gone home."
+
+What if they didn't go home? What if they're inside the machine, or on a break and about to go back in? Locks are cut **only** after the full procedure is followed, starting with **confirming the person is not at the facility**. A forgotten lock costs some production time. A wrong assumption can cost a life.
+
+</Pitfall>
+
+---
+
+## Key Takeaway
+
+Before release: **inspect** the machine, reinstall **guards**, remove **blocks**, **account for everyone**, and **notify** affected employees. Each person removes **only their own lock**. An absent worker's lock comes off **only** through the documented procedure: confirm they're **not at the facility**, make **reasonable efforts to contact** them, and **inform them before they return**.
+
+<TryIt title="Release Checklist">
+
+Write a one-page release checklist for a machine you know. Include:
+
+- [ ] Tools, rags, and parts removed (list common items left behind on this machine)
+- [ ] Guards and covers reinstalled (list each by location)
+- [ ] Blocks and pins removed (list each)
+- [ ] Everyone accounted for (how?)
+- [ ] Affected employees notified (who?)
+- [ ] Each person removes their own lock
+- [ ] Energy restored in order (list the order)
+- [ ] First cycle observed from a safe position
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "Who may remove a lockout device under normal conditions?",
+      options: ["Any supervisor", "The authorized employee who applied it", "The operator", "Whoever has bolt cutters"],
+      correctIndex: 1,
+      explanation: "Each device must be removed by the authorized employee who applied it."
+    },
+    {
+      question: "When must affected employees be notified during release?",
+      options: ["The next day", "After devices are removed and before the machine is restarted", "Only if they ask", "Never"],
+      correctIndex: 1,
+      explanation: "Affected employees must be told the devices have been removed before the equipment is started."
+    },
+    {
+      question: "Which is required before removing an absent employee's lock?",
+      options: ["Waiting 1 hour", "Verifying the employee is not at the facility", "Calling OSHA", "Using a tag instead"],
+      correctIndex: 1,
+      explanation: "The employer must verify the employee isn't at the facility, make reasonable efforts to contact them, and inform them before they resume work."
+    },
+    {
+      question: "What should be done with blocks and pins used to restrain stored energy before restart?",
+      options: ["Leave them in place", "Remove them in the correct order once it's safe", "Paint them", "Tag them"],
+      correctIndex: 1,
+      explanation: "Blocks and pins must be removed before restart, in a sequence that doesn't release a load unexpectedly."
+    }
+  ]}
+/>

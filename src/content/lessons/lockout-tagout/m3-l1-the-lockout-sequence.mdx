@@ -1,0 +1,149 @@
+---
+title: "The Lockout Sequence, Step by Step"
+description: "Walk through the required order of lockout (prepare, notify, shut down, isolate, apply devices, control stored energy, and verify) with what to do and what goes wrong at each step."
+module: 3
+moduleTitle: "Applying Lockout"
+lesson: 1
+duration: "25 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## The Order Matters
+
+OSHA 1910.147 lays out the application of energy control in a specific **sequence**. Doing the steps out of order creates gaps. For example, isolating before a normal shutdown can damage equipment or release energy violently.
+
+<ProcessFlow
+  label="The lockout sequence: prepare by reviewing the procedure, notify affected employees, shut down the machine normally, isolate every energy source, apply personal locks and tags, release or restrain stored energy, then verify zero energy by trying to start and testing."
+  color="#b91c1c"
+  loop="If verification shows any energy remaining, stop: find the missed source, isolate it, and verify again."
+  steps={[
+    { title: 'Prepare', detail: 'Review procedure; know every energy source' },
+    { title: 'Notify', detail: 'Tell affected employees' },
+    { title: 'Shut down', detail: 'Normal stop' },
+    { title: 'Isolate', detail: 'Every source, at the device' },
+    { title: 'Lock + tag', detail: 'Your own lock on each point' },
+    { title: 'Stored energy', detail: 'Bleed, block, discharge' },
+    { title: 'Verify', detail: 'Try to start; test for zero' },
+  ]}
+/>
+
+---
+
+## 1. Prepare
+
+Before touching anything, the authorized employee must know:
+
+- The **type and magnitude** of every energy source
+- The **hazards** of that energy
+- The **methods** to control it
+
+Get the **machine-specific procedure**. Gather the right locks, tags, devices, test equipment, and blocks. If the job scope changed (for example, now you need to open a hydraulic line), make sure the procedure covers it.
+
+## 2. Notify Affected Employees
+
+Tell the operators and others in the area that the machine is being locked out, and why. This prevents surprises, like an operator trying to "help" by restarting.
+
+## 3. Shut Down
+
+Stop the machine using its **normal stopping procedure**: the stop button, the cycle-stop, or the control system. A normal stop brings moving parts to rest in a controlled way and avoids damage or added hazards from cutting power to a running machine.
+
+## 4. Isolate
+
+Operate **every** energy-isolating device so the machine is isolated from **all** sources: electrical disconnects, air valves, hydraulic valves, steam, process lines, and so on.
+
+- Isolate at the **device**, not at controls.
+- Watch for machines fed from **more than one** electrical source (main power, a separate control transformer feed, a UPS, heater circuits).
+
+## 5. Apply Lockout/Tagout Devices
+
+Each authorized employee applies **their own** lock (and tag, where used) to **each** isolating device:
+
+- Lock holds the device in the **safe or OFF** position.
+- Tag is attached at the same point, stating who, when, and why.
+- Use hasps or group lockboxes when several people work on the job (Module 4).
+
+## 6. Control Stored Energy
+
+After isolation, release, restrain, or otherwise make safe all **stored and residual** energy:
+
+- Bleed **air** and **hydraulic** pressure; drain or block accumulators
+- **Discharge capacitors** (and wait for drives to discharge)
+- **Block or lower** raised parts; install safety pins
+- Release or block **spring** tension
+- Let **flywheels** and rolls coast to a full stop
+- **Cool** hot surfaces or allow time; vent and drain process lines
+
+If stored energy could **re-accumulate** (for example, pressure building again), **keep checking** it until the job is done.
+
+## 7. Verify Isolation
+
+Before starting work, **verify** the machine is isolated and de-energized:
+
+1. Make sure **everyone is clear** of the machine.
+2. **Try to start** it with the normal controls (the "try-out").
+3. **Test** electrical circuits for absence of voltage with a properly rated meter.
+4. Check **gauges** read zero for air and hydraulics.
+5. **Return the controls to OFF or neutral** after the try-out.
+
+<Pitfall title="Leaving the Start Button On After Try-Out">
+
+**Common mistake:** the tech presses Start during verification, nothing happens (good), and they go to work. The start selector is left in RUN.
+
+When the locks come off later, the machine starts instantly, possibly while someone is still reaching in. Always **return controls to OFF or neutral** after the try-out.
+
+</Pitfall>
+
+---
+
+## Key Takeaway
+
+Follow the sequence: **prepare → notify → shut down → isolate → lock and tag → control stored energy → verify.** Isolate **every** source at the **device**, put **your own** lock on each, release or block **stored energy**, and **try to start** and **test** before work begins. Return controls to **OFF** after trying.
+
+<TryIt title="Put the Steps in Order">
+
+A mechanic is about to change a cutting blade on a carton sealer. Put these in the correct order:
+
+- A. Press Start to confirm nothing moves, then return the switch to OFF
+- B. Tell the operator the machine is going down
+- C. Bleed air at the dump valve and pin the raised sealing head
+- D. Read the machine-specific procedure
+- E. Apply a personal lock to the disconnect and the air dump valve
+- F. Stop the machine with the cycle-stop button
+- G. Turn the disconnect OFF and close the air dump valve
+
+Answer: **D, B, F, G, E, C, A**
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "Which step comes immediately before isolating energy sources?",
+      options: ["Verify", "Shut down the machine using its normal procedure", "Apply locks", "Release stored energy"],
+      correctIndex: 1,
+      explanation: "The machine is shut down normally first, then isolated at each energy-isolating device."
+    },
+    {
+      question: "Why should you stop the machine normally before opening the disconnect?",
+      options: ["To save power", "A controlled stop avoids damage and extra hazards from cutting power to a running machine", "OSHA doesn't allow disconnects", "To reset the PLC"],
+      correctIndex: 1,
+      explanation: "Normal shutdown brings motion to a controlled stop before isolation."
+    },
+    {
+      question: "What should you do after pressing Start during verification and confirming nothing moves?",
+      options: ["Leave it in RUN", "Return the control to OFF or neutral", "Remove your lock", "Call the operator to restart"],
+      correctIndex: 1,
+      explanation: "Leaving controls in RUN can cause an immediate start when energy is restored."
+    },
+    {
+      question: "If stored energy could build back up during the job, what must you do?",
+      options: ["Nothing; it was released once", "Continue verifying isolation until the job is complete", "Remove the lock", "Use a tag instead"],
+      correctIndex: 1,
+      explanation: "When re-accumulation is possible, verification must continue until servicing is done."
+    }
+  ]}
+/>

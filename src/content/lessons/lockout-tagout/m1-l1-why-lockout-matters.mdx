@@ -1,0 +1,126 @@
+---
+title: "Why Lockout Matters: Hazardous Energy and OSHA 1910.147"
+description: "Understand what hazardous energy is, how unexpected startup injures workers, what OSHA's Control of Hazardous Energy standard covers, and the key exceptions for normal production work and cord-and-plug equipment."
+module: 1
+moduleTitle: "Hazardous Energy Basics"
+lesson: 1
+duration: "20 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## The Moment That Matters
+
+Most machine injuries during maintenance don't happen while the machine is running normally. They happen when someone is **inside** the machine, such as clearing a jam, changing a part, or cleaning, and the machine **starts up, moves, or releases energy unexpectedly**.
+
+It might be:
+
+- A coworker who didn't know someone was inside and pressed Start
+- A PLC that restarted the sequence automatically when a sensor cleared
+- A cylinder that dropped when a hydraulic line was opened
+- A capacitor that was still charged after the breaker was off
+- A spring-loaded gate that snapped shut
+
+**Lockout/tagout (LOTO)** is the system that prevents all of these.
+
+---
+
+## The OSHA Standard
+
+In the U.S., the rule is **29 CFR 1910.147, The Control of Hazardous Energy (Lockout/Tagout)**. It requires employers to establish a program that disables machines during **servicing and maintenance** so that unexpected energization, startup, or release of stored energy can't injure workers.
+
+OSHA estimates that compliance with the lockout/tagout standard prevents about **120 fatalities and 50,000 injuries each year**. Even so, it remains one of OSHA's **most frequently cited** standards year after year.
+
+Other standards cover related work: electrical safe work practices (**1910.333**), construction, and specific industries. Outside the U.S., similar requirements exist (for example, **CSA Z460** in Canada and **ISO 14118** on preventing unexpected startup).
+
+---
+
+## What's Covered
+
+The standard covers **servicing and maintenance** where an employee could be injured by unexpected energization or release of energy. That includes:
+
+- **Constructing, installing, setting up, adjusting, inspecting, modifying, maintaining, and servicing** machines and equipment
+- **Lubricating, cleaning, unjamming**, and making tool changes
+- Any time an employee must **remove or bypass a guard** or other safety device
+- Any time an employee must place **any part of their body** where it could be caught by moving machinery (the **point of operation** or a **danger zone**)
+
+### Normal Production Operations
+
+Normal production work is generally covered by **machine guarding** rules, not LOTO. But if a servicing task during production requires bypassing a guard or putting a body part in a danger zone, LOTO applies.
+
+### The Minor Servicing Exception
+
+**Minor tool changes, adjustments, and other minor servicing** done during normal production are exempt from LOTO **only if** they are:
+
+1. **Routine, repetitive, and integral** to the use of the equipment for production, **and**
+2. Performed using **alternative measures that provide effective protection** (for example, specially designed interlocked guards or tools that keep hands out of the danger zone)
+
+If the alternative measures aren't truly effective, the exception doesn't apply.
+
+### Cord-and-Plug Equipment
+
+Work on **cord-and-plug connected electrical equipment** is exempt when the equipment is **unplugged** and the plug is under the **exclusive control** of the employee doing the work (for example, the plug is in their hand or locked in a plug lockout cover). If you walk away and the plug sits on the floor where someone could plug it in, you don't have exclusive control.
+
+---
+
+## Why "Just Hitting the E-Stop" Isn't Enough
+
+An emergency stop, a PLC "stop," a selector switch, or a control circuit interlock all **depend on the control system working correctly** and on nobody resetting them. They are **not energy-isolating devices**. Software can fault, relays can weld, and people can reset.
+
+LOTO requires **physically isolating** the energy at its source and then **locking** that isolation so only you can undo it.
+
+<Pitfall title="'I'll Only Be a Second'">
+
+**Common mistake:** skipping lockout for a "quick" jam clear because locking out takes a few minutes.
+
+Many fatal LOTO incidents involve exactly these short, routine tasks. The machine doesn't know the job is quick. If the task puts your body in the danger zone and it isn't covered by an effective minor-servicing alternative measure, **lock it out**.
+
+</Pitfall>
+
+---
+
+## Key Takeaway
+
+**Hazardous energy** injures people when machines start, move, or release energy unexpectedly during servicing. OSHA **1910.147** requires a program to control it. LOTO covers **servicing and maintenance**, guard bypasses, and danger-zone entry. Narrow exceptions exist for **routine minor servicing with effective alternative protection** and **cord-and-plug equipment under exclusive control**. **E-stops and controls are not isolation.**
+
+<TryIt title="Covered or Not?">
+
+Decide whether LOTO is required:
+
+1. A mechanic replaces a conveyor drive belt. *(Yes. Servicing, with body parts in the danger zone.)*
+2. An operator clears a jam by reaching into the sealer through an opened guard. *(Yes, unless the plant has a documented, effective alternative measure for this routine task, such as a jam-clearing tool used from outside the guard.)*
+3. A tech replaces a blade on a portable saw that's unplugged with the plug in hand. *(Exempt: cord-and-plug under exclusive control.)*
+4. A supervisor watches a machine run normally through the closed guard. *(No LOTO needed; that's normal operation with guards in place.)*
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "Which OSHA standard covers the control of hazardous energy in general industry?",
+      options: ["1910.212", "1910.147", "1926.501", "1910.1200"],
+      correctIndex: 1,
+      explanation: "29 CFR 1910.147 is the Control of Hazardous Energy (Lockout/Tagout) standard."
+    },
+    {
+      question: "Why isn't an emergency stop an acceptable substitute for lockout?",
+      options: ["E-stops are too slow", "It's a control device that can fail or be reset, not an energy-isolating device", "OSHA bans E-stops", "E-stops cut all energy permanently"],
+      correctIndex: 1,
+      explanation: "E-stops and control circuits don't physically isolate energy and can be reset or fail."
+    },
+    {
+      question: "For the minor servicing exception to apply, the task must be routine, repetitive, integral to production, AND:",
+      options: ["Take less than 5 minutes", "Use alternative measures that provide effective protection", "Be approved by the operator", "Be done on day shift"],
+      correctIndex: 1,
+      explanation: "Without effective alternative protection, the exception doesn't apply, regardless of how quick the task is."
+    },
+    {
+      question: "When is work on cord-and-plug equipment exempt from LOTO?",
+      options: ["Always", "When it's unplugged and the plug is under the exclusive control of the worker", "When the switch is off", "When it's under 120 volts"],
+      correctIndex: 1,
+      explanation: "Unplugged with the plug under the worker's exclusive control is required for the exemption."
+    }
+  ]}
+/>

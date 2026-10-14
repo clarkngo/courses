@@ -1,0 +1,177 @@
+---
+title: "Pneumatic Cylinders: Force, Speed, and Seals"
+description: "Learn cylinder anatomy, single- versus double-acting designs, how to calculate extend and retract force, how cushions work, and why side loading destroys rods and seals."
+module: 3
+moduleTitle: "Actuators"
+lesson: 1
+duration: "25 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## The Linear Workhorse
+
+A **cylinder** turns air pressure into straight-line push or pull. Most pneumatic motion in a plant comes from cylinders, including pushers, stops, clamps, lifts, and diverters.
+
+<svg viewBox="0 0 700 230" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Cross-section of a double-acting pneumatic cylinder. From left to right: the cap end with a port, the barrel, the piston with piston seals and a wear band, the piston rod passing through the rod end cap, which contains a rod bushing, a rod seal, and a rod wiper. A cushion spear on the piston enters a cushion cavity near each end, and a cushion needle screw adjusts deceleration.">
+  <g font-family="system-ui, -apple-system, sans-serif" font-size="12">
+    <rect x="60" y="60" width="40" height="110" fill="#64748b"/>
+    <rect x="100" y="70" width="380" height="90" fill="#e2e8f0" stroke="#0f172a" stroke-width="2"/>
+    <rect x="480" y="60" width="50" height="110" fill="#64748b"/>
+    <rect x="260" y="74" width="30" height="82" fill="#475569"/>
+    <rect x="256" y="74" width="4" height="82" fill="#dc2626"/>
+    <rect x="290" y="74" width="4" height="82" fill="#dc2626"/>
+    <rect x="270" y="70" width="10" height="4" fill="#ca8a04"/>
+    <rect x="270" y="156" width="10" height="4" fill="#ca8a04"/>
+    <rect x="290" y="103" width="360" height="24" fill="#94a3b8" stroke="#0f172a" stroke-width="1.5"/>
+    <rect x="496" y="99" width="8" height="4" fill="#dc2626"/>
+    <rect x="496" y="127" width="8" height="4" fill="#dc2626"/>
+    <rect x="522" y="99" width="8" height="4" fill="#16a34a"/>
+    <rect x="522" y="127" width="8" height="4" fill="#16a34a"/>
+    <rect x="74" y="170" width="12" height="25" fill="#0369a1"/>
+    <rect x="494" y="170" width="12" height="25" fill="#0369a1"/>
+    <rect x="40" y="105" width="20" height="20" fill="#64748b"/>
+    <text x="80" y="212" text-anchor="middle" fill="#0369a1" font-weight="700">cap port</text>
+    <text x="500" y="212" text-anchor="middle" fill="#0369a1" font-weight="700">rod port</text>
+    <text x="275" y="50" text-anchor="middle" fill="#0f172a" font-weight="700">piston</text>
+    <line x1="275" y1="54" x2="275" y2="72" stroke="#0f172a"/>
+    <text x="200" y="40" text-anchor="middle" fill="#dc2626">piston seals</text>
+    <line x1="215" y1="44" x2="256" y2="80" stroke="#dc2626"/>
+    <text x="350" y="40" text-anchor="middle" fill="#ca8a04">wear band</text>
+    <line x1="340" y1="44" x2="280" y2="70" stroke="#ca8a04"/>
+    <text x="180" y="120" text-anchor="middle" fill="#475569">barrel</text>
+    <text x="505" y="40" text-anchor="middle" fill="#dc2626">rod seal</text>
+    <line x1="502" y1="44" x2="500" y2="98" stroke="#dc2626"/>
+    <text x="590" y="40" text-anchor="middle" fill="#16a34a">wiper</text>
+    <line x1="585" y1="44" x2="528" y2="98" stroke="#16a34a"/>
+    <text x="600" y="150" text-anchor="middle" fill="#0f172a" font-weight="700">piston rod</text>
+    <text x="80" y="50" text-anchor="middle" fill="#0f172a">cap end</text>
+    <text x="555" y="185" text-anchor="middle" fill="#0f172a">rod end</text>
+  </g>
+</svg>
+
+| Part | Job |
+|---|---|
+| **Barrel** | Smooth tube the piston slides in |
+| **Piston + seals** | Separates the two chambers; the pressure difference makes force |
+| **Wear band** | Keeps the piston centered so metal doesn't touch metal |
+| **Rod** | Carries force out of the cylinder |
+| **Rod seal** | Keeps air in where the rod exits |
+| **Wiper** | Scrapes dirt off the rod as it retracts |
+| **Cushions** | Slow the piston near the end of stroke |
+
+---
+
+## Single-Acting vs. Double-Acting
+
+- **Single-acting:** air drives one direction; a **spring** (or gravity) returns it. Uses less air and fails to a known position, but the spring steals some force and limits stroke.
+- **Double-acting:** air drives **both** directions through two ports. This is the most common type in industry.
+
+---
+
+## Calculating Force
+
+**Force = Pressure × Area**
+
+**Extend** uses the full piston area:
+
+- Area = π × (bore ÷ 2)²
+
+**Retract** uses the piston area **minus the rod area**, because the rod takes up space on that side.
+
+### Worked Example
+
+A cylinder has a **2-inch bore**, a **5/8-inch rod**, and runs at **80 psi**.
+
+| Step | Calculation | Result |
+|---|---|---|
+| Piston area | π × 1² | 3.14 in² |
+| Extend force | 80 × 3.14 | **≈ 251 lbf** |
+| Rod area | π × 0.3125² | 0.31 in² |
+| Retract area | 3.14 − 0.31 | 2.83 in² |
+| Retract force | 80 × 2.83 | **≈ 226 lbf** |
+
+These are **theoretical** forces. Seal friction and the need to accelerate the load mean you should size with margin. A common rule is to choose a cylinder with theoretical force of about **1.5 to 2 times** the actual load for dynamic moves.
+
+---
+
+## Speed and Cushioning
+
+Cylinder speed depends on **how fast air can get in and out**: valve size, tubing size and length, fittings, and flow controls. You'll set speed with flow controls in Module 4.
+
+Fast cylinders slam into their end caps. **Cushions** fix that: near the end of stroke, a spear on the piston plugs the main exhaust path, trapping air that can only escape through a small adjustable **cushion needle**. The trapped air acts as a brake.
+
+- Bang at end of stroke → cushion needle open too far (or load too heavy for built-in cushions)
+- Piston "bounces" or creeps to the end → cushion closed too far
+
+Heavy, fast loads may need **shock absorbers** in addition to cushions.
+
+---
+
+## Mounting and Alignment
+
+Cylinders are designed to push and pull **along their axis**. Common mountings include front and rear flange, foot, clevis (pivot), and trunnion.
+
+<Pitfall title="Side Loading the Rod">
+
+**Common mistake:** using the cylinder rod as a guide, so a sliding load pushes sideways on the rod.
+
+Side loads wear the rod bushing and seal into an oval, scratch the rod, and cause leaks and early failure. If the load isn't perfectly in line, use a **guided cylinder**, external linear guides, or a **floating joint / self-aligning rod coupler** to absorb misalignment.
+
+</Pitfall>
+
+### Reading Cylinder Wear
+
+| Symptom | Likely cause |
+|---|---|
+| Air leaking along the rod | Worn rod seal, scored rod, side load |
+| Cylinder drifts or loses force | Leaking piston seal (air bypasses to the other side) |
+| Jerky "stick-slip" motion at low speed | Dry seals, too-low pressure, or friction from misalignment |
+| Rod scratched or pitted | Damaged wiper, weld spatter, harsh environment; use a rod boot |
+
+---
+
+## Key Takeaway
+
+**Force = Pressure × Area.** Retract force is lower because the rod takes up area. Size with margin. **Cushions** and **shock absorbers** stop slamming. Keep loads **in line** with the rod and use guides or floating joints when they aren't.
+
+<TryIt title="Size a Cylinder">
+
+A pusher must move a 120 lb carton across a roller conveyor. You decide the cylinder needs about 2× the load for reliable dynamic motion, so **240 lbf**, and the machine is regulated to **70 psi**.
+
+What's the minimum bore area? 240 ÷ 70 ≈ **3.43 in²**.
+
+Which standard bore fits? A 2-inch bore gives 3.14 in² (too small). A **2.5-inch** bore gives π × 1.25² ≈ **4.91 in²**, which works with margin.
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "Why is retract force lower than extend force in a double-acting cylinder?",
+      options: ["Air flows slower on retract", "The rod reduces the effective piston area on the rod side", "The spring opposes it", "Exhaust is restricted"],
+      correctIndex: 1,
+      explanation: "On the rod side, the rod occupies part of the piston face, so less area is exposed to pressure."
+    },
+    {
+      question: "What is the theoretical extend force of a 2-inch bore cylinder at 100 psi?",
+      options: ["About 100 lbf", "About 200 lbf", "About 314 lbf", "About 628 lbf"],
+      correctIndex: 2,
+      explanation: "Area = π × 1² ≈ 3.14 in². Force = 100 × 3.14 ≈ 314 lbf."
+    },
+    {
+      question: "A cylinder slams hard at the end of stroke. What should you check first?",
+      options: ["Rod seal", "Cushion needle adjustment", "Header pressure", "Wiper"],
+      correctIndex: 1,
+      explanation: "The cushion needle controls deceleration near the end of stroke. If it's too open, the piston slams."
+    },
+    {
+      question: "What is the best way to handle a load that isn't perfectly aligned with the cylinder rod?",
+      options: ["Raise the pressure", "Use a floating joint or external guides", "Remove the wiper", "Use a smaller bore"],
+      correctIndex: 1,
+      explanation: "Floating joints and guides keep side loads off the rod, bushing, and seals."
+    }
+  ]}
+/>

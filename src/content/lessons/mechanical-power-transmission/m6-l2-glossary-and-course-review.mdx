@@ -1,0 +1,128 @@
+---
+title: "Glossary and Course Review"
+description: "Review the vocabulary and formulas of mechanical power transmission, walk a complete drivetrain inspection, and test yourself across the whole course."
+module: 6
+moduleTitle: "Reliability, Safety, and Review"
+lesson: 2
+duration: "30 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## The Whole Drivetrain
+
+<ProcessFlow
+  label="The drivetrain covered in this course, from motor to driven shaft, with the module for each part: torque and speed fundamentals, shafts and keys, bearings, belts and chains, couplings and gearboxes, alignment, and reliability."
+  color="#4d7c0f"
+  loop="Most early failures trace back to lubrication, contamination, misalignment, or poor installation, all of which a mechanic can control."
+  steps={[
+    { badge: 'M1', title: 'Motor + shaft', detail: 'hp, torque, keys, bushings' },
+    { badge: 'M3', title: 'Belt / chain', detail: 'Tension, alignment, wear' },
+    { badge: 'M4', title: 'Gearbox', detail: 'Service factor, oil, breathers' },
+    { badge: 'M4', title: 'Coupling', detail: 'Type, gap, inspection' },
+    { badge: 'M5', title: 'Alignment', detail: 'Soft foot, shims, laser' },
+    { badge: 'M2', title: 'Bearings', detail: 'Numbers, mounting, failures' },
+    { badge: 'M6', title: 'Reliability', detail: 'Lube, monitoring, guarding' },
+  ]}
+/>
+
+---
+
+## Glossary
+
+| Term | Meaning |
+|---|---|
+| **AGMA** | American Gear Manufacturers Association; publishes gear ratings and service factors |
+| **Bar sag** | Indicator bracket droop that skews bottom readings |
+| **Brinelling** | Raceway dents from impact or improper mounting force |
+| **C3** | Bearing suffix: greater-than-normal internal clearance |
+| **Elongation** | Chain "stretch" from pin and bushing wear |
+| **Fluting** | Washboard raceway damage from electrical current |
+| **L10 life** | Life that 90% of identical bearings reach or exceed |
+| **Matched set** | Belts made to equal length for multi-belt drives |
+| **Mil** | One thousandth of an inch (0.001 in) |
+| **Offset / angular misalignment** | Displaced vs. angled shaft centerlines |
+| **P-F interval** | Time from detectable defect to functional failure |
+| **Pitch** | Distance between chain pins or sprocket/belt teeth |
+| **QD / Taper-Lock** | Common tapered bushing styles |
+| **Service factor** | Multiplier on load to size for real conditions |
+| **Sheave** | A grooved pulley for V-belts |
+| **Soft foot** | A machine foot that doesn't sit flat |
+| **Spalling** | Flaking of raceway surface from fatigue |
+| **Synchronous belt** | Toothed belt that doesn't slip |
+| **Thermal growth** | Machine dimension change between cold and hot |
+
+---
+
+## Formulas to Remember
+
+| What | Formula |
+|---|---|
+| Horsepower | hp = torque (lb-ft) × rpm ÷ 5,252 |
+| Speed ratio | Driver speed ÷ driven speed = driven teeth (or diameter) ÷ driver teeth (or diameter) |
+| Output torque | Input torque × ratio × efficiency |
+| Bearing bore (codes 04+) | Bore code × 5 mm |
+| Ball bearing L10 | (C ÷ P)³ × 1,000,000 revolutions |
+| Belt deflection | Span (in) × 1/64 |
+| Chain elongation | (Measured − nominal) ÷ nominal × 100 |
+| Required gearbox rating | Load × service factor |
+| Rim offset | Indicator reading ÷ 2 |
+
+---
+
+<TryIt title="Capstone: Drivetrain Inspection">
+
+Choose one motor-driven machine with a belt or chain and a gearbox. With it locked out and guards removed by an authorized person, complete a one-page report:
+
+1. **Nameplates:** motor hp and rpm; gearbox ratio. Calculate output torque.
+2. **Belts or chain:** type and size; tension or slack; sheave or sprocket wear; alignment.
+3. **Gearbox:** oil level for the mounting position, oil condition, breather type, leaks.
+4. **Coupling:** type, condition, signs of misalignment (dust, heat, wear).
+5. **Bearings:** numbers (if visible), greasing method, temperature trend.
+6. **Guarding:** is every nip point and rotating part guarded?
+7. **Recommendations:** ranked by risk.
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "A 15 hp motor at 1,750 rpm drives a 20:1 gearbox at 95% efficiency. What is the approximate output torque?",
+      options: ["About 45 lb-ft", "About 450 lb-ft", "About 855 lb-ft", "About 1,800 lb-ft"],
+      correctIndex: 2,
+      explanation: "Motor torque ≈ 15 × 5,252 ÷ 1,750 ≈ 45 lb-ft. Output ≈ 45 × 20 × 0.95 ≈ 855 lb-ft."
+    },
+    {
+      question: "What is the bore of a 6212 bearing?",
+      options: ["12 mm", "60 mm", "62 mm", "120 mm"],
+      correctIndex: 1,
+      explanation: "Bore code 12 × 5 = 60 mm."
+    },
+    {
+      question: "A chain and its sprockets are both worn. What should you replace?",
+      options: ["Chain only", "Sprockets only", "Chain and sprockets together", "Nothing; add oil"],
+      correctIndex: 2,
+      explanation: "A new chain on worn sprockets wears quickly and can jump teeth. Replace them together."
+    },
+    {
+      question: "Which should be corrected before precision shaft alignment?",
+      options: ["Paint color", "Soft foot and pipe strain", "Motor nameplate", "Belt tension"],
+      correctIndex: 1,
+      explanation: "Soft foot and pipe strain distort the machine and make alignment readings unreliable."
+    },
+    {
+      question: "Glazed V-belt sidewalls and a squeal at startup point to:",
+      options: ["Over-tension", "Belt slip", "Correct tension", "Too-large sheaves"],
+      correctIndex: 1,
+      explanation: "Slip heats and glazes the sidewalls and causes squeal. Check tension and sheave wear."
+    },
+    {
+      question: "Washboard marks across a VFD motor's bearing raceway suggest which fix?",
+      options: ["More grease", "Shaft grounding ring or insulated bearings", "Tighter belts", "A bigger motor"],
+      correctIndex: 1,
+      explanation: "Fluting comes from electrical discharge through the bearing. Grounding rings or insulated bearings stop the current."
+    }
+  ]}
+/>

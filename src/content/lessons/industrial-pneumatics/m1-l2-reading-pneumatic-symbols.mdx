@@ -1,0 +1,183 @@
+---
+title: "Reading Pneumatic Symbols and Schematics"
+description: "Learn the ISO 1219 symbol language: how valves are drawn as boxes, what positions and ports mean, how port numbers work, and how to trace a simple circuit."
+module: 1
+moduleTitle: "Compressed Air Fundamentals"
+lesson: 2
+duration: "25 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Why Schematics Matter
+
+A pneumatic machine can have dozens of valves and cylinders behind guards and inside cabinets. The **schematic** is the map. If you can read it, you can trace where air should go, then go check where it actually goes.
+
+Pneumatic and hydraulic schematics use the same international standard, **ISO 1219**. Learn it once and you can read both.
+
+---
+
+## The Valve Is a Row of Boxes
+
+The single most important idea: **each box is one position the valve can be in.**
+
+- The **number of boxes** = the number of **positions**
+- The **lines touching one box** (usually the normal box) = the number of **ports**
+- Arrows inside a box show where air flows **in that position**
+- A **T** shape inside a box means that port is **blocked**
+
+Valves are named **ports/positions**. A **5/2 valve** has 5 ports and 2 positions. A **3/2 valve** has 3 ports and 2 positions.
+
+<svg viewBox="0 0 720 270" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="ISO 1219 symbol for a 5/2 solenoid valve with spring return, next to a double-acting cylinder. The valve has two boxes. The right box is the normal position, where supply port 1 flows to port 2 and port 4 exhausts through port 5, with port 3 blocked. The left box is the shifted position, where port 1 flows to port 4 and port 2 exhausts through port 3, with port 5 blocked. A solenoid is drawn on the left end and a spring on the right end.">
+  <defs>
+    <marker id="sym-a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#0369a1"/></marker>
+  </defs>
+  <g font-family="system-ui, -apple-system, sans-serif" fill="none" stroke="#0f172a" stroke-width="2">
+    <rect x="200" y="80" width="100" height="100"/>
+    <rect x="300" y="80" width="100" height="100"/>
+    <rect x="165" y="105" width="35" height="50"/>
+    <line x1="165" y1="155" x2="200" y2="105"/>
+    <polyline points="400,130 408,115 416,145 424,115 432,145 440,130"/>
+    <g stroke="#0369a1" stroke-width="2.5">
+      <line x1="350" y1="180" x2="368" y2="86" marker-end="url(#sym-a)"/>
+      <line x1="330" y1="80" x2="321" y2="174" marker-end="url(#sym-a)"/>
+      <line x1="250" y1="180" x2="232" y2="86" marker-end="url(#sym-a)"/>
+      <line x1="270" y1="80" x2="279" y2="174" marker-end="url(#sym-a)"/>
+    </g>
+    <line x1="380" y1="180" x2="380" y2="162"/>
+    <line x1="372" y1="162" x2="388" y2="162"/>
+    <line x1="220" y1="180" x2="220" y2="162"/>
+    <line x1="212" y1="162" x2="228" y2="162"/>
+    <line x1="330" y1="80" x2="330" y2="50"/>
+    <line x1="370" y1="80" x2="370" y2="50"/>
+    <line x1="320" y1="180" x2="320" y2="205"/>
+    <line x1="350" y1="180" x2="350" y2="215"/>
+    <line x1="380" y1="180" x2="380" y2="205"/>
+    <polygon points="312,205 328,205 320,218" fill="#0f172a"/>
+    <polygon points="372,205 388,205 380,218" fill="#0f172a"/>
+    <circle cx="350" cy="222" r="7"/>
+    <circle cx="350" cy="222" r="2" fill="#0f172a"/>
+    <rect x="500" y="90" width="170" height="60"/>
+    <line x1="560" y1="90" x2="560" y2="150" stroke-width="5"/>
+    <line x1="560" y1="120" x2="705" y2="120" stroke-width="5"/>
+    <line x1="515" y1="150" x2="515" y2="180"/>
+    <line x1="655" y1="150" x2="655" y2="180"/>
+  </g>
+  <g font-family="system-ui, -apple-system, sans-serif" font-size="13" fill="#0f172a">
+    <text x="330" y="42" text-anchor="middle" font-weight="700">4</text>
+    <text x="370" y="42" text-anchor="middle" font-weight="700">2</text>
+    <text x="306" y="232" text-anchor="middle" font-weight="700">5</text>
+    <text x="366" y="240" text-anchor="middle" font-weight="700">1</text>
+    <text x="394" y="232" text-anchor="middle" font-weight="700">3</text>
+    <text x="250" y="70" text-anchor="middle" fill="#475569">shifted</text>
+    <text x="380" y="70" fill="#475569">normal</text>
+    <text x="172" y="175" text-anchor="middle" fill="#475569">solenoid</text>
+    <text x="420" y="165" text-anchor="middle" fill="#475569">spring</text>
+    <text x="350" y="262" text-anchor="middle" fill="#475569">supply 1 · exhausts 3, 5 (triangles)</text>
+    <text x="585" y="75" text-anchor="middle" font-weight="700">double-acting cylinder</text>
+    <text x="515" y="198" text-anchor="middle" fill="#475569">cap end</text>
+    <text x="655" y="198" text-anchor="middle" fill="#475569">rod end</text>
+    <text x="70" y="130" text-anchor="middle" font-weight="700">5/2 valve</text>
+    <text x="70" y="150" text-anchor="middle" fill="#475569">solenoid / spring</text>
+  </g>
+</svg>
+
+### Reading the Example
+
+- **Normal position (right box, spring holds it there):** supply **1 → 2**, and **4 → 5** exhausts. Port 3 is blocked.
+- **Shifted position (left box, solenoid energized):** supply **1 → 4**, and **2 → 3** exhausts. Port 5 is blocked.
+
+Imagine sliding the left box over to line up with the port lines. That's what happens when the solenoid fires.
+
+Hook port 4 to the cap end and port 2 to the rod end of the cylinder, and you have the most common circuit in pneumatics: energize to extend, de-energize to retract.
+
+---
+
+## Port Numbering (ISO 5599)
+
+Port numbers tell you a port's job, even when the drawing is cluttered.
+
+| Port | Function |
+|---|---|
+| **1** | Supply (pressure in) |
+| **2, 4** | Working ports (out to the actuator) |
+| **3, 5** | Exhaust |
+| **12, 14** | Pilot signals: "12" connects 1 to 2, "14" connects 1 to 4 |
+
+Older drawings use letters: **P** (pressure), **A** and **B** (working), **R** and **S** or **EA/EB** (exhaust).
+
+---
+
+## Common Symbols
+
+| Symbol idea | Meaning |
+|---|---|
+| Circle with a dark triangle pointing **out** | Compressor (source) |
+| Small open circle with a dot | Pressure source connection |
+| Open triangle at a port | Exhaust to atmosphere |
+| Rectangle with a diagonal line at a valve end | Solenoid actuator |
+| Zig-zag at a valve end | Spring return |
+| Diamond | Conditioning device (filter, dryer, lubricator) |
+| Arrow through a symbol | Adjustable (e.g., regulator, flow control) |
+| Rectangle with piston line and rod | Cylinder |
+
+---
+
+## The "Normal" Position
+
+Schematics are drawn with the machine **at rest, with power and air applied but nothing actuated**. The port lines always attach to the box that represents that state.
+
+<Pitfall title="Assuming the Drawing Shows Air Off">
+
+**Common mistake:** reading a schematic as if air is shut off.
+
+Schematics show the **at-rest, air-on** condition. A spring-return valve in its normal box is **still sending air** to one side of the cylinder. That cylinder is held under pressure even though nothing is "on." This is stored energy, and it's why lockout requires dumping air (Module 6).
+
+</Pitfall>
+
+---
+
+## Key Takeaway
+
+Boxes are **positions**, lines are **ports**, arrows are **flow paths**, and T's are **blocked ports**. Port **1** is supply, **2/4** are working, and **3/5** are exhaust. The drawing shows the machine at rest **with air on**.
+
+<TryIt title="Trace the Circuit">
+
+Using the diagram above, answer:
+
+1. With the solenoid **de-energized**, which cylinder port is pressurized? *(Port 2 → rod end. The cylinder is held retracted.)*
+2. With the solenoid **energized**, where does rod-end air go? *(Rod end → port 2 → port 3 → exhaust.)*
+3. If the solenoid coil burns out, what will the cylinder do? *(Spring returns the valve to normal. The cylinder retracts or stays retracted.)*
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "What does a '5/2 valve' mean?",
+      options: ["5 psi, 2 cylinders", "5 ports, 2 positions", "5 positions, 2 ports", "5 mm bore, 2 inch stroke"],
+      correctIndex: 1,
+      explanation: "Valves are named ports/positions. A 5/2 valve has five ports and two positions."
+    },
+    {
+      question: "In ISO 5599 numbering, port 1 is:",
+      options: ["Exhaust", "A working port", "Supply", "A pilot signal"],
+      correctIndex: 2,
+      explanation: "Port 1 is supply. Ports 2 and 4 are working ports, and 3 and 5 are exhausts."
+    },
+    {
+      question: "What does a T symbol inside a valve box mean?",
+      options: ["Temperature sensor", "Port blocked in that position", "Tee fitting", "Timer"],
+      correctIndex: 1,
+      explanation: "A T inside a box means the port is closed off in that position."
+    },
+    {
+      question: "Schematics are normally drawn showing the machine:",
+      options: ["With air shut off", "At rest with air on", "Mid-cycle", "During a fault"],
+      correctIndex: 1,
+      explanation: "The drawing shows the at-rest state with air applied, so cylinders may be holding pressure."
+    }
+  ]}
+/>

@@ -1,0 +1,135 @@
+---
+title: "Stored Energy and Verifying Zero Energy"
+description: "Go deeper on the two steps where most lockouts fail: releasing stored energy (capacitors, drives, accumulators, springs, gravity, heat, and process fluids) and proving zero energy with try-outs, gauges, and the live-dead-live voltage test."
+module: 3
+moduleTitle: "Applying Lockout"
+lesson: 2
+duration: "30 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Isolation Isn't Zero Energy
+
+Opening a disconnect stops **new** energy from coming in. It does nothing about energy **already stored** in the machine. That's why stored energy and verification are separate, required steps.
+
+---
+
+## Stored Energy by Type
+
+| Stored energy | Where it hides | How to control it |
+|---|---|---|
+| **Electrical (capacitors)** | VFD DC bus, power supplies, power-factor capacitors, servo drives | Wait the maker's discharge time (often several minutes or more, per the drive label); **measure** the DC bus before touching; ground where required |
+| **Pneumatic** | Receivers, cylinders behind check valves, closed-center valves | 3/2 dump valve; bleed at the actuator; verify gauges at zero |
+| **Hydraulic** | **Accumulators**, cylinders holding loads, trapped lines | Dump accumulators per procedure; lower or block loads; verify gauges at zero |
+| **Gravity** | Raised rams, platens, forks, lift tables, counterweights | Lower to rest, or block with **rated** blocks, pins, or props |
+| **Springs** | Return springs, tensioners, brakes | Release tension or block in place |
+| **Kinetic** | Flywheels, rolls, fans, saw blades | Wait for **complete stop**; brake or block |
+| **Thermal** | Steam lines, dryers, ovens, hot oil | Isolate, vent, cool; verify temperature |
+| **Chemical / process** | Pipes, tanks, reactors | Isolate (double block and bleed or blind), drain, purge, vent; verify |
+| **Tension in material** | Webs, coils, strapping, cables | Release or secure before cutting |
+
+<Pitfall title="The Accumulator Nobody Listed">
+
+**Common mistake:** a hydraulic press is locked out at the disconnect, the pump stops, and the gauge at the pump reads zero. A mechanic loosens a line to the clamp cylinder.
+
+A **hydraulic accumulator** downstream still held 2,000 psi. Fluid sprays out at injection pressure, and the clamp moves. Every accumulator must be on the procedure with its **dump method** and a **gauge to verify** it's at zero.
+
+</Pitfall>
+
+---
+
+## Verification: Prove It
+
+Verification answers one question: **Can this machine hurt me right now?** Use more than one method.
+
+### 1. The Try-Out
+
+With everyone clear, operate the **normal start controls** (start buttons, jog, selector switches). Nothing should happen. Then **return the controls to OFF or neutral**.
+
+Try-out proves the **machine** won't start, but **not** that every conductor is dead, which is why electrical testing is separate.
+
+### 2. Gauges and Visual Checks
+
+- Pneumatic and hydraulic **gauges at zero**, at the right locations
+- Loads **resting or blocked**
+- Rotating parts **stopped**
+- Temperatures **safe**
+
+### 3. Electrical Testing: Live-Dead-Live
+
+Before touching electrical conductors, test for **absence of voltage** with a properly rated tester. Electrical safe work practices (such as **NFPA 70E** and OSHA's **1910.333**) describe this process. The core method is called **live-dead-live**:
+
+<ProcessFlow
+  label="The live-dead-live voltage test: verify the tester works on a known live source, test the isolated conductors phase to phase and phase to ground and show no voltage, then verify the tester again on the known live source."
+  color="#b91c1c"
+  steps={[
+    { title: 'Live', detail: 'Prove the tester on a known live source' },
+    { title: 'Dead', detail: 'Test every phase-to-phase and phase-to-ground' },
+    { title: 'Live', detail: 'Prove the tester again on the known source' },
+  ]}
+/>
+
+Why test the meter **after**? If the tester failed during the dead test (a blown fuse or a broken lead), it would have shown "dead" on a live circuit. Re-testing on a known source proves your "dead" reading was real.
+
+- Use a tester rated for the **voltage and category** (CAT rating) of the circuit.
+- Wear the **PPE** required for the task until absence of voltage is confirmed.
+- Only **qualified** persons perform electrical testing.
+
+---
+
+## Re-Accumulation
+
+Some energy **comes back**: pressure can build from thermal expansion, capacitors can recover a small charge, and process lines can leak past a valve. If re-accumulation is possible, keep **monitoring** (gauges, retesting) for the duration of the job.
+
+---
+
+## Key Takeaway
+
+Isolation stops **new** energy; you still have to **release or block stored energy**, including **capacitors, accumulators, gravity, springs, motion, heat, and process fluids**. Verify with a **try-out**, **gauges and visual checks**, and an electrical **live-dead-live** test. Keep checking if energy can **re-accumulate**.
+
+<TryIt title="Find the Stored Energy">
+
+A **hydraulic scissor lift table** with a **VFD-driven** conveyor on top needs a conveyor roller replaced. The table is raised.
+
+List the stored energy and controls:
+
+1. **Gravity:** raised table → lower fully, or install the maker's **maintenance props**
+2. **Hydraulic:** pressure holding the table → after lowering or propping, bleed per procedure; verify the gauge
+3. **Electrical:** VFD DC bus → wait the labeled discharge time; **measure** before touching drive terminals
+4. **Kinetic:** conveyor rollers → wait for full stop
+5. **Verification:** try-out of lift and conveyor controls, gauge at zero, live-dead-live on the motor leads
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "Why is the meter tested on a known live source AFTER the dead test?",
+      options: ["To recharge it", "To prove the meter didn't fail during the test and give a false 'dead' reading", "To save time", "It's optional"],
+      correctIndex: 1,
+      explanation: "If the tester failed mid-test, a live circuit could read dead. The final live check confirms the reading."
+    },
+    {
+      question: "A disconnect is open and locked on a VFD. What stored energy may still be present?",
+      options: ["None", "Charged DC bus capacitors", "Compressed air", "Gravity"],
+      correctIndex: 1,
+      explanation: "Drive capacitors hold a charge after power is removed. Wait the labeled time and measure before touching."
+    },
+    {
+      question: "What does a try-out prove?",
+      options: ["Every conductor is de-energized", "The machine won't start from its normal controls", "Capacitors are discharged", "Air pressure is zero"],
+      correctIndex: 1,
+      explanation: "Try-out shows the machine won't operate. Electrical testing and gauges cover the rest."
+    },
+    {
+      question: "How should a raised press ram be controlled during servicing?",
+      options: ["Rely on the hydraulic valve", "Lower it to rest or block it with rated blocks or pins", "Tag the valve", "Turn off the lights"],
+      correctIndex: 1,
+      explanation: "Gravity loads must be lowered or physically blocked. Valves can leak."
+    }
+  ]}
+/>

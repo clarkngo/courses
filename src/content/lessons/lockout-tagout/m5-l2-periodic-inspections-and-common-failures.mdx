@@ -1,0 +1,139 @@
+---
+title: "Periodic Inspections and Common Program Failures"
+description: "Conduct the annual periodic inspection OSHA requires, certify it correctly, and learn the most common ways LOTO programs fail in practice so you can catch them before an injury does."
+module: 5
+moduleTitle: "Release and Inspection"
+lesson: 2
+duration: "25 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## The Annual Check-Up
+
+OSHA requires employers to conduct a **periodic inspection** of each energy control procedure **at least annually** to make sure the procedure and the standard's requirements are being followed.
+
+### Who Inspects
+
+The inspection must be done by an **authorized employee other than the one(s) using the procedure** being inspected. In other words, you can't inspect your own lockout. Many plants use trained peers from another area, maintenance planners, or safety staff who are also authorized employees.
+
+### What the Inspection Includes
+
+<ProcessFlow
+  label="Periodic inspection process: select the procedure, observe authorized employees performing it, review responsibilities with each authorized employee, correct any deviations or inadequacies, then certify the inspection with the machine, date, employees, and inspector."
+  color="#b91c1c"
+  loop="Deviations lead to procedure updates and retraining, then the next inspection checks they stuck."
+  steps={[
+    { title: 'Select', detail: 'Procedure and machine' },
+    { title: 'Observe', detail: 'Watch it performed for real' },
+    { title: 'Review', detail: 'Responsibilities with each worker' },
+    { title: 'Correct', detail: 'Fix deviations and gaps' },
+    { title: 'Certify', detail: 'Machine, date, people, inspector' },
+  ]}
+/>
+
+- **Observe** the procedure being performed, not just read it. Is every step followed? Is every energy source isolated and verified?
+- **Review responsibilities** with each authorized employee using the procedure (for lockout). Where **tagout** is used, the review covers each **authorized and affected** employee and includes the **limitations of tags**.
+- **Correct** any deviations or inadequacies found.
+
+### Certification
+
+The employer must **certify** that periodic inspections were performed. The certification identifies:
+
+- The **machine or equipment** the procedure was used on
+- The **date** of the inspection
+- The **employees** included in the inspection
+- The **person** performing the inspection
+
+Machines that share the **same procedure** can be grouped, but the inspection should still reflect real-world use.
+
+---
+
+## How LOTO Programs Fail
+
+Lockout/tagout consistently appears on OSHA's list of the **most frequently cited** standards. The citations and incident investigations show the same patterns again and again:
+
+| Failure | What it looks like on the floor |
+|---|---|
+| **No written procedures** or generic ones | A one-size "Turn off, lock, tag" sheet for every machine |
+| **Procedures don't match the machine** | Missing energy sources, wrong disconnect numbers, no stored energy steps |
+| **No verification** | Locks applied, nobody tries to start or tests for voltage |
+| **No periodic inspections**, or "paper" inspections | Signed forms with nobody actually observed |
+| **Inadequate training** | Operators don't know what affected means; new hires untrained |
+| **Minor servicing misuse** | Routine jam clearing done with guards open and no effective alternative |
+| **Shared or missing locks** | One lock for a crew; personal padlocks from home |
+| **Unsafe lock removal** | Locks cut without the absent-employee procedure |
+| **Contractor gaps** | Contractors using their own system with no coordination |
+
+<Pitfall title="The Perfect Paperwork Program">
+
+**Common mistake:** the program binder is flawless, with every machine documented and every inspection signed, but nobody has watched an actual lockout in years.
+
+Auditors and investigators look at **what happens on the floor**. Real periodic inspections mean **watching** someone lock out, asking them to **explain** each step, and **fixing** what you find.
+
+</Pitfall>
+
+---
+
+## Leading Indicators
+
+Don't wait for an injury to measure your program. Track:
+
+- Percentage of machines with **validated, machine-specific** procedures
+- **Periodic inspections** completed on time, and number of deviations found and closed
+- **Near misses** reported involving energy control
+- **Training** completion by role
+- Lock removal **exceptions** (each one should be reviewed)
+
+---
+
+## Key Takeaway
+
+Inspect each procedure **at least annually**, done by an **authorized employee who isn't using it**, by **observing** real use and **reviewing responsibilities**. **Certify** with machine, date, employees, and inspector. Watch for the classic failures: **generic procedures, no verification, paper inspections, misuse of minor servicing, and unsafe lock removal**.
+
+<TryIt title="Run a Mini-Inspection">
+
+Ask a qualified coworker to perform a lockout on a machine (with real isolation). As the observer, check:
+
+1. Did they **notify** affected employees?
+2. Did they use a **normal stop** first?
+3. Did they isolate **every** source listed on the procedure, and was anything missing from the procedure?
+4. Did they handle **stored energy**?
+5. Did they **verify** with a try-out and testing, then return controls to OFF?
+6. Could they explain their **responsibilities**?
+
+Record what you found and one improvement for the procedure.
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "How often must periodic inspections of energy control procedures be conducted?",
+      options: ["Every 5 years", "At least annually", "Only after injuries", "Monthly"],
+      correctIndex: 1,
+      explanation: "OSHA requires periodic inspections at least annually."
+    },
+    {
+      question: "Who may perform the periodic inspection?",
+      options: ["The employee who uses the procedure", "An authorized employee other than the one(s) using the procedure", "Any visitor", "Only OSHA"],
+      correctIndex: 1,
+      explanation: "The inspector must be an authorized employee who isn't the one using the procedure being inspected."
+    },
+    {
+      question: "What must the inspection certification identify?",
+      options: ["Machine, date, employees included, and inspector", "Only the date", "The production rate", "The cost of the machine"],
+      correctIndex: 0,
+      explanation: "Certification must identify the equipment, date, employees included, and person performing the inspection."
+    },
+    {
+      question: "Which is a sign of a 'paper' LOTO program?",
+      options: ["Inspectors observing real lockouts", "Signed inspection forms with no actual observation", "Machine-specific photos on procedures", "Retraining after deviations"],
+      correctIndex: 1,
+      explanation: "Inspections must involve observing and reviewing real practice, not just signing forms."
+    }
+  ]}
+/>

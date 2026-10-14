@@ -1,0 +1,153 @@
+---
+title: "Pneumatic Safety and Stored Energy"
+description: "Recognize the hazards of compressed air, including injection injuries, hose whip, flying debris, noise, and trapped pressure, and learn how dump valves, soft-starts, and proper lockout make pneumatic machines safe to work on."
+module: 6
+moduleTitle: "Safety and Review"
+lesson: 1
+duration: "25 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## "It's Just Air"
+
+Compressed air feels harmless because it's invisible and clean. It isn't harmless. At 90–100 psi, compressed air can:
+
+- **Penetrate skin** and inject air or contaminants into the body, especially through a cut
+- **Blow particles** into eyes at high speed
+- **Whip a hose** violently if a fitting lets go
+- **Damage hearing** with high-pitched blow-off noise
+- **Move a machine** when you least expect it, because of energy stored in cylinders, receivers, and lines
+
+Horseplay with air hoses has caused serious internal injuries and deaths. **Never point compressed air at anyone, including yourself.**
+
+---
+
+## Cleaning with Air
+
+In the U.S., OSHA **29 CFR 1910.242(b)** says compressed air used for cleaning must be reduced to **less than 30 psi** (when the nozzle is dead-ended), and used only with **effective chip guarding** and **personal protective equipment**.
+
+In practice that means:
+
+- Use **OSHA-compliant safety nozzles** that limit dead-end pressure and have side relief ports
+- Wear **eye protection**; a face shield too when chips can fly
+- **Never** clean clothing or skin with compressed air
+- Prefer **vacuums or brushes** for cleaning when possible
+
+---
+
+## Hose and Fitting Safety
+
+- Use hose and fittings **rated** for the system pressure.
+- Secure hose connections larger than about 1/2 inch with **whip checks** (safety cables) at couplings, or use **excess flow valves** (also called safety fuses) that shut off flow if a hose fails.
+- Inspect hoses for cracks, bulges, and abrasion.
+- **Never kink a hose to stop airflow.** Shut the valve.
+- Always **bleed the line** before disconnecting.
+
+---
+
+## Stored Energy in Pneumatic Systems
+
+Turning off a valve upstream doesn't make a pneumatic machine safe. Energy hides in:
+
+| Where | Hazard |
+|---|---|
+| **Receivers and accumulators** | Can still supply motion after the main valve is closed |
+| **Lines and manifolds downstream of a closed valve** | Can shift a cylinder if a valve is moved or overridden |
+| **Cylinders with check valves or closed-center valves** | Hold trapped pressure that releases when a fitting is loosened |
+| **Raised loads** | Gravity can drop a load held only by air |
+| **Springs** | Spring-return cylinders and grippers store mechanical energy |
+
+### The Lockout Dump Valve
+
+The right isolation device on a pneumatic machine is a **lockable 3/2 shutoff valve** at the FRL. When it's closed and locked, it **blocks supply and exhausts all downstream air** at the same time. A plain ball valve that only blocks supply leaves the machine pressurized.
+
+<ProcessFlow
+  label="Pneumatic energy isolation: close and lock the dump valve, verify the gauge reads zero, bleed trapped pressure at cylinders and accumulators, block or lower raised loads and release springs, then try to start the machine to verify zero energy."
+  color="#0369a1"
+  steps={[
+    { title: 'Isolate', detail: 'Close the 3/2 dump valve; apply your lock' },
+    { title: 'Read gauge', detail: 'Downstream gauge at zero' },
+    { title: 'Bleed trapped air', detail: 'Cylinders, check valves, accumulators' },
+    { title: 'Block loads', detail: 'Lower or pin raised loads; release springs' },
+    { title: 'Verify', detail: 'Try to cycle; confirm no motion' },
+  ]}
+/>
+
+The full procedure (preparation, notification, locks and tags, verification, and release) is covered in detail in the **Lockout/Tagout** course.
+
+<Pitfall title="Trusting the Gauge Alone">
+
+**Common mistake:** the FRL gauge reads zero, so the tech loosens a fitting at a cylinder.
+
+A **pilot-operated check valve** at that cylinder was holding pressure. The gauge only sees the line up to the valve, not air trapped beyond it. The fitting blows off, and the load drops. Know where every check valve, accumulator, and closed-center valve is on the drawing, and bleed each one before you open the system.
+
+</Pitfall>
+
+---
+
+## Restoring Air Safely
+
+Turning air back on is a hazard too:
+
+- **Soft-start valves** fill the system slowly, so cylinders move gently into position instead of slamming.
+- **Double-solenoid** valves may move cylinders to their last position the moment air returns (Lesson 4.1).
+- Before restoring air: everyone clear, tools removed, guards replaced, and a warning given.
+
+---
+
+## Noise
+
+Valve exhausts and blow-offs can easily exceed safe noise levels. Use **exhaust mufflers** (and keep them clean, since clogged mufflers slow the machine), engineered nozzles, and hearing protection where required.
+
+---
+
+## Key Takeaway
+
+Compressed air can inject, blind, whip, deafen, and move machines unexpectedly. Keep cleaning air **under 30 psi dead-ended** with chip guarding and PPE. Isolate with a **lockable 3/2 dump valve**, then **bleed trapped air**, **block loads**, and **verify**. Restore air slowly and deliberately.
+
+<TryIt title="Hunt for Stored Energy">
+
+Pick one pneumatic machine and its drawing. List every place air or mechanical energy could remain after the main valve is closed:
+
+- Receivers or accumulators
+- Pilot-operated check valves or rod locks
+- 5/3 closed-center valves
+- Vertical or raised loads
+- Spring-return actuators or grippers
+
+For each, write how you would bleed or block it. That's the start of a machine-specific lockout procedure.
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "Under OSHA 1910.242(b), compressed air used for cleaning must be reduced to:",
+      options: ["Less than 90 psi", "Less than 60 psi", "Less than 30 psi when dead-ended", "Any pressure with gloves"],
+      correctIndex: 2,
+      explanation: "Cleaning air must be under 30 psi when dead-ended, with effective chip guarding and PPE."
+    },
+    {
+      question: "Why is a lockable 3/2 dump valve preferred over a plain ball valve for pneumatic isolation?",
+      options: ["It's cheaper", "It blocks supply and exhausts downstream air at the same time", "It raises pressure", "It's quieter"],
+      correctIndex: 1,
+      explanation: "A 2-way ball valve blocks supply but leaves downstream air trapped. A 3/2 dump valve vents it."
+    },
+    {
+      question: "The FRL gauge reads zero. Is it safe to open any fitting on the machine?",
+      options: ["Yes, always", "No, air can still be trapped by check valves, closed-center valves, or accumulators", "Only if the compressor is off", "Only on the rod side"],
+      correctIndex: 1,
+      explanation: "The gauge only shows the line it's connected to. Trapped air downstream of checks and valves must be bled separately."
+    },
+    {
+      question: "What does a soft-start valve do?",
+      options: ["Starts the compressor slowly", "Fills the machine with air gradually so cylinders don't slam into position", "Lowers noise", "Filters oil"],
+      correctIndex: 1,
+      explanation: "Soft-start valves ramp pressure up slowly when air is restored, preventing violent motion."
+    }
+  ]}
+/>

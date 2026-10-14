@@ -1,0 +1,146 @@
+---
+title: "Directional Control Valves"
+description: "Understand 2/2, 3/2, 5/2, and 5/3 valves, normally open versus normally closed, single- versus double-solenoid memory, 5/3 center conditions, pilot operation, manual overrides, and valve manifolds."
+module: 4
+moduleTitle: "Valves and Control"
+lesson: 1
+duration: "25 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Valves Decide Where Air Goes
+
+A **directional control valve (DCV)** routes air to start, stop, and reverse actuators. In Lesson 1.2 you learned to read them: **ports/positions**, boxes, arrows, and T's. Now let's see which valve to use where.
+
+---
+
+## The Common Valve Types
+
+| Valve | Ports / positions | Typical use |
+|---|---|---|
+| **2/2** | In, out; open or closed | On/off of air, blow-offs, vacuum |
+| **3/2** | Supply, outlet, exhaust | Single-acting cylinders, pilot signals, **lockout/dump valves** |
+| **5/2** | Supply, two outlets, two exhausts | Double-acting cylinders (the most common) |
+| **5/3** | Like 5/2 plus a spring-centered middle position | Stopping a cylinder mid-stroke or fail-safe behavior |
+
+### Normally Closed vs. Normally Open
+
+For 2/2 and 3/2 valves, the **normal** (unactuated) condition matters:
+
+- **Normally closed (NC):** no output until actuated. Most common, so loss of signal means air stops.
+- **Normally open (NO):** output flows until actuated. Used where loss of signal should send air, such as a clamp that must stay closed.
+
+---
+
+## Single vs. Double Solenoid: Valve Memory
+
+This is one of the most important ideas for troubleshooting and safety.
+
+| Valve | When the signal goes away... |
+|---|---|
+| **Single solenoid, spring return** | Spring shifts the valve back to normal. The cylinder **returns home**. |
+| **Double solenoid (detented)** | Valve **stays where it was last shifted**. It has "memory." |
+
+A double-solenoid valve needs a pulse on one coil to shift and a pulse on the other to shift back. If power fails mid-cycle, the cylinder keeps doing whatever it was last told to do.
+
+<Pitfall title="Unexpected Motion After Restoring Air">
+
+**Common mistake:** assuming every cylinder goes "home" after an E-stop or air dump.
+
+With a **double-solenoid** valve, the spool remembers its last position. When air is restored, the cylinder can suddenly move to that position, even with no electrical signal. That's why machines use **soft-start valves**, why you should know each valve's type before restoring air, and why you must stay clear when air is turned back on.
+
+</Pitfall>
+
+---
+
+## 5/3 Center Conditions
+
+A **5/3** valve has a third, **spring-centered** middle position. What that center does defines how the cylinder behaves when both solenoids are off.
+
+| Center | What happens | Typical use |
+|---|---|---|
+| **Closed (all ports blocked)** | Air is trapped in both sides; cylinder tries to hold position | Stopping mid-stroke (but leakage lets it drift) |
+| **Exhaust (open) center** | Both cylinder ports vent; cylinder is free to move by hand | Releasing a load, manual positioning, safe stop for many cases |
+| **Pressure center** | Supply goes to both sides | Special applications; acts like a pressure-balanced hold |
+
+Because air compresses and seals leak, **a 5/3 closed center is not a reliable lock**. If a cylinder must hold a load safely, add **piloted check valves** at the cylinder ports or a mechanical **rod lock**.
+
+---
+
+## How Valves Are Actuated
+
+| Actuation | Examples |
+|---|---|
+| **Manual** | Push button, lever, foot pedal |
+| **Mechanical** | Roller, plunger, cam |
+| **Pneumatic pilot** | An air signal shifts the valve |
+| **Solenoid** | An electric coil shifts the valve; usually 24 VDC in modern machines |
+
+### Pilot-Operated Solenoid Valves
+
+Moving a large spool directly with a solenoid would take a large coil. Most industrial solenoid valves are **pilot operated**: a small solenoid opens a tiny pilot passage, and that pilot air shifts the main spool. Because of this, many pilot-operated valves need a **minimum supply pressure** (often roughly 20–30 psi, depending on the model) to shift reliably.
+
+### Manual Override
+
+Most solenoid valves have a small **manual override** button or screw that shifts the spool without electricity. It's a powerful troubleshooting tool: if the valve works by override but not electrically, look at the coil, wiring, or PLC output.
+
+Use it only when you understand exactly what the machine will do. **Never leave an override locked in.**
+
+---
+
+## Valve Manifolds and Fieldbus
+
+Modern machines mount many valves side by side on a **manifold**, sharing supply and exhaust galleries. The electrical connection is often a single multi-pin connector or an **industrial network** (such as EtherNet/IP, PROFINET, or IO-Link) instead of separate wires per coil.
+
+Troubleshooting tips:
+
+- Each station usually has an **LED per solenoid**. LED on with no motion points to a mechanical or air problem. LED off points to the controls side.
+- Station numbering and coil addressing are on the machine's drawings, so check them before swapping valves.
+
+---
+
+## Key Takeaway
+
+Use **3/2** for single-acting and dump functions, **5/2** for most double-acting cylinders, and **5/3** when the stop condition matters. **Single-solenoid** valves return home on signal loss; **double-solenoid** valves **remember**. A closed-center valve is **not a lock**. Overrides and LEDs split air problems from electrical ones.
+
+<TryIt title="Valve Detective">
+
+A cylinder won't extend. The manifold LED for that coil is **on**.
+
+1. What does the LED tell you? *(The PLC is commanding the coil, so the electrical side is probably fine.)*
+2. You press the manual override and the cylinder **still** won't move. What next? *(Check supply pressure at the manifold, a stuck spool, blocked tubing, a closed flow control, or a mechanically jammed cylinder.)*
+3. Now it extends on override but not on the coil. Where is the fault? *(The coil or its connector. The LED may be on at the plug while the coil itself is open.)*
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "A double-solenoid valve loses electrical power mid-stroke. What does the valve do?",
+      options: ["Returns to its spring position", "Stays in its last shifted position", "Moves to center", "Exhausts all ports"],
+      correctIndex: 1,
+      explanation: "Double-solenoid (detented) valves have memory and stay in the last commanded position."
+    },
+    {
+      question: "Why is a 5/3 closed-center valve not a reliable way to hold a load?",
+      options: ["It exhausts air", "Air compresses and seals leak, so the cylinder can drift", "It only works at high pressure", "It requires a lubricator"],
+      correctIndex: 1,
+      explanation: "Trapped air leaks past seals and the valve spool. Use pilot-operated check valves or a rod lock to hold loads."
+    },
+    {
+      question: "Why do many pilot-operated solenoid valves need a minimum supply pressure?",
+      options: ["To cool the coil", "Pilot air is what shifts the main spool", "To prevent leaks", "OSHA requires it"],
+      correctIndex: 1,
+      explanation: "The solenoid only opens a small pilot passage. Pilot air pressure does the work of shifting the spool."
+    },
+    {
+      question: "A cylinder works with the manual override but not electrically. Where should you look?",
+      options: ["Supply pressure", "Coil, connector, wiring, or PLC output", "Cylinder seals", "The FRL filter"],
+      correctIndex: 1,
+      explanation: "Override proves the air side and valve spool work, so the problem is on the electrical side."
+    }
+  ]}
+/>

@@ -1,0 +1,149 @@
+---
+title: "Gears and Gearboxes"
+description: "Identify spur, helical, bevel, worm, and planetary gears, understand service factors and ratings, change and check gearbox oil, care for breathers and seals, and read gear tooth wear patterns."
+module: 4
+moduleTitle: "Couplings and Gearboxes"
+lesson: 2
+duration: "30 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Gear Types
+
+| Gear type | Shaft arrangement | Strengths | Trade-offs |
+|---|---|---|---|
+| **Spur** | Parallel | Simple, efficient, no thrust | Noisy at speed |
+| **Helical** | Parallel | Smooth, quiet, high capacity | Creates **axial thrust** on bearings |
+| **Herringbone / double helical** | Parallel | Helical benefits without net thrust | Costlier |
+| **Bevel (straight or spiral)** | Intersecting, usually 90° | Turns the drive a corner | Needs precise setup |
+| **Worm** | Perpendicular, non-intersecting | High ratio in one stage, compact | Low efficiency at high ratios, heat, wear |
+| **Planetary** | Inline | High torque in a small, coaxial package | Complex |
+
+### Common Gearbox (Reducer) Styles
+
+- **Helical inline** — motor and output on the same axis
+- **Parallel shaft** — output offset from input
+- **Helical-bevel (right angle)** — efficient right-angle drive
+- **Worm** — compact right-angle drive, high ratios
+- **Shaft-mount** — hangs directly on the driven shaft, held by a torque arm
+- **Gearmotor** — motor and reducer combined as one unit
+
+---
+
+## Ratings and Service Factor
+
+Gearboxes are rated for torque and power under **smooth, uniform** operating conditions. Real machines have shock loads, frequent starts, and long run times. The **service factor (SF)** accounts for that:
+
+**Required gearbox rating ≥ actual load × service factor**
+
+Gear makers and **AGMA** publish service factor tables based on the driven equipment, hours per day, and the prime mover. For example, a uniformly loaded conveyor running 10 hours a day might need SF ≈ 1.0, while a heavy shock-loaded crusher might need 2.0 or more.
+
+Check **thermal capacity** too: a gearbox can be strong enough but still overheat if it's working hard continuously.
+
+---
+
+## Worm Gears and "Self-Locking"
+
+High-ratio worm gears can resist being driven backward from the output. That's sometimes called **self-locking**. But vibration, wear, and lubrication can let them **back-drive** unexpectedly.
+
+> **A worm gearbox is not a brake.** If a load must be held (a hoist, an incline, a lift), use a **rated brake** or holding device.
+
+---
+
+## Gearbox Lubrication
+
+Gear oil does three jobs: **lubricate** the teeth and bearings, **carry away heat**, and **flush away wear debris**.
+
+### Basic Care
+
+- Use the **specified oil type and viscosity grade** (e.g., ISO VG 220 or 320). Worm gears often need special compounded or synthetic oils.
+- Check **oil level** with the gearbox stopped and the oil settled, at the sight glass or level plug for the **actual mounting position**. Mounting position changes where the level should be.
+- Change oil on schedule, or better, based on **oil analysis**. The **first change after break-in** is especially important because it removes early wear particles.
+- Look for **milky oil** (water), **dark, burnt-smelling** oil (overheating), or **glitter** (metal wear).
+
+### Breathers and Seals
+
+As a gearbox heats and cools, it "breathes" air in and out. A plain vent breather pulls in **dust and humid air**.
+
+- Replace open vents with **desiccant breathers** in dirty or wet areas.
+- A **plugged breather** lets pressure build, pushing oil past seals.
+- Leaking seals let dirt in and oil out. Check shaft surfaces for grooves when replacing them.
+
+<Pitfall title="Overfilling to Be Safe">
+
+**Common mistake:** topping up a gearbox well above the level mark "so it doesn't run low."
+
+Too much oil makes the gears churn it, which raises temperature, causes foaming, and pushes oil past seals and breathers. Fill to the correct level **for the mounting position**, no higher.
+
+</Pitfall>
+
+---
+
+## Reading Gear Tooth Wear
+
+| Pattern | Likely meaning |
+|---|---|
+| **Even polish across the whole tooth** | Normal run-in |
+| **Contact only at one end of the tooth** | Misalignment, housing distortion, or shaft deflection |
+| **Pitting (small craters)** | Surface fatigue from overload or poor lubrication; slight early pitting can stabilize |
+| **Scuffing / scoring** (dragged, torn streaks) | Lubricant film broke down: wrong oil, overheating, or overload |
+| **Abrasive wear** (scratched, dull surfaces) | Contamination in the oil |
+| **Broken tooth** | Shock overload or fatigue crack from a stress raiser |
+
+---
+
+## Signs of Trouble
+
+- **Rising temperature** compared with normal (an infrared thermometer trend is easy to collect)
+- **New noise**: whine (often tooth mesh), growl or rumble (often bearings), knocking (broken tooth or loose part)
+- **Vibration** changes
+- **Leaks** at seals or the split line
+- **Oil analysis** showing rising iron, water, or viscosity change
+
+---
+
+## Key Takeaway
+
+Helical gears are smooth and efficient but create **thrust**; worm gears give **high ratios** but run hotter and are **not brakes**. Size with a **service factor**. Fill to the correct level **for the mounting position**, use the **right oil**, keep **breathers** clean and dry, and use **oil analysis** and **temperature trends** to catch problems early.
+
+<TryIt title="Apply a Service Factor">
+
+A conveyor drive needs **400 lb-ft** at the gearbox output. The service factor table for your application gives **SF = 1.4**.
+
+Required rating = 400 × 1.4 = **560 lb-ft**.
+
+If the catalog's options are rated 450, 600, and 900 lb-ft, choose the **600 lb-ft** unit and also confirm its **thermal rating** for continuous duty.
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "Which gear type creates axial thrust that bearings must handle?",
+      options: ["Spur", "Helical", "Herringbone", "None of these"],
+      correctIndex: 1,
+      explanation: "The angled teeth of helical gears push along the shaft axis. Herringbone gears cancel it out."
+    },
+    {
+      question: "Why shouldn't a worm gearbox be relied on to hold a suspended load?",
+      options: ["Worm gears are weak", "They can back-drive under vibration or wear; a rated brake is needed", "They overheat when stopped", "They have no bearings"],
+      correctIndex: 1,
+      explanation: "Self-locking isn't guaranteed. Holding loads requires a proper brake."
+    },
+    {
+      question: "Gearbox oil looks milky. What is the likely contaminant?",
+      options: ["Metal particles", "Water", "Dirt", "Grease"],
+      correctIndex: 1,
+      explanation: "Water emulsified in oil gives a milky or cloudy appearance."
+    },
+    {
+      question: "A gearbox needs to deliver 300 lb-ft with a service factor of 1.5. What minimum rating is needed?",
+      options: ["200 lb-ft", "300 lb-ft", "450 lb-ft", "600 lb-ft"],
+      correctIndex: 2,
+      explanation: "Required rating = 300 × 1.5 = 450 lb-ft."
+    }
+  ]}
+/>

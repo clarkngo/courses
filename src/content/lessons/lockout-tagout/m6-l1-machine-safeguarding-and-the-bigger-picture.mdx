@@ -1,0 +1,141 @@
+---
+title: "Machine Safeguarding and the Bigger Picture"
+description: "See how lockout fits with machine guarding, the hierarchy of controls, safety-rated devices like light curtains and interlocks, confined space entry, and electrical safety to form a complete system for protecting people around machinery."
+module: 6
+moduleTitle: "Beyond Lockout and Review"
+lesson: 1
+duration: "25 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## LOTO Is One Layer
+
+Lockout protects people **during servicing and maintenance**. During **normal operation**, other safeguards do the job. A strong safety system combines them.
+
+---
+
+## The Hierarchy of Controls
+
+Safety professionals rank protective measures from most to least effective:
+
+<svg viewBox="0 0 680 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The hierarchy of controls as an inverted pyramid, from most effective at the top to least effective at the bottom: elimination, substitution, engineering controls, administrative controls, and personal protective equipment. Lockout is shown as an engineering control combined with administrative procedures.">
+  <g font-family="system-ui, -apple-system, sans-serif" font-size="14" font-weight="700" fill="#fff">
+    <polygon points="90,20 590,20 560,62 120,62" fill="#166534"/>
+    <text x="340" y="47" text-anchor="middle">Elimination: remove the hazard</text>
+    <polygon points="120,66 560,66 530,108 150,108" fill="#15803d"/>
+    <text x="340" y="93" text-anchor="middle">Substitution: replace the hazard</text>
+    <polygon points="150,112 530,112 500,154 180,154" fill="#ca8a04"/>
+    <text x="340" y="139" text-anchor="middle">Engineering: guards, interlocks</text>
+    <polygon points="180,158 500,158 470,200 210,200" fill="#ea580c"/>
+    <text x="340" y="185" text-anchor="middle">Administrative: procedures, training</text>
+    <polygon points="210,204 470,204 440,246 240,246" fill="#b91c1c"/>
+    <text x="340" y="231" text-anchor="middle">PPE</text>
+  </g>
+  <g font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#0f172a">
+    <text x="20" y="40">most</text>
+    <text x="20" y="54">effective</text>
+    <text x="20" y="230">least</text>
+    <text x="20" y="244">effective</text>
+    <text x="545" y="150">LOTO = locks and</text>
+    <text x="545" y="166">isolating devices</text>
+    <text x="545" y="182">(engineering) plus</text>
+    <text x="545" y="198">procedures (admin)</text>
+  </g>
+</svg>
+
+Examples applied to machinery:
+
+- **Elimination:** design so tasks never need someone in the danger zone (automatic lubrication, remote adjustments)
+- **Substitution:** a lower-energy process or a slower, lower-force mechanism
+- **Engineering:** guards, interlocks, light curtains, lockable isolation devices
+- **Administrative:** procedures, training, signs, permits
+- **PPE:** gloves, eye protection, arc-rated clothing
+
+Lockout is strongest when machines are **designed for it**: clearly labeled, lockable isolation points that are easy to reach, and stored energy that dissipates automatically.
+
+---
+
+## Machine Guarding
+
+OSHA **1910.212** requires guarding to protect operators and others from hazards such as **points of operation, in-running nip points, rotating parts, flying chips, and sparks**. Guards must not create new hazards and should be secured so they can't easily be removed.
+
+| Safeguard | How it works |
+|---|---|
+| **Fixed guard** | Permanent barrier; removing it requires a tool |
+| **Interlocked guard** | Opening it stops hazardous motion and prevents restart |
+| **Adjustable / self-adjusting guard** | Adapts to different stock sizes |
+| **Light curtain / presence-sensing device** | Detects a person entering and stops motion before they reach the hazard |
+| **Two-hand control** | Keeps both hands on buttons away from the hazard |
+| **Safety mat / area scanner** | Detects a person standing in a zone |
+
+These devices must be **safety-rated** and correctly installed, including the **safety distance** that accounts for the machine's stopping time, according to standards such as **ANSI B11.19** and **ISO 13855**.
+
+<Pitfall title="Treating a Light Curtain as Lockout">
+
+**Common mistake:** a mechanic reaches past a light curtain to replace a part because "the curtain stops the press."
+
+A light curtain is a **production safeguard**. It relies on control logic and a working brake and doesn't isolate energy. Its protection can fail. For **servicing**, lock out.
+
+</Pitfall>
+
+---
+
+## Connections to Other Programs
+
+| Program | How it connects to LOTO |
+|---|---|
+| **Permit-required confined spaces** (1910.146) | Entry requires isolating hazards such as agitators, steam lines, and process piping, often with LOTO, blinds, or double block and bleed |
+| **Electrical safety** (1910.333, NFPA 70E) | Establishing an **electrically safe work condition** is lockout plus testing for absence of voltage |
+| **Hot work** | Isolating fuel and process lines before welding or cutting |
+| **Management of change** | New equipment and modifications must update LOTO procedures and training |
+| **Contractor safety** | Coordinated energy control (Lesson 4.1) |
+
+---
+
+## Key Takeaway
+
+LOTO protects during **servicing**; **guards and safety devices** protect during **operation**. Use the **hierarchy of controls**: eliminate and engineer first, with procedures and PPE as backup. Safety devices like **light curtains are not lockout**. LOTO ties into **confined space, electrical safety, hot work, and change management**.
+
+<TryIt title="Climb the Hierarchy">
+
+Pick one task in your area that currently requires lockout several times a shift (for example, clearing a recurring jam).
+
+1. Can the cause be **eliminated** (better product handling, a sensor adjustment)?
+2. Can an **engineering control** let it be done safely without entering the danger zone (a jam-clearing port, an interlocked access door)?
+3. If not, is the **lockout procedure** fast and convenient enough that people will actually use it every time?
+
+Write one improvement idea and who you'd take it to.
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "Which control is most effective in the hierarchy of controls?",
+      options: ["PPE", "Administrative controls", "Engineering controls", "Elimination"],
+      correctIndex: 3,
+      explanation: "Eliminating the hazard is the most effective control; PPE is the least."
+    },
+    {
+      question: "Is a light curtain an acceptable substitute for lockout during servicing?",
+      options: ["Yes, always", "No, it's a production safeguard that relies on controls and doesn't isolate energy", "Only on presses", "Only if it's new"],
+      correctIndex: 1,
+      explanation: "Presence-sensing devices protect during operation. Servicing requires energy isolation."
+    },
+    {
+      question: "Which OSHA standard addresses general machine guarding requirements?",
+      options: ["1910.147", "1910.212", "1910.1000", "1926.1053"],
+      correctIndex: 1,
+      explanation: "1910.212 covers general requirements for machine guarding."
+    },
+    {
+      question: "Establishing an electrically safe work condition combines lockout with:",
+      options: ["A safety meeting", "Testing for absence of voltage", "A light curtain", "A two-hand control"],
+      correctIndex: 1,
+      explanation: "Electrical isolation and lockout must be followed by verifying absence of voltage."
+    }
+  ]}
+/>

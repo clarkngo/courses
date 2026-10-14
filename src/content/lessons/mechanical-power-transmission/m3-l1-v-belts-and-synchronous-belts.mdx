@@ -1,0 +1,169 @@
+---
+title: "V-Belts and Synchronous Belts"
+description: "Identify classical, narrow, and synchronous belt types, install belts without damage, tension them using the deflection method, align sheaves, and diagnose squeal, wear, and premature failure."
+module: 3
+moduleTitle: "Belts and Chains"
+lesson: 1
+duration: "30 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Why Belts?
+
+Belt drives are cheap, quiet, need no lubrication, absorb shock, and let you change speed just by swapping a sheave (pulley). They're everywhere: fans, pumps, compressors, conveyors, and machine tools.
+
+---
+
+## Belt Types
+
+### V-Belts (Friction Drive)
+
+A V-belt **wedges** into the sheave groove. The wedging creates friction that transmits power. A V-belt should ride **near the top of the groove** and never touch the bottom.
+
+| Family | Sections | Notes |
+|---|---|---|
+| **Classical** | A, B, C, D, E | Older standard; the letter sets width and depth |
+| **Narrow (wedge)** | 3V, 5V, 8V | More power in less space; common in modern drives |
+| **Fractional hp** | 3L, 4L, 5L | Light duty: shop equipment, small fans |
+| **Cogged** (e.g., AX, BX, 3VX, 5VX) | Notched underside | Flexes around smaller sheaves, runs cooler, slightly more efficient |
+| **Banded** | Multiple belts joined by a top band | Stops belts from turning over or jumping off on pulsing loads |
+
+The **number on the belt** usually encodes its length. For classical belts, a **B75** is a B-section belt, and the number relates to its length in inches. For narrow belts, a **5V1000** is a 5V belt with an outside length of 100.0 inches.
+
+### Synchronous (Timing) Belts
+
+Synchronous belts have **teeth** that mesh with grooved sprockets, like a chain made of rubber.
+
+- **No slip**, so they keep exact timing
+- **Higher efficiency** than V-belts (around 98%)
+- Common profiles include curvilinear designs such as **HTD** (e.g., 8M, 14M, the number being the tooth pitch in mm) and other proprietary high-torque profiles
+- Very sensitive to **misalignment** and to wrong tension
+
+---
+
+## Installing Belts
+
+<ProcessFlow
+  label="V-belt installation steps: lock out the drive, move the motor in to slacken, remove the old belts, inspect and gauge the sheaves, check alignment, install new belts by hand without prying, tension, run in, and re-tension."
+  color="#4d7c0f"
+  loop="Recheck V-belt tension after the run-in period, often within the first day of operation."
+  steps={[
+    { title: 'Lock out', detail: 'De-energize; remove guard' },
+    { title: 'Slacken', detail: 'Move the motor in' },
+    { title: 'Inspect sheaves', detail: 'Groove gauge; worn = replace' },
+    { title: 'Align', detail: 'Straightedge or laser' },
+    { title: 'Install', detail: 'By hand; never pry on' },
+    { title: 'Tension', detail: 'Deflection force method' },
+  ]}
+/>
+
+### Key Rules
+
+- **Never pry or roll belts onto sheaves.** It breaks the internal tensile cords even if you can't see it.
+- **Replace all belts in a set at once.** New belts are slightly longer than stretched old ones, so mixing them puts the load on the shortest belts.
+- Use **matched sets** from the same maker.
+- **Check sheaves** with a groove gauge. Worn grooves let the belt bottom out and slip, and a "dished" sidewall eats belts quickly.
+
+---
+
+## Tensioning: The Deflection Method
+
+The most common field method:
+
+1. Measure the **span length** between sheave contact points (in inches).
+2. Target deflection is **1/64 inch per inch of span**. A 32-inch span targets **1/2 inch** of deflection.
+3. Use a **tension tester** to push the belt at mid-span until it deflects that amount.
+4. Compare the force reading to the **belt maker's table** for the belt section and sheave size.
+5. Adjust the motor and recheck.
+
+Other options include **sonic tension meters**, which measure the belt's natural vibration frequency, and are especially useful for synchronous belts.
+
+### Too Loose vs. Too Tight
+
+| Too loose | Too tight |
+|---|---|
+| Slip, squeal, burning smell | Overloaded shaft and motor **bearings** |
+| Glazed, hard sidewalls | Shaft fatigue |
+| Heat, fast belt wear | Extra stretch and heat in the belt |
+| Belt flip or jump on start | Wasted energy |
+
+---
+
+## Sheave Alignment
+
+Belts need sheaves in the **same plane**.
+
+- **Parallel (offset) misalignment:** shafts parallel but sheaves offset
+- **Angular misalignment:** shafts not parallel
+
+Check with a **straightedge or string** across both sheave faces (accounting for any difference in face widths) or with a **laser alignment tool** that clips to the sheave. Belt makers publish limits. A common guideline is about **½°** for V-belts and roughly **¼°** for synchronous belts. Synchronous drives need tighter alignment.
+
+<Pitfall title="Fixing Squeal with Belt Dressing">
+
+**Common mistake:** a belt squeals at startup, so someone sprays belt dressing.
+
+Dressing is a temporary, sticky fix that attracts dirt and degrades rubber. Squeal means **slip**: low tension, worn sheaves, oil contamination, or an overloaded drive. Find and fix the cause.
+
+</Pitfall>
+
+---
+
+## Belt Failure Clues
+
+| What you see | Likely cause |
+|---|---|
+| Glazed, shiny sidewalls | Slipping, from low tension or worn sheaves |
+| Cracks on the underside | Sheaves too small, age, heat |
+| Belt turned over in the groove | Misalignment, worn sheaves, pulsing loads (use banded belts) |
+| One belt in a set much looser | Mixed old and new belts, or a damaged cord |
+| Sudden break with clean cords | Shock load, or pried on during installation |
+| Synchronous belt with sheared teeth | Too loose (tooth jumping), overload, sprocket too small |
+
+---
+
+## Key Takeaway
+
+V-belts grip by **wedging**; synchronous belts mesh **teeth** and never slip. Never **pry** belts on; replace **whole sets**; **gauge sheaves**. Tension with **1/64 inch per inch of span** and the maker's force tables, then re-tension V-belts after run-in. Align carefully, especially synchronous drives.
+
+<TryIt title="Calculate Target Deflection">
+
+A fan drive has a span of **40 inches** between sheave contact points.
+
+Target deflection = 40 × 1/64 = **0.625 inch (5/8 inch)**.
+
+Push the belt at mid-span with a tension tester until it deflects 5/8 inch, read the force, and compare it to the maker's table for that belt section and small-sheave diameter.
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "Why must all belts in a multi-belt drive be replaced at the same time?",
+      options: ["To match colors", "New belts are shorter than stretched used belts, so the load won't share evenly", "Old belts are heavier", "It's required by OSHA"],
+      correctIndex: 1,
+      explanation: "Mixing new and old belts puts most of the load on the shortest (newest) belts."
+    },
+    {
+      question: "What is the target deflection for a 48-inch belt span using the 1/64 rule?",
+      options: ["1/4 inch", "1/2 inch", "3/4 inch", "1 inch"],
+      correctIndex: 2,
+      explanation: "48 × 1/64 = 0.75 inch."
+    },
+    {
+      question: "A V-belt's sidewalls are glazed and shiny. What does that indicate?",
+      options: ["Normal wear", "The belt has been slipping", "Overtightening", "Too-large sheaves"],
+      correctIndex: 1,
+      explanation: "Slip generates heat that glazes the belt's sidewalls."
+    },
+    {
+      question: "Which belt type requires the tightest sheave alignment?",
+      options: ["Classical V-belt", "Banded V-belt", "Synchronous belt", "Round belt"],
+      correctIndex: 2,
+      explanation: "Synchronous belts track on teeth and are very sensitive to misalignment."
+    }
+  ]}
+/>

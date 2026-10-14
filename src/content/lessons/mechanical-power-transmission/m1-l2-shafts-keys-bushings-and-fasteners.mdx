@@ -1,0 +1,167 @@
+---
+title: "Shafts, Keys, Bushings, and Fasteners"
+description: "Learn how power gets from a shaft into a sheave or sprocket: keys and keyways, set screws, taper-lock and QD bushings, bolt grades, proper torquing, thread lockers, and how to read a broken shaft."
+module: 1
+moduleTitle: "Drivetrain Fundamentals"
+lesson: 2
+duration: "25 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Connecting Parts to Shafts
+
+Torque has to cross from a shaft into a hub (a sheave, sprocket, gear, or coupling) without slipping. The usual tools are **keys**, **set screws**, and **tapered bushings**.
+
+<svg viewBox="0 0 680 230" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="End view of a shaft and hub connected by a square key. The key sits half in a keyseat cut into the shaft and half in a keyway cut into the hub. A set screw in the hub presses down on top of the key to hold it in place axially.">
+  <g font-family="system-ui, -apple-system, sans-serif" font-size="13">
+    <circle cx="200" cy="120" r="95" fill="#e2e8f0" stroke="#0f172a" stroke-width="2"/>
+    <circle cx="200" cy="120" r="50" fill="#94a3b8" stroke="#0f172a" stroke-width="2"/>
+    <rect x="188" y="58" width="24" height="24" fill="#ca8a04" stroke="#0f172a" stroke-width="1.5"/>
+    <rect x="195" y="22" width="10" height="36" fill="#475569"/>
+    <text x="200" y="128" text-anchor="middle" fill="#0f172a" font-weight="700">shaft</text>
+    <text x="200" y="200" text-anchor="middle" fill="#0f172a" font-weight="700">hub</text>
+    <line x1="215" y1="70" x2="360" y2="70" stroke="#ca8a04" stroke-width="1.5"/>
+    <text x="365" y="75" fill="#ca8a04" font-weight="700">square key</text>
+    <text x="365" y="93" fill="#475569">half in the shaft keyseat, half in the hub keyway</text>
+    <line x1="208" y1="35" x2="360" y2="35" stroke="#475569" stroke-width="1.5"/>
+    <text x="365" y="40" fill="#475569" font-weight="700">set screw over the key</text>
+    <text x="365" y="58" fill="#475569">holds the hub from sliding along the shaft</text>
+    <text x="365" y="140" fill="#0f172a">Torque is carried by the key's sides,</text>
+    <text x="365" y="158" fill="#0f172a">not by the set screw.</text>
+  </g>
+</svg>
+
+### Keys
+
+- **Square keys** are most common. As a rough guide, key width is about **one quarter** of the shaft diameter (standard tables set exact sizes).
+- The key must fit **snugly on its sides**. A loose key rocks back and forth, hammers the keyway, and eventually shears or "wallows out" the slot.
+- Keys are deliberately the **weak link**: better to shear a cheap key than crack a shaft.
+- Use **key stock** of the right material. Don't grab any piece of steel bar.
+
+### Set Screws
+
+Set screws stop a hub from sliding along the shaft. A typical arrangement puts one screw **over the key** and a second at about 90°.
+
+- Use **cup-point** screws; they bite into the shaft.
+- Torque them to spec.
+- Many plants use **thread locker** on set screws because vibration loosens them.
+
+---
+
+## Tapered Bushings
+
+Many sheaves and sprockets mount with a split tapered bushing, such as **QD** or **Taper-Lock** styles. Tightening the bolts draws the tapered bushing into the hub, squeezing the bushing onto the shaft.
+
+Advantages:
+
+- One hub fits many shaft sizes (just change the bushing)
+- Grips the whole shaft circumference, so there's less fretting
+- Easy removal using the **jacking holes**
+
+Installation tips:
+
+- Clean the tapers; **don't lubricate** them unless the manufacturer says to, because oil changes the clamping force.
+- Tighten bolts **evenly and alternately** to the specified torque.
+- Don't close the gap between bushing and hub flange completely on QD-style bushings; a gap is normal.
+
+---
+
+## Fasteners and Torque
+
+### Bolt Grades
+
+| Marking | Grade | Typical use |
+|---|---|---|
+| No radial lines | SAE Grade 2 | Light duty, non-critical |
+| **3 radial lines** | **SAE Grade 5** | General machinery |
+| **6 radial lines** | **SAE Grade 8** | High-strength, heavily loaded joints |
+| **8.8** on head | Metric class 8.8 | Roughly comparable to Grade 5 |
+| **10.9** on head | Metric class 10.9 | Roughly comparable to Grade 8 |
+
+**Replace with the same grade or better.** A hardware-store Grade 2 bolt in a Grade 8 hole is a failure waiting to happen.
+
+### Why Torque Matters
+
+A bolt works like a **stiff spring**. Tightening stretches it slightly, creating **clamp force**. Too little clamp and the joint slips, loosens, and fatigues. Too much and the bolt yields or the threads strip.
+
+- Use a **calibrated torque wrench** and the manufacturer's spec.
+- Torque values assume a thread condition (dry, oiled, or with thread locker). **Lubricating threads raises clamp force** at the same wrench reading.
+- Tighten bolt patterns in a **star (crisscross) sequence**, in steps.
+
+### Thread Lockers
+
+| Type | Strength | Removal |
+|---|---|---|
+| **Medium (often blue)** | Removable | Hand tools |
+| **High (often red)** | Permanent | Needs heat to remove |
+| **Wicking (often green)** | Penetrates pre-assembled fasteners | Varies |
+
+Colors vary by brand, so always read the label.
+
+---
+
+## Reading a Broken Shaft
+
+Most shaft failures are **fatigue**: a small crack grows a bit each revolution until the remaining metal can't hold.
+
+- **Beach marks** (curved ripple lines) on the fracture face show where the crack grew slowly.
+- The **rough, final fracture zone** shows where it finally snapped. A **small** final zone means low stress over a long time; a **large** one means high overload.
+- Cracks usually start at **stress raisers**: keyway ends, sharp shoulders, and corrosion pits.
+
+<Pitfall title="Shimming a Worn Keyway">
+
+**Common mistake:** a keyway has worn oversized, so someone stuffs in shim stock or peens the key to make it tight.
+
+It'll loosen again within weeks, and the hammering spreads the damage to the shaft. Repair properly: cut a new keyway at 90° (if design allows), use a **stepped key**, sleeve the hub, or replace the part.
+
+</Pitfall>
+
+---
+
+## Key Takeaway
+
+**Keys** carry torque and are the designed weak link. **Set screws** locate the hub but don't carry torque. **Tapered bushings** clamp evenly and remove easily. Match **bolt grade**, use a **torque wrench**, and tighten in a **star pattern**. Fatigue fractures start at stress raisers like **keyway ends**.
+
+<TryIt title="Inspect a Hub">
+
+Find a sheave or sprocket on a machine (locked out, guard removed by an authorized person). Check:
+
+1. Is it keyed, bushed, or both?
+2. Is the key snug, or can you see wear or fretting (reddish-brown rust powder)?
+3. Are the set screws present and tight?
+4. If it's a bushing, are the bolts tight and is the gap even?
+5. What grade are the bolts?
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "What carries the torque in a keyed connection?",
+      options: ["The set screw", "The sides of the key", "Friction from paint", "The shaft shoulder"],
+      correctIndex: 1,
+      explanation: "The key's sides transmit torque. The set screw keeps the hub from sliding along the shaft."
+    },
+    {
+      question: "A bolt head has six radial lines. What grade is it?",
+      options: ["Grade 2", "Grade 5", "Grade 8", "Metric 8.8"],
+      correctIndex: 2,
+      explanation: "Six radial lines mark an SAE Grade 8 bolt; three lines mark Grade 5."
+    },
+    {
+      question: "Why should you avoid oiling bolt threads when the torque spec assumes dry threads?",
+      options: ["Oil causes rust", "Lubrication increases the clamp force at the same torque, risking overstretched bolts", "Oil reduces clamp force", "Torque wrenches slip"],
+      correctIndex: 1,
+      explanation: "Less friction means more of the wrench torque becomes bolt stretch, so clamp force goes up."
+    },
+    {
+      question: "On a fatigue fracture, what do beach marks show?",
+      options: ["Where the shaft was welded", "The slow, progressive growth of the crack", "Corrosion from sea water", "The final sudden break"],
+      correctIndex: 1,
+      explanation: "Beach marks record the crack's step-by-step growth before final fracture."
+    }
+  ]}
+/>

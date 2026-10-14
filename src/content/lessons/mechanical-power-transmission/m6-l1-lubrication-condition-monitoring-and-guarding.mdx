@@ -1,0 +1,167 @@
+---
+title: "Lubrication, Condition Monitoring, and Guarding"
+description: "Build a basic lubrication routine, use the P-F curve to understand predictive maintenance, read simple vibration, temperature, ultrasound, and oil analysis clues, and keep drivetrains guarded under OSHA 1910.219."
+module: 6
+moduleTitle: "Reliability, Safety, and Review"
+lesson: 1
+duration: "30 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## From Fixing to Preventing
+
+Maintenance strategies range from reactive to proactive:
+
+| Strategy | Approach | Downside |
+|---|---|---|
+| **Reactive (run to failure)** | Fix it when it breaks | Unplanned downtime, secondary damage |
+| **Preventive (PM)** | Service on a fixed schedule | Can replace good parts or miss early failures |
+| **Predictive (PdM)** | Monitor condition, act when it degrades | Needs tools, training, and data |
+| **Proactive / precision** | Remove root causes: alignment, balance, clean lubrication | Takes discipline |
+
+Most plants mix all four. Critical equipment gets predictive monitoring; cheap, non-critical items may run to failure.
+
+---
+
+## The P-F Curve
+
+<svg viewBox="0 0 680 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The P-F curve. Equipment condition stays high over time until a failure begins. Point P marks where a potential failure first becomes detectable. Condition then declines, and is detectable in order by vibration analysis, oil analysis, ultrasound, heat, audible noise, and finally the machine fails at point F, functional failure. The time between P and F is the window to plan a repair.">
+  <defs>
+    <marker id="pf-a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#0f172a"/></marker>
+  </defs>
+  <g font-family="system-ui, -apple-system, sans-serif" font-size="12">
+    <line x1="60" y1="220" x2="640" y2="220" stroke="#0f172a" stroke-width="2" marker-end="url(#pf-a)"/>
+    <line x1="60" y1="220" x2="60" y2="20" stroke="#0f172a" stroke-width="2" marker-end="url(#pf-a)"/>
+    <text x="600" y="245" text-anchor="end" fill="#0f172a" font-weight="700">time</text>
+    <text x="40" y="120" text-anchor="middle" fill="#0f172a" font-weight="700" transform="rotate(-90 40 120)">condition</text>
+    <path d="M60 50 L230 50 Q 420 60 560 200" fill="none" stroke="#4d7c0f" stroke-width="4"/>
+    <circle cx="230" cy="50" r="7" fill="#ca8a04"/>
+    <text x="230" y="36" text-anchor="middle" fill="#ca8a04" font-weight="700">P: potential failure detectable</text>
+    <circle cx="560" cy="200" r="7" fill="#dc2626"/>
+    <text x="575" y="196" fill="#dc2626" font-weight="700">F: failure</text>
+    <g fill="#0f172a">
+      <circle cx="280" cy="53" r="4"/><text x="282" y="75">vibration</text>
+      <circle cx="340" cy="60" r="4"/><text x="342" y="82">oil analysis</text>
+      <circle cx="400" cy="75" r="4"/><text x="402" y="97">ultrasound</text>
+      <circle cx="455" cy="98" r="4"/><text x="457" y="120">heat</text>
+      <circle cx="505" cy="134" r="4"/><text x="512" y="152">audible noise</text>
+    </g>
+    <line x1="230" y1="232" x2="560" y2="232" stroke="#0369a1" stroke-width="2"/>
+    <text x="395" y="250" text-anchor="middle" fill="#0369a1" font-weight="700">P-F interval: time to plan and schedule the repair</text>
+  </g>
+</svg>
+
+The **P-F curve** shows that failures usually start long before a machine stops. Point **P** is when the developing failure first becomes **detectable**. Point **F** is **functional failure**. The earlier your detection method, the longer you have to plan a repair. By the time you can **hear** or **feel heat**, you're close to F.
+
+The exact order and timing vary by failure mode, but the lesson holds: **detect early, plan the repair, avoid the breakdown.**
+
+---
+
+## Condition Monitoring Tools
+
+### Vibration
+
+Vibration analysis is the backbone of rotating-equipment monitoring. Even simple overall readings, trended over time, catch a lot. Some classic signatures (as a starting point; real diagnosis takes training):
+
+| Clue | Often points to |
+|---|---|
+| Strong vibration at **1× running speed**, mostly radial | Imbalance |
+| High **axial** vibration, often at **1× and 2×** running speed | Misalignment |
+| Many harmonics of running speed | Mechanical looseness |
+| Non-synchronous high-frequency peaks | Rolling bearing defects |
+| Peaks at gear mesh frequency (teeth × rpm) | Gear wear or problems |
+
+### Temperature
+
+An **infrared thermometer** or **thermal camera** finds hot bearings, slipping belts, overloaded gearboxes, and misaligned couplings. Compare to the same point over time and to similar machines.
+
+### Ultrasound
+
+Ultrasonic listening detects early bearing friction and **lubrication need**. Some plants grease bearings **while listening**, stopping when the sound drops, which prevents both under- and over-greasing.
+
+### Oil Analysis
+
+Samples tell you about **wear metals** (iron, copper), **contamination** (water, silicon from dirt), and **lubricant condition** (viscosity, oxidation). Take samples from the **same point, the same way, at the same interval** so trends mean something.
+
+---
+
+## A Basic Lubrication Routine
+
+- **Right lubricant:** match the spec. Label every point and container.
+- **Right amount:** calibrate grease guns; use calculated quantities.
+- **Right interval:** based on speed, temperature, and environment.
+- **Right method:** wipe fittings before greasing; use clean, sealed containers and filtered transfer for oil.
+- **Right person and record:** route-based tasks, and log what was done.
+
+Clean lubricant is cheap insurance. Most contamination enters through **dirty fittings, open containers, and bad breathers**.
+
+---
+
+## Guarding: OSHA 1910.219
+
+In the U.S., **29 CFR 1910.219** covers guarding of mechanical power-transmission apparatus: belts, pulleys, chains, sprockets, gears, shafts, couplings, and set screws. In general:
+
+- Drive components **within 7 feet** of the floor or working platform must be guarded.
+- **Projecting set screws** and keys on rotating parts are a classic hazard and must be guarded or eliminated.
+- Guards must prevent contact, be secured, and not create new hazards.
+
+Rotating shafts, even smooth ones, can catch loose clothing, hair, or gloves and wrap a person in seconds. **In-running nip points**, where a belt meets a sheave or a chain meets a sprocket, can pull in a hand instantly.
+
+<Pitfall title="Running with the Guard Off to Watch">
+
+**Common mistake:** taking the belt guard off to see whether the belt is slipping, then running the machine.
+
+Observing a drive in motion should be done through **mesh or transparent guard panels**, with a **strobe light**, or with remote tools such as a **laser tachometer or thermal camera**. Guards come off only under **lockout**, and go back on before restart.
+
+</Pitfall>
+
+---
+
+## Key Takeaway
+
+Mix **preventive**, **predictive**, and **proactive** maintenance. The **P-F curve** says to detect early with **vibration, oil analysis, ultrasound, and temperature** so you can plan repairs. Lubricate with the **right product, amount, interval, and cleanliness**. Keep drives **guarded** (OSHA 1910.219) and never run with guards off to "watch."
+
+<TryIt title="Start a Simple Route">
+
+Pick **five** belt-, chain-, or gear-driven machines. Once a week, record:
+
+1. Bearing and gearbox temperatures with an IR thermometer (mark the exact spot)
+2. Any new noise
+3. Belt or chain condition through the guard
+4. Oil level and leaks
+
+After a month, you'll have baselines. Any reading that jumps compared to its own history deserves a closer look.
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "On the P-F curve, what does point P represent?",
+      options: ["Planned maintenance", "When a potential failure first becomes detectable", "Peak production", "The point of failure"],
+      correctIndex: 1,
+      explanation: "P is when the failure becomes detectable. The P-F interval is the time available to plan a repair."
+    },
+    {
+      question: "High axial vibration at 1× and 2× running speed often suggests:",
+      options: ["Imbalance", "Misalignment", "Electrical faults", "Correct operation"],
+      correctIndex: 1,
+      explanation: "Misalignment commonly shows strong axial vibration at 1× and 2× running speed."
+    },
+    {
+      question: "Under OSHA 1910.219, drive components are generally required to be guarded when within:",
+      options: ["3 feet of the floor", "7 feet of the floor or working platform", "15 feet of an exit", "Any distance only if painted"],
+      correctIndex: 1,
+      explanation: "Power-transmission apparatus within 7 feet of the floor or working platform must generally be guarded."
+    },
+    {
+      question: "What's the safe way to observe a running belt drive for slip?",
+      options: ["Remove the guard briefly", "Use a strobe, a transparent or mesh guard, or remote tools", "Touch the belt", "Lean in close to listen"],
+      correctIndex: 1,
+      explanation: "Observe through guard openings or with remote tools. Guards come off only under lockout."
+    }
+  ]}
+/>

@@ -1,0 +1,129 @@
+---
+title: "Glossary and Course Review"
+description: "Review the key terms of hazardous energy control, walk the full lockout lifecycle one more time, and test yourself across the whole course."
+module: 6
+moduleTitle: "Beyond Lockout and Review"
+lesson: 2
+duration: "30 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## The Full Lifecycle
+
+<ProcessFlow
+  label="The full lockout lifecycle covered in this course: prepare, notify, shut down, isolate, apply locks and tags, control stored energy, verify, do the work, inspect and account for people, notify, remove your own lock, restore energy, and inspect the program annually."
+  color="#b91c1c"
+  loop="Annual periodic inspections and changes to equipment feed back into better procedures and training."
+  steps={[
+    { badge: 'M3', title: 'Prepare + notify', detail: 'Procedure, energy sources, people' },
+    { badge: 'M3', title: 'Shut down + isolate', detail: 'Normal stop; every source' },
+    { badge: 'M2', title: 'Lock + tag', detail: 'One person, one lock, one key' },
+    { badge: 'M3', title: 'Stored energy', detail: 'Bleed, block, discharge' },
+    { badge: 'M3', title: 'Verify', detail: 'Try-out; live-dead-live' },
+    { badge: 'M5', title: 'Release', detail: 'Inspect, account, notify, own lock' },
+    { badge: 'M5', title: 'Inspect program', detail: 'At least annually' },
+  ]}
+/>
+
+---
+
+## Glossary
+
+| Term | Meaning |
+|---|---|
+| **Affected employee** | Operates or uses equipment being serviced, or works in the area |
+| **Alternative measures** | Effective protection that allows minor servicing without LOTO |
+| **Authorized employee** | Locks or tags out equipment to service it |
+| **Double block and bleed** | Two closed valves with a vent between, for process line isolation |
+| **Energy-isolating device** | Physical device that prevents energy transmission (disconnect, valve, block, blind) |
+| **Full employee protection** | Tagout protection equivalent to lockout, using extra measures |
+| **Group lockbox** | Box holding isolation keys, locked by every worker on a job |
+| **Hasp** | Device that lets multiple locks be applied to one point |
+| **Live-dead-live** | Test the tester, test the circuit, test the tester again |
+| **Lockout device** | Lock that holds an isolating device in the safe position |
+| **Minor servicing** | Routine, repetitive, integral tasks; exempt only with effective alternative measures |
+| **Other employee** | Works where LOTO may occur; must not remove locks or restart |
+| **Periodic inspection** | Annual check of each procedure by another authorized employee |
+| **Primary authorized employee** | Coordinator responsible for a group lockout |
+| **Stored (residual) energy** | Energy remaining after isolation: capacitors, springs, pressure, gravity |
+| **Tagout device** | Warning tag; doesn't physically prevent operation |
+| **Try-out** | Attempting to start the machine to verify isolation |
+| **Zero energy state** | Every energy source isolated, stored energy released, and verified |
+
+---
+
+## Key Requirements at a Glance
+
+| Topic | Requirement |
+|---|---|
+| Standard | OSHA 29 CFR 1910.147 |
+| Program parts | Procedures, training, periodic inspections |
+| Devices | Provided, singularly identified, durable, standardized, substantial, identifiable |
+| Tag attachments | Non-reusable, self-locking, at least 50 lb unlocking strength |
+| Sequence | Prepare, shut down, isolate, apply devices, stored energy, verify |
+| Release | Inspect, account for people, notify, remove own lock |
+| Absent worker's lock | Verify not at facility, reasonable contact efforts, inform before return |
+| Periodic inspection | At least annually, by another authorized employee, certified |
+
+---
+
+<TryIt title="Capstone: Write a Machine-Specific Procedure">
+
+Choose a machine with at least **three** energy sources. Write a one-page visual procedure with:
+
+1. Machine name, location, and the tasks it covers
+2. A table of each **energy source**, its **magnitude**, its **isolating device**, and its **location** (add a photo for each)
+3. **Shutdown** steps
+4. **Isolation and lock** steps for each device
+5. **Stored energy** steps for each source
+6. **Verification** steps (try-out, gauges, voltage test)
+7. **Release** steps
+8. Who wrote it, who validated it at the machine, and the date
+
+Then have an authorized coworker perform it while you observe, and fix what you learn.
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "What is the correct order of these lockout steps?",
+      options: ["Isolate → shut down → verify → lock", "Shut down → isolate → lock → stored energy → verify", "Lock → shut down → isolate → verify", "Verify → lock → isolate → shut down"],
+      correctIndex: 1,
+      explanation: "Shut down normally, isolate each source, apply locks, control stored energy, then verify."
+    },
+    {
+      question: "An operator presses Start on a machine with a lock on its disconnect, but the operator didn't apply that lock. What role are they in?",
+      options: ["Authorized", "Affected", "Primary authorized", "Contractor"],
+      correctIndex: 1,
+      explanation: "Operators of the equipment are affected employees, who must never attempt to restart locked-out equipment."
+    },
+    {
+      question: "Which is NOT an energy-isolating device?",
+      options: ["Disconnect switch", "Line valve", "Blank flange", "PLC stop button"],
+      correctIndex: 3,
+      explanation: "PLC stop buttons are control devices that depend on logic. They don't physically isolate energy."
+    },
+    {
+      question: "A hydraulic system is isolated and the pump gauge reads zero. Before opening a line, what else must you check?",
+      options: ["Nothing", "Accumulators, trapped pressure, and gravity-loaded cylinders", "Motor color", "Oil brand"],
+      correctIndex: 1,
+      explanation: "Accumulators and cylinders can hold pressure downstream of the pump gauge, and gravity loads may drop."
+    },
+    {
+      question: "During a shift change on a group lockout, what's the safe sequence?",
+      options: ["Outgoing removes lock first", "Incoming applies lock first, then outgoing removes", "Everyone removes locks for a moment", "Supervisor holds all keys"],
+      correctIndex: 1,
+      explanation: "Lock-on before lock-off maintains continuous protection."
+    },
+    {
+      question: "Who must perform the annual periodic inspection of a procedure?",
+      options: ["The person using the procedure", "An authorized employee other than those using the procedure", "An affected employee", "Any manager"],
+      correctIndex: 1,
+      explanation: "The inspector must be an authorized employee who isn't using the procedure being inspected."
+    }
+  ]}
+/>

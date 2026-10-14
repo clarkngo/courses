@@ -1,0 +1,158 @@
+---
+title: "Compressors: Making the Air"
+description: "Compare reciprocating, rotary screw, and centrifugal compressors, understand load/unload and VSD control, duty cycle, heat of compression, and the daily checks that keep a compressor room healthy."
+module: 2
+moduleTitle: "Generating and Treating Air"
+lesson: 1
+duration: "25 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## What a Compressor Does
+
+A compressor takes in ambient air and reduces its volume, which raises its pressure. Two side effects come with every compressor:
+
+1. **Heat.** Compressing air makes it hot. Most of the motor's energy ends up as heat.
+2. **Water.** Room air carries water vapor. Squeezing it concentrates that water, and when the air cools, liquid water drops out.
+
+Managing heat and water is half of compressed-air maintenance.
+
+---
+
+## The Three Main Compressor Types
+
+| Type | How it works | Typical size | Where you see it |
+|---|---|---|---|
+| **Reciprocating (piston)** | A piston in a cylinder, like an engine in reverse | Fractional hp to ~30 hp (larger industrial units exist) | Small shops, intermittent use, high pressure needs |
+| **Rotary screw** | Two meshing helical rotors trap and squeeze air continuously | ~5 hp to 500+ hp | The workhorse of most plants |
+| **Centrifugal** | High-speed impellers accelerate air, then a diffuser converts speed to pressure | Several hundred hp and up | Large plants with big, steady base loads |
+
+<svg viewBox="0 0 680 220" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Simplified comparison of three compressor types. A reciprocating compressor uses a piston moving up and down in a cylinder with intake and discharge valves. A rotary screw compressor uses two meshing helical rotors that trap air and squeeze it as it moves along the rotors. A centrifugal compressor uses a spinning impeller that flings air outward into a diffuser.">
+  <g font-family="system-ui, -apple-system, sans-serif" font-size="13">
+    <rect x="60" y="40" width="100" height="120" fill="#e2e8f0" stroke="#0f172a" stroke-width="2"/>
+    <rect x="66" y="110" width="88" height="22" fill="#64748b"/>
+    <line x1="110" y1="132" x2="110" y2="180" stroke="#0f172a" stroke-width="5"/>
+    <rect x="70" y="30" width="20" height="10" fill="#0369a1"/>
+    <rect x="130" y="30" width="20" height="10" fill="#dc2626"/>
+    <text x="80" y="22" text-anchor="middle" fill="#0369a1">in</text>
+    <text x="140" y="22" text-anchor="middle" fill="#dc2626">out</text>
+    <text x="110" y="205" text-anchor="middle" font-weight="700" fill="#0f172a">Reciprocating</text>
+    <rect x="250" y="50" width="180" height="110" rx="10" fill="#e2e8f0" stroke="#0f172a" stroke-width="2"/>
+    <g fill="none" stroke="#0369a1" stroke-width="3">
+      <path d="M265 80 q15 -18 30 0 t30 0 t30 0 t30 0 t30 0"/>
+      <path d="M265 130 q15 18 30 0 t30 0 t30 0 t30 0 t30 0"/>
+    </g>
+    <circle cx="340" cy="80" r="3" fill="#0f172a"/>
+    <circle cx="340" cy="130" r="3" fill="#0f172a"/>
+    <text x="275" y="110" fill="#475569" font-size="12">large pocket</text>
+    <text x="375" y="110" fill="#dc2626" font-size="12">small</text>
+    <text x="340" y="205" text-anchor="middle" font-weight="700" fill="#0f172a">Rotary screw</text>
+    <circle cx="570" cy="105" r="60" fill="#e2e8f0" stroke="#0f172a" stroke-width="2"/>
+    <circle cx="570" cy="105" r="12" fill="#64748b"/>
+    <g stroke="#0369a1" stroke-width="3">
+      <line x1="570" y1="93" x2="570" y2="55"/>
+      <line x1="582" y1="105" x2="620" y2="105"/>
+      <line x1="570" y1="117" x2="570" y2="155"/>
+      <line x1="558" y1="105" x2="520" y2="105"/>
+    </g>
+    <text x="570" y="205" text-anchor="middle" font-weight="700" fill="#0f172a">Centrifugal</text>
+    <text x="645" y="60" fill="#dc2626" font-size="12">out →</text>
+  </g>
+</svg>
+
+### Oil-Flooded vs. Oil-Free
+
+Most rotary screws are **oil-flooded**: oil is injected into the rotors to seal, cool, and lubricate, then separated from the air afterward. **Oil-free** compressors cost more but are required where oil carryover can't be tolerated, such as food, pharmaceutical, and some electronics work.
+
+---
+
+## Controlling Output: Matching Supply to Demand
+
+Plant demand rises and falls all day. The compressor control decides how to follow it.
+
+| Control | How it works | Efficiency at part load |
+|---|---|---|
+| **Start/stop** | Motor shuts off at the high setpoint, restarts at the low one | Good, but limited starts per hour; small units only |
+| **Load/unload** | Motor keeps running; inlet closes and the unit "unloads" at the high setpoint | Poor: an unloaded screw can still draw a large share of full-load power |
+| **Modulation** | Inlet valve throttles to reduce output | Poor |
+| **Variable speed drive (VSD)** | Motor speed changes to match demand | Best for varying loads |
+
+A common plant strategy is to run one or more fixed-speed compressors fully loaded for the **base load** and let one **VSD trim compressor** follow the swings.
+
+### Duty Cycle
+
+Reciprocating compressors are often rated for a **duty cycle** below 100%. Run them continuously and they overheat. Rotary screws are designed for continuous duty. If a piston compressor never shuts off, the plant has outgrown it, or there's a big leak.
+
+---
+
+## Heat of Compression and Cooling
+
+Compressor discharge air can be very hot. An **aftercooler** (air-cooled or water-cooled) brings it down near ambient, which condenses most of the water right away. A **moisture separator** and **drain** after the aftercooler catch that water.
+
+Heat recovery is a real opportunity: much of the compressor's input energy can be captured from the cooling air or oil to heat buildings or process water.
+
+---
+
+## Daily and Weekly Compressor Room Checks
+
+- **Discharge pressure and temperature** — compare to normal readings
+- **Oil level** (oil-flooded units) and any oil carryover downstream
+- **Separator differential pressure** — high readings mean the oil separator element is loading up
+- **Inlet filter condition** — a dirty inlet starves the compressor
+- **Drains** — verify they actually discharge water
+- **Unusual noise, vibration, or leaks**
+- **Ventilation** — the room must get rid of the compressor's heat
+
+<Pitfall title="Ignoring the Compressor Room Temperature">
+
+**Common mistake:** closing up a compressor room in winter, or putting a new compressor in a room built for a smaller one.
+
+Compressors recirculate their own hot exhaust air, run hot, and trip on high temperature, usually on the hottest day of production. Hot intake air is also less dense, so output drops. Duct the hot air out and bring cool air in.
+
+</Pitfall>
+
+---
+
+## Key Takeaway
+
+**Rotary screws** run most plants; **pistons** suit small, intermittent loads; **centrifugals** suit large steady loads. Every compressor produces **heat and water** that must be handled. **VSD trim** with base-loaded fixed units is a common efficient setup, and daily checks catch most problems early.
+
+<TryIt title="Estimate Unloaded Waste">
+
+A 100 hp load/unload screw compressor spends 50% of the day unloaded. Assume it still draws about 30% of full power while unloaded (actual values vary by machine, so check the manufacturer's data).
+
+Roughly how many horsepower are wasted on average? 100 hp × 30% × 50% ≈ **15 hp**, around the clock, producing no air. That's the case for a VSD trim unit or better storage.
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "Which compressor type is the most common workhorse in industrial plants?",
+      options: ["Reciprocating", "Rotary screw", "Centrifugal", "Diaphragm"],
+      correctIndex: 1,
+      explanation: "Rotary screw compressors cover the broad middle range and are designed for continuous duty."
+    },
+    {
+      question: "What two by-products must every compressor installation manage?",
+      options: ["Noise and light", "Heat and water", "Oil and dust", "Static and vibration"],
+      correctIndex: 1,
+      explanation: "Compression makes air hot and concentrates water vapor, which condenses as the air cools."
+    },
+    {
+      question: "Why is load/unload control inefficient at low demand?",
+      options: ["It stops the motor", "The motor keeps running and still draws significant power while unloaded", "It increases pressure", "It needs a VSD"],
+      correctIndex: 1,
+      explanation: "An unloaded screw compressor produces no air but still consumes a meaningful fraction of full-load power."
+    },
+    {
+      question: "A piston compressor runs constantly and never cycles off. What does this suggest?",
+      options: ["It is perfectly sized", "Demand exceeds its capacity, possibly from leaks", "The pressure switch is set too low", "The tank is too large"],
+      correctIndex: 1,
+      explanation: "Piston units are often rated for less than continuous duty. Constant running signals too much demand or leaks."
+    }
+  ]}
+/>
