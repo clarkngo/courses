@@ -1,0 +1,124 @@
+---
+title: "Three Kinds of Clinical AI"
+description: "Distinguish predictive models, regulated device AI, and generative AI in healthcare, and see how the 4D fluency framework applies to each."
+module: 1
+moduleTitle: "The Clinical AI Landscape"
+lesson: 1
+duration: "20 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## "AI" Means Several Different Things in Healthcare
+
+When a colleague says "we're rolling out AI," they could mean a deterioration score in the EHR, an FDA-cleared algorithm that flags intracranial hemorrhage on CT, or a chatbot that drafts replies to patient portal messages. These tools fail in different ways, carry different regulatory status, and demand different kinds of oversight. Fluency starts with telling them apart.
+
+| | **Predictive models** | **Device AI (SaMD)** | **Generative AI** |
+|---|---|---|---|
+| **Examples** | Sepsis and deterioration scores, readmission risk, no-show prediction | Imaging triage and detection, ECG interpretation, diabetic retinopathy screening | Ambient scribes, inbox reply drafts, chart summarization, general chat assistants |
+| **Output** | A score or alert | A finding, flag, or measurement | Free text (notes, letters, answers) |
+| **Built from** | Historical EHR data, often at one institution | Curated, labeled datasets for a narrow task | Very large general text corpora, sometimes tuned on clinical text |
+| **Typical oversight** | Local governance committee | FDA clearance or approval (US), CE marking (EU) | Varies widely; often none specific to the use case |
+| **Classic failure** | Performs worse at a new site or over time | Narrow: misses what it wasn't trained on | Fluent, plausible, and wrong |
+
+### Predictive models
+
+These estimate the probability of an outcome from structured data: vitals, labs, demographics, utilization. They've been in EHRs for years. Their key weakness is **dataset shift**: a model trained on one hospital's patients, documentation habits, and coding practices may perform very differently at another hospital, or at the same hospital after a workflow change.
+
+### Device AI
+
+Software intended to diagnose, treat, or prevent disease can be regulated as a medical device: **Software as a Medical Device (SaMD)**. The US FDA's public list of AI-enabled devices passed one thousand entries in 2025, with radiology accounting for roughly three quarters. Clearance means the device met a regulatory bar for a **specific intended use** and population. It doesn't mean it will work equally well for every patient in your clinic.
+
+### Generative AI
+
+Large language models (LLMs) produce text by predicting likely next words. They power ambient documentation, inbox drafting, chart summarization, and general-purpose assistants clinicians use on their own. They're remarkably capable with language and can perform well on licensing-exam questions, but they **have no built-in mechanism to know when they're wrong**. Most of this course focuses here, because generative AI is where individual clinicians make the most day-to-day judgment calls.
+
+<Pitfall title="Treating All 'AI' as Equally Validated">
+
+**Common mistake:** assuming a general chatbot carries the same evidence base as an FDA-cleared imaging algorithm, or that either is validated for *your* patients.
+
+Ask of any tool: *What exactly is it intended to do? On whom was it tested? Who monitors it here?* A general-purpose assistant answering a dosing question has no clinical validation for that use at all.
+
+</Pitfall>
+
+---
+
+## A Framework for Using Any of Them: The 4Ds
+
+This course applies the **4D AI Fluency Framework** to clinical work. Each competency answers a question you face whenever AI touches patient care:
+
+<ProcessFlow
+  label="The 4D AI Fluency Framework applied to clinical practice"
+  color="#0e7490"
+  steps={[
+    { title: "Delegation", detail: "Should AI do this task, and which part?" },
+    { title: "Description", detail: "How do I specify the task precisely?" },
+    { title: "Discernment", detail: "Is the output accurate, complete, and safe?" },
+    { title: "Diligence", detail: "Is my use ethical, compliant, and accountable?" },
+  ]}
+/>
+
+| Competency | In the clinic, it sounds like… |
+|---|---|
+| **Delegation** | "An AI draft of this patient education handout is fine. An AI deciding whether this chest pain needs a troponin is not." |
+| **Description** | "I gave the model the patient's age, renal function, and current medications, and asked it to flag uncertainty." |
+| **Discernment** | "The scribe note documented a normal abdominal exam I never performed. I removed it." |
+| **Diligence** | "I used our BAA-covered tool, not a consumer app, and I signed the note knowing I own every word." |
+
+The modules follow this structure: the landscape and failure modes first, then one or more modules per competency.
+
+<TryIt title="Inventory the AI in Your Workflow">
+
+1. List every AI-powered tool you encounter in a typical week: EHR alerts and scores, imaging flags, scribe or dictation tools, inbox drafts, and anything you use on your own (including a phone app).
+2. Classify each as **predictive**, **device**, or **generative**.
+3. For each, write whether you know (a) who approved it for use in your organization and (b) whether it's been validated on a population like yours.
+4. Circle any tool where you can't answer either question. You'll revisit this list in Module 6.
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "An EHR model that predicts which inpatients will deteriorate in the next 12 hours is best described as:",
+    options: [
+      "Generative AI",
+      "A predictive model",
+      "An ambient scribe",
+      "A large language model"
+    ],
+    correctIndex: 1,
+    explanation: "It produces a risk score from structured data, which is the hallmark of a predictive model. Its main vulnerability is dataset shift."
+  },
+  {
+    question: "What does FDA clearance of an AI imaging device tell you?",
+    options: [
+      "It will perform equally well for every patient population.",
+      "It met a regulatory standard for a specific intended use and population.",
+      "It can be used for any imaging task.",
+      "Clinicians no longer need to review its findings."
+    ],
+    correctIndex: 1,
+    explanation: "Clearance is tied to a defined intended use. Local performance and fit for your population still need attention."
+  },
+  {
+    question: "Which characteristic of generative AI matters most for clinical safety?",
+    options: [
+      "It cannot write in medical terminology.",
+      "It produces fluent text but has no built-in way to know when it's wrong.",
+      "It only works with structured data.",
+      "It is always regulated as a medical device."
+    ],
+    correctIndex: 1,
+    explanation: "LLMs can be confidently and plausibly wrong, which is why discernment is central to using them safely."
+  }
+]} />
+
+## About the Framework
+
+The 4D AI Fluency Framework was created by **Rick Dakan and Joseph Feller** with **Anthropic** and is released under [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/). This course's clinical applications, examples, and exercises are original. Learn more at [aifluencyframework.org](https://aifluencyframework.org/).
+
+## Up Next
+
+Before deciding what to delegate, you need a clear picture of how these tools fail. Next: the failure modes every clinician should recognize.

@@ -1,0 +1,123 @@
+---
+title: "Making Sense of Paperwork"
+description: "Use AI to explain confusing letters, bills, insurance notices, and fine print in plain English, safely and without sharing private details."
+module: 3
+moduleTitle: "Everyday Help"
+lesson: 2
+duration: "20 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## "What Is This Letter Actually Saying?"
+
+Insurance notices, Medicare statements, utility bills, lease renewals, warranty terms: much of the paperwork that arrives in the mail seems written to confuse. An AI assistant can act as a patient translator, turning dense language into plain English and pointing out what you need to *do*.
+
+---
+
+## Three Ways to Show AI a Document
+
+1. **Type or paste the confusing part.** If it came by email or website, highlight the text, copy it, and paste it into the chat.
+2. **Take a photo.** Most AI apps have a **camera** 📷 or **paperclip** 📎 button in the chat box. Snap a picture of the page and ask your question.
+3. **Upload a file.** On a computer, you can usually attach a PDF the same way.
+
+### Before you share: cover the private parts
+
+<ProcessFlow
+  label="Steps to safely share a document with AI"
+  color="#c2410c"
+  steps={[
+    { title: "Find private info", detail: "Name, address, account, Medicare, SSN numbers" },
+    { title: "Cover or skip it", detail: "Fold, use a sticky note, or crop the photo" },
+    { title: "Share the rest", detail: "Only the part you need explained" },
+    { title: "Ask your question", detail: "\"What does this mean for me?\"" },
+  ]}
+/>
+
+The AI doesn't need your name or account number to explain what "explanation of benefits" means. Fold the top of the letter over, put a sticky note over numbers, or use your phone's **crop** tool after taking the photo.
+
+---
+
+## Good Questions to Ask About Paperwork
+
+| You want to know… | Ask… |
+|---|---|
+| The big picture | *"Explain this letter in plain English in three sentences."* |
+| What to do | *"Is there anything I need to do, and by when?"* |
+| What a term means | *"What do 'deductible,' 'copay,' and 'coinsurance' mean? Use a simple example."* |
+| Whether something is normal | *"Is it common for a bill to say 'This is not a bill'?"* |
+| What to ask | *"What questions should I ask when I call the company about this?"* |
+| How to compare | *"Here are two phone plans. Which is cheaper for someone who mostly calls and rarely uses data?"* |
+
+That last row is a great use of AI: **comparing options** side by side and spelling out the trade-offs.
+
+<Pitfall title="Letting AI Make the Final Decision">
+
+**Common mistake:** acting on AI's interpretation of an important document without confirming it.
+
+AI can misread a photo, miss a line, or misunderstand a rule that's specific to your plan or state. Use it to **understand** the paperwork and **prepare questions**. Then, before you pay, cancel, sign, or ignore something important, confirm with the company, your plan's customer service, or a trusted advisor. For Medicare questions in the US, your **State Health Insurance Assistance Program (SHIP)** offers free one-on-one counseling.
+
+</Pitfall>
+
+---
+
+## Spotting Scam Letters
+
+AI can also be a helpful second opinion on suspicious mail and email. Copy the text (without any personal details) and ask:
+
+> *"Does this look like a scam? What warning signs do you see?"*
+
+AI is good at noticing classic red flags: urgent deadlines, threats, requests for gift cards or wire transfers, and pressure to act before talking to anyone. But it **cannot** check whether a specific company really sent the message. To be sure, contact the company using a phone number you find yourself, from your card, a past statement, or the official website. You'll learn much more about scams in Module 5.
+
+<TryIt title="Translate One Piece of Paperwork">
+
+1. Find a letter, bill, or statement you've found confusing (or a sample from a website, if you don't have one handy).
+2. Cover your name, address, and any account or ID numbers.
+3. Take a photo or paste the text into your AI assistant.
+4. Ask: *"Explain this in plain English. Is there anything I need to do, and by when?"*
+5. Follow up with: *"What questions should I ask if I call about this?"* Write the questions down for next time.
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "Before taking a photo of a bill to show an AI assistant, what should you do?",
+    options: [
+      "Nothing. AI keeps everything private.",
+      "Cover or crop out your name, address, and account numbers.",
+      "Write your Social Security number on it so the AI can verify you.",
+      "Mail it to the AI company."
+    ],
+    correctIndex: 1,
+    explanation: "The AI can explain the document without your personal details. Cover them before sharing."
+  },
+  {
+    question: "AI explains that a letter means you can ignore it. The letter is about your health insurance. What should you do?",
+    options: [
+      "Ignore it, since the AI said so.",
+      "Use the explanation to understand it, then confirm with your insurer or a free counselor before deciding.",
+      "Throw it away.",
+      "Ask a second AI and go with the majority."
+    ],
+    correctIndex: 1,
+    explanation: "AI is great for understanding paperwork, but for important decisions, confirm with the source or a trusted advisor."
+  },
+  {
+    question: "Which is something AI CANNOT do when you show it a suspicious email?",
+    options: [
+      "Point out urgent or threatening language.",
+      "Notice a request for gift cards.",
+      "Confirm for certain whether your bank actually sent it.",
+      "Explain common scam warning signs."
+    ],
+    correctIndex: 2,
+    explanation: "AI can spot warning signs, but only the company itself, contacted through a number you look up, can confirm a message is real."
+  }
+]} />
+
+## Up Next
+
+In Module 4, you'll use AI for two of life's most important areas: your health and the things that bring you joy.

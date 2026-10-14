@@ -1,0 +1,132 @@
+---
+title: "Patient Privacy and PHI"
+description: "Understand when using an AI tool exposes protected health information, why a Business Associate Agreement matters, how de-identification works, and safe habits for everyday use."
+module: 2
+moduleTitle: "Delegation: What to Hand Off"
+lesson: 2
+duration: "25 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## The Fastest Way to Turn a Helpful Tool Into a Breach
+
+A nurse pastes a patient's discharge summary into a free chatbot to produce a plain-language version. A physician photographs a rash and uploads it to a consumer app for a "second opinion." Both intentions are good, and both may be impermissible disclosures of protected health information.
+
+This lesson uses **US HIPAA** as the reference point. Other jurisdictions have comparable or stricter rules (for example, GDPR in the EU and UK, PIPEDA and provincial laws in Canada). The principles transfer; the specifics belong to your privacy office.
+
+---
+
+## Key Concepts
+
+### PHI
+
+**Protected health information** is individually identifiable health information held by a covered entity or its business associate. Identifiability is broader than names: dates of service, MRNs, addresses, phone numbers, full-face photos, and rare-condition details can all identify a patient.
+
+### Business Associate Agreement (BAA)
+
+When a vendor creates, receives, maintains, or transmits PHI on your organization's behalf, HIPAA generally requires a **BAA**: a contract obligating the vendor to safeguard the data and limiting how it can be used.
+
+- **Enterprise AI tools** your organization has contracted for (ambient scribes, EHR-integrated assistants, enterprise LLM deployments) typically come with a BAA and configured data protections.
+- **Consumer AI apps** (free or personal paid accounts) typically **do not**. Their terms may allow data retention, human review, or use for training.
+
+**Whether a tool is covered is a contract question, not a features question.** A consumer product and an enterprise product from the same company can have entirely different terms.
+
+### De-identification
+
+HIPAA provides two pathways:
+
+1. **Safe Harbor:** remove 18 specified identifier types (names, geographic units smaller than a state, all date elements except year, contact numbers, MRNs, device identifiers, full-face photos, and others) and have no actual knowledge that the remainder could identify the individual.
+2. **Expert Determination:** a qualified expert certifies that re-identification risk is very small.
+
+Removing the name alone is **not** de-identification. "68-year-old retired ferry captain from Port Townsend admitted March 4 with…" may identify someone in a small community.
+
+---
+
+## A Decision Path for Every Use
+
+<ProcessFlow
+  label="Decision path before entering patient information into an AI tool"
+  color="#0e7490"
+  loop="If any answer is no or unsure: don't enter PHI. De-identify, abstract the question, or use an approved tool."
+  steps={[
+    { title: "Approved tool?", detail: "Organization-sanctioned for this use" },
+    { title: "BAA in place?", detail: "Confirmed by IT, privacy, or compliance" },
+    { title: "Minimum necessary?", detail: "Only what the task requires" },
+    { title: "Proceed", detail: "Within policy, with review" },
+  ]}
+/>
+
+### Safe habits
+
+- **Abstract the question.** *"What's the renal dosing adjustment approach for [drug] at an eGFR of 25?"* needs no patient identifiers at all.
+- **Apply minimum necessary** even in approved tools. Don't paste the whole chart when the task needs one lab trend.
+- **Never use personal accounts** for patient work, even "just this once."
+- **Images are high risk.** Photos can contain faces, tattoos, wristbands, room numbers, and metadata.
+- **Know your organization's policy** and where to ask. Most health systems now have a published AI use policy and an approved-tools list.
+
+<Pitfall title="Assuming 'Turn Off Training' Equals HIPAA Compliance">
+
+**Common mistake:** believing that disabling model training in a consumer app makes it acceptable for PHI.
+
+Turning off training may reduce one risk, but it doesn't create a BAA, guarantee retention limits, or restrict human review under HIPAA terms. Compliance depends on the contractual and technical arrangement your organization has with the vendor.
+
+</Pitfall>
+
+---
+
+## Beyond Legal Compliance: Trust
+
+Even where a use is technically permitted, consider how the patient would feel if they knew. Many health systems are adopting **transparency practices**, such as telling patients when ambient listening is used and offering an opt-out. Privacy is ultimately about preserving the trust that makes patients willing to tell you the truth.
+
+<TryIt title="Find Your Organization's Rules">
+
+1. Locate your organization's AI acceptable-use policy and approved-tools list (try the intranet, compliance, or IT pages).
+2. For each tool on your Module 1 inventory, note whether it's approved and whether it's cleared for PHI.
+3. Take a real question you might ask AI about a patient and rewrite it so it contains **no identifiers** and still gets a useful answer.
+4. If you can't find a policy, write down who you'd ask (privacy officer, CMIO, compliance) and ask them this week.
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "A physician wants to paste a patient's full progress note into a free consumer chatbot to generate a summary. What's the main problem?",
+    options: [
+      "Chatbots can't summarize notes.",
+      "The consumer tool likely has no BAA, so this is probably an impermissible disclosure of PHI.",
+      "Summaries are always inaccurate.",
+      "There's no problem if the patient's name is deleted."
+    ],
+    correctIndex: 1,
+    explanation: "Without a BAA and approval, entering PHI into a consumer tool generally isn't permitted, and removing the name alone isn't de-identification."
+  },
+  {
+    question: "Which statement about HIPAA de-identification is correct?",
+    options: [
+      "Removing the patient's name is sufficient.",
+      "Safe Harbor requires removing 18 identifier types and having no actual knowledge the rest could identify the person.",
+      "De-identified data is still PHI.",
+      "Photos are never identifiers."
+    ],
+    correctIndex: 1,
+    explanation: "Safe Harbor covers 18 identifier categories, including most date elements and full-face photos."
+  },
+  {
+    question: "What's the best way to ask a dosing question without exposing PHI?",
+    options: [
+      "Include the MRN so the AI can look it up.",
+      "Abstract the question to the clinically relevant parameters (drug, eGFR, indication) with no identifiers.",
+      "Upload the whole chart for context.",
+      "Use a personal account so it doesn't count."
+    ],
+    correctIndex: 1,
+    explanation: "Many clinical questions need no identifiers. Abstracting them is the simplest privacy safeguard."
+  }
+]} />
+
+## Up Next
+
+Module 3 turns to **Description**: how to specify clinical tasks so AI output is useful, appropriately cautious, and easy to verify.

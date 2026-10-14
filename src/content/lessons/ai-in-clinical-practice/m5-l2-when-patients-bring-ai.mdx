@@ -1,0 +1,137 @@
+---
+title: "When Patients Bring AI to the Visit"
+description: "Respond constructively when patients arrive with AI-generated diagnoses, questions, or treatment ideas, and help them use AI more safely between visits."
+module: 5
+moduleTitle: "AI and Your Patients"
+lesson: 2
+duration: "20 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## "I Asked ChatGPT, and It Said…"
+
+Patients have always arrived with information from search engines, friends, and forums. AI assistants change the experience: instead of ten links of uneven quality, patients get one coherent, confident, personalized answer that may be partly right, entirely right, or dangerously wrong. Many patients now use AI to interpret their portal results before you've seen them.
+
+How you respond shapes whether patients keep bringing their questions to you, or stop telling you what they've read.
+
+---
+
+## A Four-Step Response
+
+<ProcessFlow
+  label="Four steps for responding when a patient brings AI-generated information"
+  color="#0e7490"
+  steps={[
+    { title: "Welcome it", detail: "\"Thanks for doing your homework.\"" },
+    { title: "Explore it", detail: "\"What did it say? What worries you?\"" },
+    { title: "Reconcile", detail: "Agree, correct, or add context" },
+    { title: "Equip", detail: "Safer ways to use AI next time" },
+  ]}
+/>
+
+### 1. Welcome it
+
+Patients who engage with their health are generally an asset. Opening with curiosity rather than correction keeps the conversation open:
+
+> *"I'm glad you looked into this. Tell me what you found."*
+
+### 2. Explore it
+
+Find out what the patient asked, what the AI said, and, most importantly, **what they're worried about**. The AI answer is often a proxy for a fear ("Could this be cancer?") or a hope ("Can I stop this medication?").
+
+### 3. Reconcile
+
+- **Where AI was right,** say so. It builds trust and shows you're not dismissive.
+- **Where it was wrong or incomplete,** explain *why* in terms of what the AI couldn't know: your exam, their history, test results, how their situation differs from the typical case.
+- **Where it raises a fair question,** take it seriously. Patients sometimes surface a reasonable alternative or a newer option worth discussing.
+
+> *"That's a good summary of the condition in general. What it couldn't know is that your kidney function changes which medications are safe for you, which is why I'm recommending something different."*
+
+### 4. Equip
+
+Give patients a few simple rules for using AI between visits (see below), and tell them clearly how to reach your team for questions.
+
+<Pitfall title="Dismissing the Source Instead of Addressing the Content">
+
+**Common mistake:** responding with "You shouldn't trust AI" or "Don't look things up online."
+
+Patients will keep using AI regardless, and they'll stop telling you about it. Dismissal also misses the times the AI raised a legitimate point. Engage with the **content** and explain the **context** the AI lacked.
+
+</Pitfall>
+
+---
+
+## Common Scenarios
+
+| Patient says… | Underlying need | A helpful response begins with… |
+|---|---|---|
+| "AI says my lab result means I have [serious condition]." | Fear; reassurance or clarity | "Let's look at the result together and what it means for *you*." |
+| "AI recommended a different drug." | Wants options; maybe cost or side-effect concern | "That's a reasonable option for some people. Here's why I chose this one for you…" |
+| "I asked AI and it said I don't need this test." | Cost, burden, or skepticism | "Tell me what concerns you about the test." |
+| "AI wrote me a list of questions." | Engagement | "Great, let's go through them." |
+| "AI said this supplement will help." | Interest in self-management | "Let's check it for interactions with what you're taking." |
+
+---
+
+## Simple AI Safety Tips for Patients
+
+Consider sharing (or adapting into a handout) something like this:
+
+1. **AI can help you understand and prepare.** Your care team makes decisions with you.
+2. **In an emergency, call 911**, not an app.
+3. **Don't start, stop, or change medications** based on AI. Ask us or your pharmacist.
+4. **Protect your privacy.** Avoid entering your full name, birth date, or insurance numbers into general AI apps.
+5. **Bring what you find.** We'd rather discuss it than have you worry alone.
+
+<TryIt title="Role-Play the Conversation">
+
+1. Write a short fictional scenario from your specialty in which a patient arrives with an AI-generated conclusion that's partly right and partly wrong.
+2. Ask an AI assistant to role-play the patient, staying in character and expressing a realistic worry.
+3. Practice the four-step response. Afterward, ask the AI (out of character) to give feedback on where you sounded dismissive or unclear.
+4. Write down one phrase from the practice you'd like to use in real visits.
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "A patient says, 'AI told me my symptoms sound like MS.' What's the best first response?",
+    options: [
+      "'AI isn't reliable; please don't use it.'",
+      "'Thanks for telling me. What did it say, and what worries you most?'",
+      "'That's definitely not MS.'",
+      "'Let's order an MRI right away.'"
+    ],
+    correctIndex: 1,
+    explanation: "Welcoming and exploring uncovers the patient's concern and keeps them sharing information with you."
+  },
+  {
+    question: "When AI-provided information is wrong for a specific patient, the most effective explanation focuses on:",
+    options: [
+      "Why AI is generally untrustworthy",
+      "What the AI couldn't know about this patient: exam, history, results",
+      "The technical details of how LLMs work",
+      "Telling the patient not to research their health"
+    ],
+    correctIndex: 1,
+    explanation: "Explaining the missing context respects the patient and makes the clinical reasoning clear."
+  },
+  {
+    question: "Why is dismissing AI-sourced information counterproductive?",
+    options: [
+      "It takes too long.",
+      "Patients may stop disclosing what they've read, and you may miss legitimate points.",
+      "It's against HIPAA.",
+      "AI is always right."
+    ],
+    correctIndex: 1,
+    explanation: "Dismissal damages trust and closes off useful information. Engaging with content works better."
+  }
+]} />
+
+## Up Next
+
+The final module addresses **Diligence**: accountability, disclosure, regulation, and how to evaluate an AI tool before it reaches your patients.

@@ -1,0 +1,133 @@
+---
+title: "Checking AI's Answers"
+description: "A quick three-question routine for deciding how much to trust an AI answer, plus easy ways to double-check facts that matter."
+module: 6
+moduleTitle: "Using AI With Confidence"
+lesson: 1
+duration: "20 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## Not Everything Needs Checking, But Some Things Must
+
+If AI suggests a dinner recipe and it turns out a bit bland, no harm done. If AI gives you the wrong deadline for a Medicare enrollment, that could cost you. The trick is knowing **how much checking** each answer deserves.
+
+---
+
+## The Three-Question Routine
+
+Before acting on an AI answer, ask yourself:
+
+<ProcessFlow
+  label="Three questions to decide whether to double-check an AI answer"
+  color="#c2410c"
+  steps={[
+    { title: "What if it's wrong?", detail: "Little harm, or real cost to health, money, or safety?" },
+    { title: "Is it a specific fact?", detail: "Numbers, dates, names, laws, prices, phone numbers" },
+    { title: "Does it match what I know?", detail: "Trust your own experience and instincts" },
+  ]}
+/>
+
+- **Low stakes, general advice, matches your experience?** Go ahead and use it.
+- **High stakes, specific facts, or something feels off?** Double-check before you act.
+
+| Usually fine as-is | Always double-check |
+|---|---|
+| Recipe ideas | Medication and health decisions |
+| Gift suggestions | Deadlines (taxes, Medicare, benefits) |
+| Drafts of cards and emails | Phone numbers, addresses, websites |
+| Explaining a general idea | Laws and rules in your state |
+| Trivia for fun | Prices, hours, and availability |
+| Brainstorming hobbies | Anything involving money |
+
+---
+
+## Easy Ways to Double-Check
+
+### Ask the AI where it got the information
+
+> *"How confident are you in that? Where could I confirm it?"*
+
+Some AI assistants can search the web and will show **links to sources**. Click a link and see whether the page really says what the AI claimed. (Make sure the website is the real, official one.)
+
+### Go to the official source
+
+- **Government benefits:** the official agency site, such as **ssa.gov** or **medicare.gov** in the US. Look for **.gov** at the end of the address.
+- **Companies:** the phone number on your card or bill, or the company's official website.
+- **Health:** your doctor, nurse line, or pharmacist.
+
+### Ask a person you trust
+
+A family member, a librarian, a senior center volunteer, or a friend who knows the subject. Librarians in particular are wonderful at helping people check information, and it's free.
+
+<Pitfall title="Asking the AI 'Are You Sure?' and Stopping There">
+
+**Common mistake:** asking the AI to double-check itself and accepting whatever it says.
+
+Sometimes the AI will change a correct answer to a wrong one just because you asked "Are you sure?", and sometimes it will repeat a mistake confidently. Asking is fine, but for anything important, **confirm with a source outside the AI**.
+
+</Pitfall>
+
+---
+
+## When AI Says "I Can't Help With That"
+
+Sometimes an AI assistant will decline a request or add a lot of cautious warnings, especially about health, legal, or money questions. That's usually because it's designed to be careful in those areas. Try:
+
+- Rephrasing to ask for **general information** rather than personal advice: *"What are the general factors people consider when deciding whether to downsize their home?"*
+- Asking **what questions to bring** to a professional.
+
+And if it truly can't help, that's a sign this question belongs with a real expert.
+
+<TryIt title="Catch an AI Mistake">
+
+1. Ask your AI assistant a factual question you already know the answer to, about your hometown, your career, or a hobby you know well. Ask for specific details: dates, names, or numbers.
+2. Read the answer carefully. Is everything right?
+3. Now ask it something you *don't* know, like *"When is the deadline to sign up for Medicare Part B if I'm turning 65?"*, and confirm the answer on the official website.
+4. Notice: even when AI is mostly right, small details can be off.
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "Which AI answer most needs double-checking before you act on it?",
+    options: [
+      "Ideas for a birthday gift for your neighbor",
+      "A suggested deadline for signing up for a government benefit",
+      "A fun fact about penguins",
+      "A draft thank-you note"
+    ],
+    correctIndex: 1,
+    explanation: "Deadlines and rules for benefits are high-stakes, specific facts. Confirm them with the official source."
+  },
+  {
+    question: "What's the best way to confirm Social Security information an AI gave you?",
+    options: [
+      "Ask the AI if it's sure.",
+      "Check the official ssa.gov website or call Social Security directly.",
+      "Click any link in a pop-up ad.",
+      "Ask a different AI."
+    ],
+    correctIndex: 1,
+    explanation: "Official .gov sites and direct contact with the agency are the trustworthy sources."
+  },
+  {
+    question: "You ask an AI 'Are you sure?' and it changes its answer. What does that tell you?",
+    options: [
+      "The second answer is definitely right.",
+      "The first answer was definitely right.",
+      "The AI isn't a reliable judge of its own answers, so check important facts elsewhere.",
+      "You should never ask follow-up questions."
+    ],
+    correctIndex: 2,
+    explanation: "AI can flip its answers under pressure. For anything that matters, look outside the AI."
+  }
+]} />
+
+## Up Next
+
+In the last lesson, you'll put everything together into your own personal plan, and learn how to help a friend get started too.

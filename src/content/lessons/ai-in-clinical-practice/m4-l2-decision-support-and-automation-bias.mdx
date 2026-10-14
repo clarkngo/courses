@@ -1,0 +1,136 @@
+---
+title: "Decision Support and Automation Bias"
+description: "Recognize automation bias and alert fatigue, learn what the evidence shows about clinicians following incorrect AI advice, and adopt habits that keep your judgment independent."
+module: 4
+moduleTitle: "Discernment at the Point of Care"
+lesson: 2
+duration: "25 min"
+---
+
+import LoopDiagram from '@components/LoopDiagram.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## Two Opposite Failures
+
+Clinical decision support (CDS) fails in two opposite directions:
+
+- **Automation bias:** over-trusting the tool. Accepting its suggestion, or failing to look further because it was silent.
+- **Alert fatigue:** under-trusting the tool. Overriding or ignoring alerts because most have been irrelevant.
+
+Both are predictable human responses to imperfect automation. Neither is a character flaw. Both can be managed.
+
+---
+
+## Automation Bias: What the Evidence Shows
+
+Automation bias has been documented for decades in aviation and medicine. Two patterns matter most:
+
+1. **Errors of commission:** following an incorrect suggestion. In a 2023 study in *Radiology*, Dratsch and colleagues showed radiologists mammograms alongside purported AI suggestions. When the suggested category was deliberately **incorrect**, accuracy dropped across experience levels, and **least-experienced readers were affected most**.
+2. **Errors of omission:** missing something because the system didn't flag it. If a deterioration score is low, a clinician may be less alert to subtle bedside signs.
+
+Explainability doesn't automatically fix this. A fluent explanation can make an incorrect suggestion **more** persuasive.
+
+## Alert Fatigue
+
+When most alerts are false positives or clinically irrelevant, clinicians learn to override them, including the rare critical one. The sepsis-model validation discussed in Module 1, with alerts on nearly one in five hospitalized patients, illustrates how a poorly calibrated model creates noise. Alert fatigue is largely a **system design** problem, but individual clinicians feel its consequences.
+
+---
+
+## Keeping Judgment Independent
+
+<LoopDiagram
+  label="A cycle for using decision support without losing independent judgment"
+  colors={['#0e7490', '#0891b2', '#06b6d4', '#155e75']}
+  steps={[
+    { title: "Form", subtitle: "your own impression" },
+    { title: "Consult", subtitle: "the AI output" },
+    { title: "Reconcile", subtitle: "explain disagreement" },
+    { title: "Decide", subtitle: "and document" },
+  ]}
+/>
+
+### 1. Form your impression first
+
+Where workflow allows, look at the image, the patient, or the data **before** you look at the AI's output. Your independent read is the control against which the tool is checked.
+
+### 2. Treat agreement and disagreement as information
+
+- **You and the AI agree:** reassuring, but not proof. Both may share the same blind spot (for example, both relying on the same mis-entered vital sign).
+- **You disagree:** stop and reconcile. What does the tool see that you don't, or vice versa? Is the input data correct? Is this patient outside the tool's validated population?
+
+### 3. Know the tool's operating characteristics
+
+For each CDS tool you use, try to know roughly: What does it predict? What's its sensitivity/PPV *here*? What populations or situations is it known to perform poorly in? Your informatics team or the tool's documentation (sometimes called a **model card** or "source attributes") should answer these.
+
+### 4. Silence is not clearance
+
+A low score or absent alert means the model didn't fire, not that the patient is safe. Bedside concern overrides a reassuring score.
+
+<Pitfall title="Accepting AI Agreement as Confirmation">
+
+**Common mistake:** feeling more confident because the AI agreed with you, and stopping the workup early.
+
+If you formed your impression from the same incomplete data the AI used, agreement adds little. Ask what evidence would distinguish your leading diagnosis from the next most dangerous one, and whether you've obtained it.
+
+</Pitfall>
+
+---
+
+## Reporting and Improvement
+
+- **Report** clinically significant CDS misses and false alarms through your safety reporting system. Model performance can drift, and frontline reports are often the first signal.
+- **Participate** in governance where you can. Clinicians who use a tool are best placed to judge whether its alerts are actionable.
+- **Teach** trainees to commit to a read before viewing AI output, which protects the group most vulnerable to automation bias.
+
+<TryIt title="Map a Tool You Use">
+
+Pick one decision-support tool you encounter regularly (a risk score, an imaging flag, an interaction alert):
+
+1. Write down what it predicts and when it fires.
+2. Find (or request) its local performance data: sensitivity, PPV, or override rate.
+3. List one situation where you suspect it performs poorly.
+4. For your next five encounters with it, note whether you formed your own impression first. If not, what got in the way?
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "In the 2023 Radiology study of mammography reading with incorrect AI suggestions, which readers were most affected?",
+    options: [
+      "The most experienced radiologists",
+      "The least experienced readers",
+      "No one was affected",
+      "Only readers who disagreed with AI"
+    ],
+    correctIndex: 1,
+    explanation: "All experience levels were affected, but inexperienced readers were most susceptible, which is why trainees should form their own read first."
+  },
+  {
+    question: "A deterioration model shows a low score, but the nurse is worried the patient 'doesn't look right.' What should guide your response?",
+    options: [
+      "The low score. Models are objective.",
+      "Bedside concern. A low score means the model didn't fire, not that the patient is safe.",
+      "Wait for the score to rise.",
+      "Ask the nurse to document disagreement only."
+    ],
+    correctIndex: 1,
+    explanation: "Silence is not clearance. Clinical concern warrants evaluation regardless of the score."
+  },
+  {
+    question: "Why might a clear AI explanation make automation bias worse?",
+    options: [
+      "Explanations are always wrong.",
+      "A fluent explanation can make an incorrect suggestion more persuasive.",
+      "Clinicians can't read explanations.",
+      "Explanations slow down the EHR."
+    ],
+    correctIndex: 1,
+    explanation: "Persuasive reasoning for a wrong answer increases over-reliance. Independent judgment remains essential."
+  }
+]} />
+
+## Up Next
+
+Module 5 turns to patients: using AI to communicate with them, and responding well when they arrive with AI-generated questions of their own.

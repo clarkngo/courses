@@ -1,0 +1,120 @@
+---
+title: "Risk-Tiered Delegation"
+description: "Use a four-tier model to decide which clinical and administrative tasks to delegate to AI, how much review each needs, and which tasks AI should never own."
+module: 2
+moduleTitle: "Delegation: What to Hand Off"
+lesson: 1
+duration: "25 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## Delegation Is a Clinical Judgment
+
+Clinicians delegate constantly: to residents, nurses, MAs, pharmacists, scribes. Good delegation matches the task to the delegate's competence and sets the right level of supervision. AI is a new kind of delegate with an unusual profile: **broad knowledge, excellent language, no accountability, no examination skills, and unpredictable errors.**
+
+The question is never just "Can AI do this?" It's **"What happens to the patient if AI does this wrong, and will I catch it?"**
+
+---
+
+## Four Tiers of Risk
+
+<ProcessFlow
+  label="Four tiers of clinical AI delegation, from low to prohibited"
+  color="#0e7490"
+  steps={[
+    { title: "Tier 1: Low", detail: "Non-clinical or generic content", badge: "1" },
+    { title: "Tier 2: Moderate", detail: "Clinical drafts you fully review", badge: "2" },
+    { title: "Tier 3: High", detail: "Input to clinical decisions, as a second look only", badge: "3" },
+    { title: "Tier 4: Not delegable", detail: "Final decisions and judgment", badge: "4" },
+  ]}
+/>
+
+| Tier | Examples | Required review |
+|---|---|---|
+| **1. Low risk** | Meeting summaries, policy drafts, teaching slides, generic patient-education outlines (no PHI), scheduling templates, appeal-letter structure | Normal proofreading |
+| **2. Moderate risk** | Ambient scribe notes, discharge instruction drafts, portal message replies, chart summaries, prior-authorization letters with clinical detail | **Line-by-line review** against what you know and observed, before signing or sending |
+| **3. High risk** | Differential diagnosis brainstorming, "what am I missing?" checks, literature synthesis for a specific patient, drug-interaction screening | Use **only after forming your own judgment**. Verify any actionable claim against an authoritative source |
+| **4. Not delegable** | Final diagnosis, treatment and dosing decisions, triage disposition, goals-of-care conversations, informing a patient of bad news, anything requiring licensure | AI may support preparation; **a clinician decides and communicates** |
+
+### Notes on applying the tiers
+
+- **Tier moves with context.** A discharge-instruction draft is Tier 2 for a straightforward case, but closer to Tier 3 for a complex anticoagulation plan.
+- **Validated, purpose-built tools may sit lower** than general assistants for the same task. An FDA-cleared ECG algorithm used per its label differs from asking a chatbot to read an ECG.
+- **Your organization's policy overrides this model.** If a use isn't approved, it's not available to you, whatever its tier.
+
+<Pitfall title="Delegating the Part You Most Needed to Do">
+
+**Common mistake:** using AI to summarize a complex chart *before* you've read it, then reasoning from the summary.
+
+The summary may be accurate, but you skipped the process that builds clinical understanding, and you can't detect an omission in material you haven't seen. For high-stakes cases, **read first, then use AI to check what you might have missed**, not the other way around.
+
+</Pitfall>
+
+---
+
+## Augment, Don't Abdicate
+
+Three questions to ask before delegating any clinical task:
+
+1. **Severity:** If the output is wrong and I miss it, what's the worst plausible outcome for the patient?
+2. **Detectability:** Am I positioned to catch the error? (Did I examine the patient? Do I know this domain well?)
+3. **Reversibility:** Can the error be corrected before it reaches the patient?
+
+High severity + low detectability + low reversibility = don't delegate, or delegate only as a supplementary check.
+
+### Watch for deskilling
+
+Repeatedly delegating a skill can erode it. Trainees in particular should build core competencies (note writing, differential construction, literature appraisal) **before** leaning on AI for them, so they can recognize when it's wrong.
+
+<TryIt title="Tier Your Own Task List">
+
+1. List ten tasks from a typical week, both clinical and administrative.
+2. Assign each a tier (1–4) using the table above.
+3. For each Tier 2 or 3 task, write the specific review step you'd require, such as *"Compare every medication in the draft to the MAR."*
+4. Identify one Tier 1 task where AI could save you meaningful time this week, and check whether your organization has an approved tool for it.
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "Which task belongs in Tier 4 (not delegable)?",
+    options: [
+      "Drafting a template for a staff meeting agenda",
+      "Drafting a portal reply for clinician review",
+      "Deciding to discharge a patient from the ED",
+      "Outlining a generic handout on hand hygiene"
+    ],
+    correctIndex: 2,
+    explanation: "Disposition decisions require clinical judgment and accountability. AI can support preparation, but a clinician decides."
+  },
+  {
+    question: "What's the safest way to use AI on a complex chart?",
+    options: [
+      "Read only the AI summary to save time.",
+      "Review the chart yourself first, then use AI to check for anything you might have missed.",
+      "Have AI write the assessment and plan directly.",
+      "Avoid reviewing the chart at all."
+    ],
+    correctIndex: 1,
+    explanation: "Reading first preserves your understanding and lets you catch omissions in the AI output."
+  },
+  {
+    question: "Which combination makes a task the WORST candidate for delegation?",
+    options: [
+      "Low severity, high detectability, high reversibility",
+      "High severity, low detectability, low reversibility",
+      "Low severity, low detectability, high reversibility",
+      "Moderate severity, high detectability, high reversibility"
+    ],
+    correctIndex: 1,
+    explanation: "When errors are dangerous, hard to catch, and hard to undo, keep the task with the clinician."
+  }
+]} />
+
+## Up Next
+
+Even a Tier 1 task can become a serious problem if it exposes patient data. Next: protecting PHI when using AI.

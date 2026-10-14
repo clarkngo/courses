@@ -1,0 +1,152 @@
+---
+title: "Structured Prompts for Clinical Tasks"
+description: "Write clinical prompts that specify context, task, constraints, and output format, ask for uncertainty, and avoid leading the model toward your anchor."
+module: 3
+moduleTitle: "Description: Specifying the Task"
+lesson: 1
+duration: "25 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## Prompts Are Orders, Not Chit-Chat
+
+You'd never write an order that says "give pain med." You specify drug, dose, route, frequency, indication, and hold parameters, because ambiguity causes harm. Clinical prompts deserve the same precision. A vague prompt yields generic output that's harder to verify and easier to misapply.
+
+---
+
+## Five Elements of a Clinical Prompt
+
+<ProcessFlow
+  label="Five elements of a clinical prompt: role and audience, context, task, constraints, and output format"
+  color="#0e7490"
+  steps={[
+    { title: "Role & audience", detail: "Who's writing, who will read it" },
+    { title: "Context", detail: "Relevant, de-identified clinical facts" },
+    { title: "Task", detail: "One clear deliverable" },
+    { title: "Constraints", detail: "Guardrails, scope, uncertainty" },
+    { title: "Format", detail: "Structure that's easy to verify" },
+  ]}
+/>
+
+**Weak:** *"Write discharge instructions for CHF."*
+
+**Strong:**
+
+> **Role & audience:** You are helping a hospitalist write discharge instructions for a patient with limited health literacy, reading at about a 6th-grade level.
+>
+> **Context:** Adult patient admitted for acute decompensated heart failure (HFrEF), now euvolemic. Discharge medications include a loop diuretic (once daily), a beta-blocker, and an SGLT2 inhibitor. Follows a 2 g sodium diet. Has a home scale.
+>
+> **Task:** Draft discharge instructions covering daily weights, diet, medications, and when to seek care.
+>
+> **Constraints:** Do not include specific doses; I will add them. Use the threshold "call if weight increases more than 2 pounds in a day or 5 pounds in a week" exactly as written. If anything I've provided seems inconsistent with standard practice, flag it separately rather than changing it.
+>
+> **Format:** Short headings, bullets, under 300 words. A separate "Call 911 if…" box at the end.
+
+The strong version is longer, but it produces a draft you can **review in a minute** rather than rewrite in ten.
+
+---
+
+## Prompt Patterns That Improve Safety
+
+### Ask for uncertainty, explicitly
+
+> *"For each recommendation, note your confidence and what would change it. If you're unsure, say so instead of guessing."*
+
+### Ask for alternatives, not confirmation
+
+| Leading (invites sycophancy) | Neutral (invites reasoning) |
+|---|---|
+| "Why is this most likely viral?" | "What's the differential, ranked, with features for and against each?" |
+| "Confirm this dose is right." | "Calculate the dose, show the calculation, and list assumptions." |
+| "This is fine to discharge, right?" | "What findings would argue against discharge?" |
+
+### Ask what's missing
+
+> *"What additional history, exam findings, or tests would most change the assessment?"*
+
+This mirrors good clinical reasoning and helps surface gaps.
+
+### Separate facts from inferences
+
+> *"In the summary, mark anything stated in the source as [SOURCE] and anything you inferred as [INFERRED]."*
+
+This makes fabrications much easier to spot during review.
+
+### Constrain to provided material
+
+> *"Use only the information in the text below. If something isn't in the text, write 'not documented.'"*
+
+Useful for summarization, where you want the model to stay inside the record rather than "fill in" plausible details.
+
+<Pitfall title="Prompting With Your Conclusion">
+
+**Common mistake:** front-loading your working diagnosis ("62-year-old with a likely PE…") and asking AI to help with the plan.
+
+The model will optimize for your stated diagnosis and rarely question it. If you want a second look, **describe the presentation without your conclusion first**, ask for the differential, and only then compare it with your own thinking.
+
+</Pitfall>
+
+---
+
+## Iterate Like a Consult
+
+Treat the first response as a first pass. Follow up as you would with a consultant: *"You didn't address renal function."* *"Simplify the language further."* *"Which of these recommendations is guideline-based versus expert opinion?"* Each turn should narrow toward something you can verify and use.
+
+### Build reusable templates
+
+If a prompt works well, save it (without patient data) as a template your team can reuse. Many enterprise tools support saved prompts or shared instructions. Consistent prompts also make output **consistently reviewable**.
+
+<TryIt title="Rewrite a Weak Prompt">
+
+Using a general AI assistant and **no PHI**:
+
+1. Start with a weak prompt from your specialty, such as *"Patient handout on [condition]."* Save the output.
+2. Rewrite it using all five elements, including a reading-level target, at least one explicit constraint, and a request to flag uncertainty.
+3. Compare the two outputs. Which is faster to verify? Which contains more content you'd have to remove?
+4. Save the improved prompt as a template.
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "Why is 'Why is this most consistent with a viral infection?' a risky clinical prompt?",
+    options: [
+      "It's too short.",
+      "It leads the model to argue for your anchor rather than consider alternatives.",
+      "AI cannot discuss infections.",
+      "It doesn't specify a reading level."
+    ],
+    correctIndex: 1,
+    explanation: "Leading prompts invite sycophancy. Ask for a ranked differential with features for and against instead."
+  },
+  {
+    question: "What's the purpose of asking the model to label content as [SOURCE] vs. [INFERRED]?",
+    options: [
+      "To make the text longer",
+      "To make fabricated or inferred details easier to spot during review",
+      "To satisfy HIPAA",
+      "To improve the reading level"
+    ],
+    correctIndex: 1,
+    explanation: "Separating stated facts from inferences speeds verification and exposes invented details."
+  },
+  {
+    question: "Which instruction best reduces fabrication when summarizing a document?",
+    options: [
+      "'Be creative.'",
+      "'Use only the information in the text below. If it's not there, write \"not documented.\"'",
+      "'Add any relevant details you know.'",
+      "'Make it sound professional.'"
+    ],
+    correctIndex: 1,
+    explanation: "Constraining the model to provided material, with an explicit fallback, discourages plausible-but-invented content."
+  }
+]} />
+
+## Up Next
+
+One of the most common clinical uses of AI is answering evidence questions, and it's one of the most common places for fabricated citations. Next: using AI for literature and guidelines.
