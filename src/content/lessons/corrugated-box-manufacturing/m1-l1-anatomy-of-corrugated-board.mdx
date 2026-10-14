@@ -1,0 +1,152 @@
+---
+title: "Anatomy of Corrugated Board"
+description: "Learn the parts of corrugated board — linerboard, medium, and flutes — why the arch shape is so strong, and how the common flute sizes compare."
+module: 1
+moduleTitle: "Corrugated Board Basics"
+lesson: 1
+duration: "25 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## It's Not Cardboard
+
+People call it "cardboard," but in the industry, **cardboard** means a single stiff sheet like a cereal box (paperboard). A shipping box is **corrugated fiberboard** — and that difference is the whole point.
+
+Corrugated board is a **sandwich**:
+
+- **Linerboard** — the flat facings on the outside and inside
+- **Corrugating medium** — the fluted (wavy) sheet in the middle
+- **Starch adhesive** — glues the flute tips to the liners
+
+<svg viewBox="0 0 680 230" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Cross-section of single-wall corrugated board. A flat outer linerboard on top, a wavy corrugating medium in the middle forming flutes, and a flat inner linerboard on the bottom. Starch glue lines join the flute tips to each liner. The flute pitch is the distance between flute tips, and the flute height is the distance from liner to liner.">
+  <g font-family="system-ui, -apple-system, sans-serif">
+    <rect x="60" y="70" width="520" height="8" fill="#a16207"/>
+    <rect x="60" y="150" width="520" height="8" fill="#a16207"/>
+    <path d="M60 114 Q80 78 100 78 Q120 78 140 114 Q160 150 180 150 Q200 150 220 114 Q240 78 260 78 Q280 78 300 114 Q320 150 340 150 Q360 150 380 114 Q400 78 420 78 Q440 78 460 114 Q480 150 500 150 Q520 150 540 114 Q560 78 580 78" fill="none" stroke="#ca8a04" stroke-width="5"/>
+    <g fill="#f8fafc" stroke="#64748b" stroke-width="1"><ellipse cx="100" cy="80" rx="10" ry="3"/><ellipse cx="260" cy="80" rx="10" ry="3"/><ellipse cx="420" cy="80" rx="10" ry="3"/><ellipse cx="180" cy="148" rx="10" ry="3"/><ellipse cx="340" cy="148" rx="10" ry="3"/><ellipse cx="500" cy="148" rx="10" ry="3"/></g>
+    <text x="600" y="78" fill="#0f172a" font-size="14" font-weight="700">Outer liner</text>
+    <text x="600" y="118" fill="#0f172a" font-size="14" font-weight="700">Medium</text>
+    <text x="600" y="158" fill="#0f172a" font-size="14" font-weight="700">Inner liner</text>
+    <line x1="100" y1="44" x2="260" y2="44" stroke="#475569" stroke-width="1.5"/>
+    <line x1="100" y1="38" x2="100" y2="50" stroke="#475569" stroke-width="1.5"/>
+    <line x1="260" y1="38" x2="260" y2="50" stroke="#475569" stroke-width="1.5"/>
+    <text x="180" y="32" text-anchor="middle" fill="#475569" font-size="13" font-weight="700">flute pitch</text>
+    <line x1="40" y1="70" x2="40" y2="158" stroke="#475569" stroke-width="1.5"/>
+    <line x1="34" y1="70" x2="46" y2="70" stroke="#475569" stroke-width="1.5"/>
+    <line x1="34" y1="158" x2="46" y2="158" stroke="#475569" stroke-width="1.5"/>
+    <text x="28" y="118" text-anchor="middle" fill="#475569" font-size="13" font-weight="700" transform="rotate(-90 28 118)">caliper</text>
+    <text x="340" y="196" text-anchor="middle" fill="#64748b" font-size="12">light ovals = starch glue lines on each flute tip</text>
+    <text x="340" y="216" text-anchor="middle" fill="#64748b" font-size="12">flutes run across this cut — the "flute direction" goes into the page</text>
+  </g>
+</svg>
+
+### Why Arches Are Strong
+
+The fluted medium works like a row of **arches** or a series of tiny **columns**. It:
+
+- Holds the two liners apart, which makes the board **stiff** (an I-beam works the same way)
+- Resists **crushing** when you press on the flat face
+- Carries **vertical load** when the flutes stand upright in a box wall
+- Adds **cushioning** against shock
+
+That's why a box made from three thin sheets of paper can hold up hundreds of pounds when stacked.
+
+---
+
+## Flute Sizes
+
+Flutes come in standard sizes, identified by letters. The letters were assigned in the order they were invented — **not** by size — which is why the list looks scrambled.
+
+<svg viewBox="0 0 680 270" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Five flute profiles drawn at the same scale for comparison. A flute is tallest with the fewest flutes per foot. C flute is next, then B, then E, and F flute is the smallest and finest.">
+  <g font-family="system-ui, -apple-system, sans-serif">
+    <text x="20" y="44" fill="#0f172a" font-size="15" font-weight="700">A</text>
+    <path d="M60 50 Q75 26 90 26 Q105 26 120 50 Q135 74 150 74 Q165 74 180 50 Q195 26 210 26 Q225 26 240 50 Q255 74 270 74 Q285 74 300 50" fill="none" stroke="#ca8a04" stroke-width="3"/>
+    <text x="316" y="54" fill="#475569" font-size="11.5">≈ 4.8 mm tall · ~33 flutes/ft</text>
+    <text x="20" y="104" fill="#0f172a" font-size="15" font-weight="700">C</text>
+    <path d="M60 108 Q73 90 86 90 Q99 90 112 108 Q125 126 138 126 Q151 126 164 108 Q177 90 190 90 Q203 90 216 108 Q229 126 242 126 Q255 126 268 108 Q281 90 294 90" fill="none" stroke="#ca8a04" stroke-width="3"/>
+    <text x="316" y="112" fill="#475569" font-size="11.5">≈ 3.6–4 mm · ~39 flutes/ft · most common shipping box</text>
+    <text x="20" y="158" fill="#0f172a" font-size="15" font-weight="700">B</text>
+    <path d="M60 160 Q70 147 80 147 Q90 147 100 160 Q110 173 120 173 Q130 173 140 160 Q150 147 160 147 Q170 147 180 160 Q190 173 200 173 Q210 173 220 160 Q230 147 240 147 Q250 147 260 160 Q270 173 280 173 Q290 173 300 160" fill="none" stroke="#ca8a04" stroke-width="3"/>
+    <text x="316" y="164" fill="#475569" font-size="11.5">≈ 2.5–3 mm · ~47 flutes/ft · die-cuts, canned goods</text>
+    <text x="20" y="208" fill="#0f172a" font-size="15" font-weight="700">E</text>
+    <path d="M60 208 Q65 202 70 202 Q75 202 80 208 Q85 214 90 214 Q95 214 100 208 Q105 202 110 202 Q115 202 120 208 Q125 214 130 214 Q135 214 140 208 Q145 202 150 202 Q155 202 160 208 Q165 214 170 214 Q175 214 180 208 Q185 202 190 202 Q195 202 200 208 Q205 214 210 214 Q215 214 220 208 Q225 202 230 202 Q235 202 240 208 Q245 214 250 214 Q255 214 260 208 Q265 202 270 202 Q275 202 280 208 Q285 214 290 214 Q295 214 300 208" fill="none" stroke="#ca8a04" stroke-width="2.5"/>
+    <text x="316" y="212" fill="#475569" font-size="11.5">≈ 1.1–1.6 mm · ~90 flutes/ft · retail, printed mailers</text>
+    <text x="20" y="252" fill="#0f172a" font-size="15" font-weight="700">F</text>
+    <path d="M60 250 Q63 246 66 246 Q69 246 72 250 Q75 254 78 254 Q81 254 84 250 Q87 246 90 246 Q93 246 96 250 Q99 254 102 254 Q105 254 108 250 Q111 246 114 246 Q117 246 120 250 Q123 254 126 254 Q129 254 132 250 Q135 246 138 246 Q141 246 144 250 Q147 254 150 254 Q153 254 156 250 Q159 246 162 246 Q165 246 168 250 Q171 254 174 254 Q177 254 180 250 Q183 246 186 246 Q189 246 192 250 Q195 254 198 254 Q201 254 204 250 Q207 246 210 246 Q213 246 216 250 Q219 254 222 254 Q225 254 228 250 Q231 246 234 246 Q237 246 240 250 Q243 254 246 254 Q249 254 252 250 Q255 246 258 246 Q261 246 264 250 Q267 254 270 254 Q273 254 276 250 Q279 246 282 246 Q285 246 288 250 Q291 254 294 254 Q297 254 300 250" fill="none" stroke="#ca8a04" stroke-width="2"/>
+    <text x="316" y="254" fill="#475569" font-size="11.5">≈ 0.8 mm · ~125 flutes/ft · folding-carton replacement</text>
+  </g>
+</svg>
+
+| Flute | Approx. height | Flutes per foot | Strengths | Typical uses |
+|---|---|---|---|---|
+| **A** | ~4.8 mm (3/16") | ~33 | Best stacking and cushioning; bulky | Fragile goods; less common today |
+| **C** | ~3.6–4 mm (5/32") | ~39 | Good all-round stacking and cushioning | The standard shipping box |
+| **B** | ~2.5–3 mm (1/8") | ~47 | Good crush resistance; folds and die-cuts cleanly | Canned goods, die-cut displays, inner packs |
+| **E** | ~1.1–1.6 mm (1/16") | ~90 | Thin, smooth print surface | Retail packaging, e-commerce mailers, pizza boxes |
+| **F** | ~0.8 mm (1/32") | ~125 | Very thin and smooth | Small retail boxes, replacing folding cartons |
+
+*Exact dimensions vary by manufacturer and corrugating roll design.*
+
+The trade-off is simple: **bigger flutes = more stacking strength and cushioning; smaller flutes = flatter print surface, better crush resistance, and less space.**
+
+### Take-Up Factor
+
+Because the medium is wavy, a box plant uses more medium than liner. The **take-up factor** is the length of medium per unit length of board — roughly **1.4–1.5 for C flute** and lower for smaller flutes. Take-up matters for cost: it multiplies the medium weight in the board.
+
+<Pitfall title="Assuming Flute Letters Mean Size">
+
+**Common mistake:** assuming "A, B, C" goes from biggest to smallest — or smallest to biggest.
+
+It doesn't. A is largest, then **C**, then B, then E and F. The letters reflect the order flutes were introduced. Always confirm by caliper or flutes-per-foot, especially when specifying a replacement box.
+
+</Pitfall>
+
+---
+
+## Key Takeaway
+
+Corrugated board is a sandwich of **liners**, a **fluted medium**, and **starch**. The arches give stiffness, compression strength, and cushioning far beyond the paper's weight. **Flute size** trades stacking strength and cushioning (A, C) against printability and thinness (B, E, F).
+
+<TryIt title="Measure the Flutes">
+
+Find a shipping box and an e-commerce mailer. Cut a clean edge on each so you can see the flutes. Count flutes along 1 inch (multiply by 12 for per-foot), and measure the board thickness with a ruler. Match each to the table. Most shipping boxes are C flute; thin printed mailers are usually E.
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "What is the wavy middle layer of corrugated board called?",
+      options: ["Linerboard", "Corrugating medium", "Chipboard", "Kraft facing"],
+      correctIndex: 1,
+      explanation: "The corrugating medium is formed into flutes and glued between liners."
+    },
+    {
+      question: "Which flute is the most common for standard shipping boxes?",
+      options: ["A flute", "C flute", "E flute", "F flute"],
+      correctIndex: 1,
+      explanation: "C flute balances stacking strength, cushioning, and cost, making it the shipping-box standard."
+    },
+    {
+      question: "Rank these flutes from tallest to shortest.",
+      options: ["A, B, C, E", "A, C, B, E", "C, B, A, E", "E, B, C, A"],
+      correctIndex: 1,
+      explanation: "A is tallest, then C, then B, then E. Letters reflect order of invention, not size."
+    },
+    {
+      question: "Why would a brand choose E flute for a retail box?",
+      options: ["Maximum stacking strength", "Thin profile with a smooth, printable surface", "Most cushioning", "Lowest cost per square foot always"],
+      correctIndex: 1,
+      explanation: "E flute's fine flutes give a flat surface for high-quality graphics in a slim board."
+    },
+    {
+      question: "A take-up factor of 1.45 means…",
+      options: ["The board is 1.45 mm thick", "1.45 feet of medium go into each foot of board", "The box is 45% stronger", "The liner is 45% heavier than the medium"],
+      correctIndex: 1,
+      explanation: "Take-up is the ratio of medium length to board length, caused by the flute shape."
+    }
+  ]}
+/>

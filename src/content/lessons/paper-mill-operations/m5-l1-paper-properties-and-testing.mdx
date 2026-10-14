@@ -1,0 +1,135 @@
+---
+title: "Paper Properties and Quality Testing"
+description: "Learn the properties a mill measures — basis weight, caliper, moisture, burst, ring crush, SCT, Cobb — how the online QCS scanner works, and why every test lab conditions samples first."
+module: 5
+moduleTitle: "Quality and Troubleshooting"
+lesson: 1
+duration: "30 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Two Kinds of Measurement
+
+Paper quality is measured in two places:
+
+1. **Online, continuously** — a **quality control system (QCS)** scanner traverses back and forth across the sheet near the reel, measuring basis weight, moisture, and caliper in real time and feeding the control loops.
+2. **Offline, in the lab** — testers cut samples from the end of every parent roll and run physical tests that the scanner can't measure.
+
+Because the scanner moves across the sheet while the sheet moves forward, it measures a zig-zag path. Software splits the data into:
+- **MD variation** — changes over time (e.g., a stock flow swing)
+- **CD profile** — differences across the width (e.g., a wet streak)
+
+---
+
+## Conditioning: The First Rule of the Lab
+
+Paper's strength depends heavily on moisture. A sample tested straight off the reel will give different numbers than the same sample tested an hour later.
+
+So test labs **condition** samples before testing — under TAPPI T 402 and ISO 187, the standard atmosphere is **23 °C and 50% relative humidity** — and let them reach equilibrium.
+
+<Pitfall title="Testing Unconditioned Samples">
+
+**Common mistake:** running a quick strength test on a sample straight from the reel to "get an early read."
+
+A dry, warm sample right off the machine will usually test differently than the same paper conditioned to 50% RH. Decisions made from that number — changing starch or refining — can push the process in the wrong direction. Quick checks have their place, but never compare them against conditioned specs.
+
+</Pitfall>
+
+---
+
+## The Core Properties
+
+### Structural Properties
+
+| Property | What it is | Units |
+|---|---|---|
+| **Basis weight / grammage** | Mass per area | g/m², or lb/1,000 ft² for containerboard |
+| **Caliper** | Thickness | mils (0.001 in) or µm |
+| **Moisture** | Water content | % |
+| **Density / bulk** | Mass per volume (bulk is its inverse) | g/cm³ |
+
+### Strength Properties
+
+| Test | What it simulates | Who cares most |
+|---|---|---|
+| **Tensile** | Pulling force until break, MD and CD | Everyone; runnability on presses and winders |
+| **Tear** (Elmendorf) | Force to continue a tear | Sack paper, wrapping |
+| **Burst** (Mullen) | Pressure needed to rupture the sheet | Linerboard — historically the key box spec |
+| **Ring Crush (RCT)** | Edgewise compression of a ring of paper | Linerboard and medium; predicts box stacking strength |
+| **SCT** (short-span compression) | Edgewise compression over a very short span | Increasingly preferred over RCT for containerboard |
+| **CMT** (Concora) | Crushing a corrugated strip of medium | Corrugating medium |
+
+Compression tests have become more important than burst over the past few decades because box buyers now specify **Edge Crush Test (ECT)** grades. Liner and medium compression directly drive ECT — you'll calculate that in the box course.
+
+### Surface and Optical Properties
+
+| Test | What it measures |
+|---|---|
+| **Cobb** | Grams of water absorbed by an area of paper in a set time — tests sizing |
+| **Porosity** (Gurley, Sheffield) | Air flow through the sheet |
+| **Smoothness** (Sheffield, Parker Print-Surf) | Surface roughness |
+| **Brightness** | Blue-light reflectance (ISO or TAPPI scale) |
+| **Opacity** | How much light passes through |
+
+---
+
+## Statistical Thinking
+
+A single test result means little. Mills track results on **control charts** with upper and lower control limits. The goal is a process that is **stable and centered** — not one that's constantly adjusted after every test.
+
+- Reacting to every random point (**over-control** or "tampering") makes variation **worse**.
+- A run of points trending in one direction, or a point outside the control limits, signals a real change worth investigating.
+
+Customers increasingly ask for **Cpk** or similar capability numbers showing how comfortably the mill stays within spec.
+
+---
+
+## Key Takeaway
+
+The **QCS scanner** controls basis weight, moisture, and caliper in real time, separating MD and CD variation. The **lab** conditions samples to 23 °C / 50% RH, then measures strength (tensile, burst, RCT, SCT, CMT), sizing (Cobb), and surface/optical properties. For containerboard, **compression strength** now matters more than burst.
+
+<TryIt title="Calculate a Cobb Value">
+
+A lab weighs a 100 cm² liner sample at 1.250 g. After 120 seconds in contact with water and blotting, it weighs 1.310 g. Cobb is reported in g/m².
+
+Water absorbed = 1.310 − 1.250 = 0.060 g. The area is 100 cm² = 0.01 m², so 0.060 g ÷ 0.01 m² = **Cobb₁₂₀ = 60 g/m²**. That's weakly sized for many liner specs. Watch the unit conversion: forgetting that 100 cm² is only 0.01 m² is the most common Cobb math mistake.
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "What are the standard conditioning conditions under TAPPI T 402 / ISO 187?",
+      options: ["20 °C and 65% RH", "23 °C and 50% RH", "25 °C and 30% RH", "Room temperature, any humidity"],
+      correctIndex: 1,
+      explanation: "23 °C and 50% relative humidity is the standard atmosphere for conditioning and testing paper."
+    },
+    {
+      question: "Which test measures water absorption to evaluate sizing?",
+      options: ["Mullen burst", "Cobb", "Ring crush", "Elmendorf tear"],
+      correctIndex: 1,
+      explanation: "The Cobb test measures grams of water absorbed per square meter in a set time."
+    },
+    {
+      question: "Why have compression tests (RCT, SCT) become more important for containerboard?",
+      options: ["They are cheaper to run", "Box specs moved toward Edge Crush Test (ECT), which compression strength drives", "Burst testers are no longer made", "They measure brightness"],
+      correctIndex: 1,
+      explanation: "ECT-based box specs depend on the edgewise compression strength of the liners and medium."
+    },
+    {
+      question: "What does a QCS scanner's CD profile show?",
+      options: ["Changes over time", "Differences across the width of the sheet", "Roll weights", "Refiner power"],
+      correctIndex: 1,
+      explanation: "The CD profile separates out variation across the sheet width, such as a wet streak."
+    },
+    {
+      question: "What usually happens if operators adjust the process after every single test result?",
+      options: ["Variation decreases", "Variation gets worse (over-control)", "Nothing changes", "Strength always rises"],
+      correctIndex: 1,
+      explanation: "Reacting to random noise — tampering — adds variation. Use control charts to react only to real signals."
+    }
+  ]}
+/>

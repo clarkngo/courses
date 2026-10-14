@@ -1,0 +1,143 @@
+---
+title: "Glossary and Course Review"
+description: "Review the essential vocabulary of corrugated packaging, work a full box specification from start to finish, and test yourself across the whole course."
+module: 6
+moduleTitle: "Sustainability, Safety, and Review"
+lesson: 2
+duration: "35 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## The Whole Journey
+
+<ProcessFlow
+  label="The life of a corrugated box from paper roll to recycling."
+  color="#a16207"
+  loop="Used boxes are baled as OCC and return to the mill as new linerboard and medium."
+  steps={[
+    { title: 'Paper rolls', detail: 'Linerboard and medium from the mill' },
+    { title: 'Corrugator', detail: 'Flutes formed, liners glued, sheets cut and scored' },
+    { title: 'Converting', detail: 'Printed, slotted, die-cut, glued' },
+    { title: 'Packing', detail: 'Erected, filled, sealed, palletized' },
+    { title: 'Distribution', detail: 'Stacked, shipped, handled' },
+    { title: 'Recycling', detail: 'Collected and baled as OCC' },
+  ]}
+/>
+
+---
+
+## Glossary
+
+| Term | Meaning |
+|---|---|
+| **BCT** | Box compression test — top-to-bottom strength of a box |
+| **Blank** | The flat, cut, and scored piece before it's folded into a box |
+| **BMC** | Box Maker's Certificate — the stamp stating board rating and limits |
+| **Caliper** | Thickness of the board |
+| **Double backer** | Corrugator section where the inside liner is glued and cured on hot plates |
+| **ECT** | Edge crush test — edgewise compression strength of board, in lb/in |
+| **FEFCO code** | International four-digit code for box styles (e.g., 0201) |
+| **FFG** | Flexo folder-gluer — prints, slots, scores, folds, and glues boxes |
+| **Flute** | One wave of the corrugated medium; sizes A, B, C, E, F |
+| **Linerboard** | The flat facing papers of corrugated board |
+| **Manufacturer's joint** | The glued, taped, or stitched seam that closes the box tube |
+| **McKee formula** | BCT ≈ 5.87 × ECT × √(caliper × perimeter) |
+| **Medium** | The fluted middle paper |
+| **MSF** | Thousand square feet — the unit for pricing board |
+| **Mullen** | Burst test, in psi |
+| **OCC** | Old corrugated containers |
+| **RSC** | Regular slotted container — FEFCO 0201 |
+| **Single facer** | Corrugator section that forms flutes and glues the first liner |
+| **Take-up factor** | Length of medium used per length of board |
+| **Warp** | Board that isn't flat, usually from moisture imbalance |
+
+---
+
+<TryIt title="Capstone: Spec a Box">
+
+A customer ships **24 cans** in a 4 × 6 arrangement. The pack measures **15.5 × 10.4 × 4.9 in** and weighs **22 lb**. Pallets are stacked **8 high**, stored up to **30 days** at about **70% RH**, and the customer wants to **interlock** for load stability.
+
+Work through it:
+
+1. **Style:** a low-cost shipper → RSC (0201). Might a tray + shrink film work instead?
+2. **Inside dimensions:** add small clearance → about **15.75 × 10.625 × 5 in**.
+3. **Required load on the bottom box:** 7 boxes above × 22 lb = **154 lb**.
+4. **Derating:** 0.60 (30 days) × 0.80 (70% RH) × 0.55 (interlock) ≈ **0.264**.
+5. **Needed lab BCT:** 154 ÷ 0.264 ≈ **585 lbf** (before any extra safety margin).
+6. **Board:** try 32 ECT B flute, caliper ~0.12 in, perimeter 2 × (15.75 + 10.625) = 52.75 in.
+   BCT ≈ 5.87 × 32 × √(0.12 × 52.75) ≈ 5.87 × 32 × 2.52 ≈ **473 lbf** — not enough.
+7. **Options:** move to 44 ECT (≈ 650 lbf), **column-stack** instead of interlocking (factor rises to ~0.48, so 32 ECT would suffice), or let the cans carry part of the load.
+
+Which option would you recommend, and why? There's more than one defensible answer — that's packaging engineering.
+
+</TryIt>
+
+## Final Review
+
+<Quiz
+  questions={[
+    {
+      question: "Which flute is the standard for most shipping boxes?",
+      options: ["A", "B", "C", "F"],
+      correctIndex: 2,
+      explanation: "C flute balances stacking strength, cushioning, and cost."
+    },
+    {
+      question: "Double-wall board contains…",
+      options: ["Two liners and one medium", "Three liners and two mediums", "Four liners and three mediums", "One liner and two mediums"],
+      correctIndex: 1,
+      explanation: "Double wall: outer, center, and inner liners with two fluted mediums."
+    },
+    {
+      question: "ECT is most closely related to which box property?",
+      options: ["Puncture resistance", "Stacking (compression) strength", "Print quality", "Water resistance"],
+      correctIndex: 1,
+      explanation: "ECT drives box compression strength, as the McKee formula shows."
+    },
+    {
+      question: "Where is the first liner glued to the medium on the corrugator?",
+      options: ["Double backer", "Single facer", "Slitter-scorer", "Stacker"],
+      correctIndex: 1,
+      explanation: "The single facer forms flutes and glues the single-face liner on."
+    },
+    {
+      question: "Most warp is caused by…",
+      options: ["Dull slitter knives", "Moisture imbalance between liners", "Too many colors", "Wrong FEFCO code"],
+      correctIndex: 1,
+      explanation: "The side that shrinks more as it dries pulls the board into a curve."
+    },
+    {
+      question: "An RSC's flaps are each…",
+      options: ["Equal to the box depth", "Half the box width deep", "Equal to the box length", "Different on every side"],
+      correctIndex: 1,
+      explanation: "All RSC flaps are W/2 deep so the outer flaps meet in the center."
+    },
+    {
+      question: "What's the approximate blank size of a 20 × 14 × 12 RSC (ignoring allowances), with a 1.5 in joint?",
+      options: ["69.5 × 26 in", "46 × 34 in", "69.5 × 34 in", "40 × 26 in"],
+      correctIndex: 0,
+      explanation: "Length ≈ 2(20) + 2(14) + 1.5 = 69.5 in; width ≈ D + W = 12 + 14 = 26 in."
+    },
+    {
+      question: "Which converting problem reduces box compression strength?",
+      options: ["Crushing the flutes in feed rolls", "Using water-based ink", "Printing a barcode", "Stacking bundles"],
+      correctIndex: 0,
+      explanation: "Crush lowers caliper, and caliper is part of the McKee formula."
+    },
+    {
+      question: "Which print method suits a short run with many SKU versions?",
+      options: ["Litho-lamination", "Preprint flexo", "Digital", "Gravure"],
+      correctIndex: 2,
+      explanation: "Digital needs no plates, so short and versioned runs are economical."
+    },
+    {
+      question: "A box tested at 600 lbf BCT will be stored 90 days at 90% RH. Using factors 0.55 and 0.50, about how much strength remains?",
+      options: ["~600 lbf", "~330 lbf", "~165 lbf", "~60 lbf"],
+      correctIndex: 2,
+      explanation: "600 × 0.55 × 0.50 ≈ 165 lbf — under a third of the lab value."
+    }
+  ]}
+/>

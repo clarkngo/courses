@@ -1,0 +1,157 @@
+---
+title: "What Paper Really Is"
+description: "Paper is a mat of cellulose fibers held together by hydrogen bonds. Learn why water is both the glue and the enemy, how the major paper grades differ, and the big-picture flow of a modern mill."
+module: 1
+moduleTitle: "Fiber and the Big Picture"
+lesson: 1
+duration: "20 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## A Sheet of Paper, Up Close
+
+Tear a sheet of printer paper and hold the torn edge up to the light. Those fuzzy whiskers are **fibers** — tiny, hollow tubes of **cellulose** that once formed the cell walls of a tree.
+
+Paper is nothing more than a thin, randomly woven mat of those fibers. There is usually no glue holding it together. So what keeps it from falling apart?
+
+**Hydrogen bonds.** Cellulose is covered in hydroxyl (–OH) groups. When wet fibers are pressed close together and the water is removed, those groups bond directly to each other. Billions of these weak bonds, added up, give paper its strength.
+
+<svg viewBox="0 0 680 250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Two stages of sheet formation. On the left, fibers float apart in water with water molecules between them. On the right, after pressing and drying, the fibers touch and hydrogen bonds form at the crossing points.">
+  <g font-family="system-ui, -apple-system, sans-serif">
+    <rect x="20" y="30" width="290" height="160" rx="12" fill="#e0f2fe"/>
+    <text x="165" y="22" text-anchor="middle" fill="#0f172a" font-size="15" font-weight="700">In the headbox: ~99% water</text>
+    <g stroke="#92400e" stroke-width="6" stroke-linecap="round" fill="none">
+      <path d="M50 70 Q110 55 160 80"/>
+      <path d="M190 60 Q230 90 280 75"/>
+      <path d="M60 140 Q120 120 170 150"/>
+      <path d="M200 130 Q240 160 290 140"/>
+      <path d="M110 105 Q150 100 210 110"/>
+    </g>
+    <g fill="#38bdf8">
+      <circle cx="90" cy="95" r="4"/><circle cx="180" cy="95" r="4"/><circle cx="250" cy="110" r="4"/>
+      <circle cx="140" cy="135" r="4"/><circle cx="230" cy="80" r="4"/><circle cx="70" cy="165" r="4"/>
+      <circle cx="270" cy="165" r="4"/><circle cx="120" cy="80" r="4"/>
+    </g>
+    <text x="165" y="215" text-anchor="middle" fill="#475569" font-size="12">fibers are apart — no bonds yet</text>
+    <text x="340" y="115" text-anchor="middle" fill="#047857" font-size="28" font-weight="700">→</text>
+    <rect x="370" y="30" width="290" height="160" rx="12" fill="#fef3c7"/>
+    <text x="515" y="22" text-anchor="middle" fill="#0f172a" font-size="15" font-weight="700">At the reel: ~93–95% fiber</text>
+    <g stroke="#92400e" stroke-width="6" stroke-linecap="round" fill="none">
+      <path d="M400 80 L630 120"/>
+      <path d="M400 140 L630 90"/>
+      <path d="M420 170 L600 60"/>
+      <path d="M440 60 L560 175"/>
+    </g>
+    <g fill="#047857">
+      <circle cx="518" cy="102" r="7"/><circle cx="490" cy="96" r="7"/><circle cx="545" cy="122" r="7"/>
+      <circle cx="560" cy="103" r="7"/><circle cx="476" cy="122" r="7"/>
+    </g>
+    <text x="515" y="215" text-anchor="middle" fill="#475569" font-size="12">green dots = hydrogen bonds at fiber crossings</text>
+  </g>
+</svg>
+
+This explains a fact every papermaker learns on day one:
+
+> **Water is both the glue and the enemy.** Fibers need water to move into position and form bonds — but almost all of that water must be removed, and removing it is the most expensive part of making paper.
+
+---
+
+## The Main Families of Paper
+
+Mills specialize. A machine built for tissue is very different from one built for linerboard. The grades fall into a few broad families:
+
+| Family | Examples | What matters most |
+|---|---|---|
+| **Containerboard** | Linerboard, corrugating medium | Strength (burst, compression), low cost, high recycled content |
+| **Boxboard / paperboard** | Cereal boxes, folding cartons, cup stock | Stiffness, printability, food safety |
+| **Printing & writing** | Copy paper, coated magazine paper | Brightness, smoothness, opacity, runnability in printers |
+| **Tissue & towel** | Bath tissue, paper towels, napkins | Softness, bulk, absorbency |
+| **Specialty** | Filter papers, labels, release liners, currency | A single engineered property |
+
+Containerboard — the brown paper that becomes corrugated boxes — is the largest grade by tonnage in North America. If you take the companion course *Flute to Freight*, you'll see exactly what happens to it next.
+
+---
+
+## Grammage and Basis Weight
+
+Paper is sold by how much a standard area weighs.
+
+- **Grammage** (used worldwide): grams per square meter, **g/m² (gsm)**. Copy paper is about 75–80 gsm.
+- **Basis weight** (used in North America): pounds per a "basis ream" area — and the area depends on the grade. Containerboard uses **lb/1,000 ft²**, so a "42-lb liner" weighs 42 lb per 1,000 ft² (about 205 gsm).
+
+<Pitfall title="Comparing Basis Weights Across Grades">
+
+**Common mistake:** assuming a "20-lb" copy paper and a "26-lb" corrugating medium are similar weights.
+
+They are measured on completely different basis areas (copy bond uses a 17 × 22 in, 500-sheet ream; containerboard uses 1,000 ft²). The 26-lb medium is actually about 127 gsm — far heavier than the 75 gsm copy paper. When in doubt, convert to **g/m²**, which never changes meaning.
+
+</Pitfall>
+
+---
+
+## The Mill at a Glance
+
+Every integrated mill — one that makes its own pulp and its own paper — follows the same basic path. The rest of this course walks through each step.
+
+<ProcessFlow
+  label="The flow of an integrated paper mill from woodyard to shipped roll."
+  color="#047857"
+  steps={[
+    { title: 'Woodyard', detail: 'Logs debarked and chipped, or bales of recycled fiber received' },
+    { title: 'Pulping', detail: 'Chips cooked or ground; recycled fiber slushed' },
+    { title: 'Stock prep', detail: 'Refining, cleaning, screening, additives' },
+    { title: 'Forming', detail: 'Headbox sprays ~99% water onto a moving wire' },
+    { title: 'Pressing', detail: 'Felts and nips squeeze water out' },
+    { title: 'Drying', detail: 'Steam cans evaporate the rest' },
+    { title: 'Reel & winder', detail: 'Parent roll slit into customer rolls' },
+  ]}
+/>
+
+Along the way, an integrated kraft mill also runs a **chemical recovery** loop that recycles its cooking chemicals and generates most of its own energy. You'll study that loop in Module 2.
+
+---
+
+## Key Takeaway
+
+Paper is a network of cellulose fibers held together by hydrogen bonds that form as water is removed. Mills are specialized by grade, and every mill follows the same core path: **make pulp → form a wet web → press → dry → reel and wind.** The rest of the course is about doing each of those steps well.
+
+<TryIt title="The Wet Strength Test">
+
+Take two strips torn from the same sheet of ordinary copy paper. Pull one apart and notice the effort. Now dip the second in water for 30 seconds and pull again.
+
+The wet strip falls apart with almost no force — water has broken the hydrogen bonds. Now try the same with a strip of paper towel. It holds together much better because towel grades include a **wet-strength resin** that adds bonds water can't dissolve. You've just seen why additives matter, which you'll study in Module 3.
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "What primarily holds the fibers in a sheet of paper together?",
+      options: ["Starch glue added at the headbox", "Hydrogen bonds between cellulose fibers", "Lignin that melts in the dryers", "Mechanical knots between fibers"],
+      correctIndex: 1,
+      explanation: "Hydrogen bonds form between hydroxyl groups on cellulose fibers as water is removed. Additives can help, but bonding is the fundamental mechanism."
+    },
+    {
+      question: "Roughly how much of the stock leaving the headbox is water?",
+      options: ["About 50%", "About 80%", "About 90%", "About 99%"],
+      correctIndex: 3,
+      explanation: "Headbox consistency is typically well under 1% fiber, so the stock is about 99% water. That's what lets fibers spread evenly."
+    },
+    {
+      question: "Which grade family becomes corrugated boxes?",
+      options: ["Tissue and towel", "Printing and writing", "Containerboard (linerboard and medium)", "Specialty release liner"],
+      correctIndex: 2,
+      explanation: "Linerboard forms the flat faces of corrugated board, and corrugating medium forms the wavy flutes."
+    },
+    {
+      question: "Why is g/m² (grammage) safer than basis weight when comparing different grades?",
+      options: ["It is always a larger number", "It uses the same standard area for every grade", "It includes moisture content", "It's required by U.S. law"],
+      correctIndex: 1,
+      explanation: "Basis weight in North America uses different reference areas for different grades. Grammage always means grams per square meter."
+    }
+  ]}
+/>

@@ -1,0 +1,149 @@
+---
+title: "Mill Safety: Nips, Energy, and Chemicals"
+description: "Recognize the hazards that injure paper mill workers — in-running nips, stored energy, confined spaces, steam, chemicals, and roll handling — and the controls that keep people safe."
+module: 6
+moduleTitle: "Safety, Sustainability, and Review"
+lesson: 1
+duration: "30 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+> **Note:** This lesson is an orientation, not a substitute for your site's safety training, procedures, and permits. Always follow your mill's specific rules.
+
+## The Machine Doesn't Know You're There
+
+A paper machine runs continuously at speeds that can exceed 1,000 meters per minute, with hundreds of rotating rolls, hot surfaces, and tons of stored energy. Most serious injuries in mills come from a short list of hazards.
+
+---
+
+## 1. In-Running Nips
+
+An **in-running nip point** is where two rolls — or a roll and a fabric, felt, or sheet — turn toward each other. Anything that touches the nip gets pulled in: a glove, a sleeve, a rag, a hand.
+
+<svg viewBox="0 0 680 220" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Two rolls turning toward each other create an in-running nip, marked with a red danger zone where anything nearby is pulled in. A roll and a moving felt create the same hazard.">
+  <defs>
+    <marker id="nip-rot" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#0f172a"/></marker>
+  </defs>
+  <g font-family="system-ui, -apple-system, sans-serif">
+    <text x="170" y="24" text-anchor="middle" fill="#0f172a" font-size="15" font-weight="700">Roll-to-roll nip</text>
+    <circle cx="120" cy="110" r="55" fill="#94a3b8"/>
+    <circle cx="230" cy="110" r="55" fill="#94a3b8"/>
+    <path d="M120 45 A65 65 0 0 1 180 80" fill="none" stroke="#0f172a" stroke-width="2.5" marker-end="url(#nip-rot)"/>
+    <path d="M230 45 A65 65 0 0 0 170 80" fill="none" stroke="#0f172a" stroke-width="2.5" marker-end="url(#nip-rot)"/>
+    <path d="M150 52 L175 98 L200 52 Z" fill="#dc2626" opacity="0.85"/>
+    <text x="175" y="198" text-anchor="middle" fill="#dc2626" font-size="13" font-weight="700">danger zone: pulled in from above</text>
+    <text x="510" y="24" text-anchor="middle" fill="#0f172a" font-size="15" font-weight="700">Roll-to-felt (or sheet) nip</text>
+    <circle cx="510" cy="100" r="55" fill="#94a3b8"/>
+    <line x1="370" y1="155" x2="650" y2="155" stroke="#475569" stroke-width="10"/>
+    <line x1="380" y1="178" x2="460" y2="178" stroke="#0f172a" stroke-width="2.5" marker-end="url(#nip-rot)"/>
+    <path d="M440 40 A75 75 0 0 0 455 110" fill="none" stroke="#0f172a" stroke-width="2.5" marker-end="url(#nip-rot)"/>
+    <path d="M436 150 L485 150 L462 128 Z" fill="#dc2626" opacity="0.85"/>
+    <text x="510" y="198" text-anchor="middle" fill="#dc2626" font-size="13" font-weight="700">felts, wires, and the sheet itself create nips</text>
+  </g>
+</svg>
+
+Controls include **fixed guards**, **interlocked gates**, **tail-threading systems** (rope carriers and air carriers) so nobody hand-feeds the sheet near a nip, and a strict rule: **never reach into a running machine**, even to grab a loose piece of paper.
+
+<Pitfall title="Loose Clothing and Gloves Near Nips">
+
+**Common mistake:** wearing loose gloves, long sleeves, a lanyard, or a rag in a back pocket on the machine floor.
+
+A glove caught in a nip pulls the hand in before you can react. Many mills restrict gloves near running nips, require close-fitting sleeves, and ban rags at the machine. Follow your site's rule exactly — it was likely written after someone was hurt.
+
+</Pitfall>
+
+---
+
+## 2. Hazardous Energy: Lockout/Tagout
+
+Before anyone works on equipment, **all** energy sources must be isolated and verified at zero — not just the electrical disconnect.
+
+<ProcessFlow
+  label="The lockout/tagout sequence for isolating hazardous energy."
+  color="#dc2626"
+  steps={[
+    { title: 'Prepare', detail: 'Identify every energy source from the written procedure' },
+    { title: 'Notify', detail: 'Tell affected operators' },
+    { title: 'Shut down', detail: 'Normal stop' },
+    { title: 'Isolate', detail: 'Electrical, steam, air, hydraulic, process lines' },
+    { title: 'Lock & tag', detail: 'Each worker applies their own lock' },
+    { title: 'Release stored energy', detail: 'Bleed pressure, block gravity, let rolls stop' },
+    { title: 'Verify', detail: 'Try to start; test for zero energy' },
+  ]}
+/>
+
+Paper mills have a lot of **stored energy**: a large roll can coast for many minutes after the drive is off, pneumatic loading holds press nips closed, and steam lines stay pressurized. In the U.S., OSHA's lockout standard (29 CFR 1910.147) and its pulp and paper standard (29 CFR 1910.261) apply.
+
+---
+
+## 3. Confined Spaces
+
+Chests, tanks, digesters, headboxes, pulpers, and hoods are **permit-required confined spaces**. Hazards include low oxygen, toxic gases, engulfment in stock, and moving agitators.
+
+Entry requires a **permit**, isolation and lockout of all lines and agitators, **atmospheric testing** before and during entry, an **attendant** outside, and a rescue plan.
+
+---
+
+## 4. Chemical and Gas Hazards
+
+| Hazard | Where | Risk |
+|---|---|---|
+| **Hydrogen sulfide (H₂S)** and reduced sulfur gases | Kraft pulping, liquor tanks, sewers | Toxic; deadens your sense of smell at high concentrations |
+| **Chlorine dioxide (ClO₂)** | Bleach plant | Toxic gas; can decompose explosively at high concentrations |
+| **Caustic (NaOH), white liquor** | Pulping, recovery | Severe chemical burns, especially to eyes |
+| **Sulfuric acid, biocides** | Throughout | Burns, inhalation hazards |
+
+Personal gas monitors, eyewash stations, safety showers, and chemical-specific PPE are part of daily life in a kraft mill.
+
+---
+
+## 5. Steam, Heat, and Rolls
+
+- **Steam and condensate** lines and dryer hoods cause burns. Treat every line as live.
+- **Roll handling:** parent and customer rolls weigh tons. **Clamp trucks**, overhead cranes, and roll storage stacks are a leading source of serious incidents. Pedestrians stay out of clamp truck lanes.
+- **Dust and fire:** tissue and dry sections generate fine paper dust that can fuel fires; housekeeping is a fire-prevention control.
+
+---
+
+## Key Takeaway
+
+The deadliest mill hazards are **in-running nips, stored energy, confined spaces, toxic gases, steam, and heavy rolls**. Guards, LOTO with verification, confined-space permits, gas monitoring, and traffic rules exist because people were hurt without them. **Never reach into a running machine.**
+
+<TryIt title="Count the Energy Sources">
+
+Pick one piece of equipment — say, a press section suction roll. List every energy source someone would need to isolate before changing its felt: electrical drive, pneumatic nip loading, vacuum, showers (water), steam box, gravity (raised rolls), and rotation (coasting). If you found fewer than five, look again. That list is the heart of a lockout procedure.
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "What is an in-running nip point?",
+      options: ["A gap between two parked rolls", "Where two rotating surfaces turn toward each other and can pull objects in", "A type of roll bearing", "The spot where the tail is cut"],
+      correctIndex: 1,
+      explanation: "In-running nips draw in anything that contacts them — including hands and clothing."
+    },
+    {
+      question: "During lockout, after isolating and locking, what must be done before work begins?",
+      options: ["Remove the tags", "Release stored energy and verify zero energy", "Restart briefly to test the motor", "Call the customer"],
+      correctIndex: 1,
+      explanation: "Stored energy — coasting rolls, air pressure, steam — must be released, and the isolation verified by trying to start the equipment."
+    },
+    {
+      question: "Why is hydrogen sulfide especially dangerous?",
+      options: ["It is flammable only", "At high concentrations it deadens the sense of smell", "It's always visible", "It only affects skin"],
+      correctIndex: 1,
+      explanation: "H₂S can paralyze your sense of smell, so you can't rely on the 'rotten egg' odor. Use gas monitors."
+    },
+    {
+      question: "Which of these is a permit-required confined space in a mill?",
+      options: ["The control room", "A stock chest", "The parking lot", "The winder floor"],
+      correctIndex: 1,
+      explanation: "Chests, tanks, digesters, and pulpers are confined spaces with engulfment, atmospheric, and mechanical hazards."
+    }
+  ]}
+/>

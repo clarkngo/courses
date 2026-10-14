@@ -1,0 +1,140 @@
+---
+title: "Testing Standards and Transit Performance"
+description: "Learn the lab tests that qualify board and boxes, how ISTA and ASTM transit tests simulate real distribution, and how to read a packaging specification."
+module: 5
+moduleTitle: "Performance and Testing"
+lesson: 2
+duration: "30 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Two Levels of Testing
+
+1. **Material tests** check the **board** — does it meet its grade?
+2. **Performance tests** check the **packaged product** — does it survive the trip?
+
+Both start with **conditioning**: samples are held at **23 °C and 50% RH** (TAPPI T 402 / ISO 187) until stable. Testing unconditioned board is one of the most common reasons lab results disagree.
+
+---
+
+## Board and Box Tests
+
+| Test | Standard (examples) | What it tells you |
+|---|---|---|
+| **Edge Crush (ECT)** | TAPPI T 811, T 839 | Stacking strength of the board |
+| **Burst (Mullen)** | TAPPI T 810 | Puncture/rupture resistance |
+| **Flat Crush (FCT)** | TAPPI T 825 | Resistance of flutes to crushing flat; reveals converting crush |
+| **Caliper** | TAPPI T 411 and plant methods | Board thickness — a quick crush indicator |
+| **Pin Adhesion (PAT)** | TAPPI T 821 | Strength of the starch bond between liner and flutes |
+| **Box Compression (BCT)** | TAPPI T 804, ASTM D642 | Top-to-bottom strength of the finished box |
+| **Cobb / water absorption** | TAPPI T 441 | Water resistance of liner surfaces |
+
+Plants track ECT, caliper, and pin adhesion on every shift. A sudden drop in **caliper** or **flat crush** after converting is a strong sign of crush on the FFG.
+
+---
+
+## Transit Tests: Simulating the Journey
+
+A box can pass every lab test and still fail in a parcel network, where packages are dropped, tossed, vibrated, compressed, and sorted by machines. **Transit tests** simulate that.
+
+The best-known are from **ISTA** (International Safe Transit Association) and **ASTM D4169**:
+
+| ISTA series | What it is | Typical use |
+|---|---|---|
+| **1 series** (e.g., 1A) | Basic, non-simulation integrity tests — fixed drops and vibration | Quick screening |
+| **2 series** | Partial simulation — adds atmospheric conditioning and compression | Mid-level qualification |
+| **3 series** (e.g., 3A) | General simulation of a distribution type, like parcel delivery | Most e-commerce qualification |
+| **6 series** | Customer-specific protocols, like **6-Amazon.com-SIOC** | Required by specific retailers |
+
+A typical parcel test sequence:
+
+<ProcessFlow
+  label="A typical simulation sequence for parcel shipping tests."
+  color="#a16207"
+  steps={[
+    { title: 'Condition', detail: 'Temperature/humidity per the protocol' },
+    { title: 'Drops', detail: 'Faces, edges, and corners from set heights' },
+    { title: 'Vibration', detail: 'Random vibration simulating trucks and planes' },
+    { title: 'Compression', detail: 'Static or dynamic load like a stacked trailer' },
+    { title: 'More drops', detail: 'Final handling sequence' },
+    { title: 'Inspect', detail: 'Product damage and package condition' },
+  ]}
+/>
+
+**SIOC** means **ships in own container** — the product's box goes through the network without an overbox. Many large retailers require SIOC packaging to pass their specific tests, cutting the extra corrugated, void fill, and cost of an overbox.
+
+<Pitfall title="Passing a Test Once and Calling It Qualified">
+
+**Common mistake:** a single sample passes ISTA 3A, and the design goes to production.
+
+Boxes vary — board grade, humidity, converting crush, and packing method all change from run to run. Protocols specify a **number of samples** for a reason. Test enough samples, test **production** boxes (not hand-made prototypes), and retest when the board, supplier, or product changes.
+
+</Pitfall>
+
+---
+
+## Reading a Packaging Specification
+
+A complete box spec usually includes:
+
+- **Style** (e.g., FEFCO 0201 RSC)
+- **Inside dimensions** L × W × D
+- **Board grade** (e.g., 32 ECT C flute, or 42/26/42 C) and liner color
+- **Manufacturer's joint** type (glued, taped, stitched)
+- **Print** — method, colors, artwork file, and print panels
+- **Performance requirements** — e.g., minimum BCT, ISTA protocol to pass
+- **Palletization** — boxes per bundle, bundles per pallet, pallet pattern
+- **Approved tolerances** — dimensions, caliper, moisture
+
+A spec is a contract. When a buyer and box plant disagree about quality, the spec is what settles it.
+
+---
+
+## Key Takeaway
+
+**Material tests** (ECT, burst, flat crush, pin adhesion, caliper) qualify the board; **performance tests** (BCT, ISTA, ASTM D4169) qualify the packaged product. Condition samples first, test enough production samples, and capture everything in a written **packaging specification**.
+
+<TryIt title="The Kitchen Drop Test">
+
+Pack a fragile item (a mug wrapped in paper) in a small box. From about 30 inches (76 cm), drop it once on each of: one corner, the three edges that meet at that corner, and all six faces. Open it and inspect. ISTA 1A uses a similar sequence — but with defined heights, conditioning, and inspection criteria. What would you change in the packaging?
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "Which test measures the strength of the starch bond between liner and flutes?",
+      options: ["Mullen burst", "Pin adhesion (PAT)", "Cobb", "BCT"],
+      correctIndex: 1,
+      explanation: "Pin adhesion uses pins inserted into the flutes to pull the liner away and measure bond strength."
+    },
+    {
+      question: "A drop in flat crush and caliper after converting suggests…",
+      options: ["Too much starch", "Crush on the converting equipment", "Wrong print color", "Humidity below 50%"],
+      correctIndex: 1,
+      explanation: "Converting crush flattens flutes, reducing caliper and flat crush resistance."
+    },
+    {
+      question: "Which ISTA series is a general simulation, commonly used for parcel shipping?",
+      options: ["1 series", "3 series", "6 series", "9 series"],
+      correctIndex: 1,
+      explanation: "ISTA 3 series (e.g., 3A) simulates general distribution environments such as parcel delivery."
+    },
+    {
+      question: "What does SIOC stand for?",
+      options: ["Standard ISTA Operating Code", "Ships in own container", "Single inner outer case", "Stacked in original carton"],
+      correctIndex: 1,
+      explanation: "SIOC packaging ships through the network without an additional overbox."
+    },
+    {
+      question: "Why should transit tests use production boxes rather than hand-made prototypes?",
+      options: ["Prototypes are always stronger", "Production boxes include real board variation and converting effects", "Standards ban prototypes", "They are cheaper"],
+      correctIndex: 1,
+      explanation: "Hand-cut samples avoid converting crush and real-world variation, so they can overstate performance."
+    }
+  ]}
+/>

@@ -1,0 +1,124 @@
+---
+title: "Troubleshooting Sheet Breaks and Defects"
+description: "Use a structured approach to find the root cause of sheet breaks, holes, wrinkles, curl, and profile problems — and learn the defect patterns every operator should recognize."
+module: 5
+moduleTitle: "Quality and Troubleshooting"
+lesson: 2
+duration: "30 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Why Breaks Are So Expensive
+
+When the sheet breaks, the machine keeps running but makes nothing saleable. Everything goes to the **couch pit** or **broke pulper** until the crew threads a narrow **tail** back through the machine and widens it to full width.
+
+On a large machine, every minute of break time can mean a ton or more of lost production. A mill tracking **break frequency** and **minutes lost per break** is tracking money.
+
+---
+
+## A Structured Approach
+
+Good troubleshooters don't guess. They work the problem the same way every time.
+
+<ProcessFlow
+  label="A structured troubleshooting approach for sheet breaks and defects."
+  color="#047857"
+  loop="Fix didn't hold? Go back to Locate with what you learned."
+  steps={[
+    { title: 'Locate', detail: 'Where did the break start? Break-detection cameras, broke location' },
+    { title: 'Characterize', detail: 'Edge or center? Clean tear or hole? Pattern repeating?' },
+    { title: 'Correlate', detail: 'What changed? Grade, furnish, chemistry, felt, speed, shift' },
+    { title: 'Hypothesize', detail: 'One likely cause, with evidence' },
+    { title: 'Test & verify', detail: 'Change one thing; confirm with data' },
+    { title: 'Standardize', detail: 'Update procedures so it stays fixed' },
+  ]}
+/>
+
+**Web inspection** and **break-detection camera systems** record video around the machine. Rewinding the footage to the moment of the break is often the fastest way to see where it started.
+
+### Repeating Defects: Do the Math
+
+If a defect repeats at a regular interval in the MD, measure the spacing. Then compare it with the **circumference** of rolls and fabrics:
+
+> Repeat distance = π × roll diameter (for a roll) or the fabric length (for a felt or wire)
+
+A spot every 1.88 m? That matches a roll about 0.6 m in diameter. Find which rolls in the machine are that size, and inspect them for a damaged cover, a deposit, or a doctor blade problem.
+
+---
+
+## Common Defects and Likely Causes
+
+| Defect | What it looks like | Common causes |
+|---|---|---|
+| **Holes** | Round or ragged openings | Stickies, slime, pitch deposits falling from machine surfaces; foam; shives |
+| **Spots / dirt** | Specks in the sheet | Bark, dirt, plastics passing cleaners; scale deposits |
+| **Edge cracks** | Breaks starting at the edge | Wet or weak edges, edge trim problems, draw problems |
+| **Wrinkles** | Creases in MD | Uneven moisture or caliper profile, misaligned rolls, slack sheet |
+| **Wet streaks** | MD bands with high moisture | Plugged felt, steam shower problems, headbox slice issues |
+| **Curl** | Sheet won't lie flat | Moisture or fiber-orientation differences between top and bottom |
+| **Blisters** | Bubbles in the sheet | Too-rapid drying of a wet sheet; trapped steam |
+| **Slime holes** | Gelatinous lumps then holes | Microbiological growth in the white-water system |
+
+### Deposits and Housekeeping
+
+Many breaks trace back to **deposits** — pitch from wood, stickies from recycled fiber, scale from hard water, and biological **slime**. They build up on surfaces, then break loose and land on the sheet. Controls include:
+
+- **Biocide programs** in the white water loop
+- **Deposit control chemicals** and fixatives
+- **Showers and doctor blades** that keep rolls and fabrics clean
+- **Scheduled boil-outs** and washups during shutdowns
+
+<Pitfall title="Changing Three Things at Once">
+
+**Common mistake:** after a bad shift of breaks, the team changes the felt shower, adds retention aid, and slows the machine — all at the same time.
+
+Breaks drop. Great — but nobody knows which change worked, so nobody knows which one to keep, and the same problem comes back next month. Unless safety or a customer order demands it, **change one variable at a time** and let the data settle before the next change.
+
+</Pitfall>
+
+---
+
+## Key Takeaway
+
+Breaks and defects are expensive; a structured approach — **locate, characterize, correlate, hypothesize, test, standardize** — finds root causes faster than guessing. **Repeating defects** can be traced to specific rolls by matching the repeat distance to roll circumference. Many holes and breaks start as **deposits**, so cleanliness is a production strategy.
+
+<TryIt title="Find the Roll">
+
+A customer reports a small dent in their linerboard every **1.41 m** along the roll. The mill has dryer cans at 1.83 m diameter, a calender roll at 0.45 m, and a felt-carrying roll at 0.60 m.
+
+Compute each circumference (π × D): dryer cans ≈ 5.75 m; calender roll ≈ 1.41 m; felt roll ≈ 1.88 m. The **calender roll** matches — check it for a dent or deposit.
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "What is a 'tail' on a paper machine?",
+      options: ["The trim strip at the winder", "A narrow strip of sheet threaded through the machine after a break", "The end of a parent roll", "A felt seam"],
+      correctIndex: 1,
+      explanation: "After a break, crews thread a narrow tail through the machine, then spread it to full width."
+    },
+    {
+      question: "A defect repeats every 1.88 m in the machine direction. What should you suspect?",
+      options: ["A random dirt particle", "A roll about 0.6 m in diameter", "The headbox slice", "Fiber furnish"],
+      correctIndex: 1,
+      explanation: "π × 0.6 m ≈ 1.88 m. A regular repeat points to a roll or fabric with that circumference."
+    },
+    {
+      question: "What commonly causes slime holes?",
+      options: ["Overdrying", "Microbiological growth in the white-water system", "Excess calendering", "High kappa number"],
+      correctIndex: 1,
+      explanation: "Bacteria and fungi form slime deposits that break loose and cause holes. Biocide programs control them."
+    },
+    {
+      question: "Why should you change one variable at a time when troubleshooting?",
+      options: ["It's faster", "So you know which change actually fixed the problem", "Because chemicals can't be combined", "It's required by OSHA"],
+      correctIndex: 1,
+      explanation: "Changing several things at once hides the true cause, so the fix can't be standardized."
+    }
+  ]}
+/>

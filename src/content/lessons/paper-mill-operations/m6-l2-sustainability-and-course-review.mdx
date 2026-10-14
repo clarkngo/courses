@@ -1,0 +1,156 @@
+---
+title: "Sustainability, Glossary, and Course Review"
+description: "See how mills manage energy, water, and forests, review the key vocabulary of papermaking, and test yourself across the whole course."
+module: 6
+moduleTitle: "Safety, Sustainability, and Review"
+lesson: 2
+duration: "35 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Energy: A Mill That Fuels Itself
+
+Papermaking is energy-intensive, but kraft mills have a built-in advantage: about half of every log ends up in black liquor and bark, both of which are burned for energy.
+
+- The **recovery boiler** burns black liquor solids.
+- A **power boiler** burns bark, wood waste, and sometimes other fuels.
+- Steam drives **turbines** for electricity (cogeneration, or **combined heat and power**), then the lower-pressure exhaust steam heats the digesters and dryers.
+
+Many kraft mills generate most of their own energy from these biomass sources. Recycled mills, which don't have black liquor, depend more on purchased fuel and electricity.
+
+**Biggest energy users** to watch: dryer steam (remember the press section!), refiner electricity, and vacuum pumps.
+
+---
+
+## Water: Closing the Loop
+
+Making paper uses a lot of water, but most of it is reused many times through the white-water loops. Mills reduce fresh water use by:
+
+- Reusing white water and clarified filtrate in place of fresh water for showers and dilution
+- **Save-alls** (disc filters, dissolved air flotation) that recover fiber and clarify water for reuse
+- Counter-current washing in the fiberline
+
+Water that leaves the mill goes to **effluent treatment** — typically primary clarification to remove solids, then **secondary (biological) treatment** in aerated basins that consume dissolved organics. Regulators track measures like **BOD** (biochemical oxygen demand), **COD**, **TSS** (total suspended solids), and, for bleached mills, **AOX** (adsorbable organic halides).
+
+<Pitfall title="Closing the Water Loop Too Far">
+
+**Common mistake:** cutting fresh water aggressively without a plan for what builds up.
+
+Every time water is reused, dissolved salts, organic material, and anionic trash concentrate. Too much closure can raise temperatures, feed slime and deposits, increase corrosion, and wreck wet-end chemistry. Closure is a good goal — but it has to be paired with good chemistry control and kidney treatment.
+
+</Pitfall>
+
+---
+
+## Forests and Fiber
+
+- **Certification:** many mills source wood certified under **FSC** (Forest Stewardship Council), **SFI** (Sustainable Forestry Initiative), or **PEFC**, with **chain-of-custody** tracking from forest to product.
+- **Residuals:** sawmill chips and thinnings are a major fiber source, so mills use parts of the tree lumber can't.
+- **Recycling:** paper and cardboard are among the most recycled materials. OCC recovery in the U.S. has been reported around **70–90%** in recent years, depending on the source and year.
+
+---
+
+## Glossary
+
+| Term | Meaning |
+|---|---|
+| **Basis weight / grammage** | Mass per unit area of paper |
+| **Black liquor** | Spent cooking liquor containing dissolved lignin; burned in the recovery boiler |
+| **Broke** | The mill's own off-spec or trim paper, repulped |
+| **Calender** | Roll stack that smooths and levels caliper |
+| **Caliper** | Thickness of the sheet |
+| **CD / MD** | Cross direction / machine direction |
+| **Consistency** | Percent fiber (solids) in a stock slurry |
+| **Couch roll** | Suction roll where the web leaves the forming fabric |
+| **Freeness (CSF)** | How fast water drains from pulp — drops as refining increases |
+| **Headbox** | Spreads stock into an even jet across the wire |
+| **Kappa number** | Measure of lignin remaining in pulp |
+| **OCC** | Old corrugated containers — recycled boxes |
+| **Parent roll** | Full-width roll wound at the reel |
+| **Refining** | Mechanical treatment that develops fibers for bonding |
+| **Smelt** | Molten chemicals drained from the recovery boiler |
+| **Stickies** | Tacky contaminants from adhesives and coatings |
+| **White liquor** | Kraft cooking liquor: NaOH + Na₂S |
+| **White water** | Water drained through the wire, reused in the short loop |
+
+---
+
+## Key Takeaway
+
+Mills are energy- and water-intensive, but kraft mills recover chemicals and generate much of their own energy from biomass, and water is reused heavily before biological treatment. Fiber comes from certified forests, residuals, and a very high recycling rate.
+
+<TryIt title="Teach It Back">
+
+Explain to someone else — in two minutes, no notes — how a tree becomes a roll of linerboard. Hit these stops: chips, digester, recovery loop, refining, headbox, wire, press, dryers, size press, reel, winder. If you stall at a stop, revisit that lesson.
+
+</TryIt>
+
+## Final Review
+
+<Quiz
+  questions={[
+    {
+      question: "What holds the fibers in a sheet of paper together?",
+      options: ["Lignin", "Hydrogen bonds between cellulose fibers", "Calcium carbonate", "Starch alone"],
+      correctIndex: 1,
+      explanation: "Hydrogen bonds form between cellulose fibers as water is removed."
+    },
+    {
+      question: "Which fiber type gives the most strength?",
+      options: ["Hardwood kraft", "Softwood kraft", "Mechanical groundwood", "Highly recycled fiber"],
+      correctIndex: 1,
+      explanation: "Long softwood fibers, cooked by the kraft process, give the strongest pulp."
+    },
+    {
+      question: "In the recovery loop, what converts green liquor back into white liquor?",
+      options: ["The evaporators", "Causticizing with lime", "The bleach plant", "The size press"],
+      correctIndex: 1,
+      explanation: "Lime (CaO) converts sodium carbonate in green liquor into sodium hydroxide, regenerating white liquor."
+    },
+    {
+      question: "More refining generally causes…",
+      options: ["Higher freeness and faster drainage", "Lower freeness, slower drainage, and stronger paper", "Brighter paper", "Less bonding"],
+      correctIndex: 1,
+      explanation: "Refining increases bonding and strength but slows drainage (lower CSF)."
+    },
+    {
+      question: "Roughly what solids content does the sheet reach after the press section?",
+      options: ["About 5%", "About 20%", "About 40–50%", "About 95%"],
+      correctIndex: 2,
+      explanation: "The press takes the sheet from ~20% to about 40–50% solids."
+    },
+    {
+      question: "Why is overdrying in the dryer section costly?",
+      options: ["It wastes steam, makes board brittle, and gives away saleable weight", "It increases strength too much", "It lowers brightness", "It increases freeness"],
+      correctIndex: 0,
+      explanation: "Overdrying wastes the most expensive water removal step, hurts converting, and reduces sold weight."
+    },
+    {
+      question: "At what conditions are paper samples conditioned for testing?",
+      options: ["23 °C / 50% RH", "0 °C / 0% RH", "40 °C / 90% RH", "Whatever the lab happens to be"],
+      correctIndex: 0,
+      explanation: "The standard atmosphere is 23 °C and 50% relative humidity."
+    },
+    {
+      question: "A defect repeats every 5.75 m. Which item likely causes it?",
+      options: ["A 0.45 m calender roll", "A 1.83 m dryer can", "A 0.60 m felt roll", "The headbox"],
+      correctIndex: 1,
+      explanation: "π × 1.83 m ≈ 5.75 m, matching the dryer can circumference."
+    },
+    {
+      question: "Which is NOT a step in lockout/tagout?",
+      options: ["Isolate all energy sources", "Release stored energy", "Verify zero energy", "Reach in carefully while the machine coasts"],
+      correctIndex: 3,
+      explanation: "Never reach into equipment that's moving. Wait, release stored energy, and verify."
+    },
+    {
+      question: "What does BOD measure in mill effluent?",
+      options: ["Brightness of dyes", "Oxygen demand from biodegradable organics", "Basis weight variation", "Board density"],
+      correctIndex: 1,
+      explanation: "Biochemical oxygen demand measures how much oxygen microbes would consume breaking down organics in the water."
+    }
+  ]}
+/>

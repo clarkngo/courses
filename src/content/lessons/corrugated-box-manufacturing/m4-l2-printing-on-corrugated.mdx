@@ -1,0 +1,119 @@
+---
+title: "Printing on Corrugated: Flexo, Litho-Lam, and Digital"
+description: "Compare post-print flexo, preprint, litho-lamination, and digital printing on corrugated — and learn the anilox, plate, and design rules that make graphics print well on a fluted surface."
+module: 4
+moduleTitle: "Converting and Printing"
+lesson: 2
+duration: "25 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Why Printing on Corrugated Is Hard
+
+A sheet of corrugated board isn't flat at a microscopic level. The liner is supported by flutes underneath and sags slightly between them. A printing plate pressing on that surface contacts the flute tips harder than the valleys, which can cause **fluting** (also called **washboard printing**) — faint stripes in solid areas that follow the flutes.
+
+Every corrugated printing method is a different answer to that problem.
+
+---
+
+## The Four Main Methods
+
+| Method | How it works | Graphics quality | Best for |
+|---|---|---|---|
+| **Post-print flexo** | Flexible rubber or photopolymer plates print directly on the finished board, usually in the FFG or RDC | Basic to good (1–4 colors typical) | Most shipping boxes: logos, handling marks, barcodes |
+| **Preprint flexo** | Liner is printed on a wide web press **before** it goes to the corrugator | High | Long runs of high-graphics boxes (beverages, consumer goods) |
+| **Litho-lamination** | Paper is printed on an offset litho press, then **laminated** onto single-face or board | Highest — photographic | Retail displays, premium consumer packaging |
+| **Digital** | Inkjet heads print directly on board or on preprint liner | High; every box can differ | Short runs, versioning, prototypes, personalization |
+
+### Post-Print Flexo Basics
+
+In each flexo print unit:
+
+1. An **ink fountain** supplies ink to an **anilox roll** — a ceramic roll engraved with millions of tiny cells.
+2. A **doctor blade** wipes the surface, leaving a precise volume of ink in the cells.
+3. The anilox transfers ink to the raised image on the **plate**.
+4. The plate prints onto the board.
+
+The **anilox line screen** (cells per inch) and **cell volume** control how much ink goes down. Coarser anilox = more ink for solid areas; finer anilox = less ink for fine detail. Corrugated inks are mostly **water-based**.
+
+---
+
+## Design Rules for Corrugated Graphics
+
+Good box designers work **with** the substrate:
+
+- **Avoid large solids** on post-print flexo — they show fluting. Use texture, reverse type, or break up solids.
+- **Keep fine type and thin lines** above minimum sizes (plants publish their own specs).
+- **Expect dot gain** — halftone dots spread on absorbent kraft liner, so images print darker than they look on screen.
+- **Account for liner color:** brown kraft shifts colors, and white ink isn't always available. White-top or bleached liner costs more but prints cleaner.
+- **Barcodes:** print them in the machine direction recommended by the plant, at an approved size, and verify scannability.
+- **Keep graphics off scores and slots** — they crack and distort.
+
+<Pitfall title="Designing a Box on Screen Like a Brochure">
+
+**Common mistake:** sending a box plant artwork with full-bleed photos, small reversed type, and rich dark solids — intended for post-print flexo on brown kraft.
+
+It will print muddy, fluted, and dark, and the brand team will reject it. Before artwork starts, ask the plant **which print method, liner, and number of colors** the job will use, and get their design guide. The right artwork for litho-lam is the wrong artwork for one-color post-print.
+
+</Pitfall>
+
+---
+
+## Choosing a Method
+
+Ask four questions:
+
+1. **How many boxes?** Litho-lam and preprint have high setup; digital has none but higher unit cost.
+2. **How good must it look?** Shipping-only box vs. retail shelf vs. premium unboxing.
+3. **How many versions?** Many SKUs or seasonal changes favor digital.
+4. **What's the timeline?** Plates and preprint rolls take lead time; digital can run tomorrow.
+
+Increasingly, e-commerce brands use **digital or high-graphics flexo** on the box itself, because the shipping box *is* the first thing a customer sees.
+
+---
+
+## Key Takeaway
+
+Corrugated's fluted surface makes printing harder than on flat paper. **Post-print flexo** covers most boxes; **preprint** and **litho-lam** deliver high graphics for long runs; **digital** wins for short runs and versioning. Design for the method, liner, and press — not for the screen.
+
+<TryIt title="Spot the Method">
+
+Look closely at three printed boxes: a plain shipping box, a beer or soda case, and a retail display or premium electronics box. Use a magnifying glass or phone camera zoom.
+
+- Visible flute stripes in solids and soft edges → **post-print flexo**
+- Crisp, glossy, photographic images on a paper layer you can peel → **litho-lam**
+- Sharp graphics printed directly in the liner, no peelable layer → **preprint** or **digital**
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "What is 'fluting' in corrugated printing?",
+      options: ["A die-cut defect", "Stripes in printed solids caused by flutes beneath the liner", "Ink drying too fast", "A plate material"],
+      correctIndex: 1,
+      explanation: "The liner sags between flute tips, so print pressure varies and solids show stripes."
+    },
+    {
+      question: "Which method gives the highest, photographic-quality graphics?",
+      options: ["Post-print flexo", "Litho-lamination", "Stitching", "Rotary die cutting"],
+      correctIndex: 1,
+      explanation: "Litho-lam prints on paper with offset lithography and laminates it to the board."
+    },
+    {
+      question: "What does the anilox roll do in flexo printing?",
+      options: ["Cuts the board", "Meters a precise amount of ink to the plate", "Dries the ink", "Feeds the sheet"],
+      correctIndex: 1,
+      explanation: "The engraved cells, wiped by a doctor blade, deliver a controlled ink volume to the plate."
+    },
+    {
+      question: "Which method best suits a short run with many different versions?",
+      options: ["Preprint flexo", "Litho-lamination", "Digital printing", "Hot stamping"],
+      correctIndex: 2,
+      explanation: "Digital printing has no plates, so each box can differ and short runs are economical."
+    }
+  ]}
+/>
