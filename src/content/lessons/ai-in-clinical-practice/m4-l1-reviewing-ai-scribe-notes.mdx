@@ -1,0 +1,130 @@
+---
+title: "Reviewing AI Scribe Notes"
+description: "Understand how ambient AI documentation works, the specific errors it makes, and a fast, reliable review routine before you sign."
+module: 4
+moduleTitle: "Discernment at the Point of Care"
+lesson: 1
+duration: "25 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## The Fastest-Growing Clinical AI
+
+Ambient AI scribes listen to the clinical encounter (with consent), transcribe it, and generate a draft note. Many clinicians report less after-hours charting and more eye contact with patients. That's a real benefit. But the note you sign is a **legal and clinical record**, and you are its author.
+
+---
+
+## How It Works and Where Errors Enter
+
+<ProcessFlow
+  label="How ambient AI scribes produce a note, and where errors can enter"
+  color="#0e7490"
+  steps={[
+    { title: "Capture", detail: "Audio of the visit", badge: "1" },
+    { title: "Transcribe", detail: "Speech to text, speaker labels", badge: "2" },
+    { title: "Generate", detail: "LLM drafts structured note", badge: "3" },
+    { title: "Review", detail: "Clinician edits and signs", badge: "4" },
+  ]}
+/>
+
+| Stage | Typical errors |
+|---|---|
+| **Capture** | Missed speech (soft voices, masks, background noise), side conversations recorded, interpreter dialogue partially captured |
+| **Transcribe** | Misheard drug names (sound-alikes), numbers, laterality ("left" vs. "right"), wrong speaker attribution (patient vs. family vs. clinician) |
+| **Generate** | **Fabricated findings** (e.g., a full normal ROS or exam that wasn't done), omissions of important negatives, over-confident assessments, statements framed as patient-reported when the clinician said them |
+| **Review** | Automation bias: skimming a well-formatted note and signing |
+
+### The most dangerous error: plausible additions
+
+The model was trained on huge numbers of notes in which certain exam elements usually appear together. It may "complete the pattern" by documenting a **normal exam element you didn't perform**, or a **review of systems you didn't ask about**. These errors look exactly like real documentation and can mislead the next clinician, affect billing compliance, and create medicolegal exposure.
+
+---
+
+## A 90-Second Review Routine
+
+Before signing every AI-drafted note, check these in order:
+
+1. **Exam and ROS.** Did I actually perform/ask everything documented? Delete anything I didn't.
+2. **Medications and numbers.** Drug names, doses, frequencies, vitals, lab values, durations. Sound-alike drugs and transposed numbers are common.
+3. **Laterality and anatomy.** Left/right, upper/lower, specific digits or levels.
+4. **Attribution.** Is each statement attributed to the right person (patient, family, clinician)?
+5. **Assessment and plan.** Does it reflect *my* reasoning and decisions, including uncertainty, and not a more confident or different version?
+6. **Omissions.** Is anything important missing: a key negative, a safety-net instruction, a shared decision, a sensitive disclosure the patient asked you to document (or not to)?
+
+<Pitfall title="Reviewing Only the Assessment and Plan">
+
+**Common mistake:** trusting the HPI, ROS, and exam because "that's just the scribe's part" and focusing review on the A&P.
+
+Fabricated exam findings and misattributed history are among the most common ambient-scribe errors, and they're in the sections clinicians skim. Review the **whole** note, with extra attention to anything you didn't personally say.
+
+</Pitfall>
+
+---
+
+## Consent and Sensitive Encounters
+
+- **Tell patients** that an AI tool is helping with documentation, and follow your organization's consent process.
+- **Offer an opt-out**, and honor it without friction.
+- **Pause or decline** ambient capture for sensitive conversations (intimate partner violence, substance use disclosures, mental health crises), or when a patient seems hesitant, as your policy allows.
+- **Be careful with third parties.** Family members and interpreters are recorded too.
+
+## Feedback Improves the System
+
+Most enterprise scribe tools have a way to flag errors. Use it. Recurring error patterns (a misheard drug, a template that always inserts a normal exam) are often fixable at the configuration level, and your reports help colleagues.
+
+<TryIt title="Audit Five of Your Own Notes">
+
+If your organization uses an ambient scribe:
+
+1. Pick five recent AI-drafted notes **before** your edits, if your system keeps a version history. Otherwise, review the next five as they arrive.
+2. Using the six-step routine, count errors in each category.
+3. Identify your top error category. Add a deliberate check for it to your routine.
+4. Report any systematic pattern through your organization's feedback channel.
+
+If you don't use a scribe yet, write a short fictional encounter dialogue, ask a general assistant to "write a SOAP note from this transcript," and audit the result for added findings.
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "Which ambient scribe error is most likely to look like legitimate documentation?",
+    options: [
+      "A blank exam section",
+      "A complete, normal exam element the clinician never performed",
+      "A misspelled heading",
+      "A note that's too short"
+    ],
+    correctIndex: 1,
+    explanation: "Models complete common patterns, so fabricated normal findings blend in perfectly. Check every exam element against what you actually did."
+  },
+  {
+    question: "A patient is about to disclose intimate partner violence and seems hesitant. What's the best practice regarding ambient capture?",
+    options: [
+      "Keep recording. The note will be more complete.",
+      "Pause or stop ambient capture as your policy allows, and document manually as appropriate.",
+      "Ask the patient to speak louder.",
+      "Tell the patient the AI requires it."
+    ],
+    correctIndex: 1,
+    explanation: "Sensitive disclosures warrant pausing ambient capture. Patient trust and safety come first."
+  },
+  {
+    question: "Who is responsible for the accuracy of an AI-drafted note once it's signed?",
+    options: [
+      "The AI vendor",
+      "The IT department",
+      "The signing clinician",
+      "No one, since it was automated"
+    ],
+    correctIndex: 2,
+    explanation: "Signing makes you the author. The record carries your name and your accountability."
+  }
+]} />
+
+## Up Next
+
+Scribes generate text. Decision-support tools generate *recommendations*, and they bring a subtler risk: automation bias.

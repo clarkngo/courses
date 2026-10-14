@@ -1,0 +1,141 @@
+---
+title: "AI and Your Health"
+description: "Use AI to prepare for doctor visits, understand medical terms and test results, and organize medications, while knowing exactly where AI's help should stop."
+module: 4
+moduleTitle: "Health and Daily Life"
+lesson: 1
+duration: "25 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## A Helper, Never Your Doctor
+
+Health is one of the most valuable ways to use AI, and one of the places where caution matters most. The rule for this whole lesson is simple:
+
+> **AI can help you understand and prepare. Your doctor, nurse, and pharmacist make the decisions with you.**
+
+**In an emergency, call 911 (or your local emergency number). Don't type symptoms into an AI.** Chest pain, trouble breathing, sudden weakness on one side, confusion, or severe bleeding need help right now.
+
+---
+
+## Where AI Helps
+
+### 1. Preparing for an appointment
+
+Doctor visits are short, and it's easy to forget a question the moment you walk in. AI can help you get organized:
+
+> *"I have a check-up with my doctor next week. I've been more tired than usual for about a month and my ankles swell in the evening. Help me write a short list of what to tell the doctor and questions to ask. Keep it to one page."*
+
+Print it or keep it on your phone, and hand it to your doctor. Most doctors appreciate an organized patient.
+
+### 2. Understanding what you were told
+
+After an appointment, or when results appear in your patient portal:
+
+> *"My doctor said I have 'mild osteopenia.' What does that mean in simple words, and what questions should I ask at my next visit?"*
+
+> *"My blood test shows an A1C of 6.1%. In general terms, what does A1C measure?"*
+
+AI can explain **general** meanings well. It doesn't know your full history, and normal ranges can vary by lab and by person, so let your care team tell you what **your** results mean for **you**.
+
+### 3. Organizing medications
+
+> *"Help me make a simple chart for my medications: name, dose, what time I take it, and what it's for. I'll fill in the details. Make it easy to print in large type."*
+
+Bring that chart to every appointment and pharmacy visit.
+
+### 4. Turning instructions into steps
+
+> *"My discharge papers say to 'elevate the extremity and apply ice 20 minutes on, 20 off.' Can you explain that as simple step-by-step instructions?"*
+
+---
+
+## Where AI's Help Stops
+
+<ProcessFlow
+  label="When to use AI for health and when to call a professional"
+  color="#c2410c"
+  steps={[
+    { title: "Understand", detail: "AI can explain terms and general info", badge: "✓" },
+    { title: "Prepare", detail: "AI can help you list symptoms and questions", badge: "✓" },
+    { title: "Decide", detail: "Diagnosis, dosing, treatment: your care team", badge: "✗" },
+    { title: "Emergency", detail: "Call 911, not an app", badge: "!" },
+  ]}
+/>
+
+**Never let AI:**
+
+- **Tell you to start, stop, or change a medication or dose.** Always ask your doctor or pharmacist.
+- **Diagnose you.** It may give you a list of possibilities, which can be useful to bring to your doctor, but it can't examine you and it can be wrong.
+- **Talk you out of seeing a doctor.** If you're worried enough to ask, that's a good reason to call your doctor's office or nurse line.
+
+<Pitfall title="Checking Drug Interactions With AI Alone">
+
+**Common mistake:** asking an AI whether two medications are safe together and treating the answer as final.
+
+AI may miss interactions, especially with supplements or recently approved drugs, and it doesn't know your kidney function, allergies, or other medications. **Your pharmacist** checks interactions as part of their job, usually for free. Call or stop by and ask. That's what they're there for.
+
+</Pitfall>
+
+---
+
+## Keep Your Health Information Private
+
+Health details are some of the most sensitive information you have. A few habits:
+
+- **Describe, don't identify.** "A 72-year-old woman with high blood pressure" gives the AI enough context without your name, birthday, or Medicare number.
+- **Don't upload your entire medical record** to a general AI assistant. Share only the part you need explained, with your name and ID numbers covered.
+- **Use your patient portal's built-in tools** if your health system offers them. They're covered by health privacy rules in ways general AI apps may not be.
+
+<TryIt title="Prepare for Your Next Appointment">
+
+1. Think of your next doctor's visit (or a recent one).
+2. Ask your AI assistant to help you build a one-page list: *"what's changed since my last visit," "my current medications" (you fill in the names), and "questions to ask."*
+3. Ask: *"What's one question people often forget to ask at a visit like this?"*
+4. Print it or save it to your phone, and bring it to your appointment.
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "You suddenly have chest pain and shortness of breath. What should you do?",
+    options: [
+      "Describe your symptoms to an AI assistant.",
+      "Call 911 or your local emergency number immediately.",
+      "Wait and see if it gets better.",
+      "Search the internet for causes."
+    ],
+    correctIndex: 1,
+    explanation: "Emergencies need emergency services, not an app. Call 911 right away."
+  },
+  {
+    question: "Which is a GOOD use of AI for your health?",
+    options: [
+      "Deciding whether to stop taking a prescription.",
+      "Getting a final diagnosis for a new symptom.",
+      "Writing a list of questions to bring to your doctor.",
+      "Choosing a new dose for your blood pressure medicine."
+    ],
+    correctIndex: 2,
+    explanation: "AI is excellent for preparing and understanding. Decisions about diagnosis and medication belong with your care team."
+  },
+  {
+    question: "Who is the best person to check whether two of your medications are safe to take together?",
+    options: [
+      "An AI assistant",
+      "Your pharmacist or doctor",
+      "A friend who takes the same medicine",
+      "An online forum"
+    ],
+    correctIndex: 1,
+    explanation: "Pharmacists check interactions using your full medication list and health details. AI alone can miss things."
+  }
+]} />
+
+## Up Next
+
+Health matters, but so does fun. Next, you'll use AI for hobbies, travel, learning, and staying connected with the people you love.

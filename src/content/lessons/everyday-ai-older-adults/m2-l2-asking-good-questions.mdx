@@ -1,0 +1,127 @@
+---
+title: "Asking Good Questions"
+description: "Learn a simple four-part recipe for asking AI for help, how to follow up when an answer misses the mark, and why it's fine to say 'Explain that more simply.'"
+module: 2
+moduleTitle: "Getting Started"
+lesson: 2
+duration: "20 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## Talk to It Like a Helpful Stranger
+
+Remember the well-read helper from Lesson 1? They know a lot about the world but **nothing about you**. The more you tell them about your situation, the better their help will be.
+
+Compare these two requests:
+
+- ❌ *"Exercises."*
+- ✅ *"I'm 74 and I had a knee replacement last year. My physical therapist cleared me for gentle exercise. Can you suggest five easy exercises I can do sitting in a chair, with simple instructions?"*
+
+The first gets a generic list that might not suit you at all. The second gets something you can actually use.
+
+---
+
+## A Simple Four-Part Recipe
+
+You don't need special words or "prompts." Just try to include these four things:
+
+<ProcessFlow
+  label="Four parts of a good question for AI: who you are, what you want, the details, and how you'd like the answer"
+  color="#c2410c"
+  steps={[
+    { title: "Who you are", detail: "A little about you or your situation" },
+    { title: "What you want", detail: "The task: explain, write, plan, compare" },
+    { title: "The details", detail: "Anything it needs to know" },
+    { title: "How you'd like it", detail: "Short? Big print? Steps? A list?" },
+  ]}
+/>
+
+**Example:**
+
+> "I'm a retired teacher and I volunteer at the library. **[who you are]** Please write a short notice **[what you want]** announcing a free tech help session on Tuesdays from 10 to noon in the community room, for people who want help with phones and tablets. **[the details]** Keep it friendly and under 60 words, and suggest a title in big letters. **[how you'd like it]**"
+
+You won't always need all four parts. A quick question like *"How long do I boil an egg for a soft yolk?"* is fine as it is.
+
+---
+
+## The Real Secret: Keep the Conversation Going
+
+The first answer is just a starting point. You can **reply** as if you're talking to a person, and the AI remembers what you said earlier in the same conversation. Some useful follow-ups:
+
+| If the answer is… | Try saying… |
+|---|---|
+| Too complicated | *"Can you explain that more simply, like you would to a friend?"* |
+| Too long | *"Please shorten that to three sentences."* |
+| Not quite right | *"That's close, but I don't have an oven. Can you change it for a stovetop?"* |
+| Missing something | *"You didn't mention cost. Roughly how much would that be?"* |
+| Hard to follow | *"Please give me numbered steps, one action per step."* |
+| Confusing a word | *"What does 'deductible' mean?"* |
+
+There's no limit to how many times you can ask it to try again, and it will never get impatient with you.
+
+<Pitfall title="Starting Over Instead of Following Up">
+
+**Common mistake:** closing the app and starting a brand-new chat every time an answer isn't right.
+
+When you start a new chat, the AI forgets everything you told it. It's usually better to stay in the same conversation and say what you'd like changed. Start a **new chat** only when you switch to a completely different topic. That keeps things tidy and stops old details from getting mixed in.
+
+</Pitfall>
+
+---
+
+## It's Okay to Be Polite (and Okay Not To)
+
+Many people say "please" and "thank you" to AI. That's perfectly fine and can make the conversation feel more natural. It's also fine not to. The AI doesn't have feelings to hurt. What matters most is being **clear**.
+
+<TryIt title="Practice the Recipe">
+
+1. Think of something real you'd like help with this week: a meal plan, a gift idea, how to use a feature on your phone, or a question you've been curious about.
+2. Write your question using as many of the four parts as make sense.
+3. Read the answer, then send at least **two follow-ups** from the table above, for example, *"Explain that more simply"* and *"Please make it shorter."*
+4. Notice how much better the answer gets after a couple of rounds.
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "Why does adding details about your situation usually lead to a better answer?",
+    options: [
+      "The AI charges less for longer questions.",
+      "The AI knows nothing about you unless you tell it, so details help it tailor the answer.",
+      "Longer questions are always processed faster.",
+      "It doesn't help at all."
+    ],
+    correctIndex: 1,
+    explanation: "The AI can only use what you share. Details about your situation let it give advice that fits you."
+  },
+  {
+    question: "The AI's answer is full of words you don't understand. What's the best next step?",
+    options: [
+      "Give up on AI.",
+      "Start a brand-new chat with the same question.",
+      "Reply in the same chat: 'Can you explain that more simply?'",
+      "Look up every word in a dictionary."
+    ],
+    correctIndex: 2,
+    explanation: "Following up in the same conversation is the quickest way to get a clearer answer, and you can do it as many times as you like."
+  },
+  {
+    question: "When is it a good idea to start a new chat?",
+    options: [
+      "Every time you ask a follow-up question.",
+      "When you switch to a completely different topic.",
+      "Never. Always use one chat forever.",
+      "Only on Mondays."
+    ],
+    correctIndex: 1,
+    explanation: "Stay in one chat for one topic so the AI remembers the details. Start fresh when the subject changes."
+  }
+]} />
+
+## Up Next
+
+In Module 3, you'll put these skills to work on everyday writing: emails, cards, and letters.

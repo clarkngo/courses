@@ -1,0 +1,125 @@
+---
+title: "What AI Is, in Plain English"
+description: "A jargon-free explanation of what today's AI assistants are, how they come up with their answers, and why they can sound confident while being wrong."
+module: 1
+moduleTitle: "Meet AI"
+lesson: 1
+duration: "15 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## Welcome
+
+You have probably heard a lot about "AI" lately: on the news, from grandchildren, maybe from your bank or doctor's office. Some of it sounds exciting and some of it sounds frightening. This course cuts through the noise.
+
+You don't need any technical background. If you can send a text message or an email, you can use everything in this course. Take each lesson at your own pace. It's fine to read a lesson twice, and it's fine to ask a family member or friend to sit beside you.
+
+---
+
+## So What Is AI?
+
+**AI** stands for **artificial intelligence**. It's a broad name for computer programs that do things we usually think need a human mind: understanding speech, recognizing faces in photos, or writing a sentence.
+
+The kind of AI everyone is talking about right now is the **AI assistant** (sometimes called a *chatbot*). Examples include **ChatGPT**, **Google Gemini**, **Microsoft Copilot**, and **Claude**. You type or speak a question in ordinary words, and it answers in ordinary words, like a conversation.
+
+### A helpful way to picture it
+
+Imagine a very well-read helper who has skimmed an enormous library: books, websites, recipes, manuals, letters. This helper never met you, can't see your home, and doesn't remember the library perfectly. But they are very good at **putting words together in a way that sounds right**, based on everything they've read.
+
+That's close to how an AI assistant works. When you ask a question, it doesn't look up a single "correct" answer in a filing cabinet. It **predicts** what a good, helpful reply would probably say, one word at a time.
+
+This explains both its strengths and its weaknesses:
+
+| What AI is good at | Where AI can stumble |
+|---|---|
+| Explaining things in simple words | Getting specific facts wrong (dates, phone numbers, prices) |
+| Drafting letters, cards, and emails | Knowing what happened this week, unless it can search the web |
+| Summarizing long or confusing text | Knowing anything about *you* that you haven't told it |
+| Answering "how do I…" questions | Admitting when it doesn't know. It may guess instead |
+| Being patient: it never sighs or gets tired | Giving advice that only a doctor, lawyer, or banker should give |
+
+---
+
+## AI Can Sound Sure and Still Be Wrong
+
+This is the single most important idea in the whole course, so it gets its own heading.
+
+Because an AI assistant is built to produce answers that *sound* right, it can state something false in a calm, confident, well-written way. People call this **"making things up"** or a **"hallucination."** It isn't lying on purpose. It just doesn't have a built-in sense of when it's on shaky ground.
+
+That means:
+
+- **Use AI as a helpful first draft, not the final word.**
+- **Double-check anything important:** medicine, money, legal matters, phone numbers, addresses, and dates.
+- **Trust your own experience.** If an answer doesn't match what you know, you're probably right to doubt it.
+
+<Pitfall title="Believing It Because It Sounds Professional">
+
+**Common mistake:** trusting an answer because it's well-written and confident.
+
+Good grammar is not the same as good information. An AI assistant can give you a phone number for "Medicare customer service" that looks perfectly official and is simply wrong. For anything that matters, confirm it from a trusted source: the official website, the back of your card, your doctor's office, or a person you know.
+
+</Pitfall>
+
+---
+
+## What AI Is Not
+
+A few common worries, answered plainly:
+
+- **It is not a person.** It has no feelings, even when it sounds warm and friendly. That's fine, but it's worth remembering.
+- **It is not watching you.** An AI assistant only sees what you type, say, or share with it. (We'll cover privacy carefully in Module 5.)
+- **It is not always right**, as you just learned.
+- **It is not just for young people.** Many older adults find AI especially useful because it's patient, available any time, and happy to explain the same thing three different ways.
+
+<TryIt title="Notice the AI Around You">
+
+You don't need to open any app for this one.
+
+1. Over the next day, notice any time a device **understands your voice**, **suggests the next word** as you type, or **recommends** something ("You might also like…").
+2. Write down two or three examples on a piece of paper.
+3. Next lesson, you'll find out that most of these are AI too. You've probably been using it for years.
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "How does an AI assistant like ChatGPT or Gemini usually come up with an answer?",
+    options: [
+      "It looks up the one correct answer in a giant database.",
+      "It asks a human expert behind the scenes.",
+      "It predicts what a helpful reply would probably say, based on a huge amount of text it learned from.",
+      "It copies the first website it finds."
+    ],
+    correctIndex: 2,
+    explanation: "AI assistants predict likely words based on patterns in what they learned. That's why they're fluent, and also why they can be wrong while sounding sure."
+  },
+  {
+    question: "An AI assistant gives you a phone number for your insurance company. What should you do?",
+    options: [
+      "Call it right away. AI is always accurate with numbers.",
+      "Check it against the number on your insurance card or the company's official website first.",
+      "Ask the AI if it's sure, and trust whatever it says next.",
+      "Post it online so others can use it."
+    ],
+    correctIndex: 1,
+    explanation: "AI can make up phone numbers that look real. Always confirm contact details from a trusted source, like the back of your card."
+  },
+  {
+    question: "Which statement is true?",
+    options: [
+      "AI assistants can see everything on your phone.",
+      "AI assistants have feelings and can be hurt.",
+      "A confident, well-written answer can still contain mistakes.",
+      "AI is only useful for people who work with computers."
+    ],
+    correctIndex: 2,
+    explanation: "Sounding confident is not the same as being correct. That's the most important idea to carry through this course."
+  }
+]} />
+
+## Up Next
+
+You're likely already using AI without realizing it. Next, we'll find it hiding in your phone, TV, and email.

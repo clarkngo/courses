@@ -1,0 +1,139 @@
+---
+title: "AI for Evidence and Guidelines"
+description: "Use AI to accelerate literature searches and evidence summaries while guarding against fabricated citations, outdated guidance, and over-generalized conclusions."
+module: 3
+moduleTitle: "Description: Specifying the Task"
+lesson: 2
+duration: "25 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## A Fast Research Assistant With a Fabrication Problem
+
+AI can dramatically speed up the early stages of answering a clinical question: framing it, suggesting search terms, summarizing papers you provide, and comparing recommendations across guidelines. It can also produce **references that don't exist**, misstate effect sizes, and present an outdated recommendation as current. The difference comes down to **which kind of tool** you use and **how you verify**.
+
+---
+
+## Two Kinds of Evidence Tools
+
+| | **General assistant (no retrieval)** | **Retrieval-grounded tool** |
+|---|---|---|
+| **How it answers** | From patterns in training data | Searches a defined source (literature database, guideline library, the web), then answers with links |
+| **Citations** | May be fabricated or garbled | Linked to actual documents, though the summary can still misstate them |
+| **Currency** | Fixed at training cutoff | As current as its source index |
+| **Best for** | Framing questions, explaining concepts, drafting search strategies | Finding and summarizing specific evidence |
+
+Several clinical evidence platforms now offer retrieval-grounded AI answers, and many general assistants can search the web. Retrieval reduces fabrication, but it doesn't eliminate **misrepresentation**: the model can still cite a real paper and get its findings wrong.
+
+---
+
+## A Verification Workflow
+
+<ProcessFlow
+  label="Workflow for using AI to answer an evidence question"
+  color="#0e7490"
+  loop="If a source doesn't exist or doesn't say what was claimed, discard the claim and re-search."
+  steps={[
+    { title: "Frame (PICO)", detail: "Use AI to sharpen the question" },
+    { title: "Retrieve", detail: "Use a grounded tool or search yourself" },
+    { title: "Open the source", detail: "Confirm it exists and says what was claimed" },
+    { title: "Appraise", detail: "Design, population, date, applicability" },
+    { title: "Decide", detail: "You apply it to your patient" },
+  ]}
+/>
+
+### Framing with PICO
+
+> *"Help me turn this into a PICO question and suggest MeSH terms and a PubMed search string: In older adults with atrial fibrillation and a history of falls, does anticoagulation still provide net benefit?"*
+
+This is a low-risk, high-value use: AI is good at structuring questions and suggesting terminology, and you can see the result.
+
+### Summarizing papers you provide
+
+Rather than asking AI what the literature says, **give it the paper** (an open-access PDF or abstract, consistent with copyright and your tool's terms) and ask:
+
+> *"Summarize the population, intervention, comparator, primary outcome, effect size with confidence interval, and key limitations. Quote the sentence supporting each number."*
+
+Asking for **quoted support** makes misstatements immediately checkable.
+
+### Comparing guidelines
+
+> *"Compare the recommendations on [topic] from [Society A, year] and [Society B, year]. Note where they differ and the evidence grade for each."*
+
+Then open both guidelines. Check dates: a model may confidently describe a superseded version.
+
+<Pitfall title="Citing a Reference You Haven't Opened">
+
+**Common mistake:** copying an AI-provided citation into a note, presentation, manuscript, or policy without opening it.
+
+Fabricated references have appeared in submitted manuscripts and legal filings. Even real references can be misattributed or misdescribed. **If you haven't opened it and confirmed it supports the claim, don't cite it.**
+
+</Pitfall>
+
+---
+
+## Appraisal Still Belongs to You
+
+AI summaries tend to flatten nuance. Watch for:
+
+- **Population mismatch.** The trial excluded patients over 75, or with CKD, like yours.
+- **Surrogate vs. clinical outcomes.** An improved biomarker isn't necessarily an improved outcome.
+- **Relative vs. absolute effects.** "Reduced risk by 30%" might mean 1.0% → 0.7%.
+- **Evidence grade.** Expert consensus presented with the same confidence as an RCT.
+- **Date.** Newer evidence or safety communications may have changed the picture.
+
+You can ask AI to help surface these (*"What are the main threats to applicability for an 82-year-old with CKD stage 4?"*), but the judgment is yours.
+
+<TryIt title="Audit an AI Evidence Answer">
+
+1. Pick a focused clinical question in your specialty that you know reasonably well.
+2. Ask a general AI assistant for an answer with **three supporting citations**.
+3. Ask a retrieval-grounded tool (if you have access) the same question.
+4. For every citation from both: does it exist? Does it say what the AI claimed? Is it the most current evidence?
+5. Note the error rate for each. Use that to calibrate how you'll use each tool going forward.
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "What's the main advantage of a retrieval-grounded evidence tool over a general assistant?",
+    options: [
+      "It never makes mistakes.",
+      "It answers from actual retrieved documents with links, reducing (but not eliminating) fabrication.",
+      "It doesn't require verification.",
+      "It always uses the newest guideline."
+    ],
+    correctIndex: 1,
+    explanation: "Grounding in real sources reduces invented citations, but the summary can still misstate what a source says."
+  },
+  {
+    question: "When asking AI to summarize a trial you've provided, which instruction most helps verification?",
+    options: [
+      "'Make it brief.'",
+      "'Quote the sentence supporting each number you report.'",
+      "'Use simple language.'",
+      "'Add context from other studies you know.'"
+    ],
+    correctIndex: 1,
+    explanation: "Quoted support lets you check each claim against the source in seconds."
+  },
+  {
+    question: "An AI summary says a drug 'reduced stroke risk by 30%.' What's the most important follow-up?",
+    options: [
+      "Accept it. 30% is significant.",
+      "Ask for the absolute risk reduction and check the population matches your patient.",
+      "Ask for a longer summary.",
+      "Look up the drug's price."
+    ],
+    correctIndex: 1,
+    explanation: "Relative reductions can mask small absolute effects, and the trial population may not match your patient."
+  }
+]} />
+
+## Up Next
+
+Module 4 moves to the point of care and **Discernment**: reviewing AI scribe notes and resisting automation bias in decision support.

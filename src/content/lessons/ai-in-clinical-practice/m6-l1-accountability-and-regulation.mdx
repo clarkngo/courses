@@ -1,0 +1,129 @@
+---
+title: "Accountability, Disclosure, and Regulation"
+description: "Understand who is responsible when AI-assisted care goes wrong, how to document AI use, and the main regulatory frameworks shaping clinical AI."
+module: 6
+moduleTitle: "Diligence: Accountability and Governance"
+lesson: 1
+duration: "25 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## "The AI Did It" Is Not a Defense
+
+Diligence is the competency that holds the other three together. You can delegate wisely, describe precisely, and discern carefully, and still fall short if you don't take ownership of how AI is used in your care.
+
+The core principle is simple and, so far, consistent across professional bodies: **the clinician remains responsible for clinical decisions and the documentation they sign, regardless of the tools used.** AI may change *how* you work. It doesn't change *who* is accountable to the patient.
+
+> This lesson is educational, not legal advice. Liability, regulation, and professional standards vary by jurisdiction and change quickly. Consult your organization's legal, compliance, and risk teams, and your licensing body's guidance.
+
+---
+
+## Accountability in Practice
+
+### The standard of care is still the standard of care
+
+Following an AI recommendation that a reasonable clinician would have recognized as wrong is unlikely to be defensible. Conversely, as validated AI tools become widespread, questions may arise about **not** using them. The common thread is **reasonable clinical judgment**, informed by, not replaced by, the tool.
+
+### Document your reasoning, not just the output
+
+When AI meaningfully informs a decision, especially when you **disagree** with it, a brief note of your reasoning protects the patient and you:
+
+> *"Sepsis alert reviewed. Patient afebrile, lactate normal, presentation consistent with dehydration. Will reassess in 2 hours."*
+
+### Organizational accountability
+
+Organizations are responsible for **which tools are deployed**, how they're configured, whether staff are trained, and whether performance is monitored. If you see a tool failing, reporting it is part of your diligence, and part of theirs.
+
+<Pitfall title="Assuming Vendor Approval Transfers Responsibility">
+
+**Common mistake:** believing that because a tool was purchased, approved, or FDA-cleared, its errors aren't your concern.
+
+Approval means the organization accepted the tool for certain uses. It doesn't remove your duty to apply professional judgment to each patient. And using a tool **outside** its approved or intended use shifts more responsibility onto you.
+
+</Pitfall>
+
+---
+
+## Disclosure to Patients
+
+Expectations are evolving. Common practices include:
+
+- **Informing patients** when ambient AI is used in a visit, with an opt-out.
+- **Disclaimers** on AI-generated communications where required by law or policy (see Module 5).
+- **Honest answers** when patients ask whether AI was involved in their care.
+
+A useful test: *Would this patient feel misled if they learned how AI was involved?* If yes, disclose.
+
+---
+
+## The Regulatory Landscape (High Level)
+
+| Framework | What it covers | Why it matters to clinicians |
+|---|---|---|
+| **FDA: Software as a Medical Device (US)** | AI intended to diagnose, treat, or prevent disease; includes guidance on predetermined change control plans for models that update | Know whether a tool is cleared and for what intended use |
+| **FDA: Clinical Decision Support guidance (US)** | Clarifies when CDS software is *not* a device, generally when clinicians can independently review the basis for recommendations | Explains why many CDS tools aren't FDA-reviewed, which puts more weight on local governance |
+| **ONC HTI-1 rule (US)** | Requires certified EHR developers to provide transparency information ("source attributes") about decision-support interventions, including predictive models | Gives you a right to ask what a model was trained on and how it performs |
+| **HIPAA (US)** | Privacy and security of PHI | Governs which tools can handle patient data (Module 2) |
+| **Section 1557 nondiscrimination (US)** | Prohibits discrimination in covered health programs; regulators have applied it to patient-care decision support tools | Organizations must take reasonable steps to identify and mitigate discriminatory tool impacts |
+| **EU AI Act** | Risk-based regulation; most AI medical devices are classified as high-risk with obligations for risk management, data quality, human oversight, and transparency | Relevant to EU practice and to vendors selling globally |
+| **State laws (US)** | Growing patchwork covering AI disclosure, utilization review, and specific uses | Check your state's current requirements |
+
+Regulations in this area change frequently. Treat this table as a map of **what to ask about**, not a statement of current law.
+
+---
+
+## Professional Guidance
+
+Many professional societies and licensing bodies have published principles for clinical AI. Common themes include: clinician oversight, transparency to patients, equity and bias mitigation, privacy, and clinician input into deployment decisions. Find your own society's current statement. It's often the most directly relevant guidance for your discipline.
+
+<TryIt title="Write Your Documentation Habit">
+
+1. Choose one AI tool you use (or expect to use) that informs clinical decisions.
+2. Write a one-line template for documenting your reasoning when you **agree** with it, and one for when you **disagree**.
+3. Look up your professional society's or licensing board's current statement on AI. Note one expectation it places on individual clinicians.
+4. Check your organization's policy on disclosing AI use to patients. Is it consistent with what you're doing?
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "Who is generally responsible for a clinical decision made with input from an AI tool?",
+    options: [
+      "The AI vendor",
+      "The clinician who made the decision",
+      "The FDA",
+      "No one, if the tool was approved"
+    ],
+    correctIndex: 1,
+    explanation: "Professional bodies consistently hold that clinicians remain accountable for decisions and signed documentation, whatever tools they use."
+  },
+  {
+    question: "What does the ONC HTI-1 transparency requirement give clinicians in the US?",
+    options: [
+      "A guarantee that all models are accurate",
+      "Access to information about how decision-support interventions in certified EHRs were developed and perform",
+      "Exemption from liability",
+      "Permission to use any consumer AI tool"
+    ],
+    correctIndex: 1,
+    explanation: "HTI-1 requires certified health IT developers to make source attributes available, so you can ask how a model works and performs."
+  },
+  {
+    question: "When is documenting your reasoning about an AI recommendation most important?",
+    options: [
+      "Never. The AI log is enough.",
+      "When you disagree with the tool and act differently.",
+      "Only for administrative tasks.",
+      "Only when the patient asks."
+    ],
+    correctIndex: 1,
+    explanation: "A brief rationale when you override a tool shows clinical judgment and supports safe handoffs."
+  }
+]} />
+
+## Up Next
+
+The final lesson brings everything together: how to evaluate an AI tool before adopting it, and your personal plan for clinical AI fluency.

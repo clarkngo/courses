@@ -1,0 +1,134 @@
+---
+title: "Setting Up Your AI Assistant"
+description: "Choose one free AI assistant, install it safely on your phone or computer, adjust two privacy settings, and make the screen easier to read and hear."
+module: 2
+moduleTitle: "Getting Started"
+lesson: 1
+duration: "20 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## Pick Just One
+
+There are several good AI assistants, and they're more alike than different. Don't worry about choosing the "best" one. Choose one, get comfortable, and you can always try another later.
+
+| Assistant | Made by | Good choice if… |
+|---|---|---|
+| **Gemini** | Google | You use Gmail or an Android phone. Sign in with your Google account. |
+| **ChatGPT** | OpenAI | You want the most widely used option. Many family members may already know it. |
+| **Copilot** | Microsoft | You use a Windows computer or Outlook email. |
+| **Claude** | Anthropic | You often want help with long letters or documents. |
+
+All four have a **free version**. You do not need to pay for anything in this course.
+
+> **Family helpers:** if you're setting this up for a parent or friend, choose the assistant that matches the account they already use most (Google, Microsoft, or Apple). One fewer password to remember makes a big difference.
+
+---
+
+## Installing It Safely
+
+<ProcessFlow
+  label="Steps to install an AI assistant app safely"
+  color="#c2410c"
+  steps={[
+    { title: "Open the store", detail: "App Store (iPhone) or Play Store (Android)" },
+    { title: "Search the name", detail: "e.g. \"Gemini\" or \"ChatGPT\"" },
+    { title: "Check the maker", detail: "Google, OpenAI, Microsoft, or Anthropic" },
+    { title: "Install & sign in", detail: "Use an account you already have" },
+  ]}
+/>
+
+On a computer, you can skip the app and just visit the website instead:
+
+- Gemini: **gemini.google.com**
+- ChatGPT: **chatgpt.com**
+- Copilot: **copilot.microsoft.com**
+- Claude: **claude.ai**
+
+Type the address carefully into the bar at the top of your browser, then bookmark it so you never have to type it again.
+
+<Pitfall title="Signing In Through a Link in an Email or Text">
+
+**Common mistake:** clicking a "Get started with AI" link that arrived in an email or text message.
+
+Scammers send fake "AI upgrade" and "activate your AI assistant" messages that lead to look-alike sign-in pages. **Always go to the app store or type the web address yourself.** No real AI company will text you asking you to sign in.
+
+</Pitfall>
+
+---
+
+## Two Privacy Settings Worth Changing
+
+Once you're signed in, take two minutes to look at the settings. The exact wording changes from time to time, but look for these:
+
+1. **"Improve the model for everyone" / "Help improve" / "Training."** When this is on, your conversations may be used to train future versions of the AI. If you'd rather keep your chats out of that, turn it **off**.
+2. **Chat history / Activity.** This controls whether your past conversations are saved. Saved history is handy (you can find an old recipe or letter later), but you can delete individual chats or turn it off.
+
+If you can't find these settings, ask the AI itself: *"How do I turn off training on my conversations in this app?"* Then check that the steps match what you see on screen.
+
+---
+
+## Make It Easier to Read and Hear
+
+AI assistants work well with the accessibility features already on your device:
+
+- **Bigger text.** On a phone, go to *Settings → Display* (or *Accessibility*) → *Text size*. On a computer, hold **Ctrl** (or **Cmd** on a Mac) and press **+** to zoom in.
+- **Talk instead of type.** Tap the **microphone** 🎤 icon in the chat box to speak your question. Many apps also have a **voice conversation** mode (often a sound-wave icon) where you can talk back and forth out loud.
+- **Have it read aloud.** Look for a **speaker** 🔊 icon next to the answer, or ask: *"Please keep your answers short so they're easy to listen to."*
+- **Ask for simpler formatting.** You can always say, *"Please use large, short paragraphs and no tables."*
+
+<TryIt title="Get Set Up">
+
+1. Choose one assistant from the table and install it (or bookmark the website).
+2. Sign in with an account you already have.
+3. Open the settings and find the training and history options. Decide how you want them set.
+4. Make the text a comfortable size.
+5. Type or say your very first message: *"Hello! I'm new to AI assistants. Can you explain in two short sentences what you can help me with?"*
+
+Congratulations, you've had your first AI conversation.
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "Do you need to pay to use the AI assistants in this course?",
+    options: [
+      "Yes, all AI assistants require a monthly fee.",
+      "No. Gemini, ChatGPT, Copilot, and Claude all have free versions.",
+      "Only on computers, not phones.",
+      "Only if you are over 65."
+    ],
+    correctIndex: 1,
+    explanation: "All four major assistants offer a free version that's more than enough for everyday use."
+  },
+  {
+    question: "You get a text saying 'Your free AI assistant is ready. Tap here to sign in.' What should you do?",
+    options: [
+      "Tap the link and sign in quickly before it expires.",
+      "Reply STOP and then tap the link.",
+      "Ignore the link. Go to the app store or type the website address yourself.",
+      "Forward it to friends so they can sign up too."
+    ],
+    correctIndex: 2,
+    explanation: "Real AI companies don't text you sign-in links. Always go to the app store or type the address yourself."
+  },
+  {
+    question: "Which setting controls whether your conversations may be used to train future AI models?",
+    options: [
+      "Text size",
+      "A setting usually labeled something like 'Improve the model for everyone' or 'Training'",
+      "Bluetooth",
+      "Screen brightness"
+    ],
+    correctIndex: 1,
+    explanation: "Look for a training or 'improve the model' setting. You can turn it off if you prefer your chats not be used that way."
+  }
+]} />
+
+## Up Next
+
+Now that your assistant is ready, let's learn how to ask it questions that get genuinely useful answers.

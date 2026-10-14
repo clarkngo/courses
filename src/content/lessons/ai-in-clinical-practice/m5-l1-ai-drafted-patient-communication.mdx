@@ -1,0 +1,134 @@
+---
+title: "AI-Drafted Patient Communication"
+description: "Use AI to draft portal replies, patient education, and plain-language explanations that are accurate, readable, and empathetic, and know when not to."
+module: 5
+moduleTitle: "AI and Your Patients"
+lesson: 1
+duration: "25 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## The Inbox Problem
+
+Patient portal messages have become one of the largest sources of after-hours work for clinicians. Many health systems now offer AI tools that draft replies for clinician review. Early evaluations have reported reduced feelings of burden among users, though not always measurable time savings. And patients often rate AI-drafted text as empathetic: in a 2023 *JAMA Internal Medicine* study, Ayers and colleagues found that evaluators preferred chatbot responses to public online medical questions over physician responses for both quality and empathy.
+
+That doesn't mean AI should talk to your patients for you. It means AI can help you produce **clear, warm first drafts** that you make accurate and appropriate.
+
+---
+
+## Where AI Helps Most
+
+| Use | Why it helps | Watch for |
+|---|---|---|
+| **Portal reply drafts** | Reduces blank-page time; consistent tone | Wrong clinical content, over-reassurance, answering what wasn't asked |
+| **Plain-language rewrites** | Translates jargon to a target reading level | Lost nuance; oversimplified risk |
+| **Patient education handouts** | Fast, tailored to a condition and audience | Outdated recommendations; generic content not matching your plan |
+| **Results explanations** | Helps explain what a result means in context | Explaining a result without the clinical context you hold |
+| **Difficult-message structure** | Helps organize a message about a delay, error, or limit | Tone that sounds scripted or evasive |
+
+---
+
+## A Review Routine for Patient-Facing Text
+
+<ProcessFlow
+  label="Review routine for AI-drafted patient communication"
+  color="#0e7490"
+  steps={[
+    { title: "Accurate?", detail: "Matches this patient's facts and your plan" },
+    { title: "Safe?", detail: "Clear red-flag and when-to-call guidance" },
+    { title: "Readable?", detail: "Plain language, right reading level" },
+    { title: "Sounds like you?", detail: "Honest, warm, not scripted" },
+  ]}
+/>
+
+### Accuracy first
+
+AI drafts can be confidently wrong about the patient's own situation: assuming a medication they're not on, misreading the question, or offering reassurance you wouldn't. **Edit the clinical content before you edit the tone.**
+
+### Escalate, don't reassure
+
+If a message describes a potentially urgent symptom, a draft that says "this is common and usually not serious" is a safety risk. Make sure the reply directs the patient to the right level of care and states explicit return precautions.
+
+### Readability
+
+Aim for roughly a 6th–8th grade reading level for general patient materials. You can prompt for this directly (*"Rewrite at a 6th-grade reading level, keeping all numbers and instructions unchanged"*) and then check that no meaning was lost.
+
+<Pitfall title="Using AI Translation as a Substitute for an Interpreter">
+
+**Common mistake:** sending an AI-translated message or handout to a patient with limited English proficiency without qualified review.
+
+Machine translation of medical content can drop negations, mistranslate dosing, or use the wrong register. For clinical instructions, use your organization's **qualified interpreter and translation services**. Language-access obligations (such as Section 1557 of the ACA in the US) apply regardless of the tool.
+
+</Pitfall>
+
+---
+
+## Transparency
+
+Should patients know AI helped draft a message? Practices vary, and some jurisdictions now regulate it. For example, a California law effective in 2025 requires certain AI-generated clinical communications to include a disclaimer unless a licensed provider reviews them. Regardless of legal requirements:
+
+- **Follow your organization's disclosure policy.**
+- **Never imply a message is personally written in a way that misleads** the patient about who considered their case.
+- **Make sure you've actually reviewed it.** A signature means you stand behind the content.
+
+## When Not to Use AI
+
+- Delivering a new serious diagnosis or bad news
+- Responding to a complaint about care or a possible error (involve your risk or patient-relations team)
+- Messages where the patient's emotional state or relationship history matters more than the information
+- Anything where you can't fully review the content before sending
+
+<TryIt title="Draft, Then Fix">
+
+Using an approved tool or a general assistant with **no PHI**:
+
+1. Write a realistic fictional patient message, such as a question about a new medication side effect.
+2. Ask AI for a reply draft at a 6th-grade reading level with explicit when-to-call guidance.
+3. Apply the four-step review. List every change you had to make, labeling each as accuracy, safety, readability, or voice.
+4. Which category needed the most edits? That's where to focus your review going forward.
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "An AI-drafted portal reply reassures a patient that new chest tightness is 'probably muscular.' What should you do?",
+    options: [
+      "Send it. The tone is empathetic.",
+      "Revise to direct the patient to appropriate urgent evaluation with clear return precautions.",
+      "Shorten it.",
+      "Translate it into the patient's language."
+    ],
+    correctIndex: 1,
+    explanation: "Potentially urgent symptoms need escalation, not reassurance. Fix clinical safety before tone."
+  },
+  {
+    question: "What's the right approach for clinical instructions to a patient with limited English proficiency?",
+    options: [
+      "Use AI translation and send it directly.",
+      "Use qualified interpreter and translation services.",
+      "Send it in English and hope a family member translates.",
+      "Simplify the English and skip translation."
+    ],
+    correctIndex: 1,
+    explanation: "Qualified language services are the standard for clinical content. AI translation can introduce dangerous errors."
+  },
+  {
+    question: "In the review routine for patient-facing text, what should you check first?",
+    options: [
+      "Reading level",
+      "Tone and warmth",
+      "Clinical accuracy for this specific patient",
+      "Length"
+    ],
+    correctIndex: 2,
+    explanation: "A warm, readable message with wrong content is still wrong. Accuracy comes first."
+  }
+]} />
+
+## Up Next
+
+Patients are using AI too. Next: how to respond when they bring AI-generated questions, diagnoses, or treatment ideas to the visit.

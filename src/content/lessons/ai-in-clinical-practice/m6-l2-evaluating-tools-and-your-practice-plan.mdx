@@ -1,0 +1,165 @@
+---
+title: "Evaluating AI Tools and Your Practice Plan"
+description: "Use a structured checklist to evaluate any clinical AI tool, then build a personal practice plan that applies all four fluency competencies to your work."
+module: 6
+moduleTitle: "Diligence: Accountability and Governance"
+lesson: 2
+duration: "30 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## You Have a Voice in What Gets Deployed
+
+Clinicians are increasingly asked to pilot, evaluate, or champion AI tools. Even if you never sit on a governance committee, you'll be asked "Do you like it?" A fluent answer goes beyond "it saves me time" to whether it's **safe, effective, equitable, and worth it**.
+
+---
+
+## A Clinical AI Evaluation Checklist
+
+<ProcessFlow
+  label="Six areas to evaluate before adopting a clinical AI tool"
+  color="#0e7490"
+  steps={[
+    { title: "Purpose", detail: "What problem, for whom?" },
+    { title: "Evidence", detail: "Validated where, on whom?" },
+    { title: "Equity", detail: "Subgroup performance" },
+    { title: "Workflow", detail: "Fits how care happens" },
+    { title: "Data & privacy", detail: "BAA, retention, training" },
+    { title: "Monitoring", detail: "Who watches it over time?" },
+  ]}
+/>
+
+### 1. Purpose
+
+- What specific clinical or operational problem does it solve? How is that problem measured today?
+- What is the **intended use** and intended population? Is our use within it?
+- What happens if we don't adopt it?
+
+### 2. Evidence
+
+- Was it validated **externally**, not just at the developer's site?
+- Was it validated **prospectively**, in real workflow, or only retrospectively?
+- What outcomes were measured: accuracy, or actual patient and clinician outcomes?
+- Has it been tested **here**, in a silent or shadow mode, before going live?
+
+### 3. Equity
+
+- How does performance vary by age, sex, race and ethnicity, language, insurance, and other relevant subgroups?
+- Does it use proxies (like cost or utilization) that may encode historical inequity?
+- For generative tools: how does it perform for patients who speak languages other than English, or use non-standard dialects?
+
+### 4. Workflow
+
+- Who sees the output, when, and what are they expected to do with it?
+- What's the expected alert burden or review time?
+- Does it make the right thing easier, or just add a step?
+
+### 5. Data and privacy
+
+- Is there a BAA? Where is data processed and stored, and for how long?
+- Is our data used to train the vendor's models? Can we opt out?
+- What's the security posture and incident-response commitment?
+
+### 6. Monitoring
+
+- Who owns ongoing performance monitoring? What metrics, how often?
+- How do frontline staff report problems, and who responds?
+- What's the plan if performance drifts, or the vendor updates the model?
+
+<Pitfall title="Evaluating on Demo Cases">
+
+**Common mistake:** judging a tool by a polished vendor demo or a handful of hand-picked examples.
+
+Demos show best cases. Ask for performance data on populations like yours, request a silent pilot on local data, and include the clinicians who'll actually use it in the evaluation, especially those who care for underserved patients.
+
+</Pitfall>
+
+---
+
+## Your Clinical AI Practice Plan
+
+Bring the course together into a one-page plan you'll actually use. Organize it by the four competencies.
+
+### Delegation
+
+- **Tasks I'll use AI for (Tier 1–2):** _______________
+- **Tasks I'll use AI for only as a second look (Tier 3):** _______________
+- **Tasks I won't delegate (Tier 4):** _______________
+- **Approved tools I'm cleared to use with PHI:** _______________
+
+### Description
+
+- **My saved prompt templates** (no PHI): _______________
+- **My default safety instructions:** e.g., "flag uncertainty," "use only provided text," "show calculations"
+
+### Discernment
+
+- **My scribe-note review routine** (top error category to check first): _______________
+- **My rule for decision support:** e.g., "form my impression before viewing the score"
+- **My evidence rule:** e.g., "never cite a source I haven't opened"
+
+### Diligence
+
+- **Where I report AI errors:** _______________
+- **How I disclose AI use to patients:** _______________
+- **My documentation habit when I override a tool:** _______________
+- **Who I ask about AI policy:** _______________
+
+---
+
+## Staying Fluent
+
+Clinical AI will change faster than any course. The competencies won't. Revisit your plan every six months, or whenever your organization introduces a new tool. Teach the habits to trainees and colleagues: the clinicians who know how AI fails are the ones best placed to make it safe.
+
+<TryIt title="Complete and Share Your Plan">
+
+1. Fill in every line of the practice plan above.
+2. Revisit your tool inventory from Module 1. For each tool you couldn't answer questions about, apply at least three questions from the evaluation checklist, and find out the answers.
+3. Share your plan with a colleague or your team and compare. Where do your Tier 4 lists differ? Discuss why.
+4. Put a reminder on your calendar to review the plan in six months.
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "Which evidence is strongest for adopting a clinical AI tool at your hospital?",
+    options: [
+      "A polished vendor demo",
+      "Retrospective accuracy at the developer's site only",
+      "External, prospective validation plus a silent pilot on your own patients",
+      "Positive reviews from other users online"
+    ],
+    correctIndex: 2,
+    explanation: "External and prospective validation, plus local testing, best predicts real-world performance for your population."
+  },
+  {
+    question: "Why ask about subgroup performance when evaluating a tool?",
+    options: [
+      "It's required for billing.",
+      "Overall accuracy can hide poor performance for specific populations, worsening inequity.",
+      "Subgroups don't matter if overall accuracy is high.",
+      "It speeds up deployment."
+    ],
+    correctIndex: 1,
+    explanation: "Aggregate metrics can mask disparities. Equity requires looking at performance across groups."
+  },
+  {
+    question: "What's the most durable takeaway from this course?",
+    options: [
+      "Memorize the features of today's AI tools.",
+      "Avoid AI entirely.",
+      "Apply Delegation, Description, Discernment, and Diligence to any tool, while remaining accountable for patient care.",
+      "Let AI make low-risk clinical decisions autonomously."
+    ],
+    correctIndex: 2,
+    explanation: "Tools will change. The four competencies, and your accountability, are what carry forward."
+  }
+]} />
+
+## Congratulations
+
+You've completed **AI in Clinical Practice**. Keep your practice plan close, and remember: AI can extend your reach, but the patient's trust is placed in you.

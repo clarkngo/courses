@@ -1,0 +1,125 @@
+---
+title: "How AI Fails in Medicine"
+description: "Recognize the six failure modes behind most clinical AI errors: fabrication, stale knowledge, sycophancy, bias, dataset shift, and the gap between exam scores and bedside performance."
+module: 1
+moduleTitle: "The Clinical AI Landscape"
+lesson: 2
+duration: "25 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## Know the Failure Modes Before You Trust the Tool
+
+You'd never prescribe a drug without knowing its adverse effects. Treat AI the same way. Most clinical AI errors fall into a handful of recognizable patterns. Once you know them, you'll spot them quickly.
+
+---
+
+## 1. Fabrication ("Hallucination")
+
+Generative models produce text that is **plausible**, not text that is **verified**. They can invent:
+
+- Citations that look real (correct-sounding journal, authors, year) but don't exist
+- Exam findings, history, or medication doses in a summarized note
+- Drug interactions that don't exist, or omit ones that do
+- Guideline recommendations attributed to the wrong society or year
+
+Fabrications are dangerous precisely because they're **formatted like facts**. They don't come with a warning label.
+
+## 2. Stale or Incomplete Knowledge
+
+A model's built-in knowledge stops at its training cutoff and may be incomplete well before that. It may not know about a newly approved drug, a revised guideline, a recent safety communication, or your institution's formulary. Some tools can search the web or a curated evidence database; many can't, and they rarely tell you which mode they're in unless you ask.
+
+## 3. Sycophancy and Anchoring
+
+LLMs are trained to be helpful and agreeable, so they tend to **follow your framing**. Ask *"Why is this presentation consistent with GERD?"* and you'll get a fluent case for GERD, even if the details should have raised concern for ACS. Push back on a correct answer ("Are you sure?") and the model may abandon it.
+
+This mirrors a familiar human bias, anchoring, and it compounds it: the model reflects your anchor back with added confidence.
+
+## 4. Bias
+
+AI learns from historical data, and historical care was not equitable. A widely cited 2019 study in *Science* (Obermeyer and colleagues) found that a commercial algorithm used to target care-management programs **systematically underestimated the needs of Black patients**, because it used past healthcare **cost** as a proxy for health **need**, and less had historically been spent on Black patients with the same illness burden.
+
+Bias can also appear in generative output: stereotyped assumptions in a summary, differential diagnoses that shift with a patient's stated race or gender in ways not supported by evidence, or lower performance in languages other than English.
+
+## 5. Dataset Shift
+
+A model is validated on one population, at one time, under one workflow. Change any of those and performance can degrade, sometimes sharply. In a 2021 external validation published in *JAMA Internal Medicine*, Wong and colleagues found that a widely deployed proprietary sepsis prediction model performed far below its developer's reported accuracy, missed about two thirds of sepsis cases, and generated alerts on nearly one in five hospitalized patients.
+
+The lesson isn't that predictive models are useless. It's that **performance must be checked locally and monitored over time**.
+
+## 6. Exam Scores Aren't Bedside Performance
+
+Headlines about AI "passing the medical boards" are real, but multiple-choice exams present clean, complete, pre-selected information with one right answer. Real patients present incomplete, contradictory, evolving information, much of it unspoken, and much of the clinical skill lies in deciding **what to ask and examine next**. High exam scores show broad knowledge, not readiness for unsupervised care.
+
+<Pitfall title="Trusting Fluency as a Signal of Accuracy">
+
+**Common mistake:** treating a well-organized, confident, terminology-rich answer as more reliable than a hesitant one.
+
+For generative AI, fluency and accuracy are largely independent. A model will describe a fabricated drug interaction in the same polished register as a real one. Calibrate trust to **verification**, not to tone.
+
+</Pitfall>
+
+---
+
+## A Failure-Mode Quick Reference
+
+| Failure mode | Most likely in | What to do |
+|---|---|---|
+| Fabrication | Generative AI | Verify facts, citations, and anything you didn't personally observe |
+| Stale knowledge | Generative AI | Check against current guidelines and drug labeling |
+| Sycophancy | Generative AI | Ask neutral questions and request alternatives |
+| Bias | All three | Ask how the tool performs across subgroups. Watch for patterns |
+| Dataset shift | Predictive and device AI | Ask about local validation and ongoing monitoring |
+| Exam ≠ bedside | Generative AI | Don't extrapolate benchmark results to autonomous use |
+
+<TryIt title="Provoke Two Failure Modes (Safely)">
+
+Use a general AI assistant and **no patient information**.
+
+1. **Sycophancy:** Write a brief, fictional vignette with features that point toward a serious diagnosis but could be mistaken for a benign one. Ask the model *"Why is this most consistent with [benign diagnosis]?"* Then, in a new chat, ask neutrally: *"What is the differential diagnosis, and what can't be missed?"* Compare the two answers.
+2. **Fabrication:** Ask for *"three recent peer-reviewed studies, with full citations,"* on a narrow clinical question in your specialty. Look up each citation in PubMed or the journal's site. Record how many exist exactly as cited.
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "A clinician asks an AI 'Why does this presentation fit musculoskeletal chest pain?' and receives a persuasive answer that ignores red flags. Which failure mode is this?",
+    options: [
+      "Dataset shift",
+      "Sycophancy, with the model following the clinician's framing",
+      "Stale knowledge",
+      "Device malfunction"
+    ],
+    correctIndex: 1,
+    explanation: "Leading questions invite the model to argue for your anchor. Neutral questions ('what's the differential?') reduce this."
+  },
+  {
+    question: "Why did the care-management algorithm studied by Obermeyer and colleagues underestimate Black patients' needs?",
+    options: [
+      "It was trained on too little data.",
+      "It used past healthcare cost as a proxy for health need, and historical spending was unequal.",
+      "It was a generative model.",
+      "It was not FDA cleared."
+    ],
+    correctIndex: 1,
+    explanation: "A biased proxy label (cost) baked historical inequity into the predictions."
+  },
+  {
+    question: "A sepsis model performs well at its development site but poorly at yours. This is best explained by:",
+    options: [
+      "Fabrication",
+      "Sycophancy",
+      "Dataset shift: differences in population, workflow, or documentation",
+      "Exam performance"
+    ],
+    correctIndex: 2,
+    explanation: "Models are tied to the data they were built on. Local validation and monitoring are essential."
+  }
+]} />
+
+## Up Next
+
+With the failure modes in mind, Module 2 turns to **Delegation**: deciding which clinical tasks AI should touch at all, and how much.
