@@ -1,0 +1,193 @@
+---
+title: "Course Challenge"
+description: "Bring all four competencies together: a scenario-based knowledge check plus a capstone where you take a real task through Delegation, Description, Discernment, and Diligence."
+module: 5
+moduleTitle: "Diligence"
+lesson: 3
+duration: "35 min"
+---
+
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## How the Challenge Works
+
+The challenge has two parts:
+
+1. **Knowledge check:** ten scenario questions covering every module. Aim for at least 8 out of 10. If you miss one, read the explanation and revisit that lesson.
+2. **Capstone task:** a hands-on exercise that takes a real piece of your own work through all four competencies.
+
+This course is free and self-paced, so there's nothing to submit. The goal is to leave with a way of working with AI that you can apply to tools that don't exist yet.
+
+---
+
+## Part 1: Knowledge Check
+
+<Quiz questions={[
+  {
+    question: "(Module 1) A coworker says, 'I'm already good at AI. I have a folder of 50 prompt templates.' What's missing from that idea of fluency?",
+    options: [
+      "Nothing. Templates are what fluency means.",
+      "Templates cover part of Description, but fluency also includes deciding what to delegate, judging output, and using AI responsibly.",
+      "They need 100 templates.",
+      "Templates only work in paid tools."
+    ],
+    correctIndex: 1,
+    explanation: "Fluency covers all four competencies. Templates help with Description but don't tell you whether to use AI, whether the output is right, or whether you're using it responsibly."
+  },
+  {
+    question: "(Module 1) You configure an AI assistant to automatically draft replies to every incoming support ticket overnight. Which mode is this, and what does it demand most?",
+    options: [
+      "Automation; nothing beyond a quick check.",
+      "Augmentation; brainstorming skills.",
+      "Agency; careful setup and ongoing monitoring, since errors can repeat without you present.",
+      "None; it's just email."
+    ],
+    correctIndex: 2,
+    explanation: "AI acting on your behalf across future situations is agency. Its mistakes repeat, so the setup and monitoring carry the most weight."
+  },
+  {
+    question: "(Module 2) A manager plans to have AI decide which three team members get promoted, based on their project lists. What's the core delegation problem?",
+    options: [
+      "AI is slow at reading lists.",
+      "The decision requires the manager's judgment and accountability, which is the point of the task.",
+      "Project lists are too short.",
+      "The AI might use the wrong format."
+    ],
+    correctIndex: 1,
+    explanation: "Problem awareness: promotions are a judgment the manager must own. AI might help organize evidence, but delegating the decision hands off the part that matters most."
+  },
+  {
+    question: "(Module 2) Which task best fits 'automate, then spot-check'?",
+    options: [
+      "Drafting a eulogy for a colleague.",
+      "Converting a 200-row contact list into a consistent 'Last, First' format.",
+      "Choosing your organization's annual priorities.",
+      "Writing a legal brief with case citations."
+    ],
+    correctIndex: 1,
+    explanation: "High fit, easy to check, and low stakes: the ideal automation profile."
+  },
+  {
+    question: "(Module 3) Your prompt asks for 'a report on our hiring process,' and the AI invents statistics. Which description fix helps most?",
+    options: [
+      "Add 'please' to the prompt.",
+      "Add a process description and boundary: use only the attached data and insert [STAT] placeholders where numbers are missing.",
+      "Ask for a longer report.",
+      "Switch to a different font."
+    ],
+    correctIndex: 1,
+    explanation: "Describing the process (which sources to use) and boundaries (placeholders instead of guesses) prevents fabricated figures."
+  },
+  {
+    question: "(Module 3) You're practicing for a job interview and want AI to help. Which is a performance description?",
+    options: [
+      "'Give me a list of common interview questions.'",
+      "'Act as a tough interviewer. Ask one question at a time, wait for my answer, then give blunt feedback.'",
+      "'Format the questions as a table.'",
+      "'Make the list 20 items long.'"
+    ],
+    correctIndex: 1,
+    explanation: "Performance description shapes how the AI behaves as a collaborator: its role, pacing, and how direct its feedback is."
+  },
+  {
+    question: "(Module 4) An AI summary of a 30-page policy is clear and well organized. What should you check first?",
+    options: [
+      "Whether the formatting is attractive.",
+      "Whether the key claims match the actual policy and nothing important was dropped.",
+      "Whether the AI sounded confident.",
+      "Whether it used bullet points."
+    ],
+    correctIndex: 1,
+    explanation: "Product discernment starts with accuracy and completeness, checked against the source. Polish and confidence aren't evidence."
+  },
+  {
+    question: "(Module 4) After several rounds of feedback, the AI's drafts keep getting worse and the chat is cluttered with failed attempts. What's the best move?",
+    options: [
+      "Keep going. It will eventually get it.",
+      "Start a new chat with a better description built from what you learned.",
+      "Give up on the task entirely.",
+      "Paste the whole failed chat into the new one."
+    ],
+    correctIndex: 1,
+    explanation: "When a conversation is anchored on a bad direction, restarting with an improved description, informed by your discernment, is usually faster."
+  },
+  {
+    question: "(Module 5) A student uses AI to brainstorm essay topics, which their instructor's policy allows with disclosure. What does transparency diligence require?",
+    options: [
+      "Nothing. Brainstorming doesn't count.",
+      "Disclosing the AI use as the policy requires.",
+      "Hiding it so the essay seems more original.",
+      "Rewriting the policy."
+    ],
+    correctIndex: 1,
+    explanation: "Transparency means following the stated policy and being honest with the people who have a stake, here the instructor."
+  },
+  {
+    question: "(Module 5) A team adds 'AI-generated' to a client report but doesn't check its figures. One is wrong. Who's responsible?",
+    options: [
+      "No one. The disclosure covers it.",
+      "The AI vendor.",
+      "The team. Disclosure doesn't replace verifying what they deliver.",
+      "The client, for not checking."
+    ],
+    correctIndex: 2,
+    explanation: "Deployment diligence: you own what you share. Transparency and verification are separate duties, and disclosure doesn't excuse errors."
+  }
+]} />
+
+---
+
+## Part 2: Capstone Task
+
+<TryIt title="Take Real Work Through All Four Ds">
+
+Choose one **real** task you need to complete in the next few weeks, something with enough substance that you'd care if it went wrong. Work through it with an AI assistant, documenting each stage in a short write-up (bullet points are fine).
+
+1. **Delegation (Module 2).**
+   - Write the real goal and what success looks like.
+   - Break the task into pieces and mark each **You**, **Augment**, or **Automate**, using the five-question delegation check.
+   - Confirm the tool you're using is allowed for the data involved.
+2. **Description (Module 3).**
+   - For the pieces AI will help with, write a description covering **product**, **process**, and **performance**.
+   - Use at least one technique: an example, a boundary, placeholders, or letting the AI interview you.
+3. **Discernment (Module 4).**
+   - Run the description–discernment loop at least three rounds. Record what you noticed, what caused it, and the feedback you gave.
+   - Apply your personal discernment checklist to the final output. Verify every specific fact against a source outside the AI.
+4. **Diligence (Module 5).**
+   - Decide what disclosure, if any, is appropriate, and why.
+   - Confirm you'd put your name on the result.
+   - Check that the work is consistent with your personal AI use statement. Update the statement if you learned something.
+
+**Self-assessment checklist.** You've completed the capstone when you can say yes to all of these:
+
+- I kept at least one piece of this work for myself, on purpose, and can explain why.
+- My description covered product, process, *and* performance.
+- I can point to at least two places where my discernment changed the result for the better.
+- I verified every factual claim against a source outside the AI.
+- I didn't share anything I shouldn't have, and I handled disclosure deliberately.
+- I'd confidently put my name on the final result.
+
+</TryIt>
+
+---
+
+## Congratulations, You've Finished AI Fluency: Foundations
+
+You can now:
+
+- Explain what AI fluency is and why it outlasts any single tool or trick
+- Recognize **automation**, **augmentation**, and **agency**, and choose the right mode
+- **Delegate** deliberately, piece by piece, based on your goal and your tools
+- **Describe** the product, process, and performance you need
+- **Discern** the quality of AI output, reasoning, and behavior, and turn that into better descriptions
+- Practice **diligence** in how you create, disclose, and deploy AI-assisted work
+
+### Where to Go Next
+
+- **Keep the routine going.** Use the 4D routine on one meaningful task each week.
+- **Share your AI use statement** with your team or instructor and invite theirs.
+- **Start here if you skipped it:** [AI Fundamentals](/courses/ai-fundamentals/) covers how AI works and the CRAFT prompting method in more depth.
+- **Go further with AI:** [AI & LLM Skills](/courses/ai-llm-skills/) shows how language models work under the hood and how to start building with an AI API.
+
+*The 4D AI Fluency Framework was created by Rick Dakan and Joseph Feller with Anthropic and is released under [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/). See [aifluencyframework.org](https://aifluencyframework.org/).*

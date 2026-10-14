@@ -1,0 +1,123 @@
+---
+title: "Platform Awareness and Task Delegation"
+description: "Know what today's AI tools do well and badly, then divide the work between you and AI with a simple decision check you can reuse on any task."
+module: 2
+moduleTitle: "Delegation"
+lesson: 2
+duration: "25 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## Platform Awareness: Know Your Collaborator
+
+You wouldn't ask a talented graphic designer to audit your taxes. Platform awareness means knowing the **capabilities and limits** of the AI tools available to you, so you match the task to the tool.
+
+Specific features change quickly, so focus on patterns that have held up across tools and model generations:
+
+| Generally strong | Generally weak or risky |
+|---|---|
+| Drafting, rewriting, and changing tone | Exact facts, figures, quotes, and citations without a source to check against |
+| Summarizing text you provide | Very recent events, unless the tool can search the web (and even then, verify) |
+| Brainstorming many options quickly | Knowing your organization's unwritten context, politics, or history |
+| Explaining concepts at different levels | Precise arithmetic in long calculations, unless the tool runs code |
+| Restructuring information (tables, outlines, formats) | Judgments that need lived experience or accountability |
+| Giving critique from a stated perspective | Consistency across very long documents without careful guidance |
+
+Platform awareness also means knowing **your specific tool's** setup:
+
+- **Can it search the web, read files, or run code?** These change what it can verify on its own.
+- **What does it remember?** Some tools keep memory across chats; others start fresh each time.
+- **What are the data terms?** A personal free account and your organization's approved tool may handle your data very differently.
+- **What's approved where you work or study?** That's a diligence question too, and it constrains your choice.
+
+<Pitfall title="Assuming Last Year's Limits (or Last Year's Strengths)">
+
+**Common mistake:** deciding "AI can't do X" based on a disappointing attempt months ago, or assuming a tool can do something because a different tool could.
+
+Capabilities shift with every model update, and they vary between products. When a task matters, run a quick test with the specific tool you plan to use rather than relying on memory or reputation.
+
+</Pitfall>
+
+---
+
+## Task Delegation: Dividing the Work
+
+With problem awareness and platform awareness in hand, you can make the actual call. For each piece of work, run this **delegation check**:
+
+1. **Fit:** Is this something AI tends to do well (from the table above)?
+2. **Checkability:** Can I verify the result quickly and reliably?
+3. **Stakes:** What happens if it's subtly wrong and I miss it?
+4. **Ownership:** Do I need to do this myself to learn, decide, or stand behind it personally?
+5. **Permission:** Am I allowed to use AI here, with this data?
+
+| Fit | Checkable | Stakes | Typical call |
+|---|---|---|---|
+| High | Easily | Low | **Automate.** Spot-check the result. |
+| High | With effort | Medium or high | **Augment.** AI drafts, you verify line by line. |
+| Low | — | Any | **Do it yourself**, maybe with AI as a sounding board. |
+| Any | — | Any, but you need to own it | **Do it yourself.** Use AI only for feedback afterward. |
+| Any | — | Any, but not permitted | **Don't use AI** for this, or find an approved route. |
+
+The check takes 30 seconds once it's a habit, and it prevents most of the painful AI mistakes people make at work.
+
+<TryIt title="Test the Tool, Then Decide">
+
+1. Choose one piece of work from your task map in the last lesson that you marked **Automate** or **Augment**.
+2. Run the five-question delegation check on it. Write a one-line answer for each.
+3. Now test platform awareness. Ask your AI assistant:
+   ```text
+   I'm planning to use you for this task: [describe it]. Before
+   starting, tell me honestly: which parts are you likely to do
+   well, which parts are you likely to get wrong, and what should
+   I double-check? Also tell me whether you can search the web or
+   read files in this chat.
+   ```
+4. Compare its self-assessment with your own check. Treat its answer as a hint, not proof: AI can be wrong about its own abilities too.
+5. Do a small trial run. Did the result match what you both predicted?
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "Which task is riskiest to delegate to a general AI chat without any source documents?",
+    options: [
+      "Rewriting your paragraph in a friendlier tone.",
+      "Brainstorming names for an internal project.",
+      "Listing the exact dates and dollar amounts of your city's last three budget votes.",
+      "Turning your notes into a bulleted outline."
+    ],
+    correctIndex: 2,
+    explanation: "Exact facts and figures about specific events are where AI is most likely to produce confident errors, especially without a source to check against."
+  },
+  {
+    question: "Why does 'checkability' matter in the delegation check?",
+    options: [
+      "Tasks that are hard to check are always forbidden.",
+      "If you can't verify the result quickly, mistakes can slip through, so the task needs more of your involvement.",
+      "Checkable tasks run faster on AI.",
+      "It only matters for coding tasks."
+    ],
+    correctIndex: 1,
+    explanation: "Delegation is safest when you can confirm the output is right. When checking is hard, shift toward augmentation, with you verifying closely, or doing it yourself."
+  },
+  {
+    question: "Your AI assistant tells you it's very good at citing legal cases. What's the fluent response?",
+    options: [
+      "Trust it, since it knows its own abilities.",
+      "Treat the claim as a hint, run a small test, and verify every citation against a real source.",
+      "Never use AI for anything legal.",
+      "Ask it the same question twice to confirm."
+    ],
+    correctIndex: 1,
+    explanation: "AI self-assessments can be wrong. Platform awareness comes from testing the specific tool and verifying high-stakes details, not from taking its word for it."
+  }
+]} />
+
+---
+
+## Up Next
+
+Once you've decided what AI should do, you need to explain it well. Module 3 covers **Description**, which goes beyond prompt templates to describing the product, the process, and the way you want AI to behave.
