@@ -1,0 +1,123 @@
+---
+title: "Writing a Course AI Policy"
+description: "Write an AI policy students can follow: assignment-level permission levels, clear reasons, a disclosure format, and syllabus language you can adapt."
+module: 4
+moduleTitle: "Policy and Integrity"
+lesson: 1
+duration: "25 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## Why One Rule for the Whole Course Doesn't Work
+
+A single course-wide rule ("no AI" or "AI allowed") can't fit every assignment. An in-class reflection, a research project, and a coding exercise each build different skills, so AI's appropriate role differs. Students also take several courses with different rules, so vague policies cause honest confusion.
+
+A fluent policy works **at the assignment level** and **explains the reason** for each rule.
+
+---
+
+## Use Clear Permission Levels
+
+Many educators use a small set of levels, labeled on every assignment:
+
+<ProcessFlow
+  label="Four assignment-level AI permission levels, from no AI to AI integrated into the task"
+  color="#115e59"
+  steps={[
+    { title: "No AI", detail: "The skill itself is being practiced or assessed", badge: "0" },
+    { title: "AI for preparation", detail: "Brainstorm, study, get explanations; produce the work yourself", badge: "1" },
+    { title: "AI as collaborator", detail: "AI may help draft or revise; disclose how", badge: "2" },
+    { title: "AI integrated", detail: "Using AI well is part of the assignment", badge: "3" },
+  ]}
+/>
+
+| Level | Example assignment | Reason students hear |
+|---|---|---|
+| **0: No AI** | In-class timed essay; foundational skill quiz | "This checks what you can do on your own, so you and I both know where you are." |
+| **1: Preparation** | Book report, where AI may quiz you on the reading | "AI can help you study, but the writing practice needs to be yours." |
+| **2: Collaborator** | Research proposal, where AI may give feedback on drafts | "Getting feedback is a real-world skill. Show what you changed and why." |
+| **3: Integrated** | Analyze a dataset with AI, then critique its analysis | "Using AI well, and catching its mistakes, is the skill." |
+
+The labels don't matter much. What matters is that **every assignment has one**, and students know why.
+
+## What a Good Policy Includes
+
+1. **The permission levels** and where to find each assignment's level.
+2. **The reasoning:** a short explanation tied to learning.
+3. **Disclosure expectations:** when and how to include an AI use statement (see Module 3).
+4. **Privacy guidance:** which tools are approved, and what never to enter.
+5. **What happens if something goes wrong:** a fair, conversation-first process (next lesson).
+6. **An invitation to ask:** "If you're not sure whether a use is allowed, ask me. Asking is never a problem."
+
+### Example Syllabus Language
+
+> *AI tools can help you learn, and they can also skip the learning you're here for. Each assignment in this course is labeled with an AI level from 0 (no AI) to 3 (AI is part of the task), with a one-line reason. When you use AI on an assignment that allows it, attach a short AI use statement saying what you used it for and what you did yourself. Never enter personal information about yourself or others into AI tools that aren't provided by the school. If you're unsure whether a use is allowed, ask me first. Asking will never count against you.*
+
+<Pitfall title="A Policy Written Once and Never Revisited">
+
+**Common mistake:** writing an AI policy at the start of the year and not revisiting it.
+
+Tools change, your institution's guidance changes, and you'll learn which rules confuse students. Review the policy each term, and consider inviting students to suggest changes. Explaining a rule to them is often when you discover it isn't clear.
+
+</Pitfall>
+
+<TryIt title="Draft Your Policy and Label Three Assignments">
+
+1. Check your institution's or district's current AI guidance. Your policy must fit within it.
+2. Draft a policy covering the six elements above, in language your students will understand.
+3. Label three real upcoming assignments with a level and a one-line reason each.
+4. Ask an AI assistant to review your draft as a confused student would:
+   ```text
+   Read this course AI policy as a student taking four other courses
+   with different AI rules. List every point where you'd be unsure
+   what's allowed, and any wording that sounds unfair or threatening.
+   ```
+5. Revise based on the useful points. Ask a colleague, or a student, to read the final version.
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "Why are assignment-level permissions better than a single course-wide AI rule?",
+    options: [
+      "They're shorter.",
+      "Different assignments build different skills, so AI's appropriate role differs.",
+      "Students prefer more rules.",
+      "AI tools require them."
+    ],
+    correctIndex: 1,
+    explanation: "A timed reflection and an AI-analysis project need different rules. Labeling each assignment makes the expectation, and the reason, clear."
+  },
+  {
+    question: "An assignment builds students' ability to write a clear paragraph without help. Which level fits?",
+    options: [
+      "Level 0: No AI",
+      "Level 2: Collaborator",
+      "Level 3: Integrated",
+      "No label is needed."
+    ],
+    correctIndex: 0,
+    explanation: "When the skill itself is being practiced or checked independently, AI would replace the learning."
+  },
+  {
+    question: "Which policy element most encourages honest disclosure?",
+    options: [
+      "Severe penalties for all AI use.",
+      "An invitation to ask when unsure, and normal treatment of permitted, disclosed use.",
+      "Using AI detectors on every assignment.",
+      "Keeping the policy vague."
+    ],
+    correctIndex: 1,
+    explanation: "Students disclose when honesty is safe and expectations are clear."
+  }
+]} />
+
+---
+
+## Up Next
+
+Even with a clear policy, you'll face situations where you suspect AI use that wasn't allowed. The next lesson covers handling academic integrity fairly, and why AI detectors aren't the answer.

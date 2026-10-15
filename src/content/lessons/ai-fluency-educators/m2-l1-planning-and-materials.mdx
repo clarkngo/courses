@@ -1,0 +1,134 @@
+---
+title: "Planning and Materials"
+description: "Use description and discernment to get AI-drafted lessons, practice materials, and differentiated readings that are accurate, aligned, and pitched at the right level."
+module: 2
+moduleTitle: "AI in Your Own Teaching Work"
+lesson: 1
+duration: "25 min"
+---
+
+import LoopDiagram from '@components/LoopDiagram.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## Describe the Learners, Not Just the Topic
+
+"Make a worksheet on the water cycle" gets you a generic worksheet. AI doesn't know your students, your standards, what you taught yesterday, or what tripped students up last year. A strong teaching description covers all three types from Foundations:
+
+| Type | What to include for teaching materials |
+|---|---|
+| **Product** | Grade or level, learning objective, standard or outcome, format, length, reading level, accessibility needs. |
+| **Process** | "Build from what they already know about evaporation." "Order questions from recall to application." "Flag any content that might be inaccurate or outdated." |
+| **Performance** | "Ask me clarifying questions before drafting." "Act as an experienced middle-school science teacher." "Push back if my objective is too broad for one lesson." |
+
+**Example:**
+
+```text
+I teach 7th-grade science. Students already know evaporation and
+condensation but confuse precipitation with condensation. Learning
+objective: students can explain how energy from the sun drives the
+water cycle.
+
+Create a 15-minute practice activity: 6 questions, moving from
+recall to application, one of which uses a local example (we're in
+a dry inland city). Reading level around grade 6. Include an answer
+key with one-sentence explanations.
+
+Before you draft, ask me up to three questions about my students.
+Flag anything you're not certain is scientifically accurate.
+```
+
+---
+
+## Discern Before It Reaches Students
+
+Everything AI produces for your classroom passes through your judgment first. Check:
+
+1. **Accuracy.** AI makes factual errors, including in answer keys. Work through every answer yourself. Watch especially for math errors, misattributed quotes, invented historical details, and outdated science.
+2. **Alignment.** Does it actually target your objective, or a nearby, easier one?
+3. **Level.** Is the reading level and difficulty right? AI often overshoots or makes everything too easy.
+4. **Representation and bias.** Whose names, examples, and perspectives appear? Who is missing? Are any stereotypes slipping in?
+5. **Fit.** Does it match how *you* teach the concept, including your vocabulary and methods?
+
+<LoopDiagram
+  label="The materials loop: describe your learners and objective, AI drafts, you check accuracy, alignment, level and bias, then refine your description"
+  colors={['#115e59', '#0f766e', '#0d9488']}
+  steps={[
+    { title: "Describe", subtitle: "learners + goal" },
+    { title: "Draft", subtitle: "AI creates" },
+    { title: "Check", subtitle: "accuracy, level" },
+    { title: "Refine", subtitle: "specific feedback" },
+  ]}
+/>
+
+<Pitfall title="Trusting the Answer Key">
+
+**Common mistake:** generating a quiz and its answer key together and only skimming the key.
+
+AI-generated answer keys can contain confident errors, and an error in a key gets graded into dozens of students' scores. Work every problem yourself, or at minimum every one you're unsure about, before the material goes out.
+
+</Pitfall>
+
+---
+
+## Differentiation Without Distortion
+
+AI is especially useful for adapting one resource into several versions: simplified readings, translated summaries for multilingual families, extension problems for students ready for more. The risk is that **meaning drifts** as text is simplified. Compare each version to the original for:
+
+- Key ideas that disappeared.
+- Nuance that became a flat (or wrong) statement.
+- Changes in tone that make one group's version feel "lesser."
+
+<TryIt title="Build and Check One Real Resource">
+
+1. Choose an upcoming lesson. Write a full description: learners, objective, product, process, and performance, like the example above.
+2. Ask AI for one practice activity with an answer key.
+3. Run the five checks: accuracy, alignment, level, representation, fit. Log every problem you find.
+4. Give one round of specific feedback and compare the revision.
+5. Ask for a version adapted for a different reading level. Compare it to the original and note anything that drifted.
+6. Decide: is this ready for students? What did you have to fix?
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "Which detail most improves an AI request for classroom materials?",
+    options: [
+      "Saying 'make it engaging.'",
+      "Describing what students already know and where they typically get confused.",
+      "Asking for the longest version possible.",
+      "Using the word 'please.'"
+    ],
+    correctIndex: 1,
+    explanation: "Knowledge of your specific learners is the context AI lacks most. It turns a generic worksheet into one aimed at your students' real gaps."
+  },
+  {
+    question: "Why must you check AI-generated answer keys carefully?",
+    options: [
+      "They're usually too short.",
+      "They can contain confident errors, which then get graded into many students' scores.",
+      "Students can see them.",
+      "They're formatted poorly."
+    ],
+    correctIndex: 1,
+    explanation: "An answer-key error multiplies across every student graded with it. Verify the work yourself."
+  },
+  {
+    question: "What's the main risk when AI simplifies a reading for a lower reading level?",
+    options: [
+      "It becomes too long.",
+      "Meaning can drift: key ideas disappear or nuance becomes inaccurate.",
+      "It changes the font.",
+      "There is no risk."
+    ],
+    correctIndex: 1,
+    explanation: "Simplification can quietly change meaning. Compare adapted versions to the original."
+  }
+]} />
+
+---
+
+## Up Next
+
+Feedback is where AI could save the most time, and where it needs the most care. The next lesson covers using AI to support feedback and grading without handing off your judgment.
