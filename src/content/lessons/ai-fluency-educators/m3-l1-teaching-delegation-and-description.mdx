@@ -1,0 +1,116 @@
+---
+title: "Teaching Delegation and Description"
+description: "Classroom activities that help students decide when AI supports their learning, and describe what they need, including asking AI to coach them instead of answering for them."
+module: 3
+moduleTitle: "Teaching the 4Ds to Students"
+lesson: 1
+duration: "25 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## Delegation for Learners Is Different
+
+For a professional, good delegation often means getting work done faster. For a learner, the work is usually the point. A student who has AI write their lab report has a lab report, but hasn't learned to write one.
+
+So the delegation question for students isn't just "Can AI do this?" It's:
+
+> **Will using AI this way help me learn what this assignment is for, or skip it?**
+
+Students can usually answer that well once they know what an assignment is for. **Telling them the purpose of each assignment** is the single most useful thing you can do for their delegation skills.
+
+---
+
+## Activity 1: Help or Shortcut?
+
+**Time:** 15 minutes. **Works for:** upper elementary through adult learners.
+
+1. Give students a short list of AI uses on one real assignment, for example an argumentative essay:
+   - Asking AI to explain what a counterargument is
+   - Asking AI to write the counterargument paragraph
+   - Asking AI to quiz you on your evidence
+   - Asking AI to fix every grammar error
+   - Asking AI to point out the weakest part of your argument without fixing it
+2. In pairs, students sort each into **Helps my learning**, **Skips my learning**, or **Depends**.
+3. Discuss the "Depends" cards. The best conversations happen there: grammar fixes might be fine in a history essay and a shortcut in a writing class focused on mechanics.
+
+## Activity 2: Coach, Don't Answer
+
+The most important description skill for learners is asking AI to **support their thinking rather than replace it**. Teach students a performance description they can reuse:
+
+```text
+I'm a student learning [topic]. Don't give me the answer. Ask me
+questions and give hints one step at a time so I can work it out
+myself. If I get something wrong, help me see why instead of
+correcting it for me.
+```
+
+Have students try the same problem twice, once asking for the answer and once with the coaching prompt, then reflect: Which one could you do again tomorrow without AI?
+
+## Activity 3: Prompt Makeover
+
+1. Show a vague student prompt: *"explain the french revolution."*
+2. Students improve it in rounds, adding what they already know, what confuses them, the level they need, and how they want AI to behave.
+3. Compare the responses. Students see that clear description is a thinking skill: to describe what you need, you have to know what you don't understand.
+
+<Pitfall title="Teaching Prompts Without Purpose">
+
+**Common mistake:** teaching students to write excellent prompts that get AI to produce excellent finished work.
+
+That trains students to delegate more effectively, but not more wisely. Pair every description lesson with a delegation question: *Should AI be producing this at all, or helping you produce it?*
+
+</Pitfall>
+
+<TryIt title="Adapt One Activity for Your Learners">
+
+1. Choose one of the three activities above.
+2. Rewrite it for a specific class you teach: their age, subject, and a real upcoming assignment.
+3. Write the **purpose statement** for that assignment in one student-friendly sentence ("This essay is to practice building an argument from evidence.").
+4. Optional: ask an AI assistant to critique your adapted activity from the point of view of a skeptical student, and revise based on anything useful it raises.
+5. Plan when you'll run it.
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "What's the key delegation question for students?",
+    options: [
+      "Can AI do this faster than me?",
+      "Will using AI this way help me learn what this assignment is for, or skip it?",
+      "Which AI tool is best?",
+      "Will my teacher find out?"
+    ],
+    correctIndex: 1,
+    explanation: "For learners, the work is usually the point. Good delegation protects the learning the assignment is designed to build."
+  },
+  {
+    question: "Why does telling students each assignment's purpose improve their AI use?",
+    options: [
+      "It makes assignments shorter.",
+      "Students can only judge whether AI helps or skips their learning if they know what the learning is.",
+      "AI tools require a purpose statement.",
+      "It doesn't affect AI use."
+    ],
+    correctIndex: 1,
+    explanation: "Purpose is the information students need to make good delegation decisions on their own."
+  },
+  {
+    question: "What does the 'coach, don't answer' prompt teach?",
+    options: [
+      "How to get answers faster.",
+      "A performance description that makes AI support the student's thinking rather than replace it.",
+      "How to hide AI use.",
+      "How to format essays."
+    ],
+    correctIndex: 1,
+    explanation: "It's a reusable way to describe the AI behavior that serves learning: hints and questions instead of finished answers."
+  }
+]} />
+
+---
+
+## Up Next
+
+The next lesson covers the other two competencies in the classroom: teaching students to judge AI output and to be honest about how they used it.

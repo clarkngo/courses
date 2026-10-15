@@ -1,0 +1,111 @@
+---
+title: "What to Hand Off, What to Keep"
+description: "Apply delegation to teaching work: which tasks AI can speed up, which depend on your relationships and judgment, and how to protect student privacy before anything goes into an AI tool."
+module: 1
+moduleTitle: "Fluency in the Classroom"
+lesson: 2
+duration: "25 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## The Teaching Work Inventory
+
+Teaching involves a lot of different kinds of work. Some of it is mechanical, some depends on expertise, and some only works because a student knows *you* did it. Delegation means sorting those.
+
+| Task | Typical call | Why |
+|---|---|---|
+| Reformatting a worksheet, generating answer keys you check | **Automate** | Well defined and quick to check. |
+| Drafting practice questions at several difficulty levels | **Augment** | AI drafts quickly; you check accuracy and alignment. |
+| Adapting a reading for different reading levels | **Augment** | Useful, but meaning can drift. Check against the original. |
+| Brainstorming hooks, examples, or analogies for a hard concept | **Augment** | A thinking partner, with your judgment choosing. |
+| Writing a newsletter or routine family email | **Augment** | Draft with AI, then edit into your own voice. |
+| Deciding a student's grade | **Keep** | Your professional judgment and accountability. |
+| Feedback on a student's personal writing or struggles | **Keep**, or augment with care | The relationship is part of the feedback. See Module 2. |
+| Recommendation letters | **Keep** | The value depends on it being your genuine assessment. |
+| Conversations about behavior, wellbeing, or family situations | **Keep** | Relationship and confidentiality come first. |
+
+The pattern: **AI is strongest on materials and weakest on relationships and judgment.** The more a task depends on knowing a particular student, the more it should stay with you.
+
+---
+
+## Student Privacy Comes First
+
+Before any delegation decision, there's a gate: **what student information would this task put into an AI tool?**
+
+- **Know your rules.** Many places have student privacy laws (for example, FERPA in the United States) plus district or institutional policies about which tools are approved. Personal AI accounts are usually *not* approved for student records.
+- **Default to de-identified.** Remove names, ID numbers, and details that could identify a student. "A ninth grader who struggles with fractions and loves basketball" is usually all the AI needs.
+- **Be extra careful with sensitive categories:** disability and accommodation information, health, discipline records, family circumstances, and grades.
+- **Student work counts too.** Pasting a student's essay into an unapproved tool shares their work, and possibly personal details in it, with a third party.
+
+<Pitfall title="The Helpful Shortcut That Leaks Data">
+
+**Common mistake:** pasting a class roster with accommodation notes into a personal AI account to "quickly make seating charts and grouping suggestions."
+
+It saves ten minutes and may violate privacy law and school policy. Use an approved tool, or describe the needs without names ("three students need front-row seating, two need to be separated").
+
+</Pitfall>
+
+---
+
+## The Delegation Check, for Teachers
+
+From Foundations, the five-question delegation check (fit, checkability, stakes, ownership, permission) works well in teaching. Add one question specific to education:
+
+> **Would a student or family feel let down if they knew AI did this part?**
+
+If the answer is yes (for example, personal comments on a report card), keep it, or use AI only to help you organize thoughts you then write yourself.
+
+<TryIt title="Sort Your Week">
+
+1. List every task from a typical teaching week, aiming for at least twelve. Include the small ones.
+2. Mark each **Automate**, **Augment**, or **Keep**.
+3. For every **Automate** or **Augment** task, note what student data it would involve and whether your approved tool can handle it. If you don't know which tools are approved, write down who to ask.
+4. Pick the single task that would save you the most time. Try it with AI this week, using de-identified details only.
+5. Note how long the checking took. Was it still worth it?
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "Which teaching task is the best candidate to keep entirely for yourself?",
+    options: [
+      "Generating a first draft of ten vocabulary practice sentences.",
+      "Writing a college recommendation letter for a student you know well.",
+      "Reformatting a handout.",
+      "Brainstorming hooks for a lesson on photosynthesis."
+    ],
+    correctIndex: 1,
+    explanation: "A recommendation letter's value comes from your genuine, personal assessment of the student. That's work to keep."
+  },
+  {
+    question: "You want help writing differentiated reading-group materials. What's the most diligent way to describe your students?",
+    options: [
+      "Paste the class list with names and IEP notes.",
+      "Describe the needs without identifying anyone, for example 'one group reads two grade levels below; two students use text-to-speech.'",
+      "Upload last year's report cards for context.",
+      "Skip any description of needs."
+    ],
+    correctIndex: 1,
+    explanation: "De-identified descriptions give AI what it needs without exposing student records."
+  },
+  {
+    question: "What's the extra delegation question this lesson adds for educators?",
+    options: [
+      "Is the AI tool free?",
+      "Would a student or family feel let down if they knew AI did this part?",
+      "Can I finish faster?",
+      "Did another teacher use AI for this?"
+    ],
+    correctIndex: 1,
+    explanation: "Trust is central to teaching. If AI involvement would undermine it, keep the task, or limit AI to behind-the-scenes help."
+  }
+]} />
+
+---
+
+## Up Next
+
+Module 2 puts AI to work on the tasks worth handing off, starting with planning lessons and creating materials.
