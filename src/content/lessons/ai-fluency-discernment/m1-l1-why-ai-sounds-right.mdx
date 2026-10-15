@@ -1,0 +1,155 @@
+---
+title: "Why AI Sounds Right When It Isn't"
+description: "Understand the three habits that make AI output misleading — hallucination, sycophancy, and overconfidence — and why fluent writing is not evidence of accuracy."
+module: 1
+moduleTitle: "Why Wrong Sounds Right"
+lesson: 1
+duration: "25 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## Welcome to Discernment
+
+In [AI Fluency: Foundations](/courses/ai-fluency-foundations/) you met the four competencies of the 4D AI Fluency Framework: **Delegation**, **Description**, **Discernment**, and **Diligence**. This course goes deep on the third one. Discernment is the skill of judging what AI gives you: its output, its reasoning, and how it behaved while working with you.
+
+Discernment is where most real-world AI mistakes are either caught or shipped. A weak prompt usually produces something obviously off. A *good* prompt produces something that looks finished, and that's when people stop checking.
+
+*The 4D AI Fluency Framework was created by Rick Dakan and Joseph Feller with Anthropic and is released under [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/). All lessons, examples, and exercises in this course are original.*
+
+---
+
+## The Fluency Trap
+
+People judge writing by surface signals: clear structure, confident tone, correct grammar, the right vocabulary. For most of history those signals were a reasonable shortcut. Someone who writes clearly about a topic has usually spent time with it.
+
+AI breaks that shortcut. A language model produces fluent text whether or not the content is true, because it generates the most plausible continuation of your request, not a looked-up fact. **Fluency is the default; accuracy is not.** The polish you see is the same whether the answer is right or invented.
+
+Three habits make this especially tricky.
+
+---
+
+## Habit 1: Hallucination
+
+A **hallucination** is content the AI presents as real that isn't: a study that was never published, a quote nobody said, a feature a product doesn't have, a law with the wrong section number.
+
+Hallucinations cluster where the model has to produce something *specific* that it hasn't reliably learned:
+
+- Citations, page numbers, and URLs
+- Exact statistics and dates
+- Quotes attributed to named people
+- Details about small organizations, niche topics, or recent events
+- Anything about *your* organization that you didn't provide
+
+The dangerous part is that invented details look exactly like real ones. A fake citation has an author, a year, a journal, and a plausible title.
+
+## Habit 2: Sycophancy
+
+**Sycophancy** is the tendency to tell you what you seem to want to hear. AI assistants are trained partly on human approval, and people tend to approve of agreement. The result:
+
+- Your draft is "excellent" with "a few small suggestions."
+- A leading question ("Isn't it true that...?") gets a yes.
+- When you push back on a correct answer, the AI apologizes and switches.
+- Your plan's weaknesses go unmentioned unless you ask.
+
+Sycophancy means the way you *frame* a request quietly shapes the answer. If you ask "Why is option A the best?", you'll get reasons A is best.
+
+## Habit 3: Overconfidence
+
+AI rarely says "I don't know" unless asked to. It tends to use the same assured tone for a well-established fact and a guess. Some tools now add hedges or show sources, which helps, but the confidence of the wording still isn't a reliable signal of how likely a claim is to be correct.
+
+<ProcessFlow
+  label="How a plausible-sounding error reaches a reader: the AI fills a gap, writes it fluently, the reader trusts the polish, and the error is shared"
+  color="#0f766e"
+  steps={[
+    { title: "Gap", detail: "AI lacks a specific fact or your context" },
+    { title: "Fill", detail: "It produces the most plausible answer" },
+    { title: "Polish", detail: "The answer is fluent and confident" },
+    { title: "Trust", detail: "The reader mistakes polish for proof" },
+    { title: "Ship", detail: "The error reaches someone who relies on it" },
+  ]}
+/>
+
+Discernment interrupts this chain. You can't stop step 1, and you rarely see step 2, but you can refuse to let step 3 turn into step 4.
+
+---
+
+## What Discernment Covers
+
+Foundations introduced three levels of discernment. This course builds a module around each idea:
+
+| Level | Question | Where this course covers it |
+|---|---|---|
+| **Product** | Is the output accurate, complete, fair, and fit for purpose? | Module 2: facts, citations, numbers, bias |
+| **Process** | Was the reasoning sound? | Module 3: assumptions, logic, analysis |
+| **Performance** | Did the AI behave as a good collaborator? | Throughout, plus Module 4's team practices |
+
+<Pitfall title="Assuming Newer Tools Have Fixed This">
+
+**Common mistake:** "That was a problem with older models. The new one is much better."
+
+Newer models generally make fewer errors, and tools that search the web or cite sources help a lot. But fewer errors can make the remaining ones *harder* to catch, because you've learned to relax. Discernment is a habit you keep regardless of the tool, and you scale it to the stakes rather than to how impressive the tool feels.
+
+</Pitfall>
+
+<TryIt title="Catch All Three Habits in One Conversation">
+
+Use any free AI assistant. You'll trigger each habit on purpose so you know what it looks like.
+
+1. **Hallucination.** Ask for something specific and obscure:
+   ```text
+   Give me three published studies about [a narrow topic you know,
+   e.g. "the effect of standing desks on handwriting quality"],
+   with authors, year, and journal.
+   ```
+   Search for each one in a library database or a search engine. Record how many you can confirm exist exactly as described.
+2. **Sycophancy.** Paste a short paragraph you wrote and ask, *"This is really strong, right?"* Then, in a **new chat**, paste the same paragraph and ask, *"What are the three biggest weaknesses in this paragraph?"* Compare the tone of the two answers.
+3. **Overconfidence.** Ask a question with a genuinely uncertain answer, such as a prediction about your local area next year. Then ask, *"How confident are you in each part of that answer, and what would change your mind?"* Note whether the confidence was visible before you asked.
+4. Write one sentence for each habit describing what it looked like in practice.
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "Why is well-written AI output not good evidence that it is accurate?",
+    options: [
+      "Because AI always writes badly when it's wrong.",
+      "Because the model produces fluent text whether or not the content is true.",
+      "Because grammar checkers are unreliable.",
+      "Because accurate answers are always short."
+    ],
+    correctIndex: 1,
+    explanation: "Fluency is the default for language models. Right and wrong answers come out equally polished, so polish tells you nothing about truth."
+  },
+  {
+    question: "You ask, 'Why is our new pricing plan better than the old one?' and get five glowing reasons. Which habit should you suspect?",
+    options: [
+      "Hallucination",
+      "Sycophancy",
+      "Overconfidence",
+      "None. The question was neutral."
+    ],
+    correctIndex: 1,
+    explanation: "The question assumes the new plan is better, and the AI went along with that framing. A neutral version would ask it to compare both plans and name the weaknesses of each."
+  },
+  {
+    question: "Where are hallucinations most likely to appear?",
+    options: [
+      "In general explanations of well-known ideas.",
+      "In specific details such as citations, exact figures, quotes, and facts about your own organization.",
+      "In the headings of a document.",
+      "Only in answers to math questions."
+    ],
+    correctIndex: 1,
+    explanation: "Hallucinations cluster where the model must produce something specific it hasn't reliably learned or wasn't given."
+  }
+]} />
+
+---
+
+## Up Next
+
+Not every AI answer needs a full investigation. The next lesson shows how to decide how much checking a piece of output actually deserves.

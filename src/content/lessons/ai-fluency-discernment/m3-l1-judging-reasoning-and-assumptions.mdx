@@ -1,0 +1,133 @@
+---
+title: "Judging Reasoning and Assumptions"
+description: "Look past the conclusion to the argument behind it. Surface hidden assumptions, spot common reasoning failures, and use counter-argument and premise-change tests to see whether an AI recommendation holds up."
+module: 3
+moduleTitle: "Checking the Reasoning"
+lesson: 1
+duration: "30 min"
+---
+
+import LoopDiagram from '@components/LoopDiagram.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## Right Answer, Wrong Reasons
+
+AI increasingly gives you more than facts: recommendations, comparisons, plans, and explanations of *why*. These can't be checked against a single source, because they're arguments. To judge an argument, you look at its parts:
+
+- **Premises:** what it starts from (facts and assumptions)
+- **Steps:** how it gets from one point to the next
+- **Conclusion:** where it lands
+
+A conclusion is only as strong as its weakest premise and its weakest step. A recommendation built on a wrong assumption about *your* situation can be perfectly logical and still wrong for you.
+
+---
+
+## Surface the Hidden Assumptions
+
+Most of the risk sits in what the AI **assumed without saying**. When you didn't give it some piece of context, it filled the gap with something typical. Make those gaps visible:
+
+```text
+Before I act on this recommendation, list every assumption you made
+about my situation, budget, timeline, constraints, and goals. Mark
+which ones came from what I told you and which ones you filled in.
+```
+
+Then check each filled-in assumption against reality. A typical result: the AI assumed you have a dedicated budget, a team of several people, and six months. You have none of those, so the recommendation needs to change.
+
+## Common Reasoning Failures
+
+| Failure | What it looks like | Question to ask |
+|---|---|---|
+| **Leap** | A step that doesn't follow from the one before | "How exactly does B follow from A?" |
+| **Cherry-picking** | Only evidence for one side appears | "What's the strongest evidence against this?" |
+| **Uneven comparison** | Options judged on different criteria, or one option's costs ignored | "Apply the same criteria to every option in a table." |
+| **Correlation as cause** | Two things happen together, so one must cause the other | "What else could explain this pattern?" |
+| **False choice** | Only two options presented when more exist | "What options are missing?" |
+| **Generic fit** | Advice that's right in general but ignores your specifics | "What about my situation would change this?" |
+
+## Stress-Test the Argument
+
+Three tests use the AI to generate material for *your* judgment:
+
+1. **Counter-argument test.** Ask for the strongest case *against* the recommendation, in a new chat if the first conversation has been agreeable. If the counter-case is strong and the original ignored it, the reasoning was one-sided.
+2. **Premise-change test.** Change one assumption and see if the conclusion moves. *"If our budget were half that, would you still recommend this?"* A conclusion that doesn't respond to important changes wasn't really based on them.
+3. **Explain-it-back test.** Summarize the argument in your own words, in three steps. If you can't, either the reasoning has a gap or you don't yet understand it well enough to rely on it.
+
+<LoopDiagram
+  label="The reasoning check loop: read the conclusion, surface the assumptions, stress-test with counter-arguments and changed premises, then decide whether the conclusion still holds"
+  colors={['#115e59', '#0f766e', '#14b8a6']}
+  steps={[
+    { title: "Conclusion", subtitle: "the advice" },
+    { title: "Assumptions", subtitle: "the gaps" },
+    { title: "Stress-test", subtitle: "three tests" },
+    { title: "Decide", subtitle: "keep or change" },
+  ]}
+/>
+
+<Pitfall title="Treating Shown Reasoning as a Window Into the Model">
+
+**Common mistake:** assuming that a step-by-step explanation is an accurate record of how the AI reached its answer.
+
+Explanations, including the "thinking" some tools display, are useful because they give you something to inspect. But a model can produce a tidy explanation for an answer it reached some other way, and a convincing explanation can accompany a wrong conclusion. Judge the explanation as an argument on its own merits: do the steps hold up when you check them?
+
+</Pitfall>
+
+<TryIt title="Stress-Test an AI Recommendation">
+
+1. Ask an AI assistant for advice on a real decision with trade-offs, giving only brief context:
+   ```text
+   I'm deciding between [option A] and [option B] for [a real
+   decision, e.g. "two project management tools for my 6-person
+   team" or "taking an evening course vs. an online certificate"].
+   Which should I choose and why?
+   ```
+2. **Assumptions:** Use the assumptions prompt above. Mark each filled-in assumption ✅ true for me or ❌ not true for me.
+3. **Counter-argument:** In a new chat, ask for the strongest case for the option it didn't recommend.
+4. **Premise change:** Back in the first chat, correct the ❌ assumptions. Does the recommendation change?
+5. **Explain it back:** Write the final reasoning in three sentences of your own. Would you defend it to a skeptical colleague?
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "An AI recommends hiring a full-time social media manager. It assumed a $200,000 marketing budget you don't have. What's the core problem?",
+    options: [
+      "The AI used too many words.",
+      "A hidden assumption about your situation was wrong, so the logical recommendation doesn't fit you.",
+      "Social media managers aren't real jobs.",
+      "The recommendation was too confident in tone."
+    ],
+    correctIndex: 1,
+    explanation: "The reasoning may be sound given its premises, but a filled-in premise was false. Surfacing assumptions catches this."
+  },
+  {
+    question: "You change a key fact ('our team is 3 people, not 30') and the AI's recommendation stays exactly the same. What does that suggest?",
+    options: [
+      "The recommendation is robust and definitely right.",
+      "The recommendation may not have been based on your specifics, so it deserves more scrutiny.",
+      "Team size never matters.",
+      "The AI didn't read your message."
+    ],
+    correctIndex: 1,
+    explanation: "This is the premise-change test. If an important change doesn't move the conclusion, the conclusion may be generic rather than reasoned from your situation."
+  },
+  {
+    question: "An AI notes that companies with ping-pong tables have higher employee satisfaction and recommends buying one. Which reasoning failure is most likely?",
+    options: [
+      "False choice",
+      "Treating correlation as cause",
+      "Uneven comparison",
+      "Hallucination"
+    ],
+    correctIndex: 1,
+    explanation: "Companies that can afford perks may differ in many ways, such as pay, growth, and culture. The table probably isn't the cause."
+  }
+]} />
+
+---
+
+## Up Next
+
+Some of the most persuasive AI output comes as tables, charts, formulas, and code. The next lesson shows how to check it, even if you're not technical.

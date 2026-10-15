@@ -1,0 +1,127 @@
+---
+title: "Spotting Bias and Missing Perspectives"
+description: "Recognize when AI output is accurate but lopsided: default assumptions, stereotypes, a single cultural lens, and the voices that never appear. Learn simple swap and gap tests to surface them."
+module: 2
+moduleTitle: "Checking the Product"
+lesson: 2
+duration: "25 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## Accurate Isn't the Same as Fair
+
+An answer can pass every fact check and still mislead. If every example of a "leader" is a man, every "family" has two parents, every "customer" lives in a city with fast internet, and every source is from one country, nothing is technically false. But the picture is incomplete, and decisions made from it will be too.
+
+AI models learn from huge amounts of text that over-represent some people, places, languages, and viewpoints and under-represent others. They then tend to produce the most *typical* answer. "Typical" quietly becomes "default," and the default leaves people out.
+
+---
+
+## Four Kinds of Lopsidedness
+
+| Pattern | What it looks like | Example |
+|---|---|---|
+| **Default assumptions** | One kind of person, place, or situation treated as normal | A "workplace safety guide" that assumes everyone works at a desk |
+| **Stereotypes** | Roles, traits, or abilities linked to groups | Nurses are always "she," engineers always "he"; older adults described only as frail |
+| **Single lens** | One country's laws, culture, or market treated as universal | Employment advice that assumes U.S. at-will employment for a reader in Germany |
+| **Missing voices** | Some stakeholders never appear | A plan to change bus routes that considers commuters and budgets but not wheelchair users or night-shift workers |
+
+Some bias is in the output itself. Some comes from *your* question. If you ask "How do we get more young people to use our app?" you've already excluded older users, and the AI will rarely point that out.
+
+---
+
+## Test 1: The Swap Test
+
+Change one detail about who or where the request is about, keep everything else identical, and compare.
+
+```text
+Write a short performance review for Maria, a software engineer who
+missed two deadlines but mentored three new hires.
+```
+
+Then run the same prompt with "James" instead of "Maria," or "a 58-year-old software engineer" instead of no age. Run each in a **new chat** so the first doesn't influence the second. Compare the word choices: Is one described as "abrasive" and the other "direct"? Is one's mentoring praised more? Differences that track the swapped detail are a bias signal.
+
+## Test 2: The Gap Test
+
+Ask yourself, and then the AI, who's not in the picture:
+
+- **Who is affected by this but not mentioned?**
+- **Whose expertise would see this differently?** A frontline worker, a customer with a disability, someone from another region, a critic.
+- **Where does this not apply?** Which countries, budgets, languages, or situations?
+
+```text
+Here's a plan [paste]. List the groups of people who would be
+affected by it but aren't mentioned. For each, describe in one
+sentence how they might experience it differently.
+```
+
+The AI's list is a *prompt for your judgment*, not a finished analysis. It will have its own blind spots. The real gap test involves asking actual people.
+
+## Test 3: The Source Mix
+
+When AI recommends sources, examples, or experts, look at the set as a whole. Are they all from one country, one industry, one era, one kind of institution? A narrow source mix produces narrow conclusions.
+
+<Pitfall title="Asking AI to 'Remove All Bias'">
+
+**Common mistake:** adding "make this unbiased" to a prompt and assuming the job is done.
+
+The AI can't see its own defaults any better than it can verify its own facts. "Unbiased" instructions often produce generic hedging, or replace one default with another. Specific instructions work better ("include examples from at least three regions," "consider readers who use screen readers"), and your own swap and gap tests are what actually check the result.
+
+</Pitfall>
+
+<TryIt title="Run the Swap and Gap Tests">
+
+1. **Swap.** In an AI assistant, ask:
+   ```text
+   Describe a typical day for a [job title] and give them a name.
+   ```
+   Try three job titles: one stereotypically male, one stereotypically female, and one neutral. Note the names, pronouns, and personal details the AI chose. Then repeat one request specifying a different age, country, or disability, and compare the descriptions.
+2. **Gap.** Ask the AI to draft a one-paragraph announcement of a change at a workplace or school you know (for example, moving a weekly meeting from 4 p.m. to 7:30 a.m.). Then list everyone affected. Who did the announcement consider? Who did it ignore?
+3. **Fix with description.** Rewrite your prompt with specific instructions that address what you found. Compare the new output.
+4. Write two sentences: which test revealed more, and which would you use at work?
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "An AI guide to 'starting a small business' assumes U.S. tax rules throughout, but your reader is in Canada. Which pattern is this?",
+    options: [
+      "Hallucination",
+      "Single lens",
+      "Stereotype",
+      "Overconfidence"
+    ],
+    correctIndex: 1,
+    explanation: "The facts may be correct for the U.S., but one country's rules are treated as universal. The fix is to state the location and check against local sources."
+  },
+  {
+    question: "How does the swap test reveal bias?",
+    options: [
+      "By asking the AI whether it is biased.",
+      "By changing one detail, such as a name or age, and comparing the outputs for differences that track that detail.",
+      "By swapping to a different AI tool.",
+      "By reversing the order of paragraphs."
+    ],
+    correctIndex: 1,
+    explanation: "Holding everything else constant isolates the effect of the swapped detail. Run each version in a new chat so they don't influence each other."
+  },
+  {
+    question: "You ask an AI to list stakeholders missing from your plan. What's the best way to treat its list?",
+    options: [
+      "As a complete and final stakeholder analysis.",
+      "As a prompt for your own judgment, ideally followed by asking real affected people.",
+      "As irrelevant, since AI is biased.",
+      "As proof that the plan is fair."
+    ],
+    correctIndex: 1,
+    explanation: "The AI's list helps you think, but it has its own blind spots. Real perspectives come from real people."
+  }
+]} />
+
+---
+
+## Up Next
+
+Module 3 moves from *what* the AI said to *how* it got there: judging the reasoning and assumptions behind an answer.
