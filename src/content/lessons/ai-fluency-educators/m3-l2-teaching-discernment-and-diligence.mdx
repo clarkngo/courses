@@ -1,0 +1,121 @@
+---
+title: "Teaching Discernment and Diligence"
+description: "Activities that teach students to catch AI errors, question confident answers, and disclose their AI use honestly, turning AI's mistakes into a learning opportunity."
+module: 3
+moduleTitle: "Teaching the 4Ds to Students"
+lesson: 2
+duration: "25 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## AI's Mistakes Are a Teaching Resource
+
+AI's errors are, for an educator, an opportunity. Catching a confident mistake requires exactly the subject knowledge and critical thinking you're trying to build. Discernment activities let students practice both.
+
+---
+
+## Activity 1: Error Hunt
+
+**Time:** 20 minutes.
+
+1. Before class, ask AI to write a short explanation of a topic your students have studied, such as a historical event, a scientific process, or a math method. Check it yourself and note any errors. If it has none, edit in two or three subtle ones (a wrong date, a reversed cause and effect, a calculation slip).
+2. Students work in pairs to find every error, using their notes and textbook as the source of truth.
+3. Debrief: Which errors were hardest to spot? Why did the text still *sound* right?
+
+Variation for older students: don't tell them how many errors there are.
+
+## Activity 2: Check the Source
+
+1. Ask AI a question with specific claims and ask it to include sources.
+2. Students try to locate each source and confirm it says what the AI claims.
+3. Tally: How many sources exist? How many actually support the claim?
+
+Students who have done this once rarely trust an AI citation without checking again.
+
+## Activity 3: Push Back
+
+Students ask AI a question they know the answer to, then disagree with its correct answer: *"I don't think that's right."* Discuss what happens. Does it defend its answer with reasoning, or immediately agree? What does that mean for using AI to check your own work?
+
+---
+
+## Teaching Diligence: Honest Disclosure
+
+Diligence for students centers on **honesty about how work was made**. Students are far more likely to disclose AI use when it's normal, expected, and not automatically punished.
+
+Give students a simple **AI use statement** to attach to assignments where AI is permitted:
+
+```text
+AI use statement
+- Tool(s) I used:
+- What I used it for: (e.g. brainstorming topics, explaining a
+  concept, checking grammar)
+- What I did myself:
+- How I checked the AI's output:
+```
+
+Grade the statement lightly, or not at all. The goal is honesty and reflection, not a confession.
+
+Diligence also includes **privacy**: teach students not to paste personal information about themselves or others into AI tools, and to know which tools their school provides.
+
+<Pitfall title="Making Disclosure Risky">
+
+**Common mistake:** asking students to disclose AI use, then penalizing anything they disclose.
+
+Students quickly learn that honesty costs points and stop disclosing. Be clear about what's permitted on each assignment (see Module 4), and treat disclosed, permitted use as completely normal.
+
+</Pitfall>
+
+<TryIt title="Prepare an Error Hunt for Your Class">
+
+1. Pick a topic your students know well enough to fact-check.
+2. Ask AI for a short explanation (150 to 250 words) at their level.
+3. Check it carefully yourself. Record any real errors. If needed, add two or three subtle errors of your own, and keep an answer key.
+4. Write three debrief questions, including one about why the errors were hard to spot.
+5. Draft an AI use statement template suited to your students' age.
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "Why are AI errors useful in the classroom?",
+    options: [
+      "They make AI look bad.",
+      "Catching them requires the subject knowledge and critical thinking students are learning.",
+      "Students enjoy mistakes.",
+      "They save prep time."
+    ],
+    correctIndex: 1,
+    explanation: "Error hunts turn discernment into practice of the actual course content."
+  },
+  {
+    question: "What's the main goal of a student AI use statement?",
+    options: [
+      "To catch students cheating.",
+      "To build honest reflection on how AI was used and what the student did themselves.",
+      "To lower grades for AI users.",
+      "To advertise AI tools."
+    ],
+    correctIndex: 1,
+    explanation: "The statement builds transparency diligence and reflection. Punishing permitted, disclosed use undermines it."
+  },
+  {
+    question: "In the 'Push Back' activity, what are students learning?",
+    options: [
+      "How to make AI give up.",
+      "That AI may abandon correct answers when challenged, so its agreement isn't proof.",
+      "That AI is always right.",
+      "How to argue with teachers."
+    ],
+    correctIndex: 1,
+    explanation: "Seeing AI cave under pressure teaches students that its agreement or disagreement isn't verification."
+  }
+]} />
+
+---
+
+## Up Next
+
+Activities work best inside a clear structure. Module 4 covers writing a course AI policy students can actually follow, and handling academic integrity fairly.

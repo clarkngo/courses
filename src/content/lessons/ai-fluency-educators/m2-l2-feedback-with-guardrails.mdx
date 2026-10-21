@@ -1,0 +1,122 @@
+---
+title: "Feedback and Grading With Guardrails"
+description: "Use AI to support feedback and rubric work while keeping grading decisions, the student relationship, and student privacy firmly in your hands."
+module: 2
+moduleTitle: "AI in Your Own Teaching Work"
+lesson: 2
+duration: "25 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## The Highest-Stakes Shortcut
+
+Feedback is time-consuming, and AI can draft comments in seconds. That makes it tempting, and it's where educators most need diligence. Students and families reasonably assume feedback reflects *your* reading of *their* work. Grades affect students' futures. And student work is student data.
+
+A useful line: **AI can help you prepare to give feedback, and help you write it up. It should not be the one deciding what the work deserves.**
+
+---
+
+## Where AI Helps Safely
+
+| Use | Why it works |
+|---|---|
+| **Drafting or sharpening a rubric** | You review every criterion; no student data involved. |
+| **Creating exemplars** at different quality levels for norming or teaching | Invented work, so no privacy concern, and great for showing students what "proficient" looks like. |
+| **Building a comment bank** for common issues | Reusable phrasing you choose from and personalize. |
+| **Spotting patterns across a class** from your own notes ("12 students struggled with thesis statements") | Helps you plan reteaching. Use your summary, not student work. |
+| **Polishing your own feedback** for tone and clarity | Your judgment, your content; AI only edits wording. |
+
+## Where It Needs Guardrails or Should Stay Out
+
+- **Grading decisions.** Assigning scores is your professional responsibility. Even "AI suggests, I approve" tends to anchor you to its number, a form of automation bias.
+- **Pasting student work into unapproved tools.** Use only tools your institution approves for student data, and de-identify where you can.
+- **Generic comments presented as personal.** Students notice when feedback could have been written about anyone, and it erodes trust.
+- **Sensitive content.** Writing about personal experiences, trauma, identity, or family should be read and responded to by you.
+
+<ProcessFlow
+  label="A guarded feedback workflow: you read the work and form a judgment, AI helps you draft or polish, you personalize and verify, then you deliver and own it"
+  color="#115e59"
+  steps={[
+    { title: "You read", detail: "Form your own judgment first" },
+    { title: "AI assists", detail: "Comment bank, wording, tone" },
+    { title: "You personalize", detail: "Specific to this student's work" },
+    { title: "You own it", detail: "Grade and feedback are yours" },
+  ]}
+/>
+
+The order matters. **Read and judge first**, before any AI suggestion, so your assessment isn't anchored by it.
+
+<Pitfall title="Feedback Nobody Read">
+
+**Common mistake:** running a stack of essays through AI and sending back its comments with light edits.
+
+Even if the comments are reasonable, they skip the most valuable part: you learning what your students understand. And if a student later asks "What did you mean by this?", you won't know. If you use AI in feedback, it should come *after* your reading, never instead of it.
+
+</Pitfall>
+
+---
+
+## Be Transparent With Students
+
+If you use AI in your feedback process, tell students how, in plain terms. For example: *"I read every submission myself and decide every grade. I sometimes use an AI tool to help phrase comments clearly. Your work is never entered into a tool that isn't approved by the school."* Modeling this kind of disclosure is also the best way to teach it.
+
+<TryIt title="Build a Feedback Toolkit Without Student Data">
+
+1. Pick a recurring assignment. Paste in your current rubric, or describe it, and ask AI to critique it:
+   ```text
+   Here's my rubric for [assignment] for [grade/level] students.
+   Point out any criteria that are vague, overlapping, or hard to
+   score consistently. Don't rewrite it yet.
+   ```
+2. Revise the rubric yourself, using only the critiques you agree with.
+3. Ask AI to write **three invented exemplars** at different levels (beginning, proficient, advanced). Check they actually match your rubric levels.
+4. Ask for a **comment bank** of 10 comments for the most common issues, each with a blank for a specific detail from the student's work.
+5. Write a two-sentence disclosure statement for students describing how you use (or don't use) AI in feedback.
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "Which use of AI in feedback is safest?",
+    options: [
+      "Pasting all essays into a personal AI account to get scores.",
+      "Creating invented exemplar essays at different rubric levels for norming.",
+      "Letting AI write final comments without reading the essays.",
+      "Asking AI to decide borderline grades."
+    ],
+    correctIndex: 1,
+    explanation: "Invented exemplars involve no student data and no grading decision, and they're useful for both you and your students."
+  },
+  {
+    question: "Why read student work before looking at any AI suggestions?",
+    options: [
+      "AI is slow.",
+      "So your judgment isn't anchored to the AI's assessment, which is a form of automation bias.",
+      "It's required by every AI tool.",
+      "AI can't read student work."
+    ],
+    correctIndex: 1,
+    explanation: "Seeing an AI score or comment first tends to pull your own judgment toward it. Judge first, then use AI to help express your feedback."
+  },
+  {
+    question: "What does transparency diligence look like for AI-assisted feedback?",
+    options: [
+      "Hiding AI use so students take feedback seriously.",
+      "Telling students plainly how AI is and isn't used, including that you read every submission and decide every grade.",
+      "Adding 'AI-generated' to every comment.",
+      "Nothing. Feedback is private."
+    ],
+    correctIndex: 1,
+    explanation: "Clear, honest disclosure maintains trust, and it models the transparency you'll ask of students."
+  }
+]} />
+
+---
+
+## Up Next
+
+Module 3 turns to your second job: teaching students the four competencies, starting with delegation and description.
