@@ -1,0 +1,159 @@
+---
+title: "The Lube Oil System"
+description: "Learn how lube oil protects a marine diesel, how wet-sump and dry-sump systems work, what oil pressure and temperature tell you, what TBN means for high-sulfur fuels, and how to use oil analysis and crankcase safety devices."
+module: 3
+moduleTitle: "Lube Oil and Cooling"
+lesson: 1
+duration: "25 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## What Lube Oil Does
+
+Lube oil is the engine's lifeblood. It:
+
+- **Lubricates** bearings, pistons, liners, and gears
+- **Cools** pistons and bearings by carrying heat away
+- **Cleans**, carrying soot and wear particles to the filters
+- **Neutralizes acids** formed from sulfur in the fuel
+- **Seals** between rings and liners
+- **Protects** against corrosion
+
+Low oil pressure is one of the few alarms that should make you **slow down or stop the engine immediately**.
+
+---
+
+## The Oil Path
+
+<ProcessFlow
+  label="Lube oil circuit in a typical marine diesel: oil is drawn from the sump, pumped through a cooler and filters to the main gallery, then to main and connecting rod bearings, camshaft, valve gear, turbocharger, and piston cooling, before draining back to the sump."
+  color="#1e3a8a"
+  loop="Oil drains back to the sump and the cycle repeats continuously while the engine runs."
+  steps={[
+    { title: 'Sump', detail: 'Wet sump or separate drain tank' },
+    { title: 'Pump', detail: 'Engine-driven, plus pre-lube pump' },
+    { title: 'Cooler', detail: 'Sea water or fresh water cooled' },
+    { title: 'Filters', detail: 'Full-flow, often duplex or auto' },
+    { title: 'Main gallery', detail: 'Bearings, cam, valve gear, turbo' },
+    { title: 'Piston cooling', detail: 'Oil jets under the crowns' },
+  ]}
+/>
+
+### Wet Sump vs. Dry Sump
+
+- **Wet sump:** oil lives in the engine's oil pan. Common on smaller engines.
+- **Dry sump:** oil drains to a separate **sump tank** below the engine and is circulated by a separate pump. Common on larger engines, which also run oil through a **centrifugal separator** to remove water and soot.
+
+### Pre-Lubrication
+
+Many larger engines have an electric **pre-lube pump** that pressurizes the oil system **before starting**, so bearings aren't dry for the first seconds of rotation.
+
+---
+
+## Reading Oil Pressure and Temperature
+
+| Reading | Possible causes |
+|---|---|
+| **Low oil pressure** | Low oil level, clogged filter or strainer, worn pump, worn bearings, oil diluted with fuel, oil too hot (thin) |
+| **High oil pressure** | Cold oil, blocked passage, stuck relief valve |
+| **High oil temperature** | Fouled or failed oil cooler, cooling water problem, overload |
+| **Rising oil level** | **Fuel dilution** or **coolant leak** into the oil, which is serious |
+| **Falling oil level** | Leaks, burning oil (blue smoke), worn rings |
+
+Check level at the **same condition every time** (e.g., engine stopped for a set time, or on the dipstick's running mark if the maker specifies it).
+
+---
+
+## TBN and Cylinder Oil
+
+Sulfur in fuel burns to form **sulfuric acid**, which corrodes liners and rings. Lube oil contains **alkaline additives** measured as **TBN (Total Base Number)** to neutralize it.
+
+- Higher-sulfur fuels need **higher-TBN oils**.
+- Large two-stroke engines use a **separate cylinder oil** injected directly onto the liners, with TBN matched to the fuel's sulfur content. Using a high-TBN oil with very low sulfur fuel can cause **deposits**, so engine makers specify combinations.
+
+---
+
+## Oil Analysis
+
+Regular lab analysis spots problems early:
+
+| Result | May indicate |
+|---|---|
+| **Iron, chromium** rising | Liner, ring, or crankshaft wear |
+| **Copper, lead, tin** rising | Bearing wear |
+| **Aluminum** | Piston or bearing wear (depends on engine design) |
+| **Silicon** | Dirt entering through the air intake |
+| **Sodium, potassium**, glycol | **Coolant** leak |
+| **Low viscosity, low flash point** | **Fuel dilution** |
+| **TBN falling** | Oil being depleted; change interval or oil grade may need review |
+| **Water** | Condensation, cooler leak, or seawater entry |
+
+---
+
+## Crankcase Safety
+
+Hot spots in the crankcase (a failing bearing, a seized piston) can create **oil mist** that can **ignite** and explode. Larger engines have:
+
+- **Oil mist detectors** that alarm and slow the engine
+- **Crankcase relief (explosion) doors** that vent pressure safely
+- **Bearing temperature monitoring**
+
+<Pitfall title="Opening the Crankcase Right After a Mist Alarm">
+
+**Common mistake:** after an oil mist alarm, someone opens a crankcase door to look for the hot spot.
+
+Fresh air rushing into hot oil mist can trigger an explosion. Follow the engine maker's procedure: **stop the engine**, keep people **away** from crankcase doors, and wait for the engine to **cool down** (often a significant time, as specified) before opening.
+
+</Pitfall>
+
+---
+
+## Key Takeaway
+
+Lube oil **lubricates, cools, cleans, neutralizes acid, and seals**. **Low oil pressure** demands immediate action. **Rising oil level** means fuel or coolant contamination. **TBN** neutralizes sulfur acids. Use **oil analysis** to spot wear early, and respect **crankcase mist** alarms.
+
+<TryIt title="Interpret an Oil Report">
+
+An oil analysis for a ferry's generator engine shows:
+
+- Viscosity **down 20%** from new oil
+- Flash point **low**
+- Iron and copper **normal**
+
+What's the likely problem? *(Fuel dilution, probably a leaking injector or fuel line inside the head, or excessive idling.)*
+What do you do? *(Change the oil, find and fix the fuel leak, and resample.)*
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "What does TBN in lube oil measure?",
+      options: ["Viscosity", "Water content", "Temperature", "The oil's ability to neutralize acids"],
+      correctIndex: 3,
+      explanation: "Total Base Number measures alkaline reserve to neutralize acids from fuel sulfur."
+    },
+    {
+      question: "A rising oil level in the sump most likely indicates:",
+      options: ["Normal operation", "Burning oil", "A good oil change", "Fuel or coolant leaking into the oil"],
+      correctIndex: 3,
+      explanation: "Oil doesn't make more of itself. Rising level means something is getting in, often fuel or coolant."
+    },
+    {
+      question: "Rising silicon in an oil analysis usually means:",
+      options: ["Bearing wear", "Fuel dilution", "Dirt entering through the air intake", "Coolant leak"],
+      correctIndex: 2,
+      explanation: "Silicon is typically from dust or dirt, pointing to air intake or filter problems."
+    },
+    {
+      question: "After an oil mist alarm, why shouldn't you immediately open the crankcase door?",
+      options: ["It voids warranty", "Air rushing into hot oil mist can cause an explosion", "The oil will spill", "It's too heavy"],
+      correctIndex: 1,
+      explanation: "Hot spots and oil mist can ignite when fresh air enters. Stop, stay clear, and let the engine cool first."
+    }
+  ]}
+/>

@@ -1,0 +1,142 @@
+---
+title: "Exhaust Systems and Emissions Control"
+description: "Compare wet and dry exhaust systems, manage back pressure, insulation, and exhaust gas boilers, and understand IMO and EPA emission tiers along with control technologies such as SCR, EGR, and scrubbers."
+module: 4
+moduleTitle: "Air, Exhaust, and Starting"
+lesson: 2
+duration: "25 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Getting Exhaust Out Safely
+
+The exhaust system carries hot gas from the engine to the atmosphere, quietly and without setting anything on fire.
+
+### Dry Exhaust
+
+The exhaust runs as hot, insulated piping up through the **uptakes** to the **funnel** (stack). Common on larger vessels.
+
+- Pipes and manifolds are **insulated** or shielded. International rules (SOLAS) require surfaces that could exceed about **220 °C** to be insulated where fuel or oil could reach them.
+- **Expansion joints** (bellows) absorb thermal growth.
+- **Silencers** reduce noise; **spark arrestors** may be fitted.
+
+### Wet Exhaust
+
+Common on small boats and many workboats. Raw cooling water is **injected** into the exhaust right after the manifold, cooling the gas so it can run through rubber hose and fiberglass mufflers and exit near the waterline.
+
+- If raw water flow stops, the exhaust hose and muffler can **overheat and burn** quickly. That's why exhaust temperature alarms are fitted.
+- **Water must never back-flow** into the engine. Proper **riser height**, loops, and **siphon breaks** prevent seawater from flooding cylinders through the exhaust.
+
+---
+
+## Back Pressure
+
+Restrictions in the exhaust (collapsed hoses, clogged mufflers, soot buildup, a too-small pipe) raise **back pressure**. The engine has to push harder to get exhaust out, which causes:
+
+- Higher exhaust temperatures
+- Lower turbo efficiency and boost
+- Black smoke and power loss
+
+Engine makers list a **maximum exhaust back pressure**. Check it after modifications.
+
+---
+
+## Exhaust Gas Boilers (Economizers)
+
+Larger ships recover exhaust heat in an **exhaust gas boiler** or **economizer** to make steam for fuel heating and accommodation. Soot deposits in these units can **ignite** (soot fires), so they need regular **soot blowing** or water washing and temperature monitoring.
+
+---
+
+## Emission Rules
+
+### IMO NOx Tiers (MARPOL Annex VI)
+
+| Tier | Applies to (simplified) | Requirement |
+|---|---|---|
+| **Tier I** | Engines on ships built from 2000 | Baseline NOx limit |
+| **Tier II** | Ships built from 2011, worldwide | About 20% lower than Tier I |
+| **Tier III** | Ships built from 2016 when operating in **NOx Emission Control Areas** (including the North American ECA) | About 80% lower than Tier I; usually needs **aftertreatment** |
+
+Exact limits depend on engine rated speed.
+
+### U.S. EPA Marine Tiers
+
+In the U.S., the **EPA** sets emission standards for marine diesel engines by **category** (engine size) and **tier**. The latest tiers for larger commercial engines generally require **aftertreatment** such as SCR. Engines carry an **emissions label**, and replacement or rebuilt engines must meet applicable rules.
+
+### Sulfur
+
+As covered in Lesson 2.1, fuel sulfur is limited to **0.50%** globally and **0.10%** in ECAs.
+
+---
+
+## Emission Control Technologies
+
+| Technology | Reduces | How |
+|---|---|---|
+| **SCR (Selective Catalytic Reduction)** | NOx | Urea solution (often called DEF) is injected into the exhaust; a catalyst converts NOx to nitrogen and water |
+| **EGR (Exhaust Gas Recirculation)** | NOx | Recirculates cooled exhaust to lower combustion temperature |
+| **Scrubber (Exhaust Gas Cleaning System)** | SOx and particulates | Washes exhaust with seawater or treated water |
+| **DPF (Diesel Particulate Filter)** | Soot | Filters particulates; regenerates by burning them off |
+| **Engine design** | All | Optimized injection, high pressure, timing, Miller cycle |
+
+SCR systems need the right **urea quality**, enough exhaust **temperature** to work, and protection from fuel **sulfur** and soot that can foul the catalyst.
+
+<Pitfall title="Ignoring the SCR Warning at Low Load">
+
+**Common mistake:** a vessel idles for long periods in an ECA, the SCR temperature drops, and warnings are ignored.
+
+Below its working temperature, the SCR can't convert NOx effectively, and urea can form deposits. Follow the maker's guidance for low-load operation and urea dosing, and keep the **records** required to show compliance.
+
+</Pitfall>
+
+---
+
+## Key Takeaway
+
+**Dry exhaust** needs insulation and expansion joints; **wet exhaust** needs constant raw water flow and protection against **back-flooding**. Watch **back pressure**. **IMO Tier III** applies in NOx ECAs for newer ships, and **EPA tiers** apply in the U.S. **SCR, EGR, scrubbers, and DPFs** are the main control technologies.
+
+<TryIt title="Wet Exhaust Inspection">
+
+On a small vessel with wet exhaust, inspect (engine off and cool):
+
+1. Exhaust hose: cracks, soft spots, heat discoloration?
+2. Hose clamps: double-clamped and tight where required?
+3. Muffler: cracks or heat damage?
+4. Riser and siphon break: present and working?
+5. Raw water injection elbow: corroded or clogged with scale?
+
+Note anything that could cause overheating or water back-flow.
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "What is the main risk if raw water stops flowing into a wet exhaust?",
+      options: ["Too much noise", "Lower fuel use", "The exhaust hose and muffler can overheat and burn", "Nothing"],
+      correctIndex: 2,
+      explanation: "Wet exhaust components rely on water cooling. Without it, they can fail and catch fire quickly."
+    },
+    {
+      question: "Under IMO rules, Tier III NOx limits apply to newer ships when operating:",
+      options: ["In NOx Emission Control Areas", "Everywhere", "Only in port", "Only at full load"],
+      correctIndex: 0,
+      explanation: "Tier III applies in designated NOx ECAs, such as the North American ECA, for ships built from 2016."
+    },
+    {
+      question: "What does an SCR system use to reduce NOx?",
+      options: ["Seawater spray", "Extra fuel", "Cooled exhaust gas", "Urea solution and a catalyst"],
+      correctIndex: 3,
+      explanation: "SCR injects urea, and a catalyst converts NOx to nitrogen and water."
+    },
+    {
+      question: "High exhaust back pressure typically causes:",
+      options: ["Lower exhaust temperatures", "Higher exhaust temperatures, lower boost, and black smoke", "Better fuel economy", "More power"],
+      correctIndex: 1,
+      explanation: "The engine struggles to expel exhaust, reducing efficiency and raising temperatures."
+    }
+  ]}
+/>

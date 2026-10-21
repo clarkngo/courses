@@ -1,0 +1,137 @@
+---
+title: "Marine Steels, Aluminum, and Dissimilar Metals"
+description: "Learn the classification society steel grades (A, D, E and AH36/DH36/EH36), why toughness matters at sea, preheat and hydrogen control, marine aluminum alloys and how to weld them, and how bimetallic transition joints prevent galvanic corrosion."
+module: 4
+moduleTitle: "Materials and Quality"
+lesson: 1
+duration: "30 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Ship Steel Is Not Just "Steel"
+
+Hull steel must be **strong**, **weldable**, and **tough**: able to resist cracking when cold and impacted. Classification societies such as **ABS (American Bureau of Shipping)**, **DNV**, and **Lloyd's Register** set grades that steel mills certify.
+
+### Ordinary-Strength Grades
+
+| Grade | Toughness | Typical use |
+|---|---|---|
+| **A** | Basic | General hull structure in less critical areas |
+| **B** | Better | Thicker plates or moderately critical areas |
+| **D** | Tested for impact toughness at lower temperature | More critical areas, such as the sheer strake and bilge strake on many ships |
+| **E** | Tested at even lower temperature | Most critical areas and cold-service ships |
+
+### Higher-Strength Grades
+
+**AH32, AH36, DH36, EH36** (and others) have higher **yield strength** (the "32" and "36" relate to about 315 and 355 MPa minimum yield) with the same letter-based **toughness** levels. Higher-strength steel lets designers use thinner plate, saving weight.
+
+Grades are **stamped or stenciled** on the plate with the heat number. The **mill certificate** traces it. Using the wrong grade in a critical area is a serious nonconformance.
+
+---
+
+## Why Toughness Matters
+
+Steel can become **brittle** in cold temperatures. Famous early welded ships cracked in cold seas when brittle steel met sharp corners and weld defects. Modern grades, careful **detail design** (no sharp notches), and sound welds prevent it.
+
+---
+
+## Preheat and Hydrogen Control
+
+Hydrogen in a weld can cause **cold cracking** (delayed cracking) in the heat-affected zone, especially in **thick** plate, **higher-strength** steel, and **restrained** joints.
+
+Controls:
+
+- **Low-hydrogen** consumables, stored correctly (Lesson 3.1)
+- **Preheat** to the temperature in the welding procedure; it slows cooling and lets hydrogen diffuse out
+- **Dry** surfaces; remove moisture, frost, oil, and paint
+- Maintain the specified **interpass temperature** range
+
+Preheat requirements depend on the steel's **carbon equivalent**, its **thickness**, and the **hydrogen level** of the process. Measure with **temperature-indicating crayons** or contact thermometers at the specified distance from the joint.
+
+---
+
+## Marine Aluminum
+
+Aluminum is common for **fast ferries, patrol boats, workboats, fishing vessels, and superstructures**, because it's light and resists seawater corrosion.
+
+| Alloy | Form | Notes |
+|---|---|---|
+| **5083, 5086, 5456** | Plate and sheet | Marine-grade magnesium alloys; good weldability and corrosion resistance |
+| **6061, 6082** | Extrusions (stiffeners, profiles) | Heat-treated; lose significant strength in the heat-affected zone when welded |
+
+Common filler wires are **5356** and **5183**.
+
+### Welding Aluminum
+
+- **Clean the oxide**: aluminum forms a tough oxide film that melts at a much higher temperature than the metal underneath. Use a **dedicated stainless steel brush** (never one used on steel) and clean solvent.
+- **GMAW (often pulsed spray)** with argon (or argon-helium) shielding; a **push** technique.
+- Use **push-pull** or **spool guns** because soft aluminum wire buckles in long conduits.
+- Watch for **porosity** (hydrogen from moisture or hydrocarbons) and **hot cracking** (wrong filler).
+- No color change warning: aluminum doesn't glow before it melts, so it's easy to burn through.
+
+---
+
+## Dissimilar Metals and Galvanic Corrosion
+
+When two different metals touch in **seawater**, they form a battery. The **less noble** metal corrodes faster. Aluminum next to steel, bronze, or stainless will corrode.
+
+To join an aluminum superstructure to a steel deck, yards use **bimetallic transition joints**: explosion-bonded strips with steel on one side and aluminum on the other. Steel is welded to steel, and aluminum to aluminum. Keep welding heat from **overheating the bond line**, per the maker's limits.
+
+Isolate other dissimilar contacts with **insulating gaskets, sleeves, and coatings**.
+
+<Pitfall title="One Brush for Everything">
+
+**Common mistake:** using the same wire brush and grinder disc on steel and aluminum.
+
+Steel particles embedded in aluminum create **galvanic corrosion pits**, and contaminants cause **porosity**. Keep **separate, labeled tools** for aluminum, stainless, and carbon steel.
+
+</Pitfall>
+
+---
+
+## Key Takeaway
+
+Ship steels are graded for **toughness** (**A, B, D, E**) and **strength** (**AH32/AH36** and up). Control **hydrogen** with low-hydrogen consumables, **preheat**, and dry surfaces. Marine **5xxx** aluminum plate is very weldable; **6xxx** extrusions lose HAZ strength. Clean aluminum oxide with **dedicated tools**. Use **bimetallic transition joints** to join aluminum to steel.
+
+<TryIt title="Read a Plate Marking">
+
+A plate is stenciled: **ABS DH36 · Heat 4B7721 · 20 mm**.
+
+1. Who certified it? *(ABS.)*
+2. What strength and toughness level? *(Higher-strength (about 355 MPa minimum yield) with D-level toughness.)*
+3. Why record the heat number? *(It traces the plate to the mill certificate's chemistry and test results.)*
+4. Would you expect preheat to be considered? *(Possibly. 20 mm higher-strength steel may require preheat depending on the procedure, carbon equivalent, process, and conditions.)*
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "Between ABS Grade A and Grade E steel, which has better low-temperature toughness?",
+      options: ["Grade A", "Grade E", "They're the same", "Neither is tested"],
+      correctIndex: 1,
+      explanation: "Grades progress A → B → D → E in toughness, with E tested at the lowest temperature."
+    },
+    {
+      question: "Why is preheat used on thick or higher-strength steel?",
+      options: ["To make it easier to cut", "To change its color", "To slow cooling and let hydrogen escape, reducing cracking risk", "To save filler"],
+      correctIndex: 2,
+      explanation: "Preheat reduces the cooling rate and helps hydrogen diffuse out, preventing cold cracking."
+    },
+    {
+      question: "How is an aluminum superstructure typically joined to a steel deck?",
+      options: ["With an explosion-bonded bimetallic transition joint", "Direct aluminum-to-steel weld", "With duct tape", "With bronze rivets only"],
+      correctIndex: 0,
+      explanation: "Transition joints allow steel-to-steel and aluminum-to-aluminum welds, avoiding direct dissimilar welds."
+    },
+    {
+      question: "Why use a dedicated stainless brush for aluminum?",
+      options: ["Brushes wear out", "It's faster", "Steel particles cause galvanic corrosion and contaminants cause porosity", "Aluminum is magnetic"],
+      correctIndex: 2,
+      explanation: "Cross-contamination embeds steel in aluminum and introduces porosity-causing contaminants."
+    }
+  ]}
+/>

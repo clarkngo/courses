@@ -1,0 +1,183 @@
+---
+title: "Bearing Types and Bearing Numbers"
+description: "Identify ball, cylindrical, spherical, and tapered roller bearings and mounted units, understand radial and thrust loads, decode a bearing number like 6205-2RS, and see how L10 life works."
+module: 2
+moduleTitle: "Bearings"
+lesson: 1
+duration: "25 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## What a Bearing Does
+
+A bearing supports a rotating shaft, carries its loads, and keeps friction low. Every motor, pump, fan, gearbox, and conveyor pulley depends on them, and bearing failure is one of the most common causes of unplanned downtime.
+
+<svg viewBox="0 0 680 230" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Cross-section of a deep groove ball bearing showing the outer ring, inner ring, balls held in a cage between them, and seals on each side. Arrows show radial load acting across the shaft and axial or thrust load acting along the shaft.">
+  <defs>
+    <marker id="brg-a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#dc2626"/></marker>
+  </defs>
+  <g font-family="system-ui, -apple-system, sans-serif" font-size="13">
+    <circle cx="190" cy="115" r="95" fill="#cbd5e1" stroke="#0f172a" stroke-width="2"/>
+    <circle cx="190" cy="115" r="75" fill="#fff" stroke="#0f172a" stroke-width="1"/>
+    <circle cx="190" cy="115" r="55" fill="#cbd5e1" stroke="#0f172a" stroke-width="2"/>
+    <circle cx="190" cy="115" r="38" fill="#fff" stroke="#0f172a" stroke-width="2"/>
+    <g fill="#475569">
+      <circle cx="190" cy="50" r="10"/><circle cx="236" cy="69" r="10"/><circle cx="255" cy="115" r="10"/><circle cx="236" cy="161" r="10"/>
+      <circle cx="190" cy="180" r="10"/><circle cx="144" cy="161" r="10"/><circle cx="125" cy="115" r="10"/><circle cx="144" cy="69" r="10"/>
+    </g>
+    <circle cx="190" cy="115" r="65" fill="none" stroke="#ca8a04" stroke-width="2" stroke-dasharray="4 4"/>
+    <text x="190" y="120" text-anchor="middle" fill="#475569">bore</text>
+    <line x1="290" y1="40" x2="270" y2="60" stroke="#0f172a"/>
+    <text x="295" y="38" fill="#0f172a" font-weight="700">outer ring</text>
+    <line x1="290" y1="115" x2="266" y2="115" stroke="#0f172a"/>
+    <text x="295" y="120" fill="#0f172a" font-weight="700">rolling elements (balls)</text>
+    <line x1="290" y1="150" x2="245" y2="140" stroke="#ca8a04"/>
+    <text x="295" y="155" fill="#ca8a04" font-weight="700">cage (separator)</text>
+    <line x1="290" y1="190" x2="232" y2="150" stroke="#0f172a"/>
+    <text x="295" y="195" fill="#0f172a" font-weight="700">inner ring</text>
+    <line x1="560" y1="40" x2="560" y2="100" stroke="#dc2626" stroke-width="3" marker-end="url(#brg-a)"/>
+    <text x="560" y="30" text-anchor="middle" fill="#dc2626" font-weight="700">radial load</text>
+    <line x1="490" y1="170" x2="620" y2="170" stroke="#dc2626" stroke-width="3" marker-end="url(#brg-a)"/>
+    <text x="555" y="200" text-anchor="middle" fill="#dc2626" font-weight="700">axial (thrust) load</text>
+    <text x="555" y="217" text-anchor="middle" fill="#475569">along the shaft</text>
+  </g>
+</svg>
+
+Loads come in two directions:
+
+- **Radial load:** perpendicular to the shaft, such as belt tension or the weight of a roll
+- **Axial (thrust) load:** along the shaft, such as a helical gear's push or a pump impeller's thrust
+
+Different bearing types handle these differently.
+
+---
+
+## Rolling Bearing Types
+
+| Type | Loads | Strengths | Common uses |
+|---|---|---|---|
+| **Deep groove ball** | Moderate radial, some thrust both ways | Fast, quiet, cheap | Electric motors, fans, small conveyors |
+| **Angular contact ball** | Combined radial + high thrust one way | Precision, high speed | Pumps, spindles; often mounted in pairs |
+| **Cylindrical roller** | Very high radial, little or no thrust | High radial capacity; allows axial float | Motors, gearboxes, rolls |
+| **Spherical roller** | Very high radial, moderate thrust | **Self-aligning** for shaft deflection | Paper machine rolls, crushers, fans, conveyors |
+| **Tapered roller** | High radial + high thrust one way | Adjustable preload; mounted in pairs | Gearboxes, wheel hubs |
+| **Needle roller** | High radial in a small space | Compact | Gearbox shafts, universal joints |
+| **Thrust bearings** | Axial only | Pure thrust | Vertical shafts, screw jacks |
+
+**Plain bearings (bushings and sleeve bearings)** have no rolling elements. The shaft slides on a lubricated surface. They handle shock well and are used in large turbines, compressors, and slow, heavy, or dirty applications.
+
+### Mounted Bearings
+
+Most conveyor and fan shafts use **mounted bearing units**: a bearing pre-installed in a cast or steel housing.
+
+- **Pillow block:** base parallel to the shaft, bolts down to a surface
+- **Flange unit:** 2-, 3-, or 4-bolt flange that mounts to a wall
+- **Take-up unit:** slides in a frame to tension a conveyor belt
+
+Inserts lock to the shaft with **set screws**, an **eccentric locking collar**, or a tapered **adapter sleeve**.
+
+---
+
+## Decoding a Bearing Number
+
+Standard metric bearings follow a common numbering logic. Let's decode **6205-2RS**:
+
+| Part | Meaning |
+|---|---|
+| **6** | Bearing type: **deep groove ball** |
+| **2** | Dimension series: **light** (0 = extra light, 3 = medium) |
+| **05** | Bore code: **05 × 5 = 25 mm** |
+| **-2RS** | Rubber **seals on both sides** (suffix styles vary by maker) |
+
+### Bore Codes
+
+| Code | Bore |
+|---|---|
+| 00 | 10 mm |
+| 01 | 12 mm |
+| 02 | 15 mm |
+| 03 | 17 mm |
+| 04 and up | Code × 5 (e.g., 08 = 40 mm) |
+
+### Common Suffixes
+
+| Suffix (common examples) | Meaning |
+|---|---|
+| **Z / ZZ** or **2Z** | Metal shield on one or both sides |
+| **RS / 2RS** | Rubber contact seal on one or both sides |
+| **C3** | Internal clearance **larger than normal**, common in electric motors and hot applications |
+| **K** | Tapered bore (for adapter sleeves) |
+
+Suffix codes differ among manufacturers. When in doubt, use the maker's catalog or interchange guide.
+
+Other type digits: **1** and **2** often indicate self-aligning ball bearings, **N/NU** cylindrical roller, **22xxx/23xxx** spherical roller, **3xxxx** tapered roller, and **7xxx** angular contact.
+
+---
+
+## Bearing Life: L10
+
+Bearing catalogs list **L10 life**: the number of revolutions (or hours) that **90%** of a group of identical bearings will reach or exceed under a given load before showing fatigue. Ten percent will fail sooner.
+
+L10 = (C ÷ P)ᵖ × 1,000,000 revolutions
+
+- **C** = dynamic load rating (from the catalog)
+- **P** = actual equivalent load
+- **p** = 3 for ball bearings, 10/3 for roller bearings
+
+The exponent is the key insight: **double the load on a ball bearing and its life drops to one eighth.** Over-tensioned belts and misaligned couplings kill bearings fast.
+
+In the real world, most bearings never reach fatigue life. They fail early from **lubrication, contamination, or installation problems**, which is the next lesson.
+
+<Pitfall title="Ignoring the C3">
+
+**Common mistake:** replacing a motor's **6309-2Z-C3** with a plain **6309-2Z** because it was on the shelf.
+
+The C3 clearance allows for the inner ring expanding as the motor heats up. Without it, the bearing can lose its internal clearance, run hot, and fail early. Match the **entire** number, suffixes included.
+
+</Pitfall>
+
+---
+
+## Key Takeaway
+
+Choose bearings by **load direction and size**: ball for speed, cylindrical for radial capacity, spherical for misalignment, tapered for combined loads. Decode the number: **type, series, bore code, suffixes**. **L10** life falls with the **cube** of load for ball bearings, so overloading is costly.
+
+<TryIt title="Decode These">
+
+1. **6008-ZZ** → deep groove ball, extra-light series, bore 08 × 5 = **40 mm**, shields both sides.
+2. **6302-2RS** → deep groove ball, medium series, bore code 02 = **15 mm**, sealed both sides.
+3. A ball bearing runs at **half** its original load. How does its L10 life change? (1 ÷ 0.5)³ = **8 times longer**.
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "What is the bore of a 6206 bearing?",
+      options: ["6 mm", "20 mm", "30 mm", "62 mm"],
+      correctIndex: 2,
+      explanation: "Bore code 06 × 5 = 30 mm."
+    },
+    {
+      question: "Which bearing type is self-aligning and used where shafts deflect, such as on paper machine rolls?",
+      options: ["Deep groove ball", "Needle roller", "Thrust ball", "Spherical roller"],
+      correctIndex: 3,
+      explanation: "Spherical roller bearings have a spherical outer raceway that allows the inner ring to tilt with shaft deflection."
+    },
+    {
+      question: "If the load on a ball bearing doubles, its L10 life becomes:",
+      options: ["Half", "One quarter", "One eighth", "Unchanged"],
+      correctIndex: 2,
+      explanation: "For ball bearings, life varies with (C/P)³. Doubling P gives (1/2)³ = 1/8."
+    },
+    {
+      question: "What does the C3 suffix indicate?",
+      options: ["Ceramic balls", "Three seals", "Class 3 precision", "Greater than normal internal clearance"],
+      correctIndex: 3,
+      explanation: "C3 means larger internal clearance, often used where the bearing runs warm, as in electric motors."
+    }
+  ]}
+/>

@@ -1,0 +1,145 @@
+---
+title: "Rigging Hardware and Inspection"
+description: "Learn wire rope, alloy chain, and synthetic slings, the vertical, choker, and basket hitches, shackles and hooks, working load limits, and the ASME B30 inspection and removal criteria that keep damaged gear off the hook."
+module: 3
+moduleTitle: "Rigging"
+lesson: 1
+duration: "30 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Rigging Connects the Crane to the Load
+
+Containers lift with spreaders, but **breakbulk**, **project cargo**, **hatch covers**, **equipment**, and **maintenance lifts** all need **rigging**: slings, shackles, hooks, and spreader bars. Rigging that fails drops the load, no matter how good the crane is.
+
+Key U.S. standards include **ASME B30.9** (slings), **B30.26** (rigging hardware), and **B30.10** (hooks), plus OSHA rules for marine terminals and longshoring.
+
+---
+
+## Working Load Limit (WLL)
+
+Every piece of rigging has a **Working Load Limit (WLL)**, also called rated capacity, marked on its **tag or body**. It's the maximum load the manufacturer allows in normal service, with a built-in **design factor** (for example, around 5:1 for many wire rope and synthetic slings and alloy chain at 4:1, as set by the applicable standard and manufacturer).
+
+**Never exceed the WLL.** The design factor is for wear, dynamic loading, and uncertainty, not extra capacity.
+
+**No tag, no lift.** A sling with a missing or unreadable ID tag must be removed from service.
+
+---
+
+## Sling Types
+
+| Sling | Strengths | Watch for |
+|---|---|---|
+| **Wire rope** | Strong, durable, heat-tolerant | Broken wires, kinks, crushing, birdcaging, corrosion |
+| **Alloy chain** (Grade 80 or 100) | Rugged, heat- and abrasion-resistant, adjustable | Stretch, cracks, nicks, gouges, bent links. **Only alloy chain** is used for overhead lifting, never transport or proof-coil chain. |
+| **Synthetic web** | Light, flexible, protects finished surfaces | Cuts, burns, chemical damage, worn stitching; needs **edge protection** |
+| **Synthetic round sling** | Very flexible, light | Cuts; exposed core yarns; many have **warning yarns** that show when the cover is damaged |
+
+### Wire Rope Basics
+
+Wire rope is made of **wires** twisted into **strands**, laid around a **core**. A common designation like **6×19 IWRC** means 6 strands of about 19 wires each, around an **independent wire rope core** (stronger and more crush-resistant than a fiber core).
+
+---
+
+## Hitches
+
+| Hitch | Description | Capacity vs. vertical (typical) |
+|---|---|---|
+| **Vertical** | Single leg straight up | 100% of the vertical rating |
+| **Choker** | Sling wraps the load and passes through its own eye | **Less**: often around 75–80% for wire rope at standard choke angles; check the tag |
+| **Basket** | Sling cradles the load, both eyes on the hook | Up to **200%** when legs are vertical; less as legs angle out |
+
+The sling's **tag** lists capacities for each hitch type. Angles reduce capacity further (Lesson 3.2).
+
+---
+
+## Shackles and Hooks
+
+### Shackles
+
+- **Screw pin** shackles for temporary lifts; **bolt-type (safety)** shackles with a nut and cotter pin for long-term or rotating loads.
+- WLL is marked on the body. Use only **load-rated** shackles.
+- Load the shackle **in line**; **side loading** reduces capacity per the maker's chart.
+- Never replace a pin with a bolt.
+
+### Hooks
+
+- Should have a working **safety latch** (where required).
+- Load sits in the **bowl** (saddle), never on the **tip**.
+- Remove from service if the **throat opening** has increased or the hook is **twisted** beyond limits (ASME B30.10 and the maker give criteria), or if there are cracks.
+
+---
+
+## Inspection
+
+| Inspection | When | Who |
+|---|---|---|
+| **Pre-use / frequent** | Before each use or each shift | Competent person (often the rigger) |
+| **Periodic** | At set intervals (often at least annually; more often in severe service) | Qualified/competent person; **documented** |
+
+### Removal Criteria (Examples from ASME B30.9 for Slings)
+
+**Wire rope slings** (single-part): remove for **10 randomly distributed broken wires in one rope lay**, or **5 broken wires in one strand in one rope lay**; **kinking, crushing, birdcaging**, or other distortion; **heat damage**; severe **corrosion**; damaged **end fittings**; missing or unreadable **ID tag**.
+
+**Synthetic slings**: remove for **cuts, tears, holes, burns, melting, charring**, chemical damage, broken stitching in load-bearing splices, exposed **warning yarns** or core, knots, or a missing tag.
+
+**Alloy chain**: remove for **cracks**, **stretch** beyond the maker's limit, **nicks and gouges**, excessive **wear**, **bent or twisted links**, or a missing tag.
+
+Damaged gear gets **tagged out** and removed from the work area so it can't be grabbed by mistake.
+
+<Pitfall title="Tying a Knot in a Sling to Shorten It">
+
+**Common mistake:** a web sling is too long, so someone ties a knot in it.
+
+Knots can cut sling strength drastically and damage fibers. Use the **correct length** sling, an **adjustable** chain sling, or a **proper shortening** device rated for the purpose.
+
+</Pitfall>
+
+---
+
+## Key Takeaway
+
+Every piece of rigging has a **WLL**. **No tag, no lift.** Choose **wire rope, alloy chain, or synthetic** slings for the job, and protect synthetics from edges. **Chokers** reduce capacity; **baskets** can double it with vertical legs. Load **shackles** in line and **hooks** in the bowl. Inspect **before each use** and **periodically**, and remove damaged gear using **ASME B30** criteria.
+
+<TryIt title="Inspect These Slings">
+
+Decide: keep or remove?
+
+1. Wire rope sling with **3 broken wires** in one strand within one lay, tag readable. *(Below the 5-in-one-strand limit, so it may stay in service if there's no other damage. Monitor closely.)*
+2. Polyester round sling with **red warning yarn showing** through a cut cover. *(Remove.)*
+3. Grade 80 chain sling with **no tag**. *(Remove. No tag, no lift.)*
+4. Web sling with a **small melted spot** from welding spatter. *(Remove. Heat damage.)*
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "A sling's ID tag is missing. What should you do?",
+      options: ["Estimate its capacity", "Remove it from service", "Use it only for light loads", "Write a new tag yourself"],
+      correctIndex: 1,
+      explanation: "Without the tag, the sling's rating can't be verified. No tag, no lift."
+    },
+    {
+      question: "Which chain may be used for overhead lifting?",
+      options: ["Transport chain", "Proof coil chain", "Alloy chain (e.g., Grade 80 or 100)", "Any chain"],
+      correctIndex: 2,
+      explanation: "Only alloy chain designed and rated for lifting may be used as a sling."
+    },
+    {
+      question: "How does a choker hitch affect sling capacity compared with a vertical hitch?",
+      options: ["Reduces it", "Increases it", "No change", "Doubles it"],
+      correctIndex: 0,
+      explanation: "The choke point creates a sharp bend and added stress, reducing capacity (check the tag)."
+    },
+    {
+      question: "Under ASME B30.9, a single-part wire rope sling should be removed for:",
+      options: ["10 randomly distributed broken wires in one rope lay, or 5 in one strand in one lay", "Any dirt", "A faded paint mark", "Being more than one year old"],
+      correctIndex: 0,
+      explanation: "These broken-wire counts are among the removal criteria for wire rope slings."
+    }
+  ]}
+/>

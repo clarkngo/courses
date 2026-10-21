@@ -1,0 +1,153 @@
+---
+title: "Lift Planning and Critical Lifts"
+description: "Plan routine and critical lifts step by step: weights, radius, capacity, rigging, ground and wharf conditions, wind, exclusion zones, pre-lift meetings, test lifts, and why no one stands under a suspended load."
+module: 4
+moduleTitle: "Lifting Operations"
+lesson: 2
+duration: "30 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Every Lift Is Planned
+
+Routine container moves are planned by the terminal's procedures and TOS. Non-routine lifts (breakbulk, project cargo, equipment, maintenance) need a **lift plan**. The more unusual or heavy the lift, the more detailed the plan.
+
+<ProcessFlow
+  label="Lift planning steps: know the load's weight and center of gravity, choose the crane and configuration, check radius and capacity with rigging deductions, select and inspect rigging, check ground or wharf support, wind and weather, set the exclusion zone, hold a pre-lift meeting, make a test lift, then complete the lift."
+  color="#0f766e"
+  loop="If anything differs from the plan, STOP and re-plan."
+  steps={[
+    { title: 'Load', detail: 'Weight, CG, lift points' },
+    { title: 'Crane', detail: 'Configuration, radius, chart' },
+    { title: 'Rigging', detail: 'Sized for worst leg; inspected' },
+    { title: 'Site', detail: 'Wharf/ground, obstacles, wind' },
+    { title: 'Zone + meeting', detail: 'Barricade; roles; signals' },
+    { title: 'Test lift', detail: 'A few inches; check' },
+    { title: 'Lift', detail: 'Smooth, controlled, tag lines' },
+  ]}
+/>
+
+---
+
+## What Makes a Lift "Critical"?
+
+Definitions vary by company, but a lift is often designated **critical** when it involves:
+
+- A load above a set percentage of the crane's chart capacity (commonly in the **75–90%** range, per company rules)
+- **Two or more cranes** lifting one load (tandem lift)
+- Lifting **personnel**
+- Lifts over **occupied areas**, **operating equipment**, or **live process lines**
+- **Unusual** or **high-value** loads, or loads with uncertain weight or CG
+- Lifts near **power lines**
+
+Critical lifts typically require a **written, engineered plan**, review and **sign-off** by qualified persons, and a documented **pre-lift meeting**.
+
+---
+
+## The Lift Plan
+
+A written lift plan usually includes:
+
+| Item | Details |
+|---|---|
+| **Load** | Weight (verified), dimensions, CG, lifting points |
+| **Crane** | Make, model, configuration, counterweight, outriggers or position |
+| **Radii** | Pick, swing, and set radii; chart capacity at the **worst** radius |
+| **Rigging** | Each component's WLL, weight, and calculated load (sling angles) |
+| **Total load and percent of capacity** | Load + rigging ÷ chart capacity |
+| **Ground / wharf** | Bearing capacity, mats, deck load limits on ships |
+| **Environment** | Wind limits, visibility, tide and vessel movement, lighting |
+| **Hazards** | Power lines, structures, other cranes, traffic |
+| **Exclusion zone** | Barricades and spotters |
+| **People** | Operator, signal person, riggers, lift director |
+| **Communication** | Signals and radio channel |
+| **Contingencies** | What to do if wind rises or the load shifts |
+
+---
+
+## Lifting On and Off Ships
+
+Ship lifts have special challenges:
+
+- **The ship moves.** Tide, wind, swell, and passing traffic make the vessel rise, fall, and surge. Landing a load on a moving deck takes coordination.
+- **Ship stability.** Heavy lifts shift the vessel's weight and can cause it to **list**. The ship's officers must agree to the lift and manage ballast.
+- **Deck strength.** Decks and hatch covers have **load limits**. Use dunnage to spread loads.
+- **Ship's gear.** If the ship's own cranes are used, they must be certified and in good condition.
+
+---
+
+## The Exclusion Zone
+
+- **Barricade** the area under and around the load path.
+- **Never** stand or walk **under a suspended load**.
+- Keep people out of **pinch points** between the load and fixed objects.
+- Keep clear of the crane's **swing radius** (counterweight) on mobile and harbor cranes.
+
+## The Test Lift
+
+Lift the load a few inches off its supports and **hold**:
+
+- Is the load **level** (hook over CG)?
+- Are slings **seated** and hardware aligned?
+- Do the **brakes** hold?
+- Does the RCI read as expected?
+
+If anything is off, **set it down** and fix it.
+
+<Pitfall title="The Plan Didn't Include the Wind">
+
+**Common mistake:** a large, flat piece of cargo (like a panel or a ship's hatch cover) is lifted on a day that's within the crane's general wind limit.
+
+Large surface areas act like sails. The load spins, swings, or pulls the crane beyond its rating even in moderate wind. Lift plans for high-sail-area loads need **load-specific** wind limits and extra tag line control.
+
+</Pitfall>
+
+---
+
+## Key Takeaway
+
+Plan every non-routine lift: **load, crane, radius, rigging, site, wind, zone, people, communication**. Designate **critical lifts** by percentage of capacity, tandem, personnel, or hazard, with **written plans and sign-off**. Ship lifts involve **vessel motion, stability, and deck limits**. Barricade, **never stand under a suspended load**, and always make a **test lift**.
+
+<TryIt title="Critical or Not?">
+
+Your company's rule: a lift is critical above **80%** of chart capacity, or for tandem lifts, personnel, or lifts over operating equipment.
+
+1. A 40-ton breakbulk lift at **72%** capacity, onto a clear wharf. *(Not critical by percentage. Still needs a standard lift plan.)*
+2. A 25-ton lift at **55%** capacity, swinging **over an operating conveyor**. *(Critical, because it's over operating equipment.)*
+3. Two mobile harbor cranes lifting one 120-ton module together. *(Critical: tandem lift.)*
+4. A 30-ton lift at **84%** capacity. *(Critical by percentage.)*
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "Which of these commonly makes a lift 'critical'?",
+      options: ["Lifting an empty container", "A routine move under 50% of capacity", "A tandem lift with two cranes", "Lifting in daylight"],
+      correctIndex: 2,
+      explanation: "Tandem lifts, high percent of capacity, personnel lifts, and lifts over hazards are typically critical."
+    },
+    {
+      question: "What should happen during a test lift?",
+      options: ["Lift as high as possible quickly", "Swing the load fully", "Nothing; it's optional", "Raise the load a few inches and check balance, rigging, and brakes"],
+      correctIndex: 3,
+      explanation: "A short test lift reveals rigging, balance, and brake problems before full commitment."
+    },
+    {
+      question: "Why must the ship's officers agree to a heavy lift on or off the vessel?",
+      options: ["The lift affects ship stability and may require ballast changes", "Paperwork only", "To pay the crane", "They operate the crane"],
+      correctIndex: 0,
+      explanation: "Heavy lifts change weight distribution and can cause list. Officers manage ballast and stability."
+    },
+    {
+      question: "Where should workers never be during a lift?",
+      options: ["Behind the barricade", "At the signal position", "Under the suspended load", "In the crane cab"],
+      correctIndex: 2,
+      explanation: "Never stand under a suspended load."
+    }
+  ]}
+/>

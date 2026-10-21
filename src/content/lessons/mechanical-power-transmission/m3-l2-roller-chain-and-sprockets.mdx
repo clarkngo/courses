@@ -1,0 +1,177 @@
+---
+title: "Roller Chain and Sprockets"
+description: "Read ANSI chain numbers, understand chain parts and connecting links, measure chain elongation, set slack, lubricate correctly, and recognize worn sprockets before they destroy a new chain."
+module: 3
+moduleTitle: "Belts and Chains"
+lesson: 2
+duration: "25 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Chain: Positive, Strong, Forgiving of Heat
+
+Roller chain transmits high torque at low speeds with **no slip**, tolerates heat and dirt better than belts, and works over long center distances. It does need **lubrication**, and it wears.
+
+<svg viewBox="0 0 680 210" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Side view of a section of roller chain showing alternating roller links and pin links. A roller link has two inner plates, two bushings, and two rollers. A pin link has two outer plates joined by two pins that pass through the bushings. Chain pitch is the distance from the center of one pin to the center of the next.">
+  <g font-family="system-ui, -apple-system, sans-serif" font-size="13">
+    <g fill="#cbd5e1" stroke="#0f172a" stroke-width="1.5">
+      <rect x="80" y="70" width="140" height="56" rx="28"/>
+      <rect x="220" y="70" width="140" height="56" rx="28"/>
+      <rect x="360" y="70" width="140" height="56" rx="28"/>
+      <rect x="500" y="70" width="110" height="56" rx="28"/>
+    </g>
+    <g fill="#94a3b8" stroke="#0f172a" stroke-width="1.5">
+      <rect x="150" y="78" width="140" height="40" rx="20"/>
+      <rect x="430" y="78" width="140" height="40" rx="20"/>
+    </g>
+    <g fill="#475569" stroke="#0f172a" stroke-width="1.5">
+      <circle cx="108" cy="98" r="18"/><circle cx="248" cy="98" r="18"/><circle cx="388" cy="98" r="18"/><circle cx="528" cy="98" r="18"/>
+    </g>
+    <g fill="#ca8a04">
+      <circle cx="108" cy="98" r="6"/><circle cx="248" cy="98" r="6"/><circle cx="388" cy="98" r="6"/><circle cx="528" cy="98" r="6"/>
+    </g>
+    <line x1="248" y1="150" x2="388" y2="150" stroke="#4d7c0f" stroke-width="2"/>
+    <line x1="248" y1="142" x2="248" y2="158" stroke="#4d7c0f" stroke-width="2"/>
+    <line x1="388" y1="142" x2="388" y2="158" stroke="#4d7c0f" stroke-width="2"/>
+    <text x="318" y="175" text-anchor="middle" fill="#4d7c0f" font-weight="700">pitch (pin center to pin center)</text>
+    <text x="108" y="50" text-anchor="middle" fill="#475569" font-weight="700">roller</text>
+    <line x1="108" y1="55" x2="108" y2="80" stroke="#475569"/>
+    <text x="248" y="40" text-anchor="middle" fill="#ca8a04" font-weight="700">pin</text>
+    <line x1="248" y1="45" x2="248" y2="92" stroke="#ca8a04"/>
+    <text x="400" y="40" text-anchor="middle" fill="#0f172a" font-weight="700">outer (pin link) plate</text>
+    <line x1="400" y1="45" x2="420" y2="72" stroke="#0f172a"/>
+    <text x="555" y="40" text-anchor="middle" fill="#0f172a" font-weight="700">inner (roller link) plate</text>
+    <line x1="555" y1="45" x2="550" y2="80" stroke="#0f172a"/>
+  </g>
+</svg>
+
+Inside each roller is a **bushing**, and the **pin** turns inside that bushing every time the chain wraps a sprocket. **Pin and bushing wear is what makes chain "stretch."** The plates don't actually stretch; the joints wear loose, so each pitch gets slightly longer.
+
+---
+
+## Reading ANSI Chain Numbers
+
+In the ANSI standard, the **leading digits give the pitch in eighths of an inch**:
+
+| Chain | Pitch |
+|---|---|
+| **#35** | 3/8 in (rollerless bushing chain, indicated by the 5) |
+| **#40** | 4/8 = **1/2 in** |
+| **#50** | 5/8 in |
+| **#60** | 6/8 = 3/4 in |
+| **#80** | 8/8 = 1 in |
+| **#100** | 10/8 = 1-1/4 in |
+
+The **last digit** is usually **0** for standard roller chain, **1** for lightweight, and **5** for rollerless. A **dash number** means multiple strands: **60-2** is double-strand #60 chain. Suffixes such as **H** (heavy plates) vary by maker.
+
+ISO/British Standard chain (like **08B**) has similar pitches but **different dimensions**, so it doesn't interchange with ANSI.
+
+---
+
+## Connecting Links
+
+| Link | Use |
+|---|---|
+| **Connecting (master) link** with spring clip or cotter | Joins chain ends. Clip's **closed end faces the direction of travel**. |
+| **Offset (half) link** | Lets you use an odd number of pitches; it's weaker, so avoid on heavily loaded drives |
+
+---
+
+## Measuring Wear (Elongation)
+
+Measure chain under light tension across a known number of pitches, then compare to the new length.
+
+**Elongation % = (measured length − nominal length) ÷ nominal length × 100**
+
+Most makers recommend replacement at about **3% elongation** for typical drives, and less (around **1.5%**) for timed drives, high-speed drives, or sprockets with many teeth. Chain wear gauges make this quick.
+
+---
+
+## Slack and Tension
+
+Chain should **not be tight**. It needs some slack on the non-load side:
+
+- A common guideline for horizontal drives is a total mid-span sag of roughly **2–3% of the span length**.
+- Too tight: rapid joint wear, bearing overload, noise.
+- Too loose: chain whip, climbing teeth, jumping off the sprocket.
+
+Use idlers or adjustable bases to take up slack as the chain wears.
+
+---
+
+## Lubrication
+
+Most chain wear happens inside the joints. Lubricant has to **get between the pin and bushing**, not just coat the outside.
+
+- Apply oil to the **upper edges of the link plates on the slack side**, where it can wick into the joints.
+- Methods range from **manual** (brush or drip) to **drip lubricators**, **oil bath**, and **forced spray** for high speeds.
+- A dry, rusty, or reddish-brown chain is crying for oil.
+- Avoid heavy grease on open chains; it doesn't penetrate, and it collects grit.
+
+---
+
+## Sprockets
+
+Check sprockets every time you replace chain:
+
+- **Hooked or shark-fin teeth** mean the sprocket is worn.
+- Wear on **one side of the teeth** means misalignment.
+- Small sprockets with few teeth wear fast and run rough. Many designers prefer a minimum of around **17 teeth** on the driver for smooth operation.
+
+<Pitfall title="New Chain on Old Sprockets">
+
+**Common mistake:** replacing a worn chain but keeping the hooked sprockets.
+
+The new chain's correct pitch doesn't match the worn tooth profile. It rides up, wears quickly, and can jump teeth. Unless the sprockets are nearly new, **replace chain and sprockets together**. Also check alignment with a straightedge across both sprocket faces.
+
+</Pitfall>
+
+---
+
+## Key Takeaway
+
+ANSI chain numbers give pitch in **eighths of an inch** (#40 = 1/2 inch). "Stretch" is **joint wear**. Replace at about **3% elongation** (less for precision drives). Keep a little **slack**, oil the **joints on the slack side**, and **replace worn sprockets with the chain**.
+
+<TryIt title="Measure Elongation">
+
+You measure **20 pitches** of #60 chain (3/4 inch pitch).
+
+- Nominal length: 20 × 0.75 = **15.00 inches**
+- Measured length: **15.42 inches**
+- Elongation: (15.42 − 15.00) ÷ 15.00 × 100 = **2.8%**
+
+It's close to the typical 3% limit. Plan the replacement and order sprockets too.
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "What is the pitch of #80 roller chain?",
+      options: ["1/2 inch", "1 inch", "3/4 inch", "8 mm"],
+      correctIndex: 1,
+      explanation: "8 eighths of an inch = 1 inch."
+    },
+    {
+      question: "What actually causes chain 'stretch'?",
+      options: ["Plates stretching", "Heat expansion", "Wear between pins and bushings in each joint", "Rollers getting larger"],
+      correctIndex: 2,
+      explanation: "Joint wear lengthens each pitch slightly. Over many pitches, the chain grows longer."
+    },
+    {
+      question: "At about what elongation do most makers recommend replacing chain on a typical drive?",
+      options: ["0.5%", "10%", "3%", "25%"],
+      correctIndex: 2,
+      explanation: "Around 3% for typical drives, lower for timed or high-speed drives."
+    },
+    {
+      question: "Where should chain oil be applied?",
+      options: ["On the rollers' outer surface only", "On the sprocket hub", "Heavy grease on the tight side", "On the upper edges of the link plates on the slack side, so it wicks into the joints"],
+      correctIndex: 3,
+      explanation: "Oil needs to reach the pin-bushing joint. Applying it to the plate edges on the slack side lets it penetrate."
+    }
+  ]}
+/>

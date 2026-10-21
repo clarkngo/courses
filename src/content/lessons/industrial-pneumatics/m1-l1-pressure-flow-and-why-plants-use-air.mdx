@@ -1,0 +1,150 @@
+---
+title: "Pressure, Flow, and Why Plants Run on Air"
+description: "Understand what compressed air is, how pressure and flow differ, gauge versus absolute pressure, and why plants choose pneumatics despite its high energy cost."
+module: 1
+moduleTitle: "Compressed Air Fundamentals"
+lesson: 1
+duration: "20 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Air as a Power Source
+
+Walk any packaging line, box plant, or assembly cell and you'll hear it: the hiss and clack of **pneumatics**, which means machines powered by compressed air. Cylinders push cartons, grippers pick parts, blow-offs clear chips, and air motors spin tools.
+
+Pneumatics is one of the three ways plants move things with fluid or electricity:
+
+| Power type | Medium | Typical pressure | Strengths | Weaknesses |
+|---|---|---|---|---|
+| **Pneumatic** | Air | 80–120 psi | Fast, clean, simple, safe in wet or explosive areas | Spongy (air compresses), expensive energy |
+| **Hydraulic** | Oil | 1,000–5,000+ psi | Huge force, precise holding | Leaks are messy, heavier components |
+| **Electric** | Electricity | — | Efficient, precise positioning | Higher component cost, sensitive to washdown |
+
+Plants choose air when they need **fast, repetitive, light-to-medium force** motion that's cheap to build and easy to maintain.
+
+---
+
+## The Big Picture: A Compressed Air System
+
+Every plant air system follows the same path, and this course follows it too.
+
+<ProcessFlow
+  label="A compressed air system from generation to work: the compressor draws in ambient air, the receiver stores it, the dryer removes moisture, filters clean it, the distribution piping carries it, an FRL conditions it at the machine, a valve directs it, and an actuator does the work."
+  color="#0369a1"
+  steps={[
+    { title: 'Compressor', detail: 'Squeezes ambient air' },
+    { title: 'Receiver', detail: 'Stores air, smooths demand' },
+    { title: 'Dryer + filters', detail: 'Removes water, oil, dirt' },
+    { title: 'Distribution', detail: 'Headers, drops, hoses' },
+    { title: 'FRL', detail: 'Filter, regulate, lubricate at the machine' },
+    { title: 'Valve', detail: 'Directs air on command' },
+    { title: 'Actuator', detail: 'Cylinder or motor does the work' },
+  ]}
+/>
+
+The **supply side** (compressor, receiver, dryer) makes the air. The **demand side** (piping, FRLs, valves, actuators) uses it. Most problems show up on the demand side, but many start on the supply side.
+
+---
+
+## Pressure vs. Flow
+
+These two words get mixed up constantly, and that leads to bad troubleshooting.
+
+- **Pressure** is force per unit area, measured in **psi** (pounds per square inch) or **bar** (1 bar ≈ 14.5 psi). Pressure determines **how hard** an actuator can push.
+- **Flow** is the volume of air moving per minute, measured in **scfm** (standard cubic feet per minute) or **L/min**. Flow determines **how fast** an actuator can move.
+
+> **Pressure = force. Flow = speed.** A cylinder that pushes hard but moves slowly is usually starved for flow, not pressure.
+
+### Why "Standard" Cubic Feet?
+
+Air compresses, so a cubic foot of air at 100 psi holds far more air than a cubic foot at atmospheric pressure. **scfm** converts everything back to standard conditions (roughly sea-level pressure and room temperature) so you can compare compressors and loads fairly.
+
+---
+
+## Gauge vs. Absolute Pressure
+
+We live under about **14.7 psi** of atmospheric pressure at sea level.
+
+| Term | Abbreviation | Zero point | Example |
+|---|---|---|---|
+| **Gauge pressure** | psig | Atmosphere | A shop gauge reading 90 psig |
+| **Absolute pressure** | psia | Perfect vacuum | That same air is 90 + 14.7 = 104.7 psia |
+
+Shop gauges read **psig**. Gas law calculations and vacuum work use **psia**. When someone just says "psi" in a plant, they almost always mean gauge.
+
+### Compression Ratio
+
+How much the compressor squeezes the air is its compression ratio:
+
+**Compression ratio = (gauge pressure + 14.7) ÷ 14.7**
+
+At 100 psig: (100 + 14.7) ÷ 14.7 ≈ **7.8**. That means about 7.8 cubic feet of room air are squeezed into each cubic foot of plant air.
+
+---
+
+## The Hidden Cost of Air
+
+Compressed air is often called the **"fourth utility"** (after electricity, water, and gas), and it's one of the most expensive. Most of the electrical energy that goes into a compressor leaves as **heat**, not as useful air.
+
+A commonly cited rule of thumb: it takes roughly **7–8 horsepower of electricity to deliver 1 horsepower of work** at a pneumatic tool. In other words, air is only about 10–15% efficient end to end.
+
+That's why later lessons focus on leaks, pressure settings, and right-sizing. Every wasted cubic foot was paid for at the compressor.
+
+<Pitfall title="Cranking Up Header Pressure">
+
+**Common mistake:** a machine is sluggish, so someone raises the plant header from 100 to 115 psi.
+
+That raises energy use for the **whole plant**. A widely used rule of thumb is that each **2 psi** increase costs about **1%** more compressor energy, and higher pressure also makes every leak blow harder. Fix the real cause instead, such as an undersized hose, a clogged filter, or a failing regulator at that one machine.
+
+</Pitfall>
+
+---
+
+## Key Takeaway
+
+Pneumatics is fast, clean, and simple, but air is costly to make. **Pressure** sets force; **flow** sets speed. Shop gauges read **psig**, and calculations need **psia**. Follow the air from compressor to actuator and you'll always know where to look.
+
+<TryIt title="Read the Nameplate">
+
+Find a compressor or a pneumatic machine in your workplace (or look up a spec sheet online). Write down:
+
+1. Rated pressure (psig or bar)
+2. Rated flow (scfm or L/min)
+3. Motor horsepower
+
+Then calculate the compression ratio at the rated pressure. For a 125 psig rating: (125 + 14.7) ÷ 14.7 ≈ **9.5**.
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "A cylinder pushes with plenty of force but moves very slowly. What is the most likely issue?",
+      options: ["Pressure is too high", "The cylinder is too large", "Flow is restricted", "The air is too dry"],
+      correctIndex: 2,
+      explanation: "Pressure sets force and flow sets speed. Good force with slow motion points to a flow restriction such as an undersized line, a clogged filter, or a flow control set too tight."
+    },
+    {
+      question: "A gauge reads 90 psig. What is the absolute pressure at sea level?",
+      options: ["104.7 psia", "75.3 psia", "90 psia", "14.7 psia"],
+      correctIndex: 0,
+      explanation: "Absolute = gauge + atmospheric ≈ 90 + 14.7 = 104.7 psia."
+    },
+    {
+      question: "Why is compressed air called an expensive utility?",
+      options: ["Most compressor input energy becomes heat, not useful work", "Air must be purchased", "Compressors only run at night", "Air pipes are made of copper"],
+      correctIndex: 0,
+      explanation: "End-to-end efficiency is roughly 10–15%. Most input power turns into heat at the compressor."
+    },
+    {
+      question: "What does scfm measure?",
+      options: ["Pressure at the tool", "Compressor speed", "Air flow corrected to standard conditions", "Moisture content"],
+      correctIndex: 2,
+      explanation: "Standard cubic feet per minute lets you compare flows regardless of the pressure they were measured at."
+    }
+  ]}
+/>

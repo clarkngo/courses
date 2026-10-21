@@ -1,0 +1,129 @@
+---
+title: "Shaft Couplings"
+description: "Compare rigid and flexible couplings, including jaw, tire, gear, grid, disc, and universal joints. Learn what each tolerates, how to install and inspect them, and why a flexible coupling is not a license to skip alignment."
+module: 4
+moduleTitle: "Couplings and Gearboxes"
+lesson: 1
+duration: "25 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## What a Coupling Does
+
+A **coupling** connects two shafts end to end, usually a motor to a pump, fan, or gearbox. Its jobs:
+
+1. **Transmit torque** from one shaft to the other
+2. **Accommodate small misalignment** between the shafts (flexible types)
+3. **Absorb shock and vibration** (elastomeric types)
+4. Sometimes **protect the drive**, using a shear pin or torque limiter that slips or breaks on overload
+
+---
+
+## Rigid vs. Flexible
+
+**Rigid couplings** (sleeve, clamp, flanged) lock two shafts together as if they were one. They tolerate **essentially no misalignment** and are used where shafts are supported to act as one, such as some vertical pumps and line shafts.
+
+**Flexible couplings** allow small amounts of misalignment and end float. They're the norm for motor-to-machine connections.
+
+---
+
+## Common Flexible Couplings
+
+| Type | How it flexes | Strengths | Watch for |
+|---|---|---|---|
+| **Jaw (spider)** | Elastomer "spider" between interlocking metal jaws | Cheap, simple, fail-safe (jaws still drive if spider fails) | Spider cracking, crumbling, or melting |
+| **Tire** | Rubber or urethane tire bolted between flanges | High misalignment tolerance, absorbs shock | Tire cracks, ozone and oil attack |
+| **Sleeve (elastomeric)** | Toothed rubber sleeve engages two flanges | Simple, quiet | Sleeve wear, sensitive to heat and oil |
+| **Gear** | Crowned external teeth mesh with internal sleeve teeth | Very high torque in compact size | **Needs grease**; worn teeth from poor lubrication |
+| **Grid** | Tapered steel grid spring in grooved hubs | High torque with shock absorption | **Needs grease**; grid fatigue or breakage |
+| **Disc (diaphragm)** | Thin metal discs flex | No lubrication, no backlash, high speed | Disc cracking from excessive misalignment |
+| **Universal joint** | Cross and yokes pivot | Large angles (e.g., drive shafts) | Speed fluctuation unless phased correctly; needle bearings need grease |
+
+### Lubricated vs. Non-Lubricated
+
+**Gear** and **grid** couplings have metal-on-metal contact and need regular **grease** (often coupling-specific grease, because ordinary grease can separate under centrifugal force). Elastomer and disc couplings need **no lubrication** but have elements that wear out.
+
+---
+
+## Installing a Coupling
+
+1. **Lock out** both the driver and driven machine.
+2. **Clean** shafts and hub bores. Check keys and keyways (Lesson 1.2).
+3. Mount hubs. For **interference fits**, heat the hub evenly (never a torch on one spot).
+4. Set the **gap (distance between shaft ends)** per the coupling maker's spec. This allows for thermal growth and end float.
+5. **Align the shafts** (Module 5). The coupling's tolerance is **not** your alignment target.
+6. Install the flexible element, grid, or discs; torque bolts to spec.
+7. For lubricated types, fill with the right grease and install seals and gaskets.
+8. Reinstall the **coupling guard** before restart.
+
+<Pitfall title="The Coupling Can Handle It">
+
+**Common mistake:** "It's a flexible coupling, it can take some misalignment," so alignment is eyeballed.
+
+The coupling may survive, but the **bearings and seals** on both machines won't. A coupling's published misalignment capacity is the most it can take **without destroying itself**, not what the machines can tolerate. Align to proper machinery tolerances (Module 5), which are much tighter.
+
+</Pitfall>
+
+---
+
+## Inspecting Couplings
+
+Lock out and remove the guard, then check:
+
+- **Elastomer elements:** cracks, crumbling, swelling, melting, or black dust (a sign of heat and wear)
+- **Gear couplings:** grease condition, tooth wear patterns, leaking seals
+- **Grid couplings:** broken grid segments, grease present
+- **Disc couplings:** cracked or deformed discs, loose bolts
+- **Hubs:** loose set screws, key wear, hubs moved along the shaft
+- **Wear patterns** that are uneven around the circumference (a sign of misalignment)
+
+Rubber dust under a jaw coupling, or a coupling that's hot to the touch after shutdown, are classic misalignment clues.
+
+---
+
+## Key Takeaway
+
+Couplings **transmit torque** and **tolerate small misalignment**. Pick the type for the torque, speed, shock, and maintenance you can support. **Gear and grid** couplings need grease; **elastomer and disc** types don't. A coupling's misalignment rating is **not** an alignment spec, so always align properly.
+
+<TryIt title="Match the Coupling">
+
+Choose a coupling for each:
+
+1. A **5 hp** motor to a small centrifugal pump, low budget. *(Jaw coupling.)*
+2. A **rock crusher** with heavy shock loads, maintenance does monthly greasing. *(Grid coupling.)*
+3. A **high-speed** compressor drive where lubrication must be avoided. *(Disc coupling.)*
+4. A mixer with the gearbox mounted on a frame that **moves slightly** relative to the motor. *(Tire coupling for high misalignment tolerance.)*
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "Which coupling types require periodic greasing?",
+      options: ["Jaw and tire", "Disc and sleeve", "Gear and grid", "Rigid and clamp"],
+      correctIndex: 2,
+      explanation: "Gear and grid couplings have sliding metal-on-metal contact and need lubrication."
+    },
+    {
+      question: "Why is the coupling's misalignment rating not your alignment target?",
+      options: ["It's always wrong", "Couplings don't flex", "It's the coupling's survival limit; the machines' bearings and seals need much tighter alignment", "OSHA sets the target"],
+      correctIndex: 2,
+      explanation: "Couplings can survive more misalignment than machine bearings and seals can tolerate."
+    },
+    {
+      question: "Black rubber dust under a jaw coupling usually indicates:",
+      options: ["Normal break-in", "Too much grease", "Low speed", "Misalignment wearing the spider"],
+      correctIndex: 3,
+      explanation: "The spider grinds itself to dust when shafts are misaligned."
+    },
+    {
+      question: "What advantage does a jaw coupling have if its spider fails?",
+      options: ["It stops instantly", "The metal jaws can still drive, so it fails safe", "It self-heals", "It alerts the PLC"],
+      correctIndex: 1,
+      explanation: "The jaws interlock, so torque can still be transmitted (with noise) after the spider fails."
+    }
+  ]}
+/>

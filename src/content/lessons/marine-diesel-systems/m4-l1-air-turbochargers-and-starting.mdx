@@ -1,0 +1,137 @@
+---
+title: "Air Intake, Turbochargers, and Starting Systems"
+description: "Learn how turbochargers and charge air coolers pack more air into the cylinders, how to care for air filters and turbos, and how electric and compressed-air starting systems get a marine diesel turning."
+module: 4
+moduleTitle: "Air, Exhaust, and Starting"
+lesson: 1
+duration: "25 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## More Air, More Power
+
+An engine can only burn as much fuel as it has **air** for. To get more power from the same engine size, most marine diesels are **turbocharged**, forcing extra air into the cylinders.
+
+<ProcessFlow
+  label="Turbocharged air path: ambient air passes through the intake filter, the turbocharger compressor squeezes it, the charge air cooler cools it, it enters the intake manifold and cylinders, then exhaust gas drives the turbine side of the turbocharger before leaving through the exhaust system."
+  color="#1e3a8a"
+  loop="Exhaust energy spins the turbine, which drives the compressor on the same shaft."
+  steps={[
+    { title: 'Air filter', detail: 'Clean engine room air' },
+    { title: 'Compressor', detail: 'Turbo raises air pressure' },
+    { title: 'Charge air cooler', detail: 'Cools air so it is denser' },
+    { title: 'Cylinders', detail: 'Combustion' },
+    { title: 'Turbine', detail: 'Exhaust spins the turbo' },
+    { title: 'Exhaust out', detail: 'Silencer, uptakes, funnel' },
+  ]}
+/>
+
+---
+
+## Turbochargers
+
+A turbocharger has two wheels on one shaft:
+
+- The **turbine** is spun by hot exhaust gas.
+- The **compressor** draws in air and pushes it into the engine at higher pressure (**boost**).
+
+Turbochargers spin at very high speeds (tens of thousands of rpm, and much higher on small units) and depend on clean **lube oil** and **balanced** wheels.
+
+### Charge Air Coolers (Aftercoolers / Intercoolers)
+
+Compressing air heats it. Hot air is less dense, so the **charge air cooler** cools it before it enters the cylinders. A fouled cooler means hotter, thinner air, which leads to higher exhaust temperatures and black smoke.
+
+Charge air coolers in humid conditions can produce **condensate**, which must be drained to keep water from entering the cylinders.
+
+### Turbo Care
+
+| Task | Why |
+|---|---|
+| Keep **air filters** clean | Dirt erodes compressor blades and wears the engine |
+| **Water washing** (compressor, and turbine on larger units) per the maker | Removes deposits that reduce efficiency |
+| Watch **boost pressure** and **turbo rpm** trends | Falling boost suggests fouling or damage |
+| Check for **oil leaks** at seals | Blue smoke and oil in the intake or exhaust |
+| Listen for **surging** (barking or coughing noises) | Can indicate fouling or mismatch; damages the turbo |
+| **Idle cool-down** before shutdown when recommended | Prevents oil coking in the hot turbo bearings |
+
+<Pitfall title="Shutting Down Hot">
+
+**Common mistake:** running hard into port and shutting the engine down immediately.
+
+Oil stops flowing, but the turbocharger is still glowing hot. Oil left in the bearing housing can **coke** (bake into carbon), which wears bearings and seals. Follow the maker's **cool-down** guidance, typically a few minutes at low load or idle before stopping.
+
+</Pitfall>
+
+---
+
+## Starting Systems
+
+### Electric Starting
+
+Smaller and medium engines use **electric starter motors** powered by **batteries** (often 24 V on commercial vessels). Keep batteries:
+
+- **Charged** and tested
+- **Clean and tight** at terminals
+- **Ventilated** (charging batteries can release hydrogen)
+- Separated into **start** and **house** banks where possible
+
+### Air Starting
+
+Larger engines start with **compressed air**, typically stored in **air receivers** at around **25–30 bar** (roughly 360–435 psi). A **main starting valve** sends air through a **distributor** to **air start valves** in each cylinder head in firing order, pushing pistons down until the engine fires.
+
+Safety features include:
+
+- **Relief valves** and **fusible plugs** on receivers
+- **Flame arrestors** or **bursting discs** in the start air line to protect against a **starting air line explosion** (from a leaking air start valve letting hot combustion gas and oil vapor back into the air line)
+- **Turning gear interlock**: the engine can't start while the turning gear is engaged
+
+Classification rules generally require enough stored air for a set number of **consecutive starts** without recharging.
+
+Drain **water** from air receivers regularly, because water and oil carried into start valves cause corrosion and malfunctions.
+
+---
+
+## Key Takeaway
+
+Turbochargers use **exhaust energy** to pack more **air** into the cylinders; charge air coolers make it **denser**. Keep **filters** clean, **wash** turbos as specified, watch **boost trends**, and **cool down** before shutdown. Engines start by **batteries** (keep them charged, clean, and ventilated) or **compressed air** (watch receiver pressure, drain water, and respect interlocks).
+
+<TryIt title="Find the Air Problem">
+
+A generator engine's **boost pressure has dropped 15%** over three months, **exhaust temperatures are rising**, and the engine now **smokes black** at full load.
+
+List three things to check, in order of effort. *(1. Air filter condition and differential pressure. 2. Charge air cooler fouling (air side and water side). 3. Turbocharger compressor fouling or damage; schedule a water wash or inspection.)*
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "What drives a turbocharger's compressor?",
+      options: ["The turbine wheel, spun by exhaust gas, on a common shaft", "A belt from the crankshaft", "An electric motor", "The starting air system"],
+      correctIndex: 0,
+      explanation: "Exhaust gas spins the turbine, which drives the compressor on the same shaft."
+    },
+    {
+      question: "Why is charge air cooled before it enters the cylinders?",
+      options: ["To prevent icing", "To heat the engine room", "To reduce boost", "Cooler air is denser, so more oxygen fits in the cylinder"],
+      correctIndex: 3,
+      explanation: "Compression heats air. Cooling it increases density and allows more fuel to burn efficiently."
+    },
+    {
+      question: "Why should a turbocharged engine idle briefly before shutdown?",
+      options: ["To charge batteries", "To warm the oil", "To let the turbo cool so oil doesn't coke in the hot bearings", "To empty the fuel lines"],
+      correctIndex: 2,
+      explanation: "Shutting down hot can bake oil into carbon in the turbo bearing housing."
+    },
+    {
+      question: "What does the turning gear interlock prevent?",
+      options: ["Starting the engine while the turning gear is engaged", "Fuel leaks", "Battery discharge", "Overheating"],
+      correctIndex: 0,
+      explanation: "Starting with the turning gear engaged could cause severe damage and injury."
+    }
+  ]}
+/>

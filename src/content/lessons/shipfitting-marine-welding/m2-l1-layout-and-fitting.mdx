@@ -1,0 +1,144 @@
+---
+title: "Layout and Fitting: Tools and Techniques"
+description: "Learn what a shipfitter does, from layout with tapes, squares, lasers, and templates to fitting with clamps, dogs and wedges, strongbacks, and jacks, plus tacking, gap and alignment checks, and fairing plate."
+module: 2
+moduleTitle: "Shipfitting"
+lesson: 1
+duration: "30 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## What a Shipfitter Does
+
+The **shipfitter** reads the drawings, lays out where every piece goes, positions plates and shapes, pulls them into alignment, and **tack welds** them so the welder can make the final welds. A good fit-up makes good welding possible. A bad one can't be fixed with welding.
+
+<ProcessFlow
+  label="Shipfitter workflow: read the drawing, lay out reference lines and member locations, position the parts, pull them into alignment with fitting tools, check gaps and alignment, tack weld, then hand over for welding and inspection."
+  color="#9a3412"
+  loop="If a check fails, release the tacks, re-fit, and check again before handing over to welding."
+  steps={[
+    { title: 'Read', detail: 'Drawing, member sizes, weld details' },
+    { title: 'Lay out', detail: 'Reference lines, member locations' },
+    { title: 'Position', detail: 'Crane, chain falls, rigging' },
+    { title: 'Pull + align', detail: 'Dogs, wedges, jacks, strongbacks' },
+    { title: 'Check', detail: 'Gaps, angles, alignment, level' },
+    { title: 'Tack', detail: 'Hold for the welder' },
+  ]}
+/>
+
+---
+
+## Layout Tools
+
+| Tool | Use |
+|---|---|
+| **Tape measure, steel rule** | Basic measurements; check tape accuracy |
+| **Framing square, combination square** | Right angles and short layouts |
+| **Soapstone, paint marker, center punch** | Marking lines on steel |
+| **Chalk line** | Long straight lines on plate |
+| **Levels and plumb bobs** | Vertical and horizontal checks |
+| **Transit, laser level, total station** | Long reference lines, heights, block alignment |
+| **Templates and battens** | Curved shapes; fairing curves |
+
+Layout always starts from **reference lines** (such as the centerline, a frame line, or a deck height above baseline), never from the edge of a plate that might not be square.
+
+---
+
+## Fitting Tools
+
+| Tool | Use |
+|---|---|
+| **C-clamps, pipe clamps, toggle clamps** | Holding small parts in position |
+| **Dogs and wedges** | A **dog** (a small steel bracket tacked to one plate) gives a wedge something to push against to **pull plates flush** or into line |
+| **Strongbacks** | A stiff beam tacked across a joint to pull plates flat and hold alignment |
+| **Hydraulic jacks, porta-power** | Push members into position with controlled force |
+| **Come-alongs, chain falls** | Pull members into position |
+| **Fitting bars, pry bars** | Fine adjustments |
+| **Clips and spacers** | Set consistent root gaps |
+
+When fitting aids like dogs and strongbacks are removed, their **tack welds must be ground flush and inspected** (and sometimes tested) so they don't leave cracks or gouges in the structure.
+
+---
+
+## What to Check Before Handing Over
+
+| Check | Why |
+|---|---|
+| **Root gap** within the weld procedure's range | Too tight = lack of penetration; too wide = excess weld, distortion, burn-through |
+| **Bevel angle and land** correct | Groove geometry controls fusion and penetration |
+| **Alignment (misalignment / high-low)** within tolerance | Offsets concentrate stress and cause fatigue cracks |
+| **Member location** to layout lines | Wrong location means wrong strength or interference |
+| **Angles and square** | Tee members must be at the specified angle |
+| **Cleanliness** | Mill scale, rust, paint, oil, and moisture cause weld defects |
+
+### Tack Welds
+
+Tack welds are part of the final weld in many procedures, so they must be:
+
+- Made by a **qualified welder** with the **approved process and filler**
+- **Sound** (no cracks); cracked tacks must be removed
+- Correct **size and spacing**, enough to hold but not so large they interfere
+- **Preheated** when the base metal requires preheat
+
+---
+
+## Fairing
+
+**Fairing** means making plates and members smooth and true, with no bumps, dents, or "hungry horse" waviness between frames. Fitters fair plate using strongbacks, jacks, and, under controlled procedures, **heat straightening** (line heating). Heat straightening on ship steels must follow the yard's approved temperature limits, because overheating can change the steel's properties.
+
+<Pitfall title="Welding Can Fill the Gap">
+
+**Common mistake:** a fitter leaves a gap far wider than the procedure allows, figuring the welder will "fill it up."
+
+Oversized gaps use far more weld metal, add heat and **distortion**, risk burn-through, and may not be covered by the weld procedure, which means the weld may be **unacceptable** no matter how good it looks. Fix the fit, or get an approved repair procedure (such as buttering the edge) before welding.
+
+</Pitfall>
+
+---
+
+## Key Takeaway
+
+Shipfitters **lay out** from **reference lines**, **position and pull** parts with **dogs, wedges, strongbacks, and jacks**, **check** gaps, bevels, and alignment, and **tack** with approved procedures. Good fit-up makes good welds possible. Remove fitting aids carefully, and fair plate within approved limits.
+
+<TryIt title="Fit-Up Inspection">
+
+A butt joint in 1/2-inch plate has a weld procedure calling for a **60° included angle**, **1/8-inch root gap** (tolerance ±1/16 inch), and **maximum misalignment of 1/8 inch**.
+
+You measure: angle **60°**, gap **1/4 inch**, misalignment **1/16 inch**.
+
+Is it acceptable? *(No. The 1/4-inch gap exceeds the maximum of 3/16 inch. Re-fit the joint or use an approved procedure to correct it before welding.)*
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "What is the purpose of dogs and wedges?",
+      options: ["Grinding welds", "Measuring gaps", "Cutting plate", "Pulling plates flush or into alignment"],
+      correctIndex: 3,
+      explanation: "A dog tacked to one plate gives a wedge something to push against to pull plates into line."
+    },
+    {
+      question: "Why should layout start from reference lines rather than plate edges?",
+      options: ["It's faster", "Edges are always painted", "Plate edges may not be square or accurate", "Rules forbid using edges"],
+      correctIndex: 2,
+      explanation: "Reference lines tie layout to the ship's coordinates. Plate edges can be out of square."
+    },
+    {
+      question: "What can excessive misalignment (high-low) in a butt joint cause?",
+      options: ["Better strength", "Stress concentration and fatigue cracking", "Faster welding", "Less distortion"],
+      correctIndex: 1,
+      explanation: "Offsets concentrate stress, which can lead to fatigue cracks under cyclic loading."
+    },
+    {
+      question: "What must be done after removing a temporary fitting aid like a strongback?",
+      options: ["Grind the tack areas flush and inspect for cracks or gouges", "Nothing", "Paint over it", "Leave the tacks"],
+      correctIndex: 0,
+      explanation: "Removal areas must be ground and inspected so they don't leave defects in the structure."
+    }
+  ]}
+/>

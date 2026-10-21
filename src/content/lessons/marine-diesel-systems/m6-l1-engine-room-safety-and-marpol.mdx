@@ -1,0 +1,133 @@
+---
+title: "Engine Room Safety and Environmental Rules"
+description: "Prevent and respond to engine room fires, work safely around rotating machinery, noise, heat, and enclosed spaces, and follow MARPOL rules for oily bilge water, the oil record book, and garbage."
+module: 6
+moduleTitle: "Safety, Environment, and Review"
+lesson: 1
+duration: "30 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Engine Room Fire: The Big One
+
+Engine rooms combine **fuel, oil, hot surfaces, and electricity** in a tight space. Engine room fires are among the most dangerous events at sea.
+
+### The Classic Cause
+
+The most common source is **fuel or lube oil spraying or dripping onto a hot surface**, such as an exhaust manifold, turbocharger, or indicator cock. Prevention:
+
+- Keep **insulation and shielding** intact on hot surfaces; replace any removed during maintenance.
+- Maintain **jacketed high-pressure fuel lines** and leak alarms.
+- Fix **leaks** immediately; keep **bilges and drip trays clean**.
+- Store **oily rags** in closed metal containers.
+- Don't use engine room surfaces as storage for flammables.
+
+### Detection and Fixed Systems
+
+Engine rooms on larger vessels have **fire detection** and **fixed fire-extinguishing systems**, commonly **CO₂**, **high-expansion foam**, or **water mist**. A CO₂ system:
+
+- **Requires everyone to evacuate** before release. CO₂ at extinguishing concentration is **lethal**.
+- Comes with **pre-discharge alarms** and procedures to **shut down ventilation and fuel** and close openings first.
+- Works only if the space is **sealed**.
+
+Know your vessel's **fire plan**, **emergency fuel shut-offs** (often remote, outside the engine room), **ventilation shut-downs**, and muster station.
+
+<Pitfall title="Re-Entering Too Soon">
+
+**Common mistake:** after a fixed system discharge, crew open the engine room to "check" a few minutes later.
+
+Fresh air can **re-ignite** hot surfaces, and the atmosphere may still be lethal. Follow the vessel's procedures for **cooling time**, boundary cooling, and re-entry with breathing apparatus.
+
+</Pitfall>
+
+---
+
+## Other Engine Room Hazards
+
+| Hazard | Controls |
+|---|---|
+| **Rotating machinery** (shafts, couplings, belts) | Guards in place; no loose clothing or jewelry; never work on running shafts |
+| **Noise** | Engine rooms often exceed safe levels; wear hearing protection |
+| **Heat** | Hydration, rest breaks, ventilation; insulated surfaces |
+| **Hot fluids** | Never open hot pressurized coolant caps; let systems cool |
+| **Hazardous energy** | Lockout and isolation before maintenance (see the Lockout/Tagout course) |
+| **Enclosed spaces** (tanks, voids, cofferdams) | Oxygen-deficient or toxic atmospheres; follow **enclosed space entry** permits, testing, ventilation, and a standby person |
+| **Slips and falls** | Oily deck plates, ladders; clean spills, use handrails |
+| **Batteries** | Hydrogen gas; ventilate; no sparks |
+
+---
+
+## MARPOL and the Engine Room
+
+**MARPOL** is the international convention for preventing pollution from ships. Several annexes affect engineers.
+
+### Annex I: Oil
+
+- Oily bilge water may be discharged at sea **only** through an approved **oily water separator (OWS)** with an **oil content meter** that stops discharge above **15 ppm** oil, and only when other conditions are met (such as the ship being en route and outside special areas where stricter rules apply).
+- Oily residues (sludge) go to a **sludge tank** and are landed ashore or incinerated as allowed.
+- Every transfer, discharge, and sludge disposal is recorded in the **Oil Record Book**.
+
+Bypassing the OWS (a so-called **"magic pipe"**) is a serious crime. In the U.S., it has led to large fines and prison sentences for companies and individual engineers.
+
+### Annex VI: Air
+
+Fuel sulfur and NOx limits (Lessons 2.1 and 4.2), plus rules on ozone-depleting substances and incinerators.
+
+### Annex V: Garbage
+
+Strict limits on discharging garbage; **plastics may never be discharged** at sea. Oily rags and used filters are garbage that goes ashore.
+
+### Smaller Vessels
+
+U.S. vessels are also governed by **U.S. Coast Guard** regulations and the **Clean Water Act**. Even small boats must not discharge oil or oily water that causes a sheen; report spills to the **National Response Center**.
+
+---
+
+## Key Takeaway
+
+Fuel or oil on **hot surfaces** is the classic engine room fire. Keep **insulation**, **jacketed lines**, and **clean bilges**. Know your **fire plan**, **remote shut-offs**, and the rule that **everyone gets out before CO₂ discharge**. Follow **MARPOL**: the **OWS limit is 15 ppm**, record everything in the **Oil Record Book**, and never bypass the separator.
+
+<TryIt title="Fire Walk-Through">
+
+On a vessel you know (or from a vessel's fire plan), locate and list:
+
+1. Engine room exits and escape routes
+2. Remote fuel shut-off valves
+3. Ventilation fan and damper shut-downs
+4. The fixed fire-extinguishing system release station
+5. Portable extinguishers near the main engine and generators
+6. Emergency breathing devices (EEBDs)
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "What is the most common cause of engine room fires?",
+      options: ["Lightning", "Fuel or oil spraying onto hot surfaces", "Cooking", "Sea water"],
+      correctIndex: 1,
+      explanation: "Leaks onto hot exhaust manifolds and turbochargers are the classic ignition source."
+    },
+    {
+      question: "Before a CO₂ fixed system is released into the engine room, what must happen?",
+      options: ["Open all doors for airflow", "Start the main engine", "Nothing", "Everyone must evacuate, and ventilation and fuel must be shut down"],
+      correctIndex: 3,
+      explanation: "CO₂ at extinguishing concentration is lethal, and the space must be sealed for it to work."
+    },
+    {
+      question: "Under MARPOL Annex I, oily bilge water may be discharged through an approved separator only if oil content is no more than:",
+      options: ["1,000 ppm", "15 ppm", "100 ppm", "Any amount"],
+      correctIndex: 1,
+      explanation: "The oil content meter must stop discharge above 15 ppm, and other conditions must also be met."
+    },
+    {
+      question: "Where are oil transfers, discharges, and sludge disposals recorded?",
+      options: ["The Oil Record Book", "Deck log only", "Nowhere", "A personal notebook"],
+      correctIndex: 0,
+      explanation: "The Oil Record Book is the required record under MARPOL Annex I."
+    }
+  ]}
+/>

@@ -1,0 +1,166 @@
+---
+title: "Misalignment and Soft Foot"
+description: "Understand offset and angular misalignment in both vertical and horizontal planes, why misalignment destroys bearings and seals, and how to find and correct soft foot before any alignment."
+module: 5
+moduleTitle: "Shaft Alignment"
+lesson: 1
+duration: "25 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Why Alignment Pays
+
+Misalignment is one of the leading causes of rotating equipment failure. When two coupled shafts don't share a common centerline, every revolution flexes the coupling and loads the bearings and seals with extra forces. Results include:
+
+- **Shorter bearing life** (remember: life drops with the cube of load)
+- **Seal leaks** on pumps and gearboxes
+- **Coupling wear**, heat, and failure
+- **Higher vibration** and noise
+- **Wasted energy**
+- **Cracked shafts** from cyclic bending
+
+---
+
+## The Two Kinds of Misalignment
+
+<svg viewBox="0 0 680 230" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Two kinds of shaft misalignment. Top: offset misalignment, where the motor shaft and pump shaft are parallel but their centerlines are displaced from each other. Bottom: angular misalignment, where the shaft centerlines meet at an angle at the coupling.">
+  <g font-family="system-ui, -apple-system, sans-serif" font-size="13">
+    <text x="20" y="30" fill="#0f172a" font-weight="700">Offset (parallel)</text>
+    <rect x="80" y="45" width="140" height="50" rx="6" fill="#94a3b8"/>
+    <rect x="220" y="64" width="110" height="12" fill="#475569"/>
+    <rect x="350" y="74" width="110" height="12" fill="#475569"/>
+    <rect x="460" y="55" width="140" height="50" rx="6" fill="#cbd5e1"/>
+    <line x1="60" y1="70" x2="350" y2="70" stroke="#dc2626" stroke-dasharray="5 4"/>
+    <line x1="330" y1="80" x2="620" y2="80" stroke="#4d7c0f" stroke-dasharray="5 4"/>
+    <text x="150" y="75" text-anchor="middle" fill="#0f172a">motor</text>
+    <text x="530" y="85" text-anchor="middle" fill="#0f172a">pump</text>
+    <text x="340" y="112" text-anchor="middle" fill="#475569">centerlines parallel but displaced</text>
+    <text x="20" y="150" fill="#0f172a" font-weight="700">Angular</text>
+    <rect x="80" y="165" width="140" height="50" rx="6" fill="#94a3b8"/>
+    <rect x="220" y="184" width="120" height="12" fill="#475569"/>
+    <g transform="rotate(-6 340 190)">
+      <rect x="340" y="184" width="120" height="12" fill="#475569"/>
+      <rect x="460" y="165" width="140" height="50" rx="6" fill="#cbd5e1"/>
+      <line x1="330" y1="190" x2="620" y2="190" stroke="#4d7c0f" stroke-dasharray="5 4"/>
+      <text x="530" y="195" text-anchor="middle" fill="#0f172a">pump</text>
+    </g>
+    <line x1="60" y1="190" x2="360" y2="190" stroke="#dc2626" stroke-dasharray="5 4"/>
+    <text x="150" y="195" text-anchor="middle" fill="#0f172a">motor</text>
+    <text x="345" y="225" text-anchor="middle" fill="#475569">centerlines meet at an angle</text>
+  </g>
+</svg>
+
+- **Offset (parallel) misalignment:** centerlines are parallel but displaced. Measured in **thousandths of an inch (mils)** or millimeters.
+- **Angular misalignment:** centerlines meet at an angle. Usually expressed as a **slope**, such as mils per inch (or mm per 100 mm).
+
+Real machines almost always have **both**, and in **both planes**:
+
+- **Vertical plane:** corrected by adding or removing **shims** under the feet
+- **Horizontal plane:** corrected by **moving the machine sideways**
+
+So an alignment job corrects four values: vertical offset, vertical angle, horizontal offset, and horizontal angle.
+
+### Which Machine Moves?
+
+One machine is the **stationary** reference (often the pump or gearbox, which is piped or fixed). The other is the **movable** machine, usually the motor.
+
+---
+
+## Soft Foot: Fix It First
+
+**Soft foot** is when one or more machine feet don't sit flat on the base. Tightening the hold-down bolt **distorts the machine frame**, which can bend the shaft, pinch bearings, and make alignment readings jump around every time you loosen a bolt.
+
+### Checking for Soft Foot
+
+1. With all feet bolted down, set a dial indicator (or use the laser system's soft-foot function) at one foot.
+2. **Loosen that one bolt** and watch how far the foot rises.
+3. Retighten, and repeat at each foot.
+4. A common acceptance limit is about **0.002 inch (2 mils)** of movement.
+
+### Types of Soft Foot
+
+| Type | What's happening | Fix |
+|---|---|---|
+| **Parallel** (short leg) | Foot is simply too low | Add shims under that foot |
+| **Angular / bent foot** | Foot or base is at an angle | Step shims, machine the foot, or correct the base |
+| **Induced** | Pipe strain or a bent frame pulls the machine | Fix the pipe supports or the frame |
+| **Squishy** | Too many shims, dirt, rust, or paint under the foot | Clean, and replace stacks with fewer, thicker shims |
+
+<ProcessFlow
+  label="Pre-alignment checklist: lock out, clean the base and feet, check for pipe strain, correct soft foot, check run-out, then begin rough alignment."
+  color="#4d7c0f"
+  steps={[
+    { title: 'Lock out', detail: 'Both machines' },
+    { title: 'Clean', detail: 'Feet, base, old shims' },
+    { title: 'Pipe strain', detail: 'Unbolt flanges; does it move?' },
+    { title: 'Soft foot', detail: 'Under ~2 mils at each foot' },
+    { title: 'Run-out', detail: 'Check bent shafts or hubs' },
+    { title: 'Rough align', detail: 'Straightedge, then precision' },
+  ]}
+/>
+
+<Pitfall title="The Shim Stack from History">
+
+**Common mistake:** finding eight rusty, mismatched shims under one foot and adding a ninth.
+
+Thick stacks of thin shims act like a spring, so readings won't repeat and soft foot returns. Pull the old stack, clean the base, and replace with **as few shims as possible** (a common guide is no more than three or four per foot), using clean pre-cut stainless shims.
+
+</Pitfall>
+
+---
+
+## Pipe Strain
+
+Pipe that doesn't line up with a pump's flanges can be forced into place, pulling the pump out of position. Check by monitoring the coupling with indicators while loosening the flange bolts. If the shaft moves more than a couple of mils, **fix the piping supports**, not the alignment.
+
+---
+
+## Key Takeaway
+
+Misalignment is **offset** and **angular**, in both **vertical** (shims) and **horizontal** (move sideways) planes. Before aligning, **clean**, check **pipe strain**, and fix **soft foot** to about **2 mils or less**. Use few, clean shims.
+
+<TryIt title="Soft Foot Check">
+
+You check a motor's four feet by loosening one bolt at a time and measure lift of:
+
+- Front left: 1 mil
+- Front right: 6 mils
+- Rear left: 1 mil
+- Rear right: 2 mils
+
+Which foot needs attention? *(Front right at 6 mils is well over the ~2 mil guideline.)* Next, use feeler gauges at the corners of that foot to tell if it's **parallel** (same gap all around, so add shims) or **angular** (wedge-shaped gap, so a step shim or a base correction is needed).
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "Misalignment in the vertical plane is usually corrected by:",
+      options: ["Moving the machine sideways", "Changing the coupling", "Adding or removing shims under the feet", "Tightening the belt"],
+      correctIndex: 2,
+      explanation: "Shims raise or lower the feet, adjusting vertical offset and angle."
+    },
+    {
+      question: "What is soft foot?",
+      options: ["A rubber vibration mount", "A worn coupling", "A machine foot that doesn't sit flat, so tightening its bolt distorts the frame", "Loose belts"],
+      correctIndex: 2,
+      explanation: "Soft foot distorts the frame and bearings when bolts are tightened, and must be corrected before alignment."
+    },
+    {
+      question: "A common acceptance limit for soft foot is about:",
+      options: ["0.002 in (2 mils)", "0.020 in", "1/8 in", "Any amount is fine"],
+      correctIndex: 0,
+      explanation: "Around 2 mils of movement at a foot is a widely used limit."
+    },
+    {
+      question: "When loosening a pump's flange bolts, the shaft moves 10 mils. What should you do?",
+      options: ["Align around it", "Fix the pipe supports to remove pipe strain", "Add more shims", "Ignore it"],
+      correctIndex: 1,
+      explanation: "That movement shows pipe strain pulling the pump. Fix the piping before aligning."
+    }
+  ]}
+/>

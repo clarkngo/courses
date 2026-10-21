@@ -1,0 +1,134 @@
+---
+title: "Welding Fumes, PPE, and Shipyard Hazards"
+description: "Control welding fume exposures including hexavalent chromium, manganese, zinc, and lead; choose proper PPE and lens shades; and manage electric shock, falls, staging, noise, and heavy lifts in a shipyard."
+module: 5
+moduleTitle: "Shipyard Safety"
+lesson: 2
+duration: "25 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Welding Fumes
+
+Welding fume is a mix of tiny metal oxide particles and gases. What's in it depends on the **base metal, filler, coatings, and process**.
+
+| Source | Hazard |
+|---|---|
+| **Stainless steel** (and some consumables) | **Hexavalent chromium**, a lung carcinogen. OSHA has a specific chromium (VI) standard for shipyards (**1915.1026**). |
+| **Manganese** (in most steel fillers) | Nervous system effects with overexposure |
+| **Galvanized (zinc-coated) steel** | Zinc oxide fume: **metal fume fever** (flu-like symptoms) |
+| **Old paint** on ships | **Lead** (OSHA lead standard for shipyards, **1915.1025**), and other toxic coatings |
+| **Gases** | Ozone (from GMAW/GTAW arcs), carbon monoxide (especially CO₂-shielded processes in confined spaces), nitrogen oxides |
+| **Shielding gases** | Argon and CO₂ displace oxygen in low or enclosed spaces |
+
+### Controls, in Order
+
+1. **Remove coatings** from the weld area before welding where possible (using safe methods for the coating).
+2. **Local exhaust ventilation**: fume extractors and fume-extracting guns placed near the arc.
+3. **General ventilation** in enclosed spaces (blowers, exhaust trunks).
+4. **Respiratory protection** where ventilation isn't enough, under a respiratory protection program with fit testing.
+5. **Position your head** out of the fume plume.
+
+---
+
+## Personal Protective Equipment
+
+| Hazard | PPE |
+|---|---|
+| Arc radiation (UV, IR), spatter | Welding helmet with the correct **shade lens**, safety glasses underneath |
+| Burns | **Flame-resistant** clothing (wool or treated cotton; avoid synthetics that melt), leather gloves, jacket or sleeves, boots |
+| Cutting and grinding | Face shield over safety glasses, hearing protection |
+| Noise | Earplugs or muffs; arc gouging and grinding are very loud |
+| Fumes | Respirator when required |
+| Falling objects | Hard hat (under or compatible with the welding helmet) |
+
+### Lens Shade
+
+Use the shade recommended for your process and amperage (references such as **ANSI Z49.1** and lens makers publish charts). As a rough guide, many arc welding tasks use roughly **shade 10 to 13**, with higher shades at higher currents. Arc gouging and high-amperage work need darker shades. Auto-darkening helmets must be the right shade and kept working.
+
+Protect **bystanders** with welding screens, because arc flash ("welder's flash") burns the eyes of anyone nearby.
+
+---
+
+## Electric Shock
+
+Ships are steel, often **wet**, and frequently **cramped**, a perfect setup for electric shock.
+
+- Inspect leads and **electrode holders** for damaged insulation.
+- Keep **dry gloves** and clothing; don't lie on wet steel without insulation.
+- Make a solid **work lead connection close to the weld**, so current doesn't wander through the hull, piping, bearings, or other machinery (stray current can damage equipment).
+- In tight or wet locations, use machines with **voltage-reducing devices** where required.
+- Never change electrodes with bare or wet hands.
+
+---
+
+## Falls, Staging, and Openings
+
+Hull work means **staging (scaffolds)**, open hatches, tank openings, and work at height on the dock floor or ship's side.
+
+- Use **guardrails** or **fall protection** where required.
+- Inspect staging before use; a competent person signs off on erection and changes.
+- **Cover or guard** deck openings and manholes.
+- Keep **housekeeping** tight: leads, hoses, and scrap are trip hazards.
+
+---
+
+## Heavy Lifts and Moving Loads
+
+Plates, shapes, and entire blocks move overhead by crane every day. Stay out from **under suspended loads**, follow the signal person, and use **tag lines** (see the Port and Crane Operations course for rigging and signals).
+
+<Pitfall title="Welding Galvanized Without Ventilation">
+
+**Common mistake:** welding galvanized railings or brackets in a small compartment "just for a few minutes."
+
+Zinc fume causes **metal fume fever**: chills, fever, and nausea a few hours later. Remove the galvanizing from the weld area where allowed, use **local exhaust**, and wear a respirator when needed. If you feel sick after welding galvanized steel, report it.
+
+</Pitfall>
+
+---
+
+## Key Takeaway
+
+Fumes vary by metal and coating: **hexavalent chromium** from stainless, **manganese** from steel fillers, **zinc** from galvanizing, **lead** from old paint. Control them with **coating removal, local exhaust, ventilation, and respirators**. Wear **FR clothing**, the right **lens shade**, and protect bystanders. Prevent **shock** on wet steel, guard **falls and openings**, and stay clear of **suspended loads**.
+
+<TryIt title="Hazard Hunt">
+
+For each task, list the main hazards and controls:
+
+1. Stick welding inside a wet double-bottom tank. *(Shock, fumes, oxygen-deficiency or confined-space hazards, heat. Controls: tested space, ventilation, dry insulating mats, intact leads, voltage-reducing device, attendant.)*
+2. Cutting old painted steel during a ship repair. *(Lead and toxic paint fumes, fire. Controls: test the paint, strip it, exhaust, respirator, fire watch.)*
+3. TIG welding stainless pipe. *(Hexavalent chromium, UV, ozone. Controls: local exhaust, respirator if needed, correct shade, covered skin.)*
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "Welding stainless steel can produce which carcinogenic fume?",
+      options: ["Zinc oxide", "Iron oxide only", "Hexavalent chromium", "Argon"],
+      correctIndex: 2,
+      explanation: "Stainless and some consumables produce hexavalent chromium, regulated for shipyards under 1915.1026."
+    },
+    {
+      question: "What causes metal fume fever?",
+      options: ["Welding aluminum", "Too much amperage", "Inhaling zinc oxide fume, often from galvanized steel", "Cold weather"],
+      correctIndex: 2,
+      explanation: "Zinc fume from galvanizing causes flu-like metal fume fever."
+    },
+    {
+      question: "Why place the work lead close to the weld?",
+      options: ["To save cable", "To increase voltage", "It doesn't matter", "So current doesn't wander through the hull, piping, or machinery"],
+      correctIndex: 3,
+      explanation: "A close, solid work connection prevents stray current and equipment damage."
+    },
+    {
+      question: "Which clothing is best for welding?",
+      options: ["Polyester", "Nylon", "Shorts", "Flame-resistant or wool clothing"],
+      correctIndex: 3,
+      explanation: "Synthetics melt and stick to skin. FR-treated cotton or wool resists burning."
+    }
+  ]}
+/>

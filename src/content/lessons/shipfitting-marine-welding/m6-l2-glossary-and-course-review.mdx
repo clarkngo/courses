@@ -1,0 +1,114 @@
+---
+title: "Glossary and Course Review"
+description: "Review the vocabulary of shipfitting and marine welding, follow a structural joint from drawing to inspection, and test yourself across the whole course."
+module: 6
+moduleTitle: "Careers and Review"
+lesson: 2
+duration: "30 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## From Drawing to Accepted Weld
+
+<ProcessFlow
+  label="The path of a structural joint through this course: read the drawing and welding symbol, check materials, lay out and fit, confirm the space is safe for hot work, weld per the WPS with distortion control, then inspect and accept."
+  color="#9a3412"
+  loop="Rejected welds are repaired under an approved procedure and re-inspected."
+  steps={[
+    { badge: 'M1', title: 'Drawing', detail: 'Location, member, weld symbol' },
+    { badge: 'M4', title: 'Material', detail: 'Grade, heat number, preheat' },
+    { badge: 'M2', title: 'Fit-up', detail: 'Layout, gap, alignment, tacks' },
+    { badge: 'M5', title: 'Safe to burn', detail: 'Testing, permit, fire watch' },
+    { badge: 'M3', title: 'Weld', detail: 'WPS, sequence, distortion control' },
+    { badge: 'M4', title: 'Inspect', detail: 'VT, then NDT as required' },
+  ]}
+/>
+
+---
+
+## Glossary
+
+| Term | Meaning |
+|---|---|
+| **ABS / DNV / LR** | Classification societies that set ship construction rules |
+| **AH36 / DH36 / EH36** | Higher-strength ship steel grades with increasing toughness |
+| **Baseline (BL)** | Height reference, usually bottom of keel |
+| **Block** | Prefabricated hull module |
+| **Bulkhead** | Wall dividing the hull; may be watertight |
+| **Ceramic backing** | Removable root support for one-sided full-penetration welds |
+| **Dogs and wedges** | Fitting aids to pull plates into alignment |
+| **Fairing** | Making plates and members smooth and true |
+| **FCAW / SAW / SMAW / GMAW / GTAW** | Flux-cored / submerged arc / stick / MIG / TIG |
+| **Fire watch** | Trained person watching for fires during and after hot work |
+| **Frame number** | Fore-and-aft station location |
+| **Hogging / sagging** | Hull bending with the middle up / middle down |
+| **Longitudinal** | Fore-and-aft stiffener |
+| **Marine chemist** | Certified person who tests and certifies spaces for entry and hot work |
+| **Molded line** | Theoretical reference surface for dimensions |
+| **NDT (VT, MT, PT, UT, RT)** | Visual, magnetic particle, penetrant, ultrasonic, radiographic testing |
+| **PQR / WPS / WPQ** | Procedure qualification record / welding procedure specification / welder qualification |
+| **Preheat** | Heating base metal before welding to prevent cracking |
+| **Strongback** | Stiff beam tacked across a joint to hold alignment |
+| **Throat** | Shortest distance from root to weld face (≈ 0.707 × leg for fillets) |
+| **Transition joint** | Explosion-bonded steel/aluminum strip for joining dissimilar metals |
+
+---
+
+<TryIt title="Capstone: Joint Package">
+
+Pick one structural joint (for example, a stiffener-to-deck fillet weld, or a shell plate butt). Prepare a one-page package:
+
+1. **Location:** frame number, distance off centerline, height above baseline
+2. **Members and materials:** plate thickness, steel grade (e.g., AH36), stiffener size
+3. **Welding symbol:** draw it, and explain side, size, length, and pitch
+4. **Fit-up requirements:** gap, bevel, alignment tolerances
+5. **Process and WPS:** process, filler, position, preheat
+6. **Distortion plan:** sequence and technique
+7. **Safety:** hot work testing, fire watch, ventilation, PPE
+8. **Inspection:** VT plus any required NDT and acceptance criteria
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "Which framing system do large tankers and bulk carriers typically use?",
+      options: ["Longitudinal (or combined)", "Transverse only", "No framing", "Wood"],
+      correctIndex: 0,
+      explanation: "Longitudinal framing resists hull bending, which dominates on long ships."
+    },
+    {
+      question: "A fillet weld symbol is above the reference line with '3/8' on the left. What does it mean?",
+      options: ["3/8-inch fillet on the arrow side", "3/8-inch groove weld", "3 welds, 8 inches long", "3/8-inch continuous fillet on the other side"],
+      correctIndex: 3,
+      explanation: "Above the line = other side; size on the left; no length means continuous."
+    },
+    {
+      question: "Which process is the common 'workhorse' for structural steel welding in shipyards?",
+      options: ["GTAW", "Oxy-fuel welding", "Brazing", "FCAW"],
+      correctIndex: 3,
+      explanation: "Flux-cored arc welding is fast, all-position, and tolerant of yard conditions."
+    },
+    {
+      question: "How do you prevent hydrogen cracking in thick higher-strength steel?",
+      options: ["Weld faster", "Low-hydrogen consumables stored dry, proper preheat, and clean, dry joints", "Use more amperage", "Skip inspection"],
+      correctIndex: 1,
+      explanation: "Hydrogen control and preheat are the main defenses against cold cracking."
+    },
+    {
+      question: "Which NDT method would you use to check an aluminum fillet weld for surface cracks?",
+      options: ["MT", "PT", "Hardness test", "None"],
+      correctIndex: 1,
+      explanation: "Penetrant testing works on non-magnetic metals like aluminum."
+    },
+    {
+      question: "Before hot work on a bulkhead next to a fuel tank, what is required?",
+      options: ["Testing and certification of the tank and adjacent spaces, a permit, and a fire watch", "Nothing", "Only a fire extinguisher", "Just a helmet"],
+      correctIndex: 0,
+      explanation: "Spaces that held flammables and adjacent spaces need testing and certification, plus permits and fire watch."
+    }
+  ]}
+/>

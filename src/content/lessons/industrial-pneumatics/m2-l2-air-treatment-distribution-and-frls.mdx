@@ -1,0 +1,183 @@
+---
+title: "Air Treatment, Distribution, and FRLs"
+description: "Learn how receivers, dryers, filters, and drains clean the air, how pressure dew point and ISO 8573-1 define air quality, how to lay out piping, and how to set up a filter-regulator-lubricator at the machine."
+module: 2
+moduleTitle: "Generating and Treating Air"
+lesson: 2
+duration: "25 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Dirty Air Kills Components
+
+Air leaving a compressor carries **water, oil, and particles**. Inside valves and cylinders those turn into rust, sludge, swollen seals, and sticking spools. Clean, dry air is the cheapest maintenance you can buy.
+
+---
+
+## Receivers: The Plant's Air Battery
+
+A **receiver** (air tank) stores compressed air. It:
+
+- Covers short demand spikes without starting another compressor
+- Reduces compressor cycling
+- Lets the air cool, so more water drops out
+- Gives the dryer a steadier flow
+
+A **wet receiver** sits before the dryer; a **dry receiver** sits after it. Many plants use both.
+
+Every receiver is a pressure vessel. It needs a properly sized **pressure relief valve**, a working **drain**, and periodic inspection as required by your jurisdiction.
+
+---
+
+## Dryers and Pressure Dew Point
+
+**Pressure dew point (PDP)** is the temperature at which water condenses out of air **at line pressure**. If the pipe ever gets colder than the PDP, you get liquid water in the line.
+
+| Dryer type | Typical PDP | Notes |
+|---|---|---|
+| **Refrigerated** | About 35–40 °F (≈ 2–4 °C) | Most common; fine for indoor plant air |
+| **Desiccant (regenerative)** | −40 °F (−40 °C) or lower | For outdoor lines, freezing areas, critical instruments; purge air costs energy |
+| **Membrane** | Varies | Small point-of-use applications |
+
+### ISO 8573-1 Air Quality Classes
+
+The standard **ISO 8573-1** describes air purity as three numbers: **particles : water : oil**. For example, **Class 1.4.1** means class 1 for particles, class 4 (PDP of +3 °C) for water, and class 1 for oil. Lower numbers mean cleaner air. Equipment makers often specify the class their components need.
+
+---
+
+## Filters and Drains
+
+| Filter | Removes | Typical location |
+|---|---|---|
+| **Particulate / general-purpose** | Dirt, rust, bulk water | After the receiver, before the dryer, at the machine |
+| **Coalescing** | Fine oil aerosols and water droplets | After the dryer, before sensitive equipment |
+| **Activated carbon** | Oil vapor and odors | Food, breathing air prep, critical processes |
+
+Filters show their condition through **differential pressure** (ΔP), the drop across the element. Change elements on ΔP or on schedule, whichever comes first.
+
+**Drains** remove collected water:
+
+- **Manual** — someone has to remember
+- **Timed solenoid** — opens on a timer; can waste air if set too long
+- **Zero-loss (level-sensing)** — opens only when water is present; best practice
+
+---
+
+## Distribution Piping
+
+Good piping delivers air with little pressure loss and no water.
+
+- **Loop headers** feed machines from two directions and reduce pressure drop.
+- **Slope** main lines about 1 inch per 10 feet toward drain legs (a common guideline).
+- **Take drops off the top** of the header, with a gooseneck, so water stays in the main line.
+- **Drain legs** at low points collect water.
+- **Size generously.** Undersized pipe is a permanent energy tax.
+
+<svg viewBox="0 0 680 220" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Correct way to take a drop off a compressed air header. The main header slopes slightly downward in the direction of flow. A drop line leaves from the top of the header in a gooseneck, then runs down to a ball valve and an FRL at the machine. A drain leg at the low end of the header collects water and has a drain at the bottom.">
+  <g font-family="system-ui, -apple-system, sans-serif" font-size="13" fill="none" stroke-width="10" stroke-linecap="round">
+    <path d="M40 60 L620 85" stroke="#94a3b8"/>
+    <path d="M320 72 L320 40 L380 40 L380 170" stroke="#94a3b8"/>
+    <path d="M620 85 L620 180" stroke="#94a3b8"/>
+  </g>
+  <g font-family="system-ui, -apple-system, sans-serif" font-size="13">
+    <rect x="606" y="180" width="28" height="18" fill="#0369a1"/>
+    <rect x="365" y="170" width="30" height="34" rx="4" fill="#0369a1"/>
+    <text x="400" y="192" fill="#0369a1" font-weight="700">FRL at machine</text>
+    <text x="350" y="28" text-anchor="middle" fill="#0f172a" font-weight="700">take drop off the TOP</text>
+    <text x="40" y="45" fill="#0f172a" font-weight="700">header</text>
+    <text x="160" y="105" fill="#475569">slope toward drain →</text>
+    <text x="600" y="150" text-anchor="end" fill="#0f172a" font-weight="700">drain leg</text>
+    <text x="600" y="210" text-anchor="end" fill="#0369a1">auto drain</text>
+  </g>
+</svg>
+
+---
+
+## The FRL: Conditioning at the Machine
+
+Each machine gets a final conditioning unit, usually in this order:
+
+<ProcessFlow
+  label="FRL assembly order at the machine: shutoff and lockout valve, filter, regulator, optional lubricator, soft-start dump valve, then the machine."
+  color="#0369a1"
+  steps={[
+    { title: 'Lockout valve', detail: 'Isolates and exhausts air' },
+    { title: 'Filter', detail: 'Last-chance water and dirt removal' },
+    { title: 'Regulator', detail: 'Sets machine pressure' },
+    { title: 'Lubricator', detail: 'Only if components require it' },
+    { title: 'Soft-start', detail: 'Ramps pressure up safely' },
+    { title: 'Machine', detail: 'Valves and actuators' },
+  ]}
+/>
+
+### Setting a Regulator
+
+1. Back the knob out (counter-clockwise) to zero output.
+2. Turn it in slowly until the gauge reads the setpoint.
+3. Always approach the setpoint **from below** for a repeatable setting.
+4. Lock the knob if the regulator has a lock.
+
+Set the **lowest pressure that does the job reliably**. Many machines run fine at 60–80 psi off a 100 psi header.
+
+### To Lubricate or Not
+
+Most modern valves and cylinders come **pre-lubricated for life** and don't need a lubricator. Once you **start** adding oil, though, the original grease washes out, and you have to **keep** oiling. Follow the component maker's guidance.
+
+<Pitfall title="The Empty, Forgotten Lubricator">
+
+**Common mistake:** a lubricator was installed years ago, then nobody refilled it.
+
+The factory grease washed out long ago, and now the valves run dry. Expect sticky spools and fast seal wear. Either keep it filled with the specified oil and verify drip rate, or replace the affected components and remove the lubricator. Don't half-do it.
+
+</Pitfall>
+
+---
+
+## Key Takeaway
+
+Receivers store air and drop out water. Dryers set the **pressure dew point**. Filters are judged by **ΔP**. Take drops **off the top** and slope toward drains. At the machine, the **FRL** filters and sets the lowest workable pressure. Don't start lubricating unless you'll keep it up.
+
+<TryIt title="Walk an Air Line">
+
+Follow one drop in your facility from the header to a machine. Check:
+
+- Does the drop come off the top of the header?
+- Is there a lockout valve that **exhausts** downstream air?
+- What does the regulator read, and is that the lowest workable setting?
+- Is the filter bowl full of water? Does the drain work?
+- Is there a lubricator, and is anyone filling it?
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "What does pressure dew point describe?",
+      options: ["The pressure at which a receiver relieves", "The compressor's discharge temperature", "The oil content of the air", "The temperature at which water condenses at line pressure"],
+      correctIndex: 3,
+      explanation: "If any part of the system drops below the pressure dew point, liquid water forms in the line."
+    },
+    {
+      question: "Why are drops taken off the top of the header?",
+      options: ["So water running along the bottom of the main doesn't flow into the machine", "It's cheaper", "To increase pressure", "Code requires it for all gases"],
+      correctIndex: 0,
+      explanation: "Water collects in the bottom of the header. A gooseneck from the top keeps it out of the drop."
+    },
+    {
+      question: "How do you know when to change a filter element?",
+      options: ["When the differential pressure across it reaches the change point, or on schedule", "When it changes color", "Only after a failure", "Every time the compressor starts"],
+      correctIndex: 0,
+      explanation: "Rising ΔP shows the element is loading and restricting flow."
+    },
+    {
+      question: "Why shouldn't you add a lubricator to pre-lubricated components casually?",
+      options: ["Oil is flammable", "Once started, the oil washes out factory grease and you must keep lubricating", "Lubricators raise pressure", "It voids OSHA compliance"],
+      correctIndex: 1,
+      explanation: "Added oil displaces the factory lubricant, so the components become dependent on the lubricator."
+    }
+  ]}
+/>

@@ -1,0 +1,175 @@
+---
+title: "Finding and Fixing Air Leaks"
+description: "Learn why leaks are the biggest waste in most air systems, estimate leak cost, measure plant leakage with a load/unload test, find leaks with ultrasound, and run a leak-tag program that actually sticks."
+module: 5
+moduleTitle: "Troubleshooting and Efficiency"
+lesson: 1
+duration: "25 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## The Silent Money Drain
+
+Leaks are usually the **single largest waste** in a compressed air system. U.S. Department of Energy guidance notes that a typical plant that hasn't been well maintained can lose **20–30% of its compressor output** to leaks. A well-managed system can keep leakage closer to **10% or less**.
+
+Leaks also cause:
+
+- **Pressure drop** at machines, so someone raises the header pressure (more waste)
+- **Extra compressor run time** and earlier overhauls
+- **Added compressors** the plant didn't really need
+
+---
+
+## How Much Does a Leak Cost?
+
+Leak flow depends on hole size and pressure. Approximate flows at **100 psig** through a well-rounded orifice (sharp-edged holes leak somewhat less):
+
+| Hole diameter | Approx. leak flow |
+|---|---|
+| 1/32 in | ~1.6 scfm |
+| 1/16 in | ~6.5 scfm |
+| 1/8 in | ~26 scfm |
+| 1/4 in | ~104 scfm |
+
+Notice the pattern: **double the hole diameter, and flow goes up about four times**, because flow scales with area.
+
+### Estimating Annual Cost
+
+A rough way to estimate:
+
+**Annual cost ≈ leak scfm × kW per scfm × hours per year × $ per kWh**
+
+Many rotary screw systems use roughly **0.2 kW per scfm** delivered (check your own system's specific power).
+
+A single **1/8-inch** leak running all year at **$0.10/kWh**:
+
+26 scfm × 0.2 kW × 8,760 h × $0.10 ≈ **$4,500 per year**
+
+One leak the size of a pencil lead, costing as much as a used car over a few years.
+
+---
+
+## Measuring Total Leakage: The Load/Unload Test
+
+You can measure plant-wide leakage when production is **off** (all air-using equipment idle, but air still supplied):
+
+1. Run the compressors with production stopped.
+2. Time several cycles of **loaded time (T)** and **unloaded time (t)**.
+3. Calculate: **Leakage % = T ÷ (T + t) × 100**
+
+If the compressor runs loaded 40 seconds and unloaded 60 seconds, leakage ≈ 40 ÷ 100 = **40% of that compressor's capacity**, all going to leaks.
+
+For VSD or multiple-compressor systems, a **bleed-down test** on a known receiver volume or a flow meter gives a similar answer.
+
+---
+
+## Where Leaks Hide
+
+The most common leak points are at the **demand side**, at the machines:
+
+- **Quick-disconnect couplings** and worn plugs
+- **Push-to-connect fittings** with cut or poorly inserted tubing
+- **FRLs**: bowl seals, drains stuck open, regulator vents
+- **Hoses** cracked from age, heat, or abrasion
+- **Valve and cylinder seals**, especially exhaust ports that hiss when the valve is idle
+- **Thread sealant** that failed on pipe joints
+- **Condensate drains** that are timed or stuck open
+- **Open blow-offs** and abandoned equipment still connected to air
+
+---
+
+## Finding Leaks
+
+| Method | Best for |
+|---|---|
+| **Listening** | Only large leaks, and only in quiet areas |
+| **Soapy water** | Pinpointing a suspected joint |
+| **Ultrasonic leak detector** | Fast surveys in a running, noisy plant; the turbulent flow emits high-frequency sound that the detector converts to audible tones |
+| **Acoustic imaging camera** | Large surveys; shows leaks overlaid on a picture |
+
+---
+
+## A Leak Program That Sticks
+
+Finding leaks is the easy part. The hard part is fixing them **and keeping them fixed**.
+
+<ProcessFlow
+  label="A leak management program loop: measure the baseline leakage, survey with ultrasound, tag each leak, log and prioritize, repair, verify the fix, then re-measure."
+  color="#0369a1"
+  loop="Repeat the survey every few months. Leaks come back as equipment ages."
+  steps={[
+    { title: 'Baseline', detail: 'Load/unload or flow test' },
+    { title: 'Survey', detail: 'Ultrasonic sweep' },
+    { title: 'Tag', detail: 'Numbered tag on each leak' },
+    { title: 'Log', detail: 'Location, size, cost, part needed' },
+    { title: 'Repair', detail: 'Biggest savings first' },
+    { title: 'Verify', detail: 'Re-check and remove tag' },
+  ]}
+/>
+
+<Pitfall title="Tagging Without Repairing">
+
+**Common mistake:** a contractor tags 300 leaks, hands over a report, and the tags fade on the machines for a year.
+
+The savings only come from **repairs**. Assign repairs as work orders with parts pre-staged, fix many leaks during scheduled downtime, and report the results (scfm and dollars saved) so the program keeps its funding.
+
+</Pitfall>
+
+---
+
+## Other Easy Efficiency Wins
+
+- **Lower the header pressure** to the lowest the plant actually needs
+- **Shut off air** to idle machines and lines with zone valves
+- **Replace open blow-offs** with engineered air nozzles or blowers
+- **Replace timed drains** with zero-loss drains
+- **Stop inappropriate uses**, such as cooling people, sweeping floors, or open-tube sparging
+
+---
+
+## Key Takeaway
+
+Leaks commonly waste **20–30%** of output. Doubling a hole's diameter roughly **quadruples** the leak. Measure leakage with a **load/unload** test, find leaks with **ultrasound**, and drive a **tag → repair → verify** loop. Repairs, not tags, save money.
+
+<TryIt title="Price Your Leaks">
+
+A survey finds **12 leaks** totaling an estimated **48 scfm**. The plant runs 6,000 hours per year, the compressor uses **0.21 kW per scfm**, and power costs **$0.12/kWh**.
+
+Annual cost ≈ 48 × 0.21 × 6,000 × 0.12 ≈ **$7,260 per year**.
+
+If the parts and labor to fix them cost $1,200, the payback is about **2 months**.
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "If a leak's hole diameter doubles, the leak flow roughly:",
+      options: ["Stays the same", "Doubles", "Halves", "Quadruples"],
+      correctIndex: 3,
+      explanation: "Flow scales with hole area, and area goes up with the square of the diameter."
+    },
+    {
+      question: "In a load/unload test, a compressor runs loaded 30 s and unloaded 90 s with production off. What is the leakage?",
+      options: ["33% of capacity", "75% of capacity", "25% of capacity", "30% of capacity"],
+      correctIndex: 2,
+      explanation: "Leakage = T ÷ (T + t) = 30 ÷ 120 = 25% of that compressor's capacity."
+    },
+    {
+      question: "Why do ultrasonic detectors work well in a noisy plant?",
+      options: ["They see heat", "Leaks emit high-frequency sound above most plant noise, which the detector picks up", "They measure pressure", "They use soap"],
+      correctIndex: 1,
+      explanation: "Turbulent airflow through a leak produces ultrasound that the detector isolates and converts to audible tones."
+    },
+    {
+      question: "What actually produces savings in a leak program?",
+      options: ["Repairing and verifying leaks", "Tagging leaks", "Writing the report", "Buying a detector"],
+      correctIndex: 0,
+      explanation: "Savings only come when leaks are repaired. Tags and reports just identify them."
+    }
+  ]}
+/>

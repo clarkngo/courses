@@ -1,0 +1,145 @@
+---
+title: "The Fuel System: Tank to Injector"
+description: "Follow fuel from bunkering through storage, settling, purification, filtration, and injection. Compare marine fuel grades and MARPOL sulfur limits, and see how mechanical and common-rail injection deliver fuel at high pressure."
+module: 2
+moduleTitle: "Fuel"
+lesson: 1
+duration: "30 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Clean Fuel, Reliable Engine
+
+Injection systems have clearances measured in **microns**. Water, dirt, and microbial sludge in fuel cause worn injectors, stuck pumps, poor combustion, and engine stops at the worst moment. Most of the fuel system exists to make fuel **clean, dry, and at the right temperature and pressure**.
+
+<ProcessFlow
+  label="Marine fuel path: bunkering into storage tanks, transfer to a settling tank where water drops out, purification in a centrifugal separator, a service or day tank, filters, then the injection pumps or common rail and injectors."
+  color="#1e3a8a"
+  steps={[
+    { title: 'Bunker', detail: 'Fuel loaded; sample taken' },
+    { title: 'Storage tanks', detail: 'Double bottom or wing tanks' },
+    { title: 'Settling tank', detail: 'Water and sediment drop out' },
+    { title: 'Separator', detail: 'Centrifuge removes water and solids' },
+    { title: 'Service / day tank', detail: 'Clean fuel ready to burn' },
+    { title: 'Filters', detail: 'Primary and secondary' },
+    { title: 'Injection', detail: 'Pumps / common rail → injectors' },
+  ]}
+/>
+
+On smaller vessels, the path is shorter: tanks, a **primary filter/water separator** (often a spin-on or bowl type), the engine's lift pump, a **secondary filter**, and the injection system.
+
+---
+
+## Marine Fuel Grades
+
+| Fuel | Description | Typical users |
+|---|---|---|
+| **MGO (marine gas oil)** | Distillate, similar to diesel; clean and easy to handle | Small and medium vessels; large ships in emission control areas |
+| **MDO (marine diesel oil)** | Distillate with some heavier components | Medium-speed engines |
+| **VLSFO** | Very low sulfur fuel oil (≤0.50% sulfur), often blended | Large ships since 2020 |
+| **HFO (heavy fuel oil)** | Residual fuel, very viscous; must be **heated** to pump and inject | Large ships with exhaust gas scrubbers |
+| **LNG, methanol, others** | Alternative fuels in dual-fuel engines | Growing in newer vessels |
+
+### MARPOL Annex VI Sulfur Limits
+
+International rules under **MARPOL Annex VI** cap fuel sulfur content:
+
+- **0.50%** globally (since **January 1, 2020**)
+- **0.10%** inside **Emission Control Areas (ECAs)**, which include the **North American ECA** along U.S. and Canadian coasts
+
+Ships can comply by burning compliant fuel or by using an approved equivalent such as an **exhaust gas cleaning system (scrubber)** with higher-sulfur fuel, where allowed.
+
+---
+
+## Bunkering
+
+Taking on fuel is a high-risk operation for spills and fires:
+
+- Follow the vessel's **bunkering procedure and checklist**; agree on rates and signals with the supplier.
+- Keep **scuppers plugged** and spill kits ready.
+- Monitor **tank levels** continuously; never leave the manifold unattended.
+- Take a **representative sample** (often by continuous drip sampler) for testing and records.
+- Get the **bunker delivery note (BDN)**, which states quantity, density, and sulfur content.
+
+---
+
+## Purifiers (Centrifugal Separators)
+
+Larger vessels use **centrifugal separators** that spin fuel at high speed. Heavier water and solids are flung outward and removed, while clean fuel flows from the center.
+
+- A **purifier** removes water and solids, with a water seal and gravity disc sized for the fuel's density.
+- A **clarifier** removes mainly solids.
+- Heating fuel to the right temperature (as specified for the fuel and separator) lowers viscosity and improves separation.
+
+---
+
+## Injection Systems
+
+### Mechanical (Jerk Pump) Injection
+
+A camshaft-driven **injection pump** for each cylinder (or a single in-line or rotary pump) pressurizes fuel and sends it to the injector at the right moment. The injector's spring-loaded needle opens at a set **pop pressure** and sprays fuel into the cylinder.
+
+### Common Rail
+
+A high-pressure pump keeps fuel in a shared **rail** at very high pressure (often above **1,000 bar** on modern engines). **Electronically controlled injectors** open exactly when and as long as the engine controller commands. Benefits include cleaner combustion, quieter running, and flexible injection timing, but the system is **extremely sensitive to dirty fuel and water**.
+
+### High-Pressure Fuel Safety
+
+Fuel lines between the pump and injector carry fuel at very high pressure. International rules (SOLAS) require high-pressure fuel lines on many vessels to be **jacketed (double-walled)** with leak detection, so a cracked line can't spray fuel onto a hot exhaust manifold.
+
+<Pitfall title="Feeling for a Leak">
+
+**Common mistake:** running a hand along a high-pressure fuel line to find a leak.
+
+A pinhole leak at injection pressure can inject fuel **through your skin** and into tissue. It's a medical emergency even if it looks minor. Find leaks with **cardboard or paper** held near the line, with the engine stopped whenever possible, and wear eye protection.
+
+</Pitfall>
+
+---
+
+## Key Takeaway
+
+Fuel flows **bunker → storage → settling → separator → service tank → filters → injection**. **MARPOL Annex VI** limits sulfur to **0.50%** globally and **0.10%** in ECAs. **Purifiers** spin out water and solids. **Mechanical** and **common-rail** systems inject at very high pressure, so keep fuel clean, use **jacketed lines**, and **never** feel for high-pressure leaks with your hand.
+
+<TryIt title="Read a Bunker Delivery Note">
+
+A BDN shows: product **MGO**, density **0.855 kg/L at 15 °C**, sulfur **0.08%**, quantity **40 m³**.
+
+1. Is this fuel compliant for use in the **North American ECA**? *(Yes. 0.08% is at or below 0.10%.)*
+2. Approximately how many metric tons were delivered? *(40,000 L × 0.855 kg/L ≈ 34,200 kg ≈ **34.2 tonnes**.)*
+3. What should you do with the sample? *(Label, seal, and retain per vessel procedures and regulations; send for analysis if required.)*
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "What is the MARPOL Annex VI fuel sulfur limit inside Emission Control Areas such as the North American ECA?",
+      options: ["0.10%", "3.50%", "0.50%", "No limit"],
+      correctIndex: 0,
+      explanation: "The ECA limit is 0.10% sulfur. The global limit has been 0.50% since 2020."
+    },
+    {
+      question: "What does a fuel purifier do?",
+      options: ["Adds additives", "Heats the engine", "Spins fuel to separate out water and solids", "Measures sulfur"],
+      correctIndex: 2,
+      explanation: "Centrifugal separators use high-speed rotation to fling heavier water and solids out of the fuel."
+    },
+    {
+      question: "Why are high-pressure fuel lines often jacketed (double-walled)?",
+      options: ["To contain leaks so fuel can't spray onto hot surfaces", "To keep fuel warm", "To reduce noise", "To increase pressure"],
+      correctIndex: 0,
+      explanation: "Fuel spray onto hot exhaust surfaces is a leading cause of engine room fires."
+    },
+    {
+      question: "What is the safe way to find a suspected high-pressure fuel leak?",
+      options: ["Hold cardboard or paper near the line, ideally with the engine stopped", "Run your hand along the line", "Use a flame", "Pressurize with air"],
+      correctIndex: 0,
+      explanation: "High-pressure leaks can inject fuel through skin. Use cardboard or paper and eye protection."
+    }
+  ]}
+/>

@@ -1,0 +1,137 @@
+---
+title: "The Propulsion Train and Engine Room Layout"
+description: "Follow power from the engine through the reduction gear, thrust bearing, shafting, and stern tube to the propeller. Compare fixed- and controllable-pitch propellers and azimuth drives, and map the auxiliary systems found in a typical engine room."
+module: 1
+moduleTitle: "Diesel and Propulsion Fundamentals"
+lesson: 2
+duration: "25 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## From Crankshaft to Propeller
+
+<svg viewBox="0 0 700 230" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Side view of a conventional propulsion train. Inside the hull, the main engine drives a reduction gear, which turns a shaft through a thrust bearing and line shaft bearings. The shaft passes through the stern tube, with a shaft seal at the inboard end, and turns the propeller outside the hull, ahead of the rudder.">
+  <g font-family="system-ui, -apple-system, sans-serif" font-size="12">
+    <path d="M20 40 L560 40 L640 120 L640 200 L20 200 Z" fill="#f1f5f9" stroke="#64748b" stroke-width="2"/>
+    <rect x="40" y="70" width="120" height="80" rx="6" fill="#1e3a8a"/>
+    <text x="100" y="114" text-anchor="middle" fill="#fff" font-weight="700">main engine</text>
+    <rect x="170" y="85" width="60" height="60" rx="4" fill="#3b82f6"/>
+    <text x="200" y="162" text-anchor="middle" fill="#0f172a" font-weight="700">reduction</text>
+    <text x="200" y="176" text-anchor="middle" fill="#0f172a" font-weight="700">gear</text>
+    <rect x="230" y="122" width="400" height="10" fill="#475569"/>
+    <rect x="248" y="112" width="24" height="30" fill="#ca8a04"/>
+    <text x="260" y="100" text-anchor="middle" fill="#ca8a04" font-weight="700">thrust</text>
+    <text x="260" y="86" text-anchor="middle" fill="#ca8a04" font-weight="700">bearing</text>
+    <rect x="350" y="132" width="20" height="20" fill="#94a3b8"/>
+    <rect x="450" y="132" width="20" height="20" fill="#94a3b8"/>
+    <text x="410" y="170" text-anchor="middle" fill="#475569">line shaft bearings</text>
+    <rect x="530" y="116" width="100" height="22" fill="none" stroke="#0f172a" stroke-width="2"/>
+    <rect x="522" y="112" width="8" height="30" fill="#dc2626"/>
+    <text x="526" y="104" text-anchor="middle" fill="#dc2626" font-weight="700">shaft seal</text>
+    <text x="580" y="160" text-anchor="middle" fill="#0f172a" font-weight="700">stern tube</text>
+    <ellipse cx="660" cy="127" rx="10" ry="45" fill="#64748b"/>
+    <text x="660" y="190" text-anchor="middle" fill="#0f172a" font-weight="700">propeller</text>
+    <text x="300" y="30" text-anchor="middle" fill="#475569">hull (simplified)</text>
+    <line x1="20" y1="215" x2="680" y2="215" stroke="#0369a1" stroke-dasharray="6 4"/>
+    <text x="60" y="212" fill="#0369a1">waterline below</text>
+  </g>
+</svg>
+
+| Component | Job |
+|---|---|
+| **Main engine** | Produces power |
+| **Reduction gear** | Lowers speed to the propeller's efficient rpm; often includes a **clutch** and **reverse** gearing on smaller vessels |
+| **Thrust bearing** | Takes the propeller's **push** and transfers it to the hull. This is what actually moves the ship. |
+| **Line shaft and bearings** | Carry the shaft through the hull |
+| **Stern tube and bearings** | Support the shaft where it passes through the hull; lubricated by **water** or **oil** |
+| **Shaft seal** | Keeps seawater out (or oil in); can be a traditional **packing gland** or a **mechanical face seal** |
+| **Propeller** | Converts rotation into thrust |
+
+A traditional packing gland is supposed to **drip slightly** to cool and lubricate the packing. Mechanical seals should be essentially dry. Know which your vessel has before you "fix" a drip.
+
+---
+
+## Propeller and Drive Types
+
+| Type | How it works | Common on |
+|---|---|---|
+| **Fixed-pitch propeller (FPP)** | Blades fixed; speed and direction controlled by engine rpm and reverse gear (or reversing the engine on large two-strokes) | Most fishing vessels, many cargo ships |
+| **Controllable-pitch propeller (CPP)** | Hydraulics rotate the blades; engine can run at constant speed while pitch controls thrust and direction | Ferries, tugs, offshore vessels, ships with shaft generators |
+| **Azimuth / Z-drive** | The propeller unit rotates 360° to steer and thrust in any direction | Tractor tugs, many ferries, offshore supply vessels |
+| **Waterjet** | Pump draws water and jets it astern; steering by deflecting the jet | Fast ferries, patrol boats |
+| **Diesel-electric** | Diesel generators power electric propulsion motors | Cruise ships, icebreakers, research vessels, some ferries |
+
+---
+
+## The Engine Room Systems Map
+
+The main engine is the heart, but an engine room is full of **auxiliary systems** that keep it and the vessel running. This course follows them in order.
+
+| System | Module |
+|---|---|
+| **Fuel** storage, transfer, purification, injection | Module 2 |
+| **Lube oil** and **cooling water** | Module 3 |
+| **Air intake, turbocharging, starting air, exhaust** | Module 4 |
+| **Generators**, switchboard, and electrical power | Mentioned throughout |
+| **Bilge**, ballast, and **oily water separator** | Module 6 |
+| **Steering gear** | Hydraulic rams or rotary vane steering the rudder |
+| **Compressed air**, fresh water making, sewage treatment, HVAC | Auxiliary services |
+
+<Pitfall title="Tightening the Packing Gland Until It's Dry">
+
+**Common mistake:** a new crew member sees seawater dripping from a traditional stuffing box and tightens the gland nuts until it stops.
+
+Packing needs a slow drip (often described as a few drops per minute while the shaft turns, per the builder's guidance) to stay cool. Overtightened packing overheats, scores the shaft, and can fail badly. Adjust a little at a time, evenly, with the shaft turning, and check temperature.
+
+</Pitfall>
+
+---
+
+## Key Takeaway
+
+Power flows **engine → reduction gear → thrust bearing → shaft → stern tube → propeller**. The **thrust bearing** passes the propeller's push to the hull. Propulsion may be **fixed-pitch**, **controllable-pitch**, **azimuth**, **waterjet**, or **diesel-electric**. Around the main engine are the fuel, lube, cooling, air, and exhaust systems covered next.
+
+<TryIt title="Trace Your Vessel">
+
+Find a vessel's general arrangement or engine room diagram (or a walk-through video of a tug or ferry engine room). Identify:
+
+1. Main engine type and speed class
+2. Reduction gear (and clutch, if fitted)
+3. Thrust bearing location
+4. Shaft seal type
+5. Propeller or drive type
+6. Number and type of generators
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "Which component transfers the propeller's push into the hull?",
+      options: ["Reduction gear", "Thrust bearing", "Stern tube seal", "Flywheel"],
+      correctIndex: 1,
+      explanation: "The thrust bearing absorbs the propeller's axial push and transmits it to the hull structure."
+    },
+    {
+      question: "With a controllable-pitch propeller, how is thrust changed?",
+      options: ["Only by engine rpm", "By rotating the blades to change pitch", "By changing propellers", "By a clutch only"],
+      correctIndex: 1,
+      explanation: "CPP systems hydraulically rotate the blades, so the engine can run at constant speed."
+    },
+    {
+      question: "What kind of drive rotates 360° to steer and thrust in any direction?",
+      options: ["Fixed-pitch propeller", "Packing gland", "Azimuth / Z-drive", "Line shaft"],
+      correctIndex: 2,
+      explanation: "Azimuth drives pivot the whole propeller unit, giving tugs and ferries excellent maneuverability."
+    },
+    {
+      question: "A traditional packing gland is dripping slowly while the shaft turns. What should you do?",
+      options: ["Tighten it until completely dry", "Pour oil on it", "Check it's within the builder's guidance; a slow drip is normal for cooling", "Stop the engine immediately"],
+      correctIndex: 2,
+      explanation: "Packing glands need a slight drip for cooling and lubrication. Overtightening causes overheating and shaft damage."
+    }
+  ]}
+/>

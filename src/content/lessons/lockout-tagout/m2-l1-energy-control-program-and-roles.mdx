@@ -1,0 +1,134 @@
+---
+title: "The Energy Control Program and Who Does What"
+description: "Learn the three pillars of an OSHA energy control program (written procedures, training, and periodic inspections), what a machine-specific procedure must contain, and the difference between authorized, affected, and other employees."
+module: 2
+moduleTitle: "Program, People, and Devices"
+lesson: 1
+duration: "25 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Three Pillars
+
+OSHA 1910.147 requires an **energy control program** with three parts:
+
+<ProcessFlow
+  label="The three pillars of an energy control program: documented energy control procedures, employee training, and periodic inspections at least annually. Findings from inspections feed back into procedures and training."
+  color="#b91c1c"
+  loop="Inspection findings drive updates to procedures and retraining."
+  steps={[
+    { title: 'Procedures', detail: 'Written, machine-specific steps' },
+    { title: 'Training', detail: 'By role; retrain when things change' },
+    { title: 'Periodic inspection', detail: 'At least annually; certified' },
+  ]}
+/>
+
+A binder of procedures nobody follows is not a program. All three pillars have to work together.
+
+---
+
+## Who Does What: The Three Roles
+
+| Role | Who | What they must know |
+|---|---|---|
+| **Authorized employee** | The person who **locks or tags out** equipment to service it | Recognize hazardous energy sources, the type and magnitude of energy, and the methods to isolate and control it |
+| **Affected employee** | Someone who **operates or uses** the equipment, or works in the area where servicing happens | The purpose and use of energy control procedures; **never** try to restart locked or tagged equipment |
+| **Other employee** | Anyone whose work may be in an area where LOTO is used | The procedure exists, and they must **not** remove locks or restart equipment |
+
+An affected employee **becomes** an authorized employee when they perform servicing that requires LOTO. They need that training first.
+
+---
+
+## Machine-Specific Procedures
+
+General "how to lock out" instructions aren't enough for most equipment. OSHA requires documented procedures that clearly spell out, for the equipment involved:
+
+1. The **intended use** of the procedure (which machine, which tasks)
+2. Steps for **shutting down, isolating, blocking, and securing** the machine
+3. Steps for **placing, removing, and transferring** lockout/tagout devices, and who is responsible
+4. Requirements for **testing** the machine to **verify** the effectiveness of the lockout
+
+### What Good Procedures Look Like
+
+Most plants use one-page **visual procedures** posted at the machine:
+
+- **Photos** of each isolation point, numbered
+- **Energy type and magnitude** (e.g., "480 VAC," "90 psi air," "2,000 psi hydraulic accumulator")
+- **Device location** and the **method** (e.g., "Turn handle OFF, apply lock")
+- **Stored energy** steps (bleed, block, discharge)
+- **Verification** method for each source
+- Release steps
+
+### When Documentation Isn't Required
+
+OSHA's standard includes a narrow exception: a written procedure isn't needed for a specific machine if **all** of a list of conditions are met. These include that the machine has **no potential for stored or residual energy** after shutdown, has a **single energy source** that can be readily identified and isolated, isolation fully **de-energizes** it, it's locked by a **single lockout device** under the exclusive control of the authorized employee, and there have been **no prior accidents** involving unexpected activation during servicing. If **any** condition isn't met, write the procedure. Most industrial machines don't qualify.
+
+---
+
+## Training
+
+| When | Requirement |
+|---|---|
+| **Initial** | Before an employee performs or is affected by LOTO, appropriate to their role |
+| **Retraining** | When job assignments change, machines or processes change and create new hazards, procedures change, or a periodic inspection (or other reason) shows deviations or gaps in knowledge |
+| **Documentation** | The employer must **certify** that training was done, with names and dates |
+
+If your plant uses **tags only** for some equipment, training must also cover the **limitations of tags** (Lesson 2.2).
+
+<Pitfall title="The Procedure Written in the Office">
+
+**Common mistake:** procedures are written from drawings by someone who never walked the machine.
+
+The result: a missed second disconnect, a valve that's actually behind the machine, an accumulator nobody listed. Write and validate every procedure **at the machine**, with the people who service it, and **test** it by actually performing the lockout.
+
+</Pitfall>
+
+---
+
+## Key Takeaway
+
+An energy control program has **procedures, training, and periodic inspections**. **Authorized** employees apply locks; **affected** employees operate the equipment and must never restart it while locked out; **other** employees must leave it alone. Procedures must cover **shutdown, isolation, device placement and removal, stored energy, and verification**, and should be **visual** and **validated at the machine**.
+
+<TryIt title="Assign the Roles">
+
+Classify each person during a gearbox replacement on a palletizer:
+
+1. The millwright who locks out the palletizer and removes the gearbox. *(Authorized.)*
+2. The palletizer operator who is told the machine is down. *(Affected.)*
+3. A forklift driver who passes through the area. *(Other.)*
+4. The operator who later helps lock out to adjust a sensor. *(Becomes authorized. Must be trained as authorized first.)*
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "What are the three main parts of an energy control program?",
+      options: ["Locks, tags, and keys", "Signs, posters, and meetings", "Audits, fines, and reports", "Procedures, training, and periodic inspections"],
+      correctIndex: 3,
+      explanation: "OSHA requires documented procedures, training, and periodic inspections."
+    },
+    {
+      question: "Who applies lockout devices to service a machine?",
+      options: ["Affected employee", "Authorized employee", "Other employee", "Any visitor"],
+      correctIndex: 1,
+      explanation: "Authorized employees perform lockout to service equipment."
+    },
+    {
+      question: "Which of these must a machine-specific procedure include?",
+      options: ["Steps to test and verify that the lockout is effective", "The machine's purchase price", "The operator's shift schedule", "A list of spare parts"],
+      correctIndex: 0,
+      explanation: "Procedures must include verification steps, along with shutdown, isolation, and device placement and removal."
+    },
+    {
+      question: "When must retraining occur?",
+      options: ["When jobs, equipment, or procedures change, or inspections reveal deviations", "Only every 5 years", "Never after initial training", "Only after an injury"],
+      correctIndex: 0,
+      explanation: "Retraining is triggered by changes and by evidence of gaps or deviations."
+    }
+  ]}
+/>

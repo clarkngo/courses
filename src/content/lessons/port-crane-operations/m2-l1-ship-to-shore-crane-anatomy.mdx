@@ -1,0 +1,152 @@
+---
+title: "Ship-to-Shore Crane Anatomy and Motions"
+description: "Learn the parts of a ship-to-shore container crane (gantry, boom, trolley, headblock, and spreader), its four motions, outreach and lift height, anti-sway, and the wind and storm protections that keep it standing."
+module: 2
+moduleTitle: "Cranes"
+lesson: 1
+duration: "25 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## The Giants on the Wharf
+
+A ship-to-shore (STS) container crane is a huge steel **gantry** that travels along rails on the wharf and reaches out over the ship to lift containers in and out of the cells and off the deck.
+
+<svg viewBox="0 0 700 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Side view of a ship-to-shore container crane. The crane stands on four legs with wheels on rails along the wharf. A horizontal boom extends out over the ship on the waterside, and a backreach girder extends over the landside. A trolley with the operator cab runs along the boom. Wire ropes hang from the trolley to a headblock and spreader holding a container. A machinery house sits on top. Labels show outreach over the ship, lift height above the rail, and backreach.">
+  <g font-family="system-ui, -apple-system, sans-serif" font-size="12">
+    <rect x="0" y="250" width="420" height="10" fill="#94a3b8"/>
+    <rect x="420" y="250" width="280" height="50" fill="#0369a1" opacity="0.25"/>
+    <path d="M440 210 L690 210 L680 250 L450 250 Z" fill="#64748b"/>
+    <g fill="#0f766e" opacity="0.7">
+      <rect x="470" y="185" width="40" height="25"/><rect x="515" y="185" width="40" height="25"/><rect x="560" y="185" width="40" height="25"/><rect x="605" y="185" width="40" height="25"/>
+      <rect x="470" y="160" width="40" height="25"/><rect x="515" y="160" width="40" height="25"/><rect x="605" y="160" width="40" height="25"/>
+    </g>
+    <text x="565" y="240" text-anchor="middle" fill="#fff" font-weight="700">ship</text>
+    <g stroke="#ca8a04" stroke-width="8" fill="none">
+      <line x1="200" y1="250" x2="200" y2="60"/>
+      <line x1="380" y1="250" x2="380" y2="60"/>
+      <line x1="200" y1="150" x2="380" y2="150"/>
+    </g>
+    <rect x="80" y="52" width="600" height="16" fill="#ca8a04"/>
+    <rect x="250" y="20" width="90" height="32" fill="#a16207"/>
+    <text x="295" y="40" text-anchor="middle" fill="#fff" font-weight="700">machinery</text>
+    <rect x="525" y="68" width="40" height="18" fill="#0f172a"/>
+    <text x="545" y="100" text-anchor="middle" fill="#0f172a" font-weight="700">trolley + cab</text>
+    <line x1="535" y1="86" x2="535" y2="148" stroke="#0f172a" stroke-width="1.5"/>
+    <line x1="555" y1="86" x2="555" y2="148" stroke="#0f172a" stroke-width="1.5"/>
+    <rect x="530" y="148" width="30" height="6" fill="#475569"/>
+    <rect x="512" y="154" width="66" height="6" fill="#dc2626"/>
+    <text x="640" y="150" fill="#dc2626" font-weight="700">spreader</text>
+    <circle cx="200" cy="255" r="5" fill="#0f172a"/><circle cx="380" cy="255" r="5" fill="#0f172a"/>
+    <line x1="380" y1="40" x2="680" y2="40" stroke="#0f766e" stroke-width="1.5"/>
+    <text x="530" y="34" text-anchor="middle" fill="#0f766e" font-weight="700">outreach (from waterside rail)</text>
+    <line x1="80" y1="80" x2="200" y2="80" stroke="#0f766e" stroke-width="1.5"/>
+    <text x="140" y="96" text-anchor="middle" fill="#0f766e" font-weight="700">backreach</text>
+    <line x1="420" y1="68" x2="420" y2="250" stroke="#0f766e" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <text x="428" y="130" fill="#0f766e" font-weight="700">lift height</text>
+    <text x="290" y="175" text-anchor="middle" fill="#a16207" font-weight="700">portal (legs)</text>
+    <text x="290" y="280" text-anchor="middle" fill="#0f172a">gantry wheels on rails along the wharf</text>
+    <text x="140" y="45" text-anchor="middle" fill="#a16207" font-weight="700">backreach girder</text>
+    <text x="640" y="75" text-anchor="middle" fill="#a16207" font-weight="700">boom</text>
+  </g>
+</svg>
+
+| Part | Job |
+|---|---|
+| **Portal (legs and sill beams)** | Structure that straddles the apron lanes |
+| **Gantry travel system** | Wheels on rails let the crane move along the wharf to line up with each ship bay |
+| **Boom** | Extends over the ship; on many cranes it **hinges up** to clear the ship's superstructure when the vessel arrives and departs |
+| **Backreach girder** | Extends landside for handling hatch covers and buffer space |
+| **Trolley** | Runs along the boom and girder, carrying the load (and often the operator cab) |
+| **Hoist** | Raises and lowers the load with wire ropes |
+| **Headblock** | Connects the hoist ropes to the spreader |
+| **Spreader** | Locks onto the container's corner castings |
+| **Machinery house** | Holds hoist and trolley drives and electrical equipment |
+| **Operator cab** | Usually rides with the trolley, with a downward view through the floor |
+
+---
+
+## The Four Motions
+
+| Motion | What moves | Direction |
+|---|---|---|
+| **Hoist** | The spreader and load | Up and down |
+| **Trolley** | The trolley along the boom | Waterside and landside |
+| **Gantry** | The entire crane along the rails | Along the wharf |
+| **Boom hoist** | The boom raises or lowers | Usually only when the crane is not working cargo |
+
+A skilled operator blends **hoist and trolley** motions smoothly while controlling **sway**, the swinging of the load on the ropes. Modern cranes have **anti-sway** systems and automation aids, but operator skill still matters.
+
+---
+
+## Size: Outreach and Lift Height
+
+- **Outreach** is how far the crane reaches over the water from the waterside rail. It determines how many **containers across** the crane can work. The largest ships today are **more than 20 containers wide**.
+- **Lift height** is the height under the spreader above the rail. It must clear containers stacked high on deck.
+
+As ships grow, ports raise existing cranes or buy larger ones.
+
+---
+
+## Wind and Storms
+
+Cranes act like sails. They're designed to operate only up to a set **wind speed limit** (from the maker and terminal rules), and to survive much higher wind when properly **secured**.
+
+- **Anemometers** on the crane trigger warnings and stop work.
+- **Rail clamps** and **brakes** resist being pushed along the rails.
+- **Stowage pins** and **tie-downs** anchor the crane to the wharf in storm conditions.
+- Cranes have been blown along their rails and toppled when not secured in time.
+
+<Pitfall title="Working Through a Gusty Afternoon">
+
+**Common mistake:** wind speed hovers near the limit, and the gang keeps working to finish the bay.
+
+Gusts can drive the crane or swing a container into the ship's structure or a stack. Follow the terminal's **wind procedure**. Stop at the limit, park the spreader, and secure the crane as specified, early rather than late.
+
+</Pitfall>
+
+---
+
+## Key Takeaway
+
+An STS crane is a rail-mounted **gantry** with a **boom**, **trolley**, **hoist**, **headblock**, and **spreader**. Its motions are **hoist, trolley, gantry, and boom hoist**. **Outreach** and **lift height** define the ships it can work. Respect **wind limits** and secure the crane with **clamps, pins, and tie-downs**.
+
+<TryIt title="Crane Fit Check">
+
+A terminal's crane can reach **19 containers** across. A new service will bring ships **22 containers** wide.
+
+What are the options? *(Buy new cranes with greater outreach, modify existing cranes if structurally possible, or decline or limit that service. Also check lift height and wharf strength for heavier cranes.)*
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "Which STS crane motion moves the load horizontally along the boom?",
+      options: ["Hoist", "Gantry", "Trolley", "Boom hoist"],
+      correctIndex: 2,
+      explanation: "The trolley travels along the boom between waterside and landside."
+    },
+    {
+      question: "What does 'outreach' measure?",
+      options: ["Crane height", "How far the crane reaches over the water from the waterside rail", "Rail length", "Spreader width"],
+      correctIndex: 1,
+      explanation: "Outreach determines how many containers across a ship the crane can work."
+    },
+    {
+      question: "Why do many STS cranes have booms that hinge upward?",
+      options: ["For painting", "To lift heavier loads", "To clear the ship's superstructure when vessels arrive and depart", "To reduce wind"],
+      correctIndex: 2,
+      explanation: "Raising the boom gives clearance for ships maneuvering alongside."
+    },
+    {
+      question: "What secures an STS crane against storm winds?",
+      options: ["Tag lines", "A heavier spreader", "Rail clamps, brakes, stowage pins, and tie-downs", "Nothing is needed"],
+      correctIndex: 2,
+      explanation: "These devices keep the crane from being blown along the rails or toppled."
+    }
+  ]}
+/>

@@ -1,0 +1,132 @@
+---
+title: "Fuel Quality and Combustion Troubleshooting"
+description: "Recognize water, microbial growth, and air in fuel, bleed a fuel system, read exhaust smoke color, and use exhaust temperatures and cylinder balance to find combustion problems."
+module: 2
+moduleTitle: "Fuel"
+lesson: 2
+duration: "25 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## The Three Enemies of Fuel
+
+### 1. Water
+
+Water gets in through condensation in partly empty tanks, leaking deck fills and vents, and contaminated bunkers. It:
+
+- Damages injectors and pumps (water doesn't lubricate)
+- Causes rough running and power loss
+- Feeds microbial growth
+
+**Drain** settling and service tanks and filter bowls regularly. Keep tanks **full** where practical to reduce condensation.
+
+### 2. Microbial Growth ("Diesel Bug")
+
+Bacteria and fungi live at the **fuel-water interface** and form dark, slimy sludge that clogs filters fast. Signs: rapid filter plugging, black or brown slime in filter bowls, a sulfur or rotten smell.
+
+Control it by **removing water**, cleaning tanks, and using **biocides** only as directed.
+
+### 3. Air
+
+Air in the fuel lines stops a diesel. It enters after running a tank dry, changing filters, or through a loose fitting on the **suction side** (which leaks **air in**, not fuel out).
+
+---
+
+## Bleeding the Fuel System
+
+After a filter change or running out of fuel, the system must be **bled** to remove air. The general approach (always follow the engine manual):
+
+1. Fill new filters with **clean** fuel if the design allows.
+2. Open the bleed screw on the **first filter**; pump the **hand primer** until fuel flows without bubbles; close the screw.
+3. Repeat at the **secondary filter**, then at the **injection pump**.
+4. If the engine still won't start, crack the **injector line nuts** (with eye protection), crank briefly until fuel appears, and retighten.
+5. Fix the **cause** of the air leak.
+
+---
+
+## Reading the Smoke
+
+Exhaust color is a fast, useful diagnostic.
+
+| Smoke color | What it usually means | Common causes |
+|---|---|---|
+| **Black / dark gray** | Too much fuel for the available air (incomplete combustion) | Overload, dirty air filter, turbocharger problem, faulty injector, wrong timing, fouled hull or propeller |
+| **Blue** | Burning **lube oil** | Worn rings or liners, worn valve guides, turbo seal leak, overfilled sump |
+| **White** | Unburned fuel or water vapor | Cold engine, low compression, late timing, **water in fuel**, coolant leak into the cylinder |
+
+A little dark smoke during **acceleration** or white smoke during a **cold start** can be normal. Persistent smoke at steady load is not.
+
+---
+
+## Exhaust Temperatures and Cylinder Balance
+
+Many engines have a **pyrometer** (exhaust temperature sensor) on each cylinder. At a steady load, all cylinders should read **close to one another**.
+
+| Pattern | Possible cause |
+|---|---|
+| **One cylinder much higher** | Dribbling or leaking injector, late injection, leaking exhaust valve |
+| **One cylinder much lower** | Injector not firing or blocked, fuel pump problem, failed sensor |
+| **All cylinders high** | Overload, restricted air intake, turbocharger fouling, high intake air temperature, fouled hull |
+| **Rising trend over weeks** | Gradual turbo or charge air cooler fouling; dirty air filters |
+
+Larger engines also measure **firing pressure (Pmax)** and **compression pressure** to diagnose combustion directly.
+
+<Pitfall title="Chasing the Thermometer, Not the Trend">
+
+**Common mistake:** looking only at today's exhaust temperatures with no history.
+
+A cylinder 20 °C above the others might be normal for that engine, or it might be a new problem. Log temperatures at the same load every watch. **Changes from baseline** are what matter.
+
+</Pitfall>
+
+---
+
+## Key Takeaway
+
+Keep fuel **dry**, watch for **microbial sludge**, and **bleed** air after filter changes or running dry. **Black** smoke means too much fuel or too little air; **blue** means oil burning; **white** means unburned fuel or water. Use **cylinder exhaust temperature balance** and **trends** to spot combustion problems early.
+
+<TryIt title="Diagnose the Engine">
+
+A tug's main engine shows:
+
+- **Black smoke** under load
+- **All** cylinder exhaust temperatures about 40 °C higher than last month at the same rpm
+- Turbo boost pressure **lower** than normal
+
+What's the likely problem area? *(Air supply. Probably a fouled or damaged turbocharger, a dirty intake filter, or a fouled charge air cooler. Less air means too much fuel for the air available, so all cylinders run hot.)*
+
+What might you check outside the engine? *(Hull and propeller fouling increase load at the same rpm.)*
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "Blue exhaust smoke most likely indicates:",
+      options: ["Water in fuel", "Too much air", "Burning lubricating oil", "A clean engine"],
+      correctIndex: 2,
+      explanation: "Blue smoke comes from lube oil entering the combustion chamber, from worn rings, guides, or turbo seals."
+    },
+    {
+      question: "Where does air typically enter a fuel system to cause hard starting?",
+      options: ["Through leaks on the suction side or after running dry", "Through the injectors", "Through the exhaust", "Through the fuel tank vent only"],
+      correctIndex: 0,
+      explanation: "Suction-side leaks draw air in, and running a tank dry fills lines with air."
+    },
+    {
+      question: "One cylinder's exhaust temperature is much lower than the others at steady load. A likely cause is:",
+      options: ["Overloaded engine", "Dirty air filter", "That cylinder's injector isn't firing properly", "Fouled hull"],
+      correctIndex: 2,
+      explanation: "A cold cylinder usually isn't getting or burning fuel properly. Check the injector, pump, or sensor."
+    },
+    {
+      question: "What does diesel bug (microbial growth) need to thrive?",
+      options: ["Dry fuel", "High sulfur", "Cold weather", "Water at the fuel-water interface"],
+      correctIndex: 3,
+      explanation: "Microbes live where water meets fuel. Removing water is the primary control."
+    }
+  ]}
+/>

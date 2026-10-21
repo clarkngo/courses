@@ -1,0 +1,137 @@
+---
+title: "Group Lockout, Shift Changes, and Contractors"
+description: "Handle complex lockouts safely: group lockout with a lockbox and a primary authorized employee, continuity of protection across shift changes, and coordinating energy control with outside contractors."
+module: 4
+moduleTitle: "Complex Lockouts"
+lesson: 1
+duration: "25 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## When One Lock Isn't Enough
+
+Big jobs, such as a paper machine shutdown, a line rebuild, or a boiler outage, can involve **dozens of isolation points** and **many workers** from several crews. Every person still needs the same protection they'd get from their own personal lock.
+
+---
+
+## Group Lockout
+
+OSHA 1910.147 requires group lockout procedures to give each authorized employee **a level of protection equivalent to a personal lockout device**.
+
+### The Lockbox Method
+
+<ProcessFlow
+  label="Group lockout with a lockbox: the primary authorized employee isolates every energy point and applies a lock to each, places the keys in the group lockbox, verifies isolation, then each worker applies their personal lock to the lockbox and may verify for themselves. At the end, each worker removes their own lock, and the primary authorized employee removes the point locks last."
+  color="#b91c1c"
+  loop="Nobody can retrieve the isolation keys until every personal lock is off the box."
+  steps={[
+    { title: 'Isolate', detail: 'Primary locks every energy point' },
+    { title: 'Keys in box', detail: 'Isolation keys go in the lockbox' },
+    { title: 'Verify', detail: 'Primary verifies zero energy' },
+    { title: 'Workers lock box', detail: 'Each applies a personal lock' },
+    { title: 'Work', detail: 'Each may check verification' },
+    { title: 'Remove', detail: 'Each removes only their own lock' },
+  ]}
+/>
+
+### The Primary Authorized Employee
+
+One authorized employee has **primary responsibility** for the group. They:
+
+- Coordinate the lockout of all isolation points
+- Make sure each group member has applied their personal lock
+- Know the **status of everyone** on the job
+- Ascertain the exposure status of each member before work and before release
+
+When **multiple crews or departments** are involved, one authorized employee is designated to **coordinate** among the crews.
+
+### Each Worker's Right to Verify
+
+Each worker's personal lock on the box is their protection. Good programs also let each worker **see the verification**, or perform their own try-out, before going in. **Never** put your lock on a box for a job whose isolation you don't trust. Ask.
+
+<Pitfall title="Locking the Box, Then Leaving the Plant">
+
+**Common mistake:** a contractor finishes their part, forgets their lock is on the group lockbox, and leaves for the day.
+
+Now nobody can complete the job without the special lock-removal procedure (Lesson 5.1). The fix is administrative: a **sign-in/sign-out board** at the lockbox, and a supervisor check before anyone leaves the job.
+
+</Pitfall>
+
+---
+
+## Shift and Personnel Changes
+
+Long jobs often span shifts. OSHA requires specific procedures to ensure **continuity of lockout protection** during shift or personnel changes, including the **orderly transfer** of devices between outgoing and incoming employees.
+
+A safe handoff:
+
+1. Incoming worker **applies their lock first**.
+2. Outgoing worker **then removes theirs**.
+3. Both review the **job status, energy status, and hazards**.
+4. The handoff is **documented** (log or sign board).
+
+At no moment should the equipment be **without** a lock from someone actively protected by it.
+
+---
+
+## Outside Contractors
+
+When contractors service equipment, OSHA requires:
+
+- The **host employer** and the **contractor** **inform each other** of their respective lockout/tagout procedures.
+- The host employer ensures its employees **understand and comply** with the contractor's energy control program.
+
+In practice, many sites require contractors to follow the **host's** procedures, use host-issued or approved locks, and attend a site orientation. What matters is that **everyone uses one agreed system** and understands it **before** work starts.
+
+---
+
+## Key Takeaway
+
+**Group lockout** must protect each worker as well as a personal lock, usually with a **lockbox** where every worker adds their own lock. A **primary authorized employee** coordinates and tracks everyone. Shift changes use **lock-on-before-lock-off** handoffs. **Host and contractor** must exchange and agree on LOTO procedures before work starts.
+
+<TryIt title="Plan a Group Lockout">
+
+A conveyor system rebuild involves **4 mechanics, 2 electricians, and a contractor crew of 3**. There are **11 isolation points** across two motor control centers and three air drops.
+
+Sketch your plan:
+
+1. Who is the **primary authorized employee**?
+2. Where will the **lockbox** and **sign-in board** be?
+3. How will each worker **verify** isolation?
+4. How will the **contractor** be briefed on your procedure?
+5. What happens at **shift change** if the job runs overnight?
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "In group lockout, what level of protection must each worker receive?",
+      options: ["Less than a personal lock, since it's a group", "Equivalent to their own personal lockout device", "Only a tag", "Whatever the supervisor decides"],
+      correctIndex: 1,
+      explanation: "OSHA requires group procedures to give each authorized employee protection equivalent to a personal lock."
+    },
+    {
+      question: "In the lockbox method, what goes into the lockbox?",
+      options: ["Every worker's personal key", "The keys to the locks on the energy isolation points", "Tags", "The machine manual"],
+      correctIndex: 1,
+      explanation: "Isolation point keys go in the box. Each worker locks the box with their own personal lock."
+    },
+    {
+      question: "What is the correct order for a shift-change handoff?",
+      options: ["Outgoing removes lock, then incoming applies", "Incoming applies lock first, then outgoing removes theirs", "Both remove locks and re-lock", "No locks needed during handoff"],
+      correctIndex: 1,
+      explanation: "Lock-on before lock-off keeps continuous protection."
+    },
+    {
+      question: "When a contractor services equipment, OSHA requires the host and contractor to:",
+      options: ["Use no locks", "Let the contractor work alone", "Use only tags", "Inform each other of their lockout/tagout procedures"],
+      correctIndex: 3,
+      explanation: "Both employers must exchange information about their energy control procedures."
+    }
+  ]}
+/>

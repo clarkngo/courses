@@ -1,0 +1,166 @@
+---
+title: "Speed Control, Sensors, and Basic Circuits"
+description: "Set cylinder speed correctly with meter-out flow controls, use quick exhaust valves, sense cylinder position with magnetic switches, and walk through common circuits such as extend-retract, two-hand control, and sequencing."
+module: 4
+moduleTitle: "Valves and Control"
+lesson: 2
+duration: "25 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Flow Controls
+
+A **flow control valve** is an adjustable needle restriction combined with a **check valve**. Air flows freely one way through the check and is restricted the other way through the needle.
+
+Flow controls are often built into a **banjo fitting** that screws right into the cylinder port. That's the best place for them because the controlled volume is small and the motion is stiffer.
+
+---
+
+## Meter-In vs. Meter-Out
+
+You can restrict the air going **in** to the cylinder (meter-in) or the air coming **out** (meter-out).
+
+<svg viewBox="0 0 680 220" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Meter-out speed control on a double-acting cylinder during extension. Supply air flows freely into the cap end through the check valve of the cap-end flow control. Air leaving the rod end is forced through the needle restriction of the rod-end flow control, building back pressure that cushions and steadies the piston.">
+  <defs>
+    <marker id="mo-a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#0369a1"/></marker>
+    <marker id="mo-b" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#dc2626"/></marker>
+  </defs>
+  <g font-family="system-ui, -apple-system, sans-serif" font-size="13">
+    <rect x="160" y="40" width="300" height="70" fill="#e2e8f0" stroke="#0f172a" stroke-width="2"/>
+    <rect x="300" y="44" width="16" height="62" fill="#475569"/>
+    <rect x="316" y="68" width="230" height="14" fill="#94a3b8"/>
+    <rect x="160" y="44" width="140" height="62" fill="#0369a1" opacity="0.15"/>
+    <line x1="560" y1="75" x2="620" y2="75" stroke="#0f172a" stroke-width="2" marker-end="url(#mo-a)"/>
+    <text x="625" y="80" fill="#0f172a">extend</text>
+    <line x1="190" y1="190" x2="190" y2="115" stroke="#0369a1" stroke-width="3" marker-end="url(#mo-a)"/>
+    <line x1="430" y1="115" x2="430" y2="190" stroke="#dc2626" stroke-width="3" marker-end="url(#mo-b)"/>
+    <rect x="170" y="140" width="40" height="24" rx="4" fill="#fff" stroke="#0369a1" stroke-width="2"/>
+    <rect x="410" y="140" width="40" height="24" rx="4" fill="#fff" stroke="#dc2626" stroke-width="2"/>
+    <text x="40" y="150" fill="#0369a1" font-weight="700">free flow in</text>
+    <text x="40" y="168" fill="#475569">through check</text>
+    <text x="470" y="150" fill="#dc2626" font-weight="700">restricted out</text>
+    <text x="470" y="168" fill="#475569">through needle</text>
+    <text x="310" y="30" text-anchor="middle" fill="#0f172a" font-weight="700">meter-out: control the exhaust</text>
+    <text x="230" y="80" text-anchor="middle" fill="#0369a1">pressure</text>
+    <text x="380" y="62" text-anchor="middle" fill="#dc2626">back pressure</text>
+  </g>
+</svg>
+
+**Meter-out is the standard for double-acting cylinders.** The trapped exhaust air acts like a cushion on the other side of the piston, so motion is smooth even if the load changes or tries to run away.
+
+**Meter-in** is used for **single-acting** cylinders (there's no exhaust side to control) and sometimes for very small cylinders.
+
+### Setting Speed
+
+1. Start with both flow controls **mostly closed**.
+2. Cycle the cylinder and open each needle a little at a time.
+3. Set extend and retract separately; each needle controls one direction.
+4. Lock the adjustment once speed is right.
+
+---
+
+## Quick Exhaust Valves
+
+When you need a cylinder to move **faster** than the main valve's exhaust allows, mount a **quick exhaust valve** right at the cylinder port. It dumps air straight to atmosphere instead of sending it back through the tubing and valve. It's also used on safety dump circuits for fast venting.
+
+---
+
+## Sensing Cylinder Position
+
+The controller has to know where the cylinder is.
+
+| Sensor | How it works | Notes |
+|---|---|---|
+| **Reed switch** | Magnet in the piston closes a reed contact | Simple, cheap; can bounce, fails with high current |
+| **Solid-state (Hall/GMR) switch** | Magnet in the piston triggers an electronic sensor | No moving parts, longer life; PNP or NPN output |
+| **Inductive proximity sensor** | Detects a metal target on the rod or tooling | Doesn't need a magnetic piston |
+| **Linear position sensor** | Reports continuous position | For analog positioning |
+
+Sensors clamp in a slot on the cylinder body. Most have an **LED** that lights when the magnet is detected, which is your first troubleshooting check.
+
+<Pitfall title="Sensor Moved, Machine Faults">
+
+**Common mistake:** a cylinder sensor gets bumped during cleaning or a changeover and slides along its slot.
+
+Now the PLC never sees "extended," so the machine times out on a fault, or worse, sees "extended" too early and starts the next step before the cylinder is really there. Mark sensor positions with paint or a scribe line, and check them whenever a cylinder "faults but looks fine."
+
+</Pitfall>
+
+---
+
+## Common Circuits
+
+### 1. Basic Extend/Retract
+
+A **5/2 single-solenoid** valve with **meter-out** flow controls on both cylinder ports and a sensor at each end. This covers a large share of plant pneumatics.
+
+### 2. Two-Hand Control
+
+For presses and similar hazards, the operator must press **two buttons at the same time** (within about half a second) and hold them, keeping both hands away from the hazard. Two-hand controls are safety devices, and their design is governed by standards such as **ISO 13851**. They're never improvised with standard valves.
+
+### 3. Sequencing
+
+Many machines run steps in order, with each step waiting for a sensor:
+
+<ProcessFlow
+  label="A typical pneumatic machine sequence: clamp the part, confirm the clamp sensor, extend the pusher, confirm the extended sensor, retract the pusher, confirm the retracted sensor, then unclamp."
+  color="#0369a1"
+  loop="If a sensor isn't made within the time limit, the PLC stops and shows a fault for that step."
+  steps={[
+    { title: 'Clamp', detail: 'Wait for clamped sensor' },
+    { title: 'Push out', detail: 'Wait for extended sensor' },
+    { title: 'Push back', detail: 'Wait for retracted sensor' },
+    { title: 'Unclamp', detail: 'Wait for open sensor' },
+  ]}
+/>
+
+When a sequence faults, the **step** it stopped on tells you which cylinder and sensor to check first.
+
+---
+
+## Key Takeaway
+
+Use **meter-out** for double-acting cylinders and mount flow controls **at the cylinder**. **Quick exhaust valves** speed up retraction or venting. Magnetic sensors report position, and when a sequence faults, **check the sensor for the step it stopped on**.
+
+<TryIt title="Fix the Lurching Cylinder">
+
+A vertical cylinder lowering a heavy tool **drops fast** on the way down and is fine going up. It has **meter-in** flow controls on both ports.
+
+Why? *On the way down, the rod points down, so lowering means extending. Gravity pulls the load while the rod-side exhaust flows out freely, and only the supply side is restricted. Nothing holds the load back.*
+
+Fix: switch to **meter-out** on the rod (bottom-side) port so the exhaust air holds back the falling load. For heavy vertical loads, also consider a counterbalance or load-holding check valves.
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "Which speed control method is standard for double-acting cylinders?",
+      options: ["Meter-in", "Bleed-off", "Meter-out", "No control"],
+      correctIndex: 2,
+      explanation: "Meter-out restricts exhaust, creating back pressure that keeps motion smooth and controlled."
+    },
+    {
+      question: "Where should flow controls ideally be mounted?",
+      options: ["At the compressor", "At the FRL", "Directly at the cylinder ports", "On the valve exhaust"],
+      correctIndex: 2,
+      explanation: "Mounting at the cylinder minimizes the compressible air volume being controlled, giving stiffer, more stable motion."
+    },
+    {
+      question: "How does a typical cylinder position sensor detect the piston?",
+      options: ["A magnet in the piston", "Optical beam through the barrel", "Air pressure changes", "Rod temperature"],
+      correctIndex: 0,
+      explanation: "Reed and solid-state cylinder switches detect a magnet built into the piston."
+    },
+    {
+      question: "A machine sequence faults on the 'push out' step. What should you check first?",
+      options: ["The compressor", "The extended sensor and the pusher cylinder", "The clamp cylinder", "The building air header"],
+      correctIndex: 1,
+      explanation: "The step where the fault occurred points directly to the cylinder and sensor involved."
+    }
+  ]}
+/>

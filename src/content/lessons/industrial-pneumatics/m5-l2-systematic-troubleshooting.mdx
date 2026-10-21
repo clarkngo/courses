@@ -1,0 +1,154 @@
+---
+title: "Systematic Pneumatic Troubleshooting"
+description: "Use a half-split troubleshooting method and a symptom table to diagnose slow, weak, erratic, and dead cylinders, sticking valves, and pressure problems quickly and safely."
+module: 5
+moduleTitle: "Troubleshooting and Efficiency"
+lesson: 2
+duration: "30 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Don't Start by Swapping Parts
+
+The fastest troubleshooters aren't the ones who swap the most parts. They're the ones who **narrow down the problem** before touching a wrench. Swapping parts randomly costs money, wastes downtime, and often hides the real cause.
+
+---
+
+## A Repeatable Method
+
+<ProcessFlow
+  label="Systematic troubleshooting method: understand the symptom, check the drawing, check the basics, half-split the system, find and fix the root cause, then verify and document."
+  color="#0369a1"
+  loop="If the fix doesn't clear the symptom, go back to half-splitting with what you've learned."
+  steps={[
+    { title: 'Define', detail: 'What exactly is wrong? When did it start?' },
+    { title: 'Drawing', detail: 'What should happen at this step?' },
+    { title: 'Basics', detail: 'Air on? Pressure? Power? Signal?' },
+    { title: 'Half-split', detail: 'Test the middle; discard half' },
+    { title: 'Root cause', detail: 'Why did it fail?' },
+    { title: 'Verify', detail: 'Run it, then document' },
+  ]}
+/>
+
+### Ask Good Questions First
+
+- What exactly happens, and what **should** happen?
+- Is it **every cycle** or intermittent?
+- Did it **change recently**: a changeover, a new part, maintenance, a new product?
+- Does it affect **one** machine or **many**? Many points upstream (supply side); one points to that machine.
+
+### Half-Splitting
+
+Pick a test point **in the middle** of the path. If air is correct there, the problem is downstream; if not, it's upstream. Each test cuts the search area in half.
+
+For a cylinder that won't move, the path is: **header → lockout valve → FRL → manifold → valve → flow control → tubing → cylinder**. A good first split is at the **valve output**: does air come out of the working port when the valve is commanded?
+
+---
+
+## The Symptom Table
+
+| Symptom | Common causes | Check |
+|---|---|---|
+| **Cylinder won't move** | No supply, valve not shifting, flow control closed, mechanical jam, sensor/logic waiting | Pressure gauge at FRL, valve LED, manual override, flow control setting |
+| **Moves slowly** | Flow restriction: clogged filter, kinked tubing, undersized valve or tubing, flow control too tight, low pressure | ΔP across filter, tubing route, flow control, pressure during motion |
+| **Weak (stalls under load)** | Low pressure, internal piston seal leak, undersized cylinder, regulator set low | Regulator setting, pressure **while moving**, bypass test |
+| **Erratic or jerky** | Dry or sticky seals, side load, low pressure, flow controls set as meter-in, contamination | Alignment, lubrication condition, meter-out setting |
+| **Drifts when stopped** | Leaking piston seal, leaking valve spool, closed-center 5/3 used as a lock | Bypass test, valve exhaust hiss |
+| **Valve hisses at exhaust while idle** | Worn spool seals or piston seal bypass | Disconnect cylinder line to see which side |
+| **Water or oil in lines** | Dryer not working, drains failed, over-lubrication | Dryer PDP, drains, lubricator drip rate |
+
+---
+
+## The Piston Seal Bypass Test
+
+How do you know if air is leaking past a piston seal inside the cylinder?
+
+1. Make the system safe and know what will move.
+2. Extend the cylinder fully so it's against its end stop.
+3. **Disconnect the rod-side (exhaust) line** at the cylinder or valve.
+4. Hold pressure on the cap side.
+5. If air keeps flowing out of the disconnected rod-side port, the **piston seal is bypassing**.
+
+The same idea, isolating one side and watching for flow, works on valves.
+
+<Pitfall title="Reading Static Pressure Only">
+
+**Common mistake:** checking the FRL gauge with the machine idle, seeing 80 psi, and declaring pressure "fine."
+
+Static pressure hides flow restrictions. Watch the gauge **while the machine cycles**. If it dips hard (say from 80 to 55 psi) every time a cylinder moves, the supply is starved by an undersized drop, a clogged filter, or a regulator that can't keep up.
+
+</Pitfall>
+
+---
+
+## Safety While Troubleshooting
+
+Troubleshooting is when people get hurt, because guards are open and the machine is partly running.
+
+- **Know what will move** before you press an override or reconnect air.
+- **Keep hands out** of the path of any actuator that still has air.
+- Disconnecting a pressurized line can whip the tubing and blast debris, so **dump air first** unless the test requires pressure, and then wear eye protection.
+- If you're working inside the machine's hazard zone, **lock it out** (Module 6, and the full Lockout/Tagout course).
+
+---
+
+## Fix the Root Cause
+
+Replacing a failed component without asking **why** it failed usually means doing it again soon.
+
+| Failure | Root cause to ask about |
+|---|---|
+| Rod seal failed early | Side load? Dirt? Damaged wiper? |
+| Valve spool sticking | Water, oil varnish, or particles? Dryer or filter problem? |
+| Tubing burst | Heat, chemicals, abrasion, wrong pressure rating? |
+| Coil burned out | Wrong voltage? Spool stuck so the coil couldn't seat? |
+
+---
+
+## Key Takeaway
+
+Define the problem, read the drawing, check the basics, then **half-split** the air path. Use the **symptom table**, watch pressure **while moving**, and use the **bypass test** to find internal leaks. Stay out of the path of anything that still has air, and always ask **why** it failed.
+
+<TryIt title="Troubleshoot This">
+
+A carton pusher started moving slowly this week. Other machines on the same header are fine. The FRL gauge reads 80 psi at rest and drops to 50 psi when the pusher extends. The filter bowl has water in it.
+
+1. Supply side or machine side? *(Machine side, because other machines are fine.)*
+2. What does the pressure dip tell you? *(A flow restriction upstream of the gauge, at or before the FRL.)*
+3. Most likely cause? *(A clogged filter element, possibly with a failed bowl drain letting water saturate it.)*
+4. Root cause question? *(Why is there water here? Check the dryer and the header drains.)*
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "A problem affects many machines across the plant at once. Where should you look first?",
+      options: ["One machine's valve", "Cylinder seals", "The supply side: compressors, dryer, header", "Sensors"],
+      correctIndex: 2,
+      explanation: "A plant-wide symptom points upstream to the shared supply side."
+    },
+    {
+      question: "What is the half-split method?",
+      options: ["Testing at the middle of the path to eliminate half the possible causes each time", "Replacing half the parts", "Splitting the shift in half", "Cutting tubing in half"],
+      correctIndex: 0,
+      explanation: "Each mid-point test tells you whether the fault is upstream or downstream, halving the search."
+    },
+    {
+      question: "During a piston seal bypass test, air keeps flowing out of the disconnected rod-side port while the cap side is pressurized. What does this mean?",
+      options: ["The valve is bad", "The rod seal is leaking", "The cylinder is fine", "The piston seal is leaking"],
+      correctIndex: 3,
+      explanation: "Air passing from the cap side to the rod side means it is getting past the piston seal."
+    },
+    {
+      question: "Why should you watch the pressure gauge while the machine cycles?",
+      options: ["Gauges only work when moving", "Static readings hide flow restrictions that show up as pressure dips during motion", "To calibrate the gauge", "It's required by OSHA"],
+      correctIndex: 1,
+      explanation: "A restriction may let static pressure look normal while starving the actuator when it actually needs flow."
+    }
+  ]}
+/>

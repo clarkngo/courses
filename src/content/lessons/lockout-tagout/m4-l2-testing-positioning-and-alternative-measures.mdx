@@ -1,0 +1,121 @@
+---
+title: "Testing, Positioning, and Alternative Measures"
+description: "Learn the OSHA sequence for temporarily removing locks to test or position a machine, how to design effective alternative measures for routine minor servicing, and how energized troubleshooting is handled under electrical safety rules."
+module: 4
+moduleTitle: "Complex Lockouts"
+lesson: 2
+duration: "25 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## When You Need Energy Back, Briefly
+
+Some jobs require power partway through: jogging a conveyor to line up a splice, bumping a motor to check rotation, or running a machine to test a repair. OSHA allows lockout devices to be **temporarily removed** for **testing or positioning**, but only in a specific sequence.
+
+<ProcessFlow
+  label="OSHA sequence for temporary removal of lockout for testing or positioning: clear the machine of tools and materials, remove employees from the machine area, remove lockout devices following the release procedure, energize and test or position, then de-energize and reapply all energy control measures before resuming work."
+  color="#b91c1c"
+  loop="Before servicing resumes, the full lockout sequence, including verification, is repeated."
+  steps={[
+    { title: 'Clear tools', detail: 'Remove tools and materials' },
+    { title: 'Clear people', detail: 'Everyone out of the machine area' },
+    { title: 'Remove locks', detail: 'Using the release procedure' },
+    { title: 'Energize', detail: 'Test or position' },
+    { title: 'Re-lock', detail: 'De-energize; full lockout again' },
+  ]}
+/>
+
+Key points:
+
+- Treat the removal exactly like a **full release** (Lesson 5.1): inspect, notify, and account for everyone.
+- When you're done testing, the machine goes back to a **fully locked and verified** state before anyone goes back in.
+- **No one** works inside the danger zone while energy is restored.
+
+<Pitfall title="Jogging While Someone Holds the Belt">
+
+**Common mistake:** a mechanic stays inside to guide a belt while a coworker jogs the motor "just a bump."
+
+That's servicing in the danger zone with energy restored, which is exactly what LOTO is meant to prevent. If positioning needs a hand inside, use a method that keeps hands out (hand-turning with locks on, a barring device, or a dedicated, safeguarded inching mode designed for this purpose under a documented procedure).
+
+</Pitfall>
+
+---
+
+## Alternative Measures for Minor Servicing
+
+Recall the minor servicing exception: routine, repetitive tasks **integral to production** don't require LOTO **if** effective alternative measures protect the worker. Examples of well-designed alternatives:
+
+| Task | Alternative measure |
+|---|---|
+| Clearing a jam at a guarded infeed | **Interlocked guard** monitored by a safety-rated system that stops hazardous motion and prevents restart while open |
+| Adding labels to a running labeler | **Tool or access port** that keeps hands outside the danger zone |
+| Wiping a sensor lens | Sensor relocated or a cleaning port added outside the guard |
+| Clearing a film wrap at a stretch wrapper | **Safety-rated stop** plus a **trapped-key** system for guard entry |
+
+What makes them **effective**:
+
+- Designed using **risk assessment** and machine safety standards (such as **ANSI B11** and **ISO 13849** for safety-rated controls)
+- Protect against **all** hazards for that task, including stored energy
+- **Documented**, with training, so the task is done the same way every time
+
+If a task falls outside the defined alternative measure (a bigger jam, a different access point, a broken interlock), go back to **full lockout**.
+
+---
+
+## Energized Electrical Troubleshooting
+
+Diagnosing electrical faults sometimes requires taking **voltage measurements on live circuits**. That isn't lockout; it's **energized work**, governed by electrical safe work practices such as OSHA **1910.333** and **NFPA 70E**. In general:
+
+- Only **qualified persons** do it.
+- Work on energized parts must be **justified**. De-energizing is the default.
+- The hazards (shock and **arc flash**) are assessed, and appropriate **PPE**, tools, and boundaries are used.
+- Many sites require an **energized electrical work permit** for anything beyond diagnostic testing.
+
+Once troubleshooting finds the problem, the **repair** is done under **lockout**.
+
+---
+
+## Key Takeaway
+
+You may temporarily remove locks to **test or position** only by following the sequence: **clear tools, clear people, remove locks per release, energize, then fully re-lock** before resuming. Minor servicing alternatives must be **engineered, documented, and effective** against all hazards. **Live electrical troubleshooting** is energized work under electrical safety rules, and repairs happen under lockout.
+
+<TryIt title="Test or Not?">
+
+After replacing a motor, the electrician needs to check rotation direction. Write the steps they should follow.
+
+*Clear all tools from the drive. Make sure everyone is out of the machine area. Notify affected employees. Remove locks using the release procedure. Bump the motor and observe rotation from a safe position. De-energize, re-apply all locks, release stored energy, and verify before correcting the rotation (swapping leads) under lockout.*
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "What must happen before locks are removed to test a machine?",
+      options: ["Nothing special", "Only notify the supervisor", "Clear tools and materials and remove employees from the machine area", "Apply extra tags"],
+      correctIndex: 2,
+      explanation: "OSHA's sequence starts with clearing tools and people before devices are removed."
+    },
+    {
+      question: "After testing or positioning, what must happen before servicing resumes?",
+      options: ["Continue with energy on", "Just turn the switch off", "De-energize and reapply all energy control measures, including verification", "Leave the tag only"],
+      correctIndex: 2,
+      explanation: "The machine must return to a fully locked and verified state."
+    },
+    {
+      question: "Which is an example of an effective alternative measure for routine jam clearing?",
+      options: ["Asking the operator not to press Start", "A safety-rated interlocked guard that stops motion and prevents restart while open", "A sign saying 'Careful'", "Working quickly"],
+      correctIndex: 1,
+      explanation: "Engineered, safety-rated interlocks provide effective protection. Administrative requests alone do not."
+    },
+    {
+      question: "Live voltage measurements during troubleshooting are governed by:",
+      options: ["LOTO alone", "No rules", "The machine manual only", "Electrical safe work practices such as 1910.333 and NFPA 70E"],
+      correctIndex: 3,
+      explanation: "Energized work requires qualified persons, justification, risk assessment, and PPE under electrical safety rules."
+    }
+  ]}
+/>

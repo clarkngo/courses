@@ -1,0 +1,152 @@
+---
+title: "Reading Ship Drawings and Welding Symbols"
+description: "Learn ship orientation and reference terms such as frame numbers, baseline, centerline, and molded lines, the main drawing types used in a yard, and how to read AWS welding symbols for fillet and groove welds."
+module: 1
+moduleTitle: "Ship Structure and Drawings"
+lesson: 2
+duration: "30 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Speaking Ship
+
+| Term | Meaning |
+|---|---|
+| **Fore / forward** | Toward the bow (front) |
+| **Aft** | Toward the stern (back) |
+| **Port** | Left side, looking forward |
+| **Starboard** | Right side, looking forward |
+| **Inboard / outboard** | Toward / away from the centerline |
+| **Centerline (CL)** | Fore-and-aft line down the middle of the ship |
+| **Baseline (BL)** | Horizontal reference line, usually at the bottom of the keel; heights are measured from it |
+| **Frame numbers** | Stations along the length, numbered (usually from aft forward); "Fr. 42" locates a point fore and aft |
+| **Molded line** | Theoretical surface of the structure, often the inside of the shell plating; dimensions are measured to molded lines |
+| **Half-breadth** | Distance from the centerline to a point, measured athwartships (side to side) |
+
+Any point on a ship can be located by **frame number** (fore and aft), **distance off centerline** (side to side), and **height above baseline** (up and down).
+
+---
+
+## Drawing Types
+
+| Drawing | Shows |
+|---|---|
+| **General arrangement (GA)** | Overall layout of spaces |
+| **Lines plan / offsets** | Hull shape as sections, waterlines, buttocks; offset tables give coordinates |
+| **Midship section** | Typical cross-section with scantlings (member sizes) |
+| **Shell expansion** | The curved shell flattened out, showing every plate, seam, and butt |
+| **Construction / structural drawings** | Each block, deck, or bulkhead, with members and welds |
+| **Production / work packages** | Cut parts, assembly sequence, weld details for the crew |
+
+Modern yards generate most production drawings from a **3D product model** (CAD), and many parts are cut by **CNC plasma or laser** directly from that model.
+
+---
+
+## Welding Symbols (AWS A2.4)
+
+Welding symbols tell the welder **what** weld to make, **where**, and **how big**. The basic parts:
+
+<svg viewBox="0 0 700 250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="An AWS welding symbol. A horizontal reference line has an arrow at its left end pointing to the joint. A fillet weld symbol, a right triangle, sits below the reference line, meaning the weld is on the arrow side. The size, 1/4, is written to the left of the triangle, and the length and pitch, 2-6, to its right, meaning intermittent welds 2 inches long on 6-inch centers. A small circle at the junction of the arrow and reference line means weld all around, and a small flag means field weld. A tail at the right end holds the process, here FCAW.">
+  <g font-family="system-ui, -apple-system, sans-serif" font-size="13">
+    <line x1="200" y1="110" x2="520" y2="110" stroke="#0f172a" stroke-width="2.5"/>
+    <line x1="200" y1="110" x2="120" y2="190" stroke="#0f172a" stroke-width="2.5"/>
+    <polygon points="120,190 128,172 138,182" fill="#0f172a"/>
+    <polyline points="520,110 545,90" fill="none" stroke="#0f172a" stroke-width="2.5"/>
+    <polyline points="520,110 545,130" fill="none" stroke="#0f172a" stroke-width="2.5"/>
+    <polygon points="300,112 300,140 328,112" fill="none" stroke="#9a3412" stroke-width="2.5"/>
+    <text x="290" y="132" text-anchor="end" fill="#9a3412" font-weight="700">1/4</text>
+    <text x="338" y="132" fill="#9a3412" font-weight="700">2-6</text>
+    <circle cx="200" cy="110" r="8" fill="none" stroke="#0369a1" stroke-width="2.5"/>
+    <line x1="200" y1="102" x2="200" y2="70" stroke="#0369a1" stroke-width="2.5"/>
+    <polygon points="200,70 222,77 200,85" fill="#0369a1"/>
+    <text x="555" y="115" fill="#0f172a" font-weight="700">FCAW</text>
+    <text x="300" y="98" text-anchor="middle" fill="#475569">other side ↑ (above line)</text>
+    <text x="320" y="165" text-anchor="middle" fill="#475569">arrow side ↓ (below line)</text>
+    <text x="110" y="215" fill="#0f172a" font-weight="700">arrow → the joint</text>
+    <text x="230" y="60" fill="#0369a1" font-weight="700">field weld flag</text>
+    <text x="120" y="98" fill="#0369a1">all-around circle</text>
+    <text x="590" y="140" text-anchor="middle" fill="#475569">tail: process,</text>
+    <text x="590" y="156" text-anchor="middle" fill="#475569">spec, notes</text>
+    <text x="300" y="235" text-anchor="middle" fill="#9a3412" font-weight="700">1/4 in fillet, 2 in long, 6 in pitch, arrow side</text>
+  </g>
+</svg>
+
+### The Golden Rule: Arrow Side vs. Other Side
+
+- Weld symbol **below** the reference line → weld on the **arrow side** of the joint
+- Weld symbol **above** the line → weld on the **other side**
+- Symbols on **both** sides → weld **both** sides
+
+### Common Weld Symbols
+
+| Symbol | Weld |
+|---|---|
+| Right triangle | **Fillet** weld |
+| Two parallel lines | **Square groove** |
+| V shape | **V-groove** |
+| Single slanted line with vertical | **Bevel groove** |
+| Small circle at arrow junction | Weld **all around** |
+| Flag at arrow junction | **Field weld** (done at erection or on site) |
+
+### Size, Length, and Pitch
+
+- **Size** goes to the **left** of the symbol (for a fillet, the leg length).
+- **Length-pitch** goes to the **right**. "2-6" means **2-inch** welds on **6-inch** centers (intermittent).
+- No length means a **continuous** weld for the full joint.
+- **Chain intermittent** (welds opposite each other on both sides) vs. **staggered intermittent** (offset) are shown by how the symbols line up above and below the line.
+
+Ship drawings may use AWS symbols, ISO 2553 symbols, or the yard's own standard, so check the drawing's **legend**.
+
+<Pitfall title="Welding the Wrong Side">
+
+**Common mistake:** reading the fillet triangle without noticing whether it's above or below the reference line.
+
+Above means the **other side**. Welding the wrong side of a tee joint leaves the designed side unwelded, and an inspector will reject it (or worse, it'll be missed). Read every symbol: **side, size, length, pitch, process**.
+
+</Pitfall>
+
+---
+
+## Key Takeaway
+
+Locate any point by **frame number**, **distance off centerline**, and **height above baseline**. Know the main drawings: **GA, lines, midship section, shell expansion, and structural drawings**. On welding symbols, **below the line = arrow side**, **above = other side**; **size left, length-pitch right**; flags mean **field weld**, circles mean **all around**.
+
+<TryIt title="Read These Symbols">
+
+1. A fillet triangle **above** the line with **5/16** on the left and nothing on the right. *(5/16-inch continuous fillet weld on the other side.)*
+2. Fillet triangles **above and below**, aligned, with **1/4** and **3-12** on each. *(1/4-inch chain intermittent fillet welds on both sides, 3 inches long on 12-inch centers.)*
+3. A V-groove symbol below the line with a **flag** at the arrow junction. *(V-groove weld on the arrow side, made in the field.)*
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "A fillet weld symbol is drawn below the reference line. Where is the weld made?",
+      options: ["Other side", "Both sides", "Anywhere", "Arrow side"],
+      correctIndex: 3,
+      explanation: "Below the reference line means the arrow side of the joint."
+    },
+    {
+      question: "What does '2-6' to the right of a fillet symbol mean?",
+      options: ["2 passes, 6 minutes", "2 mm size, 6 mm length", "2-inch welds on 6-inch centers", "Weld 2 to 6 times"],
+      correctIndex: 2,
+      explanation: "Length-pitch: 2-inch-long welds spaced on 6-inch centers."
+    },
+    {
+      question: "A point on a ship is described as 'Fr. 60, 4 m off CL, 6 m above BL.' What does BL refer to?",
+      options: ["Bulkhead line", "Bow line", "Bilge level", "Baseline, the height reference usually at the bottom of the keel"],
+      correctIndex: 3,
+      explanation: "Heights are measured from the baseline."
+    },
+    {
+      question: "Which drawing shows the curved hull shell flattened out with every plate, seam, and butt?",
+      options: ["Shell expansion", "General arrangement", "Midship section", "Lines plan"],
+      correctIndex: 0,
+      explanation: "The shell expansion lays the shell plating flat to show plate layout."
+    }
+  ]}
+/>

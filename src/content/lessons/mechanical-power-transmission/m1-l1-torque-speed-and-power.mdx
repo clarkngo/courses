@@ -1,0 +1,156 @@
+---
+title: "Torque, Speed, and Power"
+description: "Understand the three quantities every drivetrain trades between, calculate horsepower from torque and rpm, and see how speed ratios multiply torque through belts, chains, and gearboxes."
+module: 1
+moduleTitle: "Drivetrain Fundamentals"
+lesson: 1
+duration: "25 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## What a Drivetrain Does
+
+Electric motors usually spin fast (often around **1,750 or 3,500 rpm** on 60 Hz power) with modest torque. Most machines need the opposite: **slow speed with high torque** to move a conveyor, turn a mixer, or drive a roll.
+
+The **drivetrain** connects the two, changing speed and torque along the way.
+
+<ProcessFlow
+  label="A typical industrial drivetrain: an electric motor drives a V-belt drive, which drives a gearbox, which connects through a coupling to a roller chain drive that turns the conveyor head shaft supported by bearings."
+  color="#4d7c0f"
+  steps={[
+    { title: 'Motor', detail: '1,750 rpm, low torque' },
+    { title: 'Belt drive', detail: 'First speed reduction' },
+    { title: 'Gearbox', detail: 'Big reduction, big torque' },
+    { title: 'Coupling', detail: 'Joins shafts, absorbs misalignment' },
+    { title: 'Chain drive', detail: 'Final reduction' },
+    { title: 'Head shaft', detail: 'Turns the conveyor on bearings' },
+  ]}
+/>
+
+This course covers each of those parts in turn.
+
+---
+
+## The Three Quantities
+
+| Quantity | What it is | Common units |
+|---|---|---|
+| **Torque** | Twisting force | lb-ft, lb-in, N·m |
+| **Speed** | How fast a shaft turns | rpm |
+| **Power** | Rate of doing work: torque × speed | horsepower (hp), kilowatts (kW) |
+
+### The Horsepower Formula
+
+**hp = torque (lb-ft) × rpm ÷ 5,252**
+
+Or, rearranged to find torque:
+
+**torque (lb-ft) = hp × 5,252 ÷ rpm**
+
+In metric: **kW = torque (N·m) × rpm ÷ 9,550**. Also, 1 hp ≈ 0.746 kW.
+
+### Worked Example
+
+A **10 hp** motor runs at **1,750 rpm**. Its full-load torque is:
+
+10 × 5,252 ÷ 1,750 ≈ **30 lb-ft**
+
+---
+
+## Ratios: Trading Speed for Torque
+
+When a drive reduces speed, it **multiplies torque** by about the same ratio (minus losses). Power stays roughly the same going in and out.
+
+**Ratio = driver speed ÷ driven speed**
+
+For belts and chains, the ratio comes from sizes:
+
+- **Belt:** ratio ≈ driven sheave diameter ÷ driver sheave diameter
+- **Chain or gears:** ratio = driven teeth ÷ driver teeth
+
+### Continuing the Example
+
+That 30 lb-ft motor drives a **10:1** gearbox:
+
+| | Speed | Torque |
+|---|---|---|
+| Gearbox input | 1,750 rpm | 30 lb-ft |
+| Gearbox output (ideal) | 175 rpm | 300 lb-ft |
+| Output at 95% efficiency | 175 rpm | ≈ 285 lb-ft |
+
+Every component **downstream** of a reduction must handle the **higher torque**. That's why output shafts, keys, and couplings are much larger than the motor's.
+
+---
+
+## Efficiency and Losses
+
+No drive is perfect. Losses become heat.
+
+| Drive | Typical efficiency (approx.) |
+|---|---|
+| Synchronous (toothed) belt | ~97–98% |
+| Roller chain, well lubricated | ~97–98% |
+| V-belt, properly tensioned | ~93–96%, dropping if it slips |
+| Helical or bevel gear stage | ~97–98% per stage |
+| Worm gear | Wide range, roughly 50–90%, lower at high ratios |
+
+A hot gearbox or a squealing belt is power you paid for being turned into heat.
+
+<Pitfall title="Upsizing the Motor to Fix a Stall">
+
+**Common mistake:** a conveyor keeps tripping on overload, so someone installs a bigger motor.
+
+Now the motor can deliver more torque than the gearbox, chain, and shafts were designed for. The next jam breaks a shaft or a gear instead of tripping a breaker. Find out **why** the load increased (a seized bearing, a dragging belt, product buildup) before changing the drive's power.
+
+</Pitfall>
+
+---
+
+## Key Takeaway
+
+**hp = torque × rpm ÷ 5,252.** Speed reductions **multiply torque** by the ratio, so parts get bigger downstream. Efficiency losses turn into heat, which is why worm gears and slipping belts run hot. Fix the cause of an overload before adding power.
+
+<TryIt title="Follow the Torque">
+
+A **5 hp, 1,750 rpm** motor drives a 4-inch sheave belted to a 12-inch sheave on a gearbox with a **15:1** ratio.
+
+1. Motor torque? 5 × 5,252 ÷ 1,750 ≈ **15 lb-ft**
+2. Belt ratio? 12 ÷ 4 = **3:1**, so gearbox input ≈ 583 rpm and ≈ 45 lb-ft
+3. Gearbox output (ignoring losses)? 583 ÷ 15 ≈ **39 rpm**; 45 × 15 ≈ **675 lb-ft**
+
+That output shaft sees **45 times** the motor torque.
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "What is the full-load torque of a 20 hp motor at 1,750 rpm?",
+      options: ["About 15 lb-ft", "About 120 lb-ft", "About 60 lb-ft", "About 350 lb-ft"],
+      correctIndex: 2,
+      explanation: "Torque = 20 × 5,252 ÷ 1,750 ≈ 60 lb-ft."
+    },
+    {
+      question: "A 20-tooth sprocket drives a 60-tooth sprocket. What happens to speed and torque?",
+      options: ["Speed triples, torque drops to 1/3", "Both triple", "Speed drops to 1/3, torque roughly triples", "Neither changes"],
+      correctIndex: 2,
+      explanation: "The ratio is 60 ÷ 20 = 3:1. Speed is divided by 3 and torque multiplied by about 3."
+    },
+    {
+      question: "Why are gearbox output shafts larger than input shafts?",
+      options: ["For appearance", "They spin faster", "To hold more oil", "They carry much higher torque after the speed reduction"],
+      correctIndex: 3,
+      explanation: "Reducing speed multiplies torque, so the output side must be stronger."
+    },
+    {
+      question: "Which drive type typically has the lowest efficiency?",
+      options: ["High-ratio worm gear", "Synchronous belt", "Roller chain", "Helical gear"],
+      correctIndex: 0,
+      explanation: "Worm gears rely on sliding contact, so efficiency can be quite low, especially at high ratios."
+    }
+  ]}
+/>

@@ -1,0 +1,127 @@
+---
+title: "Locks, Tags, and Lockout Devices"
+description: "Learn OSHA's requirements for lockout and tagout devices (durable, standardized, substantial, and identifiable), the limits of tags, the one-person-one-lock-one-key rule, and the hardware used for breakers, valves, plugs, and group isolation."
+module: 2
+moduleTitle: "Program, People, and Devices"
+lesson: 2
+duration: "25 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Lockout vs. Tagout
+
+- **Lockout:** a **lock** holds the energy-isolating device in the safe position. It can't be removed without the key or excessive force.
+- **Tagout:** a **tag** is attached to the isolating device as a **warning**. It does **not** physically stop anyone.
+
+OSHA prefers lockout. If an isolating device **can** accept a lock, you must use lockout unless the employer can show that a tagout program gives **full employee protection**, meaning protection equivalent to lockout.
+
+---
+
+## Device Requirements
+
+OSHA requires lockout and tagout devices to be:
+
+| Requirement | What it means |
+|---|---|
+| **Provided by the employer** | Workers don't bring random padlocks from home |
+| **Singularly identified** | Used **only** for energy control, never to lock toolboxes or lockers |
+| **Durable** | Withstand the environment; tags stay legible in wet, hot, or chemical areas |
+| **Standardized** | Consistent within the facility by **color, shape, or size**; tags use a consistent print and format |
+| **Substantial** | Locks can't be removed without **excessive force** such as bolt cutters; tag attachments are **non-reusable, self-locking**, attachable by hand, with a minimum unlocking strength of **at least 50 pounds** (like a one-piece nylon cable tie) |
+| **Identifiable** | Show **who** applied the device |
+
+Tags must carry a clear warning such as **DO NOT START**, **DO NOT OPEN**, **DO NOT CLOSE**, **DO NOT ENERGIZE**, or **DO NOT OPERATE**.
+
+### One Person, One Lock, One Key
+
+Every authorized employee working on the equipment applies **their own personal lock**, and **only they hold the key**. No shared keys and no "master" lock that covers everyone without their own lock on it.
+
+Many plants add a **photo, name, and department** label to each person's lock.
+
+---
+
+## The Limits of Tags
+
+Training must make sure everyone understands that tags:
+
+- Are **warnings**, not physical restraints
+- Must **never be bypassed, ignored, or removed** without authorization
+- Must be **legible and understandable** to everyone in the area
+- Can be **torn off** or **deteriorate** in harsh environments
+- May create a **false sense of security**
+
+When tagout is used where a lock could fit, **additional measures** are needed for full protection, such as removing an isolating circuit element, blocking a controlling switch, opening an extra disconnect, or removing a valve handle.
+
+---
+
+## Common Lockout Hardware
+
+| Device | Use |
+|---|---|
+| **Personal safety padlock** | The basic lock; non-conductive bodies are common for electrical work |
+| **Hasp (scissor)** | Lets several people put locks on one point |
+| **Circuit breaker lockout** | Clamps onto a breaker handle in OFF so it accepts a lock |
+| **Plug lockout** | Encloses a plug so it can't be inserted |
+| **Ball valve lockout** | Holds a quarter-turn handle closed |
+| **Gate valve cover** | Encloses a handwheel so it can't turn |
+| **Cable lockout** | Steel cable threads through several devices for one lock point |
+| **Group lockbox** | Holds keys for many isolation points; each worker puts their own lock on the box |
+| **Blocks, pins, and cribbing** | Physically restrain gravity loads and mechanisms |
+
+<Pitfall title="The Lock That Isn't Really Holding Anything">
+
+**Common mistake:** a breaker lockout device that fits loosely, or a valve lockout that lets the handle move a few degrees, or a lock through a disconnect whose handle can still be moved by forcing it.
+
+Always **test** that the locked device truly can't be moved to the ON or OPEN position. If the hardware doesn't fit, get the right device. Don't improvise with zip ties and tape.
+
+</Pitfall>
+
+---
+
+## Key Takeaway
+
+**Lockout** physically prevents operation; **tagout** only warns. Devices must be **employer-provided, singularly identified, durable, standardized, substantial, and identifiable**. Tag ties need **50 lb** minimum strength. Follow **one person, one lock, one key**. Use the right hardware and **test** that it really holds.
+
+<TryIt title="Audit Your Locks">
+
+Look at your facility's LOTO station or your own kit:
+
+1. Are locks a **standard** color or style used **only** for LOTO?
+2. Is each lock **identified** with a name (and ideally a photo)?
+3. Do tags have a clear **warning** and room for name, date, and reason?
+4. Are tag ties **self-locking** and rated?
+5. Do you have the right devices for every isolation point in your area (breakers, valves, plugs)?
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "What is the key difference between a lock and a tag?",
+      options: ["A lock physically prevents operation; a tag is only a warning", "Color", "Tags are stronger", "Locks are only for valves"],
+      correctIndex: 0,
+      explanation: "Tags don't physically stop anyone, which is why lockout is preferred."
+    },
+    {
+      question: "What minimum unlocking strength must tag attachment devices have?",
+      options: ["5 pounds", "50 pounds", "20 pounds", "500 pounds"],
+      correctIndex: 1,
+      explanation: "OSHA requires tag attachments to have a minimum unlocking strength of at least 50 pounds."
+    },
+    {
+      question: "What does 'singularly identified' mean for LOTO locks?",
+      options: ["Each lock has a serial number", "Only one lock exists per plant", "They are used only for energy control and nothing else", "They have a single key for everyone"],
+      correctIndex: 2,
+      explanation: "LOTO devices must be used only for controlling energy, not for lockers, toolboxes, or gates."
+    },
+    {
+      question: "Three mechanics need to lock out one disconnect that has room for only one lock. What should they use?",
+      options: ["A lockout hasp so each can apply their own lock", "One shared lock", "A tag only", "Take turns"],
+      correctIndex: 0,
+      explanation: "A hasp allows each authorized employee to apply their own personal lock."
+    }
+  ]}
+/>

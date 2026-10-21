@@ -1,0 +1,154 @@
+---
+title: "Bearing Installation, Lubrication, and Failure Analysis"
+description: "Install bearings without damaging them, using induction heaters, proper tools, and correct force paths; grease them correctly without overgreasing; and read the common failure modes, including spalling, brinelling, fluting, and contamination."
+module: 2
+moduleTitle: "Bearings"
+lesson: 2
+duration: "30 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Why Bearings Die Young
+
+Bearing makers report that only a small fraction of bearings reach their calculated fatigue life. The rest fail early, and the usual causes are within a mechanic's control:
+
+- **Poor lubrication** (too little, too much, wrong type, or contaminated)
+- **Contamination** (dirt and water)
+- **Improper mounting** (hammering, wrong fits, misalignment)
+- **Overload** (over-tensioned belts, misalignment, imbalance)
+
+---
+
+## Installing a Bearing Correctly
+
+### The Golden Rule: Never Push Through the Rolling Elements
+
+When pressing a bearing onto a shaft, apply force **only to the ring being fitted**, which is usually the **inner ring**. Pushing on the outer ring forces the load through the balls or rollers and dents the raceways (called **brinelling**) before the bearing ever turns.
+
+<ProcessFlow
+  label="Bearing installation steps: verify the part number, clean and measure the shaft and housing, heat or press using the correct ring, seat against the shoulder, lock it in place, lubricate, and check by hand rotation."
+  color="#4d7c0f"
+  steps={[
+    { title: 'Verify', detail: 'Full number incl. suffix' },
+    { title: 'Prep', detail: 'Clean; check shaft size, burrs, wear' },
+    { title: 'Mount', detail: 'Heat it, or press the tight ring' },
+    { title: 'Seat', detail: 'Firmly against the shoulder' },
+    { title: 'Lock', detail: 'Locknut, collar, or set screws' },
+    { title: 'Lube + check', detail: 'Correct grease; turns freely' },
+  ]}
+/>
+
+### Heating
+
+For medium and large bearings with an interference fit, heat the bearing so it expands and slides on.
+
+- Use an **induction heater** with automatic demagnetization, or an oven.
+- Heating about **80–90 °C above shaft temperature** is usually enough. Standard bearings should **never exceed about 120 °C (250 °F)**, or the steel, seals, and grease can be damaged. Follow the maker's limit.
+- **Never use a torch.** Uneven heat ruins the steel's hardness.
+- Wear heat-resistant gloves, and push it home quickly before it cools and grabs.
+
+### Pressing and Driving
+
+For small bearings, use a **fitting tool kit** (impact sleeve and ring) or an arbor press so force goes evenly into the correct ring. **Never strike a bearing directly with a hammer.**
+
+### Fits
+
+The ring that rotates relative to the load usually gets an **interference (tight) fit**; the other ring gets a looser fit. For most shafts turning under a stationary load, that means the inner ring is tight on the shaft. Worn shafts or housings that let a ring **spin** cause fretting and rapid failure.
+
+---
+
+## Greasing Without Killing the Bearing
+
+### How Much?
+
+More grease is **not** better. A bearing packed full churns the grease, overheats, and can blow out seals. For many open bearings, a common guideline is to fill the bearing itself and leave the housing roughly **one-third to one-half** full. Relubrication quantity and interval should come from the maker's formula or a lubrication program.
+
+### Compatibility
+
+Greases use different **thickeners** (lithium complex, polyurea, calcium sulfonate, and others). Some don't mix well. Mixing incompatible greases can make the mixture soften and run out. Label grease points and grease guns, and use one product per point.
+
+### Electric Motors
+
+Many motor bearings are overgreased. Good practice: wipe the fitting, **remove the drain plug**, add grease slowly with the motor running if it's safe and the maker allows, and let excess purge before reinstalling the plug.
+
+<Pitfall title="Pumping Until It Comes Out">
+
+**Common mistake:** greasing a sealed housing "until grease comes out somewhere."
+
+With no relief path, grease forces past the seals or collapses them, and the bearing overheats from churning. Know the correct **shot count** for each grease gun (weigh a few shots to calibrate) and the right volume for each bearing.
+
+</Pitfall>
+
+---
+
+## Reading Failed Bearings
+
+A failed bearing is evidence. Look before you throw it away.
+
+| Failure mode | What it looks like | Common cause |
+|---|---|---|
+| **Fatigue spalling** | Flaking pits in the raceway | End of normal life, or overload |
+| **True brinelling** | Evenly spaced dents matching the rolling elements | Impact or improper mounting force |
+| **False brinelling** | Shiny or rusty marks at element spacing, without true dents | Vibration while **stationary** (shipping, standby equipment) |
+| **Fluting** | Washboard-like stripes across the raceway | **Electric current** passing through, often from VFD-driven motors |
+| **Contamination** | Dents, scratches, dull surfaces | Dirt in grease, failed seals, dirty handling |
+| **Corrosion** | Rust staining, etched areas | Water, condensation, washdown |
+| **Discoloration (blue/brown)** | Heat tint on rings or elements | Lubrication failure, overload, too-tight fit |
+| **Off-center wear path** | Load zone near one edge of the raceway | Misalignment or thrust overload |
+| **Spun ring / fretting** | Polished or rusty bore or OD | Loose fit, worn shaft or housing |
+
+### VFDs and Fluting
+
+Variable frequency drives can induce **shaft voltages** that discharge through motor bearings, causing **electrical erosion** and fluting. Solutions include **shaft grounding rings**, **insulated bearings** (ceramic-coated or hybrid ceramic-ball), and proper drive grounding.
+
+---
+
+## Key Takeaway
+
+Mount bearings by **pushing only the ring being fitted**, using **controlled heat** (never a torch) or proper tools (never a bare hammer). Grease the right **amount** with a **compatible** product. Read failures: **spalling** is fatigue, **brinelling** is impact, **fluting** is electrical current, and an **off-center path** is misalignment.
+
+<TryIt title="Bearing Autopsy">
+
+A conveyor tail pulley bearing fails after four months. You find:
+
+- Evenly spaced **dents** in the inner raceway
+- Grease is clean and the right amount
+
+What failure mode is this? *(True brinelling.)*
+What's the likely cause? *(Impact during installation, such as hammering the bearing onto the shaft, or a shock load.)*
+What would you change? *(Use a fitting tool or induction heater. Check the shaft for burrs and correct size. Train the crew.)*
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "When pressing a bearing onto a shaft, where should force be applied?",
+      options: ["The outer ring", "The inner ring being fitted", "The seal", "The cage"],
+      correctIndex: 1,
+      explanation: "Push only on the ring being fitted so force doesn't travel through the rolling elements."
+    },
+    {
+      question: "Why should you never heat a bearing with a torch?",
+      options: ["It's too slow", "It demagnetizes the bearing", "Uneven, excessive heat can ruin the steel's hardness and damage seals", "Torches are only for welding"],
+      correctIndex: 2,
+      explanation: "Localized overheating can soften hardened steel. Use an induction heater or oven with controlled temperature."
+    },
+    {
+      question: "Washboard-like stripes across a motor bearing's raceway suggest:",
+      options: ["Overgreasing", "Electrical current damage (fluting)", "Water contamination", "Normal fatigue"],
+      correctIndex: 1,
+      explanation: "Fluting is caused by electrical discharge through the bearing, common with VFD-driven motors."
+    },
+    {
+      question: "What is false brinelling?",
+      options: ["Dents from hammering", "Wear marks from vibration while the bearing is not rotating", "A counterfeit bearing", "Overheating"],
+      correctIndex: 1,
+      explanation: "Vibration in a stationary bearing wears marks at rolling element spacing, without true plastic dents."
+    }
+  ]}
+/>

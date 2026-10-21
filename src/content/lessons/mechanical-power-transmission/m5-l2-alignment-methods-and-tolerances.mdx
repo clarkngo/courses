@@ -1,0 +1,153 @@
+---
+title: "Alignment Methods and Tolerances"
+description: "Compare straightedge, dial indicator (rim-and-face and reverse dial), and laser alignment. Learn indicator reading rules, bar sag, thermal growth, typical tolerance tables, and a step-by-step laser alignment workflow."
+module: 5
+moduleTitle: "Shaft Alignment"
+lesson: 2
+duration: "30 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Three Levels of Alignment
+
+| Method | Accuracy | Use |
+|---|---|---|
+| **Straightedge and feeler gauges** | Rough (several mils at best) | Rough alignment before precision work; low-speed, non-critical drives |
+| **Dial indicators** | Good (about 1 mil with skill) | Precision alignment where lasers aren't available |
+| **Laser alignment system** | Very good, fast, documented | The standard for precision alignment in most plants today |
+
+---
+
+## Dial Indicator Methods
+
+### Rim-and-Face
+
+One indicator rides on the **rim** (outside diameter) of the coupling hub to measure **offset**. Another rides on the **face** to measure **angularity**. Both are mounted on a bracket clamped to the other shaft, and both shafts are rotated together.
+
+### Reverse Dial (Reverse Indicator)
+
+Two **rim** indicators: one mounted on each shaft, reading the other shaft's hub. The two offsets, measured some distance apart, give both offset and angle. It's often more accurate than rim-and-face on machines with end float, since face readings are affected by axial movement.
+
+### Reading Rules
+
+- Zero the indicator at the **12 o'clock** position, then read at 3, 6, and 9 o'clock.
+- **Validity rule:** the **top + bottom** readings should equal the **side + side** readings (within a mil or so). If not, something slipped, or you misread.
+- A rim indicator reading is **twice** the actual offset, because the indicator sweeps a full diameter. **Actual offset = rim reading ÷ 2.**
+
+### Bar Sag
+
+Indicator brackets bend slightly under their own weight. When the indicator moves from top to bottom, sag makes the reading look different from reality. **Measure bar sag** on a pipe or mandrel with the same bracket setup, and correct your bottom readings by that amount.
+
+---
+
+## Laser Alignment
+
+Laser systems mount a **laser/detector head on each shaft**. As you rotate the shafts, the system measures how the beam moves and calculates:
+
+- Vertical and horizontal **offset** and **angularity** at the coupling
+- **Shim and move corrections** at each foot of the movable machine
+- Pass/fail against a selected **tolerance**
+
+They eliminate bar sag, read in real time while you adjust, and produce a **report** for records.
+
+<ProcessFlow
+  label="Laser alignment workflow: complete pre-alignment checks, mount the heads, enter dimensions, take measurements, correct the vertical plane with shims, correct the horizontal plane by moving the machine, then verify and save the report."
+  color="#4d7c0f"
+  loop="Repeat measurement and correction until both planes are within tolerance with all bolts tight."
+  steps={[
+    { title: 'Prep', detail: 'Soft foot, pipe strain, lockout' },
+    { title: 'Mount heads', detail: 'One per shaft' },
+    { title: 'Dimensions', detail: 'Distances to coupling and feet' },
+    { title: 'Measure', detail: 'Rotate through positions' },
+    { title: 'Vertical', detail: 'Shim per the readout' },
+    { title: 'Horizontal', detail: 'Live move with jack bolts' },
+    { title: 'Verify + save', detail: 'Bolts tight; report' },
+  ]}
+/>
+
+### Correct the Vertical Plane First
+
+Shimming changes vertical alignment. Moving sideways changes horizontal alignment. If you move sideways first and then lift the machine to add shims, you'll disturb the horizontal correction. **Shim first, then move horizontally.**
+
+Use **jacking bolts** for horizontal moves instead of hammers. They give fine, controlled movement.
+
+---
+
+## Tolerances
+
+Tolerances tighten as **speed** increases. A widely published style of guideline for short flexible couplings (values in mils, which are thousandths of an inch) looks like this:
+
+| Speed | Offset: excellent / acceptable | Angularity: excellent / acceptable (mils per inch) |
+|---|---|---|
+| **3,600 rpm** | ~1.0 / 2.0 mils | ~0.3 / 0.5 |
+| **1,800 rpm** | ~2.0 / 4.0 mils | ~0.5 / 0.7 |
+| **1,200 rpm** | ~2.5 / 5.0 mils | ~0.7 / 1.0 |
+
+Treat this as an illustration. Use your **site standard** or the **equipment maker's** values when available. Note again: these are **far tighter** than a coupling's own misalignment capacity.
+
+---
+
+## Thermal Growth
+
+Machines grow as they warm up. A motor might grow upward a few mils; a hot pump, compressor, or turbine can grow a lot more. If you align perfectly **cold**, the machines can be misaligned when **hot** and running.
+
+The fix is to apply **cold alignment targets (offsets)** from the equipment maker or from hot measurements, so the shafts come into line at operating temperature.
+
+<Pitfall title="Bolt-Bound Motor">
+
+**Common mistake:** the laser says to move the motor's rear feet 30 mils toward you, but the bolts are already against the edge of the holes.
+
+The machine is **bolt bound**. Options: move the **other** machine (if allowed), slot or drill the holes, or use smaller bolts with appropriate washers if the design allows. Don't force it, and don't accept an out-of-tolerance alignment just because you ran out of room.
+
+</Pitfall>
+
+---
+
+## Key Takeaway
+
+Rough-align with a **straightedge**, then precision-align with **dial indicators** or a **laser**. For indicators, follow the **validity rule**, remember **rim ÷ 2 = offset**, and correct for **bar sag**. **Shim vertical first**, then move horizontal with **jack bolts**. Tolerances tighten with **speed**, and hot machines may need **thermal growth offsets**.
+
+<TryIt title="Read the Indicators">
+
+A rim indicator is zeroed at 12 o'clock. Readings: **3 o'clock = +6**, **6 o'clock = +10**, **9 o'clock = +4** (all in mils).
+
+1. Validity check: top + bottom = 0 + 10 = 10; sides = 6 + 4 = 10. **Valid.**
+2. Vertical offset = 10 ÷ 2 = **5 mils**. (The sign tells you which way, depending on your setup.)
+3. Horizontal offset = (6 − 4) ÷ 2 = **1 mil**.
+
+At 1,800 rpm, the 5-mil vertical offset is outside the ~4-mil acceptable guideline, so it needs a shim correction.
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "A rim dial indicator shows a total reading of 8 mils from top to bottom. What is the actual offset?",
+      options: ["2 mils", "4 mils", "8 mils", "16 mils"],
+      correctIndex: 1,
+      explanation: "The indicator sweeps across the full diameter, so actual offset = reading ÷ 2 = 4 mils."
+    },
+    {
+      question: "Why correct the vertical plane before the horizontal plane?",
+      options: ["Vertical is more important", "Lifting the machine to change shims disturbs any horizontal correction already made", "Lasers only read vertical", "It's faster"],
+      correctIndex: 1,
+      explanation: "Shimming requires lifting, which can shift the machine sideways, so do it first."
+    },
+    {
+      question: "What does the indicator validity rule check?",
+      options: ["Battery level", "That top + bottom readings equal the sum of the two side readings", "Shaft speed", "Coupling gap"],
+      correctIndex: 1,
+      explanation: "If top + bottom doesn't equal side + side, the setup slipped or a reading is wrong."
+    },
+    {
+      question: "Why might a hot pump need cold alignment offsets?",
+      options: ["Thermal growth will move the shafts when running, so they're set slightly off cold to line up hot", "Pumps shrink when hot", "Lasers don't work on hot machines", "To reduce noise"],
+      correctIndex: 0,
+      explanation: "Machines grow with temperature. Cold targets compensate so alignment is correct at operating temperature."
+    }
+  ]}
+/>

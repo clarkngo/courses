@@ -1,0 +1,129 @@
+---
+title: "Glossary and Course Review"
+description: "Review the core vocabulary of industrial pneumatics, follow the air from compressor to cylinder one more time, and test yourself across the whole course."
+module: 6
+moduleTitle: "Safety and Review"
+lesson: 2
+duration: "30 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## The Whole System
+
+<ProcessFlow
+  label="The path of compressed air through a plant, one stop per course topic: compressor, receiver, dryer and filters, distribution piping, FRL, directional valve, flow control, and actuator."
+  color="#0369a1"
+  loop="Leaks, pressure drops, and wet air anywhere along this path show up as problems at the actuator."
+  steps={[
+    { badge: 'M2', title: 'Compressor', detail: 'Screw, piston, centrifugal' },
+    { badge: 'M2', title: 'Treat', detail: 'Receiver, dryer, filters, drains' },
+    { badge: 'M2', title: 'Distribute', detail: 'Loop header, top drops' },
+    { badge: 'M2', title: 'FRL', detail: 'Filter, regulate, maybe lubricate' },
+    { badge: 'M4', title: 'Valve', detail: '3/2, 5/2, 5/3' },
+    { badge: 'M4', title: 'Flow control', detail: 'Meter-out at the cylinder' },
+    { badge: 'M3', title: 'Actuator', detail: 'Cylinder, rotary, gripper, vacuum' },
+  ]}
+/>
+
+---
+
+## Glossary
+
+| Term | Meaning |
+|---|---|
+| **3/2, 5/2, 5/3** | Valve naming: ports / positions |
+| **Coalescing filter** | Removes fine oil aerosols and water droplets |
+| **Compression ratio** | (gauge pressure + 14.7) ÷ 14.7 |
+| **Cushion** | Trapped exhaust air that slows the piston near end of stroke |
+| **Double-acting** | Cylinder driven by air in both directions |
+| **Double-solenoid valve** | Valve with "memory": stays in its last shifted position |
+| **Dump valve** | Lockable 3/2 valve that blocks supply and exhausts downstream air |
+| **Duty cycle** | Percent of time a compressor can run loaded without overheating |
+| **FRL** | Filter, regulator, lubricator at the machine |
+| **Load/unload test** | Measures leakage: T ÷ (T + t) with production off |
+| **Meter-out** | Restricting exhaust air to control cylinder speed |
+| **NC / NO** | Normally closed / normally open valve |
+| **PDP** | Pressure dew point: temperature where water condenses at line pressure |
+| **Pilot-operated** | Valve whose main spool is shifted by pilot air |
+| **psig / psia** | Gauge pressure / absolute pressure (gauge + ~14.7) |
+| **Quick exhaust valve** | Dumps cylinder air directly at the port for speed |
+| **Receiver** | Storage tank that buffers demand and drops out water |
+| **scfm** | Flow in standard cubic feet per minute |
+| **Side load** | Force across the rod; destroys bushings and seals |
+| **Soft-start valve** | Ramps up pressure gradually when air is restored |
+| **Venturi / ejector** | Makes vacuum from a compressed air jet |
+| **VSD** | Variable speed drive compressor that matches output to demand |
+
+---
+
+## Formulas to Remember
+
+| What | Formula |
+|---|---|
+| Cylinder extend force | Pressure × π × (bore ÷ 2)² |
+| Cylinder retract force | Pressure × (piston area − rod area) |
+| Absolute pressure | Gauge + 14.7 psi (at sea level) |
+| Vacuum cup force | Vacuum (psi) × cup area ÷ safety factor |
+| Leakage % | Loaded time ÷ (loaded + unloaded time) × 100 |
+| Leak cost | scfm × kW/scfm × hours × $/kWh |
+
+---
+
+<TryIt title="Capstone: Walk Down a Machine">
+
+Choose a pneumatic machine in your workplace (or a video of one). Produce a one-page walkdown:
+
+1. **Supply:** Where does its drop come off the header? What pressure does the FRL regulate to? Is there a lockable **dump** valve?
+2. **Valves:** How many? Single or double solenoid? Any 5/3 valves, and what center?
+3. **Actuators:** List each cylinder's bore and estimate its extend force at the set pressure.
+4. **Speed control:** Meter-in or meter-out? Mounted at the cylinder?
+5. **Leaks:** Listen or use soapy water at couplings, FRLs, and exhausts. Estimate leak sizes.
+6. **Stored energy:** List every place energy remains after isolation.
+
+You now have a maintenance baseline, a leak list, and the start of a lockout procedure.
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "Pressure determines an actuator's ___, and flow determines its ___.",
+      options: ["speed, force", "temperature, noise", "force, speed", "stroke, bore"],
+      correctIndex: 2,
+      explanation: "Pressure × area gives force; how fast air can move in and out sets speed."
+    },
+    {
+      question: "Which dryer would you choose for an outdoor air line in a freezing climate?",
+      options: ["Refrigerated", "Desiccant", "None", "Membrane only"],
+      correctIndex: 1,
+      explanation: "Refrigerated dryers give a PDP near 35–40 °F, which isn't low enough for freezing conditions. Desiccant dryers reach −40 °F or lower."
+    },
+    {
+      question: "What is the theoretical extend force of a 3-inch bore cylinder at 80 psi?",
+      options: ["About 240 lbf", "About 754 lbf", "About 2,260 lbf", "About 565 lbf"],
+      correctIndex: 3,
+      explanation: "Area = π × 1.5² ≈ 7.07 in². Force = 80 × 7.07 ≈ 565 lbf."
+    },
+    {
+      question: "Air leaving a cylinder's rod side is restricted to control extension speed. This is called:",
+      options: ["Meter-in", "Bleed-off", "Meter-out", "Quick exhaust"],
+      correctIndex: 2,
+      explanation: "Restricting exhaust flow is meter-out, the standard for double-acting cylinders."
+    },
+    {
+      question: "Air is restored after maintenance and a cylinder suddenly moves even though no button was pressed. Which valve type most likely caused this?",
+      options: ["Double-solenoid", "Single-solenoid spring return", "Normally closed 2/2", "Manual lever valve in its normal position"],
+      correctIndex: 0,
+      explanation: "A double-solenoid valve remembers its last position and sends air there as soon as supply returns."
+    },
+    {
+      question: "Which isolation device properly de-energizes a pneumatic machine?",
+      options: ["A ball valve upstream", "Turning off the compressor", "A lockable 3/2 dump valve that exhausts downstream air", "Unplugging the PLC"],
+      correctIndex: 2,
+      explanation: "A 3/2 dump valve both blocks supply and vents downstream air, and it can accept a lock."
+    }
+  ]}
+/>

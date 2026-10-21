@@ -1,0 +1,124 @@
+---
+title: "Energy Types and Energy-Isolating Devices"
+description: "Identify every form of hazardous energy, including electrical, mechanical, hydraulic, pneumatic, chemical, thermal, and gravity, and learn which devices truly isolate energy and which ones only control it."
+module: 1
+moduleTitle: "Hazardous Energy Basics"
+lesson: 2
+duration: "25 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Energy Comes in Many Forms
+
+Most people think of LOTO as "turning off the breaker." But electricity is only one form of hazardous energy. A single packaging machine may have five.
+
+| Energy type | Examples | How it hurts |
+|---|---|---|
+| **Electrical** | Motors, heaters, control circuits, capacitors, VFDs | Shock, arc flash, burns, unexpected motion |
+| **Mechanical (kinetic)** | Flywheels, coasting rolls, fans, saw blades | Caught-in, cuts, amputation |
+| **Mechanical (potential)** | Compressed springs, tensioned belts, bent material | Sudden release, struck-by |
+| **Hydraulic** | Pumps, cylinders, accumulators, pressurized lines | Crushing, fluid injection, falling loads |
+| **Pneumatic** | Compressors, receivers, cylinders, trapped air | Unexpected motion, hose whip, flying debris |
+| **Gravity** | Raised platens, forks, rams, counterweights, stored parts | Crushing from falling or lowering loads |
+| **Chemical** | Process lines, tanks, reactive materials | Burns, toxic exposure, fire |
+| **Thermal** | Steam, hot oil, heated rolls, cryogenics | Burns, scalds, frostbite |
+| **Other** | Radiation, lasers, water pressure | Varies |
+
+**Stored (residual) energy** deserves special attention. It remains after the main source is isolated. Module 3 covers releasing it in detail.
+
+---
+
+## What Counts as an Energy-Isolating Device?
+
+OSHA defines an **energy-isolating device** as a mechanical device that **physically prevents** the transmission or release of energy. Examples:
+
+| Is an energy-isolating device | Is NOT an energy-isolating device |
+|---|---|
+| Manually operated electrical **disconnect switch** | **Push buttons**, selector switches |
+| Manually operated **circuit breaker** | **Control circuit** devices, PLC outputs |
+| **Line valve** (manually operated) | **E-stop** buttons |
+| **Block** (e.g., a mechanical block or pin) | **Interlock** switches on guards |
+| **Slip blind** or **blank** in a pipe | **Software** "maintenance modes" |
+| Any similar device that **physically** blocks energy | Anything that relies on logic or a signal |
+
+### Disconnects
+
+A good electrical disconnect:
+
+- **Opens all ungrounded conductors**
+- Can't be operated independently on one pole
+- Has a **visible indication** of position
+- Accepts a **lock** in the OFF position
+
+**Don't** pull fuses or rely on a motor starter. A starter is a control device; its contacts can weld closed.
+
+### Valves
+
+Hydraulic, pneumatic, steam, and process line valves must be **lockable** in the closed position, using built-in lockout features or valve lockout covers. For pneumatic systems, a **3/2 dump valve** blocks supply **and** vents downstream air (see the Pneumatics course).
+
+For hazardous process lines (chemicals, steam), isolation may require **double block and bleed** or a **blind** rather than one valve.
+
+### Capable of Being Locked Out
+
+When equipment is installed, replaced, or majorly repaired or renovated, OSHA requires energy-isolating devices **to be designed to accept a lockout device**. Older equipment that can't accept a lock may use tagout under strict conditions (Lesson 2.2), but the goal is always lockable isolation.
+
+<Pitfall title="Locking the Wrong Disconnect">
+
+**Common mistake:** a tech locks out the disconnect labeled "Conveyor 3," but the label is wrong. It actually feeds Conveyor 4.
+
+Labels drift as equipment is added and rewired. This is exactly why **verification** (trying to start the machine and testing for absence of voltage) is a required step, and why machine-specific procedures should be **checked on the floor**, not just written in an office.
+
+</Pitfall>
+
+---
+
+## Key Takeaway
+
+Hazardous energy includes **electrical, mechanical, hydraulic, pneumatic, gravity, chemical, and thermal** forms, plus **stored** energy. Only **physical** devices such as **disconnects, breakers, line valves, blocks, and blinds** isolate energy. **Buttons, E-stops, interlocks, PLCs, and starters do not.** New and modified equipment must accept locks.
+
+<TryIt title="Energy Inventory">
+
+Choose a machine you know well. List every energy source, the isolating device for each, and where it's located:
+
+| Energy | Source | Isolating device | Location |
+|---|---|---|---|
+| Electrical | 480 V main | Disconnect DS-12 | East wall |
+| Pneumatic | Plant air | 3/2 lockout dump valve | FRL at rear |
+| Gravity | Raised sealing head | Safety pin / block | Head frame |
+| ... | | | |
+
+If you can't find a lockable device for a source, that's a finding to report.
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "Which of these is an energy-isolating device?",
+      options: ["E-stop button", "PLC output", "Manually operated disconnect switch", "Guard interlock switch"],
+      correctIndex: 2,
+      explanation: "A disconnect physically opens the circuit. The others are control devices that rely on logic or signals."
+    },
+    {
+      question: "Why is a motor starter not acceptable for electrical isolation?",
+      options: ["It's a control device whose contacts can weld closed or be energized by the control circuit", "It's too large", "It's always lockable", "It opens all conductors"],
+      correctIndex: 0,
+      explanation: "Starters are controlled by circuits and can fail closed. Isolation needs a disconnect or breaker."
+    },
+    {
+      question: "A raised press ram held up by hydraulics is an example of which energy types?",
+      options: ["Electrical only", "Thermal", "Chemical", "Hydraulic and gravity"],
+      correctIndex: 3,
+      explanation: "Hydraulic pressure holds the ram up, and gravity will drop it if pressure is released."
+    },
+    {
+      question: "When equipment is replaced or renovated, OSHA requires its isolating devices to:",
+      options: ["Be capable of accepting a lockout device", "Be painted red", "Use tags only", "Be computer-controlled"],
+      correctIndex: 0,
+      explanation: "New, replaced, or renovated equipment must have isolating devices designed to accept a lock."
+    }
+  ]}
+/>

@@ -1,0 +1,141 @@
+---
+title: "Rotary Actuators, Grippers, Air Motors, and Vacuum"
+description: "Go beyond the cylinder: rack-and-pinion and vane rotary actuators, parallel and angular grippers, air motors, and vacuum pick-up with venturi generators and suction cups, including how to size a cup."
+module: 3
+moduleTitle: "Actuators"
+lesson: 2
+duration: "25 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Rotary Actuators
+
+When you need to **turn** something a fixed angle, such as flipping a part, opening a gate, or turning a valve, use a rotary actuator.
+
+| Type | How it works | Typical rotation | Notes |
+|---|---|---|---|
+| **Rack and pinion** | Pistons drive a toothed rack that turns a pinion gear | 90°, 180°, adjustable | Very common on process valves and indexing |
+| **Vane** | Air pushes a vane inside a round chamber | Up to about 270° | Compact; lower torque; sensitive to dirty air |
+| **Helical / scotch yoke** | Linear piston motion converted to rotation | 90° | Scotch yoke gives high torque at the ends of travel, ideal for valves |
+
+Rotary actuators are rated by **torque** (in·lb or N·m) at a given pressure. Like cylinders, they need cushioning or external stops when rotating heavy loads, because rotating inertia stores a lot of energy.
+
+---
+
+## Grippers
+
+**Grippers** are the "fingers" of pick-and-place machines and robots.
+
+- **Parallel grippers** — jaws move straight in and out; good for parts with parallel faces
+- **Angular grippers** — jaws pivot open; cheaper, need more clearance
+- **Three-jaw grippers** — center round parts
+
+Key specs are **grip force**, **stroke**, and the **jaw length** the force is rated at. Force drops as fingers get longer, so always check the maker's chart.
+
+### Fail-Safe Gripping
+
+What happens if air is lost while a part is held? Options include:
+
+- **Spring-assisted** grippers that hold on air loss
+- **Check valves** that trap air in the gripper
+- **Mechanical self-locking** jaw designs
+
+Choose deliberately. A dropped part over a person or a fixture is a safety problem, not just a quality problem.
+
+---
+
+## Air Motors
+
+Air motors spin continuously, like an electric motor, using vanes or pistons.
+
+- **Speed varies with load**: free speed with no load drops as torque increases
+- They can **stall without damage** and restart, which electric motors can't do safely
+- Safe in **explosive atmospheres** and washdown areas because there's no spark
+- **Very air-hungry**, so they cost a lot to run
+
+You see them in mixers in hazardous areas, hoists, and handheld tools.
+
+---
+
+## Vacuum: Picking with Suction
+
+Vacuum handling lifts parts like cartons, sheets, and glass using **suction cups**.
+
+### Making Vacuum with a Venturi
+
+Most plant vacuum comes from a **venturi** (vacuum ejector): compressed air rushes through a nozzle, and the fast-moving jet drags air out of a side port, creating vacuum. No moving parts, instant on and off, but it consumes compressed air the entire time it runs. Many ejectors include an **air-saving** function that shuts off supply once vacuum is reached and only resumes if vacuum decays.
+
+For large, continuous vacuum needs, an electric **vacuum pump** is usually cheaper to run.
+
+### Vacuum Units
+
+Vacuum is often measured in **inches of mercury (inHg)** below atmosphere. One inHg is about **0.49 psi**. A good venturi might pull around 20–25 inHg (roughly 10–12 psi below atmosphere). You can never exceed atmospheric pressure, about 14.7 psi at sea level, as your maximum "push."
+
+### Sizing a Suction Cup
+
+**Holding force = vacuum (psi) × cup area (in²)**, then divide by a **safety factor**.
+
+Common rules of thumb for safety factor:
+
+- **2** for a horizontal lift (cup on top of the part, lifting straight up)
+- **4** for a vertical lift (cup on the side of the part, relying on friction)
+
+Use more when there's fast motion or a porous or oily surface.
+
+<Pitfall title="Porous Cartons and Leaky Cups">
+
+**Common mistake:** sizing the cup on clean, smooth test parts, then running recycled corrugated cartons.
+
+Porous board and rough surfaces leak air through the material, so vacuum never builds fully. Measure the vacuum actually achieved on production parts, use **bellows** or foam cups for uneven surfaces, and add a **vacuum switch** that confirms grip before the robot moves.
+
+</Pitfall>
+
+---
+
+## Key Takeaway
+
+Rotary actuators turn a fixed angle and are rated in **torque**. Grippers need a defined **fail-safe** behavior on air loss. Air motors are spark-free and stall-tolerant but costly to run. Vacuum cups lift with **vacuum × area ÷ safety factor**, and you should always confirm vacuum before moving the load.
+
+<TryIt title="Size a Vacuum Cup">
+
+You need to lift a 12 lb flat steel sheet horizontally. The venturi delivers 20 inHg ≈ **9.8 psi**. Use a safety factor of **2**.
+
+Required theoretical force = 12 × 2 = **24 lbf**.
+Required area = 24 ÷ 9.8 ≈ **2.45 in²**.
+Cup diameter = 2 × √(2.45 ÷ π) ≈ **1.77 in**.
+
+Using **two 1.5-inch cups** (≈ 1.77 in² each, 3.53 in² total) gives margin and better balance.
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "Which rotary actuator design gives high torque at the ends of travel, making it popular for valve automation?",
+      options: ["Vane", "Air motor", "Parallel gripper", "Scotch yoke"],
+      correctIndex: 3,
+      explanation: "Scotch yoke actuators produce peak torque at the start and end of stroke, where valves need it most."
+    },
+    {
+      question: "What is a key advantage of air motors over electric motors?",
+      options: ["Lower air consumption", "They can stall without damage and are spark-free", "Constant speed under any load", "They need no maintenance"],
+      correctIndex: 1,
+      explanation: "Air motors tolerate stalling and suit explosive or washdown areas, but they use a lot of air."
+    },
+    {
+      question: "How does a venturi vacuum generator make vacuum?",
+      options: ["A fast compressed-air jet drags air out of a side port", "A piston pulls air out", "A fan blows air away", "A refrigerant condenses air"],
+      correctIndex: 0,
+      explanation: "The high-velocity jet entrains surrounding air, lowering pressure at the vacuum port."
+    },
+    {
+      question: "Why use a larger safety factor for a vertical suction-cup lift?",
+      options: ["Vacuum is weaker sideways", "Gravity is stronger", "Cups are smaller vertically", "The cup relies on friction rather than pulling straight against the load"],
+      correctIndex: 3,
+      explanation: "With the cup on a vertical face, the load hangs on friction, so a higher safety factor (often 4) is used."
+    }
+  ]}
+/>
