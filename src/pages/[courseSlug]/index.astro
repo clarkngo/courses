@@ -74,7 +74,16 @@ const lessonSlug = firstLesson?.slug.replace(courseSlug + '/', '');
           <div class="h-2 bg-white/25 rounded-full overflow-hidden">
             <div data-progress-bar class="h-full rounded-full bg-white dark:bg-gray-900 transition-all duration-500" style="width: 0%"></div>
           </div>
+          <button
+            id="reset-progress"
+            type="button"
+            data-course-title={course.data.title}
+            class="mt-2 text-xs font-medium text-white/80 underline underline-offset-2 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-white rounded"
+          >
+            Reset progress
+          </button>
         </div>
+        <p id="reset-status" class="sr-only" role="status" aria-live="polite"></p>
 
         <div class="flex flex-wrap items-center gap-4">
           {firstLesson && (
@@ -158,30 +167,54 @@ const lessonSlug = firstLesson?.slug.replace(courseSlug + '/', '');
     </section>
 
     <script>
-      import { getProgress, refreshProgressUI, resumeLesson } from '../../scripts/progress';
+      import { getProgress, refreshProgressUI, resetCourseProgress, resumeLesson } from '../../scripts/progress';
 
       document.addEventListener('astro:page-load', () => {
         const cta = document.getElementById('course-cta') as HTMLAnchorElement | null;
         if (!cta) return; // not a course page
 
-        refreshProgressUI();
-
         const courseSlug = cta.dataset.courseSlug!;
         const lessons = [...document.querySelectorAll<HTMLAnchorElement>('a[data-lesson-slug]')];
-        const progress = getProgress();
-        if (!lessons.some(a => progress[a.dataset.lessonSlug!])) return; // fresh start
-
-        document.getElementById('course-progress')!.hidden = false;
-
+        const progressPanel = document.getElementById('course-progress')!;
         const label = cta.querySelector('.truncate')!;
-        const resumeSlug = resumeLesson(courseSlug, lessons.map(a => a.dataset.lessonSlug!));
-        const target = lessons.find(a => a.dataset.lessonSlug === resumeSlug);
-        if (target) {
-          cta.href = target.href;
-          label.textContent = `Continue: ${target.dataset.lessonTitle}`;
-        } else {
-          label.textContent = 'Course complete — review from the start';
+        const startHref = cta.href;
+        const startLabel = label.textContent;
+
+        function render() {
+          refreshProgressUI();
+
+          const progress = getProgress();
+          const started = lessons.some(a => progress[a.dataset.lessonSlug!]);
+          progressPanel.hidden = !started;
+          if (!started) {
+            cta.href = startHref;
+            label.textContent = startLabel;
+            return;
+          }
+
+          const resumeSlug = resumeLesson(courseSlug, lessons.map(a => a.dataset.lessonSlug!));
+          const target = lessons.find(a => a.dataset.lessonSlug === resumeSlug);
+          if (target) {
+            cta.href = target.href;
+            label.textContent = `Continue: ${target.dataset.lessonTitle}`;
+          } else {
+            cta.href = startHref;
+            label.textContent = 'Course complete — review from the start';
+          }
         }
+
+        const resetBtn = document.getElementById('reset-progress');
+        resetBtn?.addEventListener('click', () => {
+          const title = resetBtn.dataset.courseTitle;
+          if (!confirm(`Reset your progress in "${title}"? Completed lessons and your place in each lesson will be cleared. This can't be undone.`)) return;
+          resetCourseProgress(courseSlug);
+          render();
+          const status = document.getElementById('reset-status');
+          if (status) status.textContent = 'Progress reset. You can start the course from the beginning.';
+          cta.focus();
+        });
+
+        render();
       });
     </script>
 

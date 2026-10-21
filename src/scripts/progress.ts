@@ -1,13 +1,16 @@
 // Learner progress, kept in localStorage so it works on a static site.
 //   course-progress     { "<course>/<lesson>": "visited" | "complete" }
 //   course-last-visited { "<course>": { lesson: "<course>/<lesson>", at: <epoch ms> } }
+//   lesson-position     { "<course>/<lesson>": { ratio: 0..1, section?: "<heading text>", at: <epoch ms> } }
 
 export type LessonState = 'visited' | 'complete';
 export type Progress = Record<string, LessonState>;
 export type LastVisited = Record<string, { lesson: string; at: number }>;
+export type LessonPosition = { ratio: number; section?: string; at: number };
 
 const PROGRESS_KEY = 'course-progress';
 const LAST_VISITED_KEY = 'course-last-visited';
+const POSITION_KEY = 'lesson-position';
 
 function read<T>(key: string): T {
   try { return JSON.parse(localStorage.getItem(key) || '{}'); } catch { return {} as T; }
@@ -36,6 +39,37 @@ export function markComplete(lessonSlug: string) {
   const progress = getProgress();
   progress[lessonSlug] = 'complete';
   write(PROGRESS_KEY, progress);
+  clearLessonPosition(lessonSlug); // nothing left to resume in a finished lesson
+}
+
+export const getLessonPosition = (lessonSlug: string): LessonPosition | undefined =>
+  read<Record<string, LessonPosition>>(POSITION_KEY)[lessonSlug];
+
+/** Remembers how far through a lesson the learner has scrolled. */
+export function saveLessonPosition(lessonSlug: string, ratio: number, section?: string) {
+  const positions = read<Record<string, LessonPosition>>(POSITION_KEY);
+  positions[lessonSlug] = { ratio: Math.min(1, Math.max(0, ratio)), section, at: Date.now() };
+  write(POSITION_KEY, positions);
+}
+
+export function clearLessonPosition(lessonSlug: string) {
+  const positions = read<Record<string, LessonPosition>>(POSITION_KEY);
+  if (!(lessonSlug in positions)) return;
+  delete positions[lessonSlug];
+  write(POSITION_KEY, positions);
+}
+
+/** Forgets everything about one course: completed lessons, last visit, and reading positions. */
+export function resetCourseProgress(courseSlug: string) {
+  const prefix = `${courseSlug}/`;
+  const dropCourse = <T extends object>(record: T) =>
+    Object.fromEntries(Object.entries(record).filter(([key]) => !key.startsWith(prefix)));
+
+  write(PROGRESS_KEY, dropCourse(getProgress()));
+  write(POSITION_KEY, dropCourse(read<Record<string, LessonPosition>>(POSITION_KEY)));
+  const last = getLastVisited();
+  delete last[courseSlug];
+  write(LAST_VISITED_KEY, last);
 }
 
 /**
