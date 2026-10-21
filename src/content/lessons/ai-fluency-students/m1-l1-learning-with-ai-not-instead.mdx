@@ -1,0 +1,122 @@
+---
+title: "Learning With AI, Not Instead of Learning"
+description: "Why effortful learning matters, how AI can quietly take the effort away, and the one question that keeps AI working for your learning: does this help me learn, or skip the learning?"
+module: 1
+moduleTitle: "Learning With AI"
+lesson: 1
+duration: "20 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## The Gym Analogy
+
+Imagine paying someone to lift weights for you at the gym. The weights go up. Your muscles don't change.
+
+Learning works the same way. The struggle of working out a problem, putting an idea into your own words, or remembering something without looking is what actually builds understanding. Learning researchers call some of these **desirable difficulties**: effort that feels harder in the moment but makes learning stick.
+
+AI can take that effort away instantly. Ask for the answer, get the answer, and you can feel like you've learned something because you *read* a good explanation. That feeling is called an **illusion of competence**: recognizing an idea isn't the same as being able to use it on your own.
+
+Studies are starting to show this happening with AI. In one 2024 field study of high school math students, those given unrestricted access to an AI chatbot did better on practice problems, but worse than classmates without AI once the tool was taken away for the exam. Students given an AI tutor designed to give hints instead of answers largely avoided that drop. The difference wasn't *whether* they used AI. It was *how*.
+
+---
+
+## The One Question
+
+This course is built on the **4D AI Fluency Framework**: Delegation, Description, Discernment, and Diligence. For students, everything starts with a delegation question:
+
+> **Does using AI this way help me learn, or skip the learning?**
+
+| Helps you learn | Skips the learning |
+|---|---|
+| "Explain this concept another way. I didn't get the textbook's version." | "Write my summary of chapter 4." |
+| "Quiz me on these terms and tell me which I got wrong." | "Give me the answers to this worksheet." |
+| "Here's my thesis. What's the weakest part?" | "Write me a thesis about this topic." |
+| "I got a different answer than the key. Where did I go wrong?" | "Solve all ten problems and show the work." |
+
+Notice that the left column still uses AI a lot. Fluent students don't avoid AI. They aim it at their own thinking instead of around it.
+
+<ProcessFlow
+  label="The four competencies for students: delegation, description, discernment, diligence"
+  color="#14b8a6"
+  steps={[
+    { title: "Delegation", detail: "Does this help me learn, or skip it?" },
+    { title: "Description", detail: "Ask AI to coach, explain, or quiz you" },
+    { title: "Discernment", detail: "Check what AI says. It can be wrong." },
+    { title: "Diligence", detail: "Follow the rules and be honest about your use" },
+  ]}
+/>
+
+<Pitfall title="Confusing Finished Work With Learning">
+
+**Common mistake:** measuring success by whether the assignment got done.
+
+Assignments are practice for a skill you'll need later, on a test, in another course, or in a job. If AI finishes the assignment but you couldn't do it again tomorrow without help, you got the grade and missed the point. And tests, interviews, and real work will find the gap eventually.
+
+</Pitfall>
+
+<TryIt title="The Tomorrow Test">
+
+1. Pick a concept from one of your current classes that you find a little hard.
+2. **Round 1:** Ask an AI assistant to simply explain it. Read the explanation.
+3. Close the chat. Wait at least an hour (or until tomorrow). Then, without looking anything up, write down everything you can remember and explain it in your own words.
+4. **Round 2:** Pick a different, similar concept. This time, use this prompt:
+   ```text
+   I'm a student learning [concept]. Don't explain it to me yet.
+   First ask me what I already know. Then help me build up an
+   explanation in my own words, one question at a time. At the end,
+   quiz me with two questions.
+   ```
+5. Wait the same amount of time and do the same recall test.
+6. Compare. Which concept could you explain better on your own?
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "What is an 'illusion of competence'?",
+    options: [
+      "Being bad at a subject.",
+      "Feeling like you've learned something because you understood an explanation, when you can't yet use it on your own.",
+      "Using AI to cheat.",
+      "Getting a perfect score."
+    ],
+    correctIndex: 1,
+    explanation: "Recognizing a clear explanation feels like learning, but being able to recall and apply an idea yourself is the real test."
+  },
+  {
+    question: "Which request is most likely to help you learn?",
+    options: [
+      "'Write my lab conclusion.'",
+      "'Quiz me on the key terms from this chapter and tell me which ones I miss.'",
+      "'Solve these problems.'",
+      "'Summarize the reading so I don't have to read it.'"
+    ],
+    correctIndex: 1,
+    explanation: "Being quizzed makes you retrieve information from memory, one of the most effective ways to learn."
+  },
+  {
+    question: "According to the study described in the lesson, what made the difference for students using AI in math?",
+    options: [
+      "Whether they used AI at all.",
+      "How the AI was used: getting answers versus getting hints that kept them doing the thinking.",
+      "Which device they used.",
+      "How fast they typed."
+    ],
+    correctIndex: 1,
+    explanation: "Students using AI for answers lost ground when it was removed. A hint-based tutor that kept students thinking largely avoided that."
+  }
+]} />
+
+---
+
+## About the Framework
+
+The 4D AI Fluency Framework was created by **Rick Dakan and Joseph Feller** with **Anthropic**, and is released under [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/). This course's lessons, examples, and exercises are original. For the full framework, see [AI Fluency: Foundations](/courses/ai-fluency-foundations/).
+
+## Up Next
+
+Before using AI on any assignment, you need to know what your teachers allow, and how to protect your own privacy.
