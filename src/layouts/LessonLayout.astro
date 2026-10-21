@@ -127,6 +127,33 @@ const showOutline = outline.length >= 3;
           <p class="text-base sm:text-lg text-gray-500 dark:text-gray-400 mb-8 leading-relaxed">{description}</p>
         )}
 
+        <!-- Shown when the learner left this lesson partway through -->
+        <div
+          id="resume-banner"
+          class="mb-8 flex flex-wrap items-center gap-x-4 gap-y-2 rounded-xl border px-4 py-3 text-sm"
+          style={`border-color: ${courseColor}55; background-color: ${courseColor}10`}
+          hidden
+        >
+          <span class="flex-1 min-w-[12rem] text-gray-700 dark:text-gray-300">
+            You were partway through this lesson<span data-resume-section></span>.
+          </span>
+          <button
+            id="resume-btn"
+            type="button"
+            class="rounded-lg px-3 py-1.5 font-semibold text-white"
+            style={`background-color: ${courseColor}`}
+          >
+            Pick up where I left off ↓
+          </button>
+          <button
+            id="resume-dismiss"
+            type="button"
+            class="rounded-lg px-2 py-1.5 font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100"
+          >
+            Start from the top
+          </button>
+        </div>
+
         <!-- YouTube embed -->
         {youtubeId && (
           <div class="mb-10">
@@ -236,7 +263,10 @@ const showOutline = outline.length >= 3;
 
 <script>
   import { navigate } from 'astro:transitions/client';
-  import { getProgress, markComplete, recordVisit, refreshProgressUI } from '../scripts/progress';
+  import {
+    clearLessonPosition, getLessonPosition, getProgress, markComplete, recordVisit, refreshProgressUI,
+    saveLessonPosition,
+  } from '../scripts/progress';
 
   document.addEventListener('astro:page-load', () => {
     const completeBtn = document.getElementById('complete-btn') as HTMLButtonElement | null;
@@ -275,7 +305,61 @@ const showOutline = outline.length >= 3;
       if (nextHref) navigate(nextHref);
       else showCoursePanel();
     });
+
+    setUpResume(slug, alreadyComplete);
   });
+
+  // Continue where you left off: remember how far through the lesson the learner
+  // scrolled, and offer to jump back there next time (never jump without asking).
+  function setUpResume(slug: string, lessonComplete: boolean) {
+    const main = document.getElementById('lesson-main');
+    const banner = document.getElementById('resume-banner');
+    if (!main || !banner) return;
+
+    const scrollable = () => main.scrollHeight - main.clientHeight;
+
+    // The heading of the section currently at the top of the reading area.
+    function currentSection() {
+      const threshold = main!.getBoundingClientRect().top + 120;
+      let text: string | undefined;
+      main!.querySelectorAll<HTMLElement>('.lesson-prose h2').forEach(h => {
+        if (h.getBoundingClientRect().top <= threshold) text = h.textContent?.trim();
+      });
+      return text;
+    }
+
+    const saved = getLessonPosition(slug);
+    // Only offer to resume a real partial read: past the intro, not at the very end,
+    // and not when the URL already points somewhere specific.
+    if (!lessonComplete && saved && saved.ratio > 0.05 && saved.ratio < 0.95 && !location.hash) {
+      const sectionLabel = banner.querySelector('[data-resume-section]');
+      if (sectionLabel && saved.section) sectionLabel.textContent = ` (at “${saved.section}”)`;
+      banner.hidden = false;
+
+      document.getElementById('resume-btn')?.addEventListener('click', () => {
+        banner.hidden = true;
+        main.scrollTo({ top: saved.ratio * scrollable(), behavior: 'smooth' });
+      });
+      document.getElementById('resume-dismiss')?.addEventListener('click', () => {
+        banner.hidden = true;
+        clearLessonPosition(slug);
+      });
+    }
+
+    if (lessonComplete) return; // finished lessons have nothing to resume
+
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    main.addEventListener('scroll', () => {
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        const total = scrollable();
+        if (total <= 0) return;
+        // Ignore the brief scroll-to-top on arrival so it can't erase the saved spot.
+        if (main.scrollTop < 40 && !banner.hidden) return;
+        saveLessonPosition(slug, main.scrollTop / total, currentSection());
+      }, 400);
+    }, { passive: true });
+  }
 </script>
 
 <script>
