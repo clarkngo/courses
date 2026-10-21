@@ -5,6 +5,6 @@ icon: "🔒"
 category: "Skilled Trades"
 color: "#b91c1c"
 status: "available"
-order: 42
+order: 45
 audience: "Maintenance techs, operators, supervisors, contractors, and safety coordinators who service or work around machinery"
 ---

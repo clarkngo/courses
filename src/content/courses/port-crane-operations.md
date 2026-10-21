@@ -5,6 +5,6 @@ icon: "🏗️"
 category: "Skilled Trades"
 color: "#0f766e"
 status: "available"
-order: 45
+order: 48
 audience: "Aspiring longshore workers and crane operators, riggers, terminal and logistics staff, and anyone curious about how ports work"
 ---

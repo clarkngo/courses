@@ -5,6 +5,6 @@ icon: "🔥"
 category: "Skilled Trades"
 color: "#9a3412"
 status: "available"
-order: 44
+order: 47
 audience: "Welding students, shipyard apprentices, fabricators moving into marine work, and anyone curious about how vessels are built"
 ---

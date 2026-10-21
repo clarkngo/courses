@@ -5,6 +5,6 @@ icon: "⚙️"
 category: "Skilled Trades"
 color: "#4d7c0f"
 status: "available"
-order: 41
+order: 44
 audience: "Maintenance mechanics, millwrights in training, apprentices, and operators who want to understand the machines they run"
 ---

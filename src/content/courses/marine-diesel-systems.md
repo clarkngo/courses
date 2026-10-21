@@ -5,6 +5,6 @@ icon: "🚢"
 category: "Skilled Trades"
 color: "#1e3a8a"
 status: "available"
-order: 43
+order: 46
 audience: "Aspiring marine engineers and oilers, deckhands moving to the engine room, boat owners, and shoreside techs who support vessels"
 ---

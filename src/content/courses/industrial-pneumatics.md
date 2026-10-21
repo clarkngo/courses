@@ -5,6 +5,6 @@ icon: "💨"
 category: "Skilled Trades"
 color: "#0369a1"
 status: "available"
-order: 40
+order: 43
 audience: "New maintenance techs, machine operators, apprentices, and anyone who keeps air-powered equipment running"
 ---
