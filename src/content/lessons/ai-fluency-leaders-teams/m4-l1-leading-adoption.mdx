@@ -1,0 +1,136 @@
+---
+title: "Leading Adoption"
+description: "Roll out AI through pilots and champions, address people's concerns honestly, train for judgment rather than features, and measure quality and outcomes instead of usage counts."
+module: 4
+moduleTitle: "Rolling It Out"
+lesson: 1
+duration: "25 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## Start Small, Learn Fast
+
+Team-wide AI rollouts that start with "everyone use AI for everything" usually stall or cause problems. A better pattern is a small, deliberate **pilot**:
+
+<ProcessFlow
+  label="An AI pilot: choose one workflow, set baseline measures, run with a small group, review results, then scale or stop"
+  color="#134e4a"
+  loop="If results don't hold up, adjust or stop. A stopped pilot is a useful result."
+  steps={[
+    { title: "Choose", detail: "One workflow with clear value and manageable risk" },
+    { title: "Baseline", detail: "Measure time and quality before AI" },
+    { title: "Pilot", detail: "Small group, 4 to 8 weeks, shared instructions" },
+    { title: "Review", detail: "Compare results; collect feedback" },
+    { title: "Scale or stop", detail: "Decide based on evidence" },
+  ]}
+/>
+
+Good first pilots are **frequent, well-understood, and medium-to-low stakes**: meeting summaries, first drafts of routine documents, internal research briefs. Avoid starting with decisions about people or anything in the critical review tier.
+
+## Champions, Not Enforcers
+
+Identify a few **AI champions**: people who are curious, careful, and respected by peers. Their job is to try things first, refine shared instructions, help colleagues, and bring problems back to you. They should be chosen for judgment, not just enthusiasm. A champion who never notices AI's mistakes will spread bad habits faster.
+
+---
+
+## Address Fears Honestly
+
+People worry about AI, and many of their concerns are reasonable:
+
+- **"Will AI replace my job?"** Be honest about what you know and don't know. Don't promise what you can't guarantee. Explain how roles may change, and what you're doing to help people build skills that stay valuable.
+- **"Will I be judged for using it, or for not using it?"** Make expectations explicit, and avoid treating AI use as a loyalty test either way.
+- **"What if I make a mistake with it?"** Point to the escalation process and blameless review (Lessons 2.2 and 3.1).
+- **"I'm not technical."** AI fluency is about judgment, not technical skill. The people who know the work best are often the best at catching AI's mistakes.
+
+Leaders who dismiss concerns lose trust. Leaders who acknowledge them, and involve people in shaping how AI is used, get far better adoption.
+
+## Train for Judgment, Not Features
+
+Feature tours go out of date quickly. Effective training uses **your team's real work** and focuses on the four competencies:
+
+- When should we use AI on this workflow, and when not? (Delegation)
+- How do we use our shared instructions? (Description)
+- What do we check, and how? (Discernment)
+- What are our rules for tools, data, and disclosure? (Diligence)
+
+[AI Fluency: Foundations](/courses/ai-fluency-foundations/) is a good shared starting point for the whole team.
+
+---
+
+## Measure What Matters
+
+The easiest thing to measure is usage: logins, prompts, licenses. It's also the least meaningful. Measure outcomes instead:
+
+| Weak measure | Better measure |
+|---|---|
+| Number of prompts sent | Time saved on a specific workflow, compared with the baseline |
+| Percentage of staff using AI | Quality: error rates, rework, customer satisfaction |
+| Licenses purchased | Issues caught in review; incidents and near-misses |
+| "AI-generated" document count | Employee confidence and skill, from surveys |
+
+**Watch quality as closely as speed.** If output volume goes up and error rates go up too, the pilot isn't working yet.
+
+<Pitfall title="Usage Targets">
+
+**Common mistake:** setting a target like "80% of staff using AI daily by Q3."
+
+People will hit the target by using AI for tasks where it doesn't help, or where it harms quality. Set goals around outcomes in specific workflows, and let usage follow value.
+
+</Pitfall>
+
+<TryIt title="Design a Pilot">
+
+1. Choose one workflow from your mapping in Lesson 1.2 that fits the "good first pilot" description.
+2. Define the baseline: how long does it take now, and how do you measure quality?
+3. Choose two or three champions and a pilot length.
+4. List the shared instruction, review tier, and policy points that apply.
+5. Write three success measures (at least one about quality) and one condition that would make you stop.
+6. Write a short, honest message to your team announcing the pilot, including how it might affect their work and how they can raise concerns.
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "Which is the best first AI pilot for most teams?",
+    options: [
+      "AI-assisted hiring decisions.",
+      "Drafting routine meeting summaries, with baseline measures and shared instructions.",
+      "Automating all customer refunds.",
+      "Everyone using AI for everything at once."
+    ],
+    correctIndex: 1,
+    explanation: "Good pilots are frequent, well understood, and low-to-medium stakes, with measures in place before starting."
+  },
+  {
+    question: "An employee asks whether AI will replace their job. What's the best response?",
+    options: [
+      "Promise their job is guaranteed forever.",
+      "Ignore the question.",
+      "Be honest about what you know and don't, explain how roles may change, and describe how you'll help people build valuable skills.",
+      "Tell them to use AI more so they don't fall behind."
+    ],
+    correctIndex: 2,
+    explanation: "Honest acknowledgment and involvement build trust. Empty promises and dismissal destroy it."
+  },
+  {
+    question: "Which is the most meaningful measure of an AI rollout?",
+    options: [
+      "Number of prompts sent.",
+      "Percentage of staff with licenses.",
+      "Change in time and error rate on a specific workflow, compared with a baseline.",
+      "Number of AI tools purchased."
+    ],
+    correctIndex: 2,
+    explanation: "Outcome measures that include quality show whether AI is actually helping. Usage counts don't."
+  }
+]} />
+
+---
+
+## Up Next
+
+The next lesson pulls everything together into a 90-day AI fluency plan for your team.

@@ -1,0 +1,119 @@
+---
+title: "Team Review and Quality"
+description: "Apply discernment at team level: scale review to the stakes, assign who checks what, guard against automation bias, and learn from AI mistakes without blame."
+module: 2
+moduleTitle: "Shared Practices"
+lesson: 2
+duration: "25 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## Review Has to Scale
+
+If AI makes your team produce more, review has to keep up. Reviewing everything with maximum rigor is impossible, and reviewing nothing is reckless. The answer is **risk-tiered review**: decide in advance how much checking each kind of work needs.
+
+| Tier | Typical work | Review |
+|---|---|---|
+| **Low** | Internal notes, brainstorms, first drafts for your own use | Self-check by the author |
+| **Medium** | Internal reports, routine customer replies from approved templates | Author checks against the definition of done; spot-checks by a lead |
+| **High** | Client deliverables, published content, anything with figures, legal or financial claims | Second-person review of facts, figures, and claims against sources |
+| **Critical** | Decisions about people, safety, money, legal commitments, regulated information | Expert human review and sign-off; AI informs at most, never decides |
+
+Put the tiers in writing and attach them to your workflow maps (Lesson 1.2), so every checkpoint knows its tier.
+
+For the techniques of checking itself, such as verifying facts, citations, numbers, reasoning, and bias, see [Discernment: Judging AI Output](/courses/ai-fluency-discernment/). This lesson focuses on the leader's job: **making sure review actually happens, at the right level.**
+
+---
+
+## Automation Bias: The Reviewer's Blind Spot
+
+**Automation bias** is the tendency to trust output from an automated system more than we should, and to stop looking critically once a system "usually gets it right." It gets worse when:
+
+- Output looks polished and confident
+- Reviewers are busy and the volume is high
+- The AI has been right many times in a row
+- Nobody has ever been asked to find problems, only to approve
+
+Leaders can counter it:
+
+- **Ask reviewers to find something.** "What's the weakest claim in this?" works better than "Does this look okay?"
+- **Rotate reviewers** so fresh eyes see the work.
+- **Seed occasional known errors** in training exercises, so people stay alert and learn what slips through.
+- **Protect review time** in schedules. Review that has to fit in the gaps gets skipped.
+
+<Pitfall title="Rubber-Stamp Review">
+
+**Common mistake:** a review step that exists on paper, where the reviewer approves 50 AI-assisted documents a day in a few seconds each.
+
+If you measure reviewers only on throughput, you get rubber stamps. Measure what review catches, and staff it so careful checking is possible.
+
+</Pitfall>
+
+---
+
+## When Something Goes Wrong: Blameless Review
+
+AI-assisted errors will happen: a wrong figure in a client report, a hallucinated policy in a customer reply. How you respond determines whether your team learns or hides problems. A **blameless review** asks what about the *system* allowed the error, not who to blame:
+
+1. **What happened?** The facts, without judgment.
+2. **Where did it originate?** The AI output, the instructions, the source data?
+3. **Why wasn't it caught?** Wrong review tier? Rushed review? Unclear standard?
+4. **What will we change?** The instruction, the tier, the checklist, the workflow?
+5. **Who needs to know?** Share the lesson with the team.
+
+People still own their work. But if the response to every AI mistake is blame, people stop reporting near-misses, and the team loses its best source of improvement.
+
+<TryIt title="Set Review Tiers for Your Team">
+
+1. List the six to ten types of AI-assisted work your team produces.
+2. Assign each a tier: Low, Medium, High, or Critical. Note why.
+3. For each Medium-or-higher type, name who reviews, against which standard (from Lesson 2.1), and how much time it should take.
+4. Pick one recent AI mistake or near-miss (yours or the team's) and walk through the five blameless review questions.
+5. Identify one change to instructions, tiers, or workflow that would have caught it.
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "Which work belongs in the 'Critical' review tier?",
+    options: [
+      "Brainstorming notes for your own use.",
+      "An AI-assisted shortlist of job candidates.",
+      "An internal meeting summary.",
+      "A first draft of a team newsletter."
+    ],
+    correctIndex: 1,
+    explanation: "Decisions about people are critical-tier: expert human judgment decides, and AI informs at most."
+  },
+  {
+    question: "Which question best counters automation bias in review?",
+    options: [
+      "'Does this look okay?'",
+      "'What's the weakest or least-supported claim in this?'",
+      "'Can you approve this quickly?'",
+      "'Did the AI say it was confident?'"
+    ],
+    correctIndex: 1,
+    explanation: "Asking reviewers to find problems keeps them actively engaged instead of approving by default."
+  },
+  {
+    question: "What's the main goal of a blameless review after an AI-assisted error?",
+    options: [
+      "To find who to discipline.",
+      "To find what in the system allowed the error and fix it, while keeping people willing to report problems.",
+      "To stop using AI.",
+      "To blame the AI vendor."
+    ],
+    correctIndex: 1,
+    explanation: "Blameless reviews improve instructions, tiers, and workflows, and keep near-misses visible."
+  }
+]} />
+
+---
+
+## Up Next
+
+Module 3 turns to governance: writing a team AI policy that people can actually follow.
