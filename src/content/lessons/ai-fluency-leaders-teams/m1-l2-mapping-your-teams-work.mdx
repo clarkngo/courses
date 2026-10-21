@@ -1,0 +1,116 @@
+---
+title: "Mapping Your Team's Work"
+description: "Apply delegation to workflows, not just tasks: find where AI fits, mark the human checkpoints, and protect the work that builds your people's skills."
+module: 1
+moduleTitle: "Leading AI Fluency"
+lesson: 2
+duration: "25 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## Delegate Workflows, Not Just Tasks
+
+Individuals delegate tasks. Teams run **workflows**: chains of steps where one person's output becomes another's input. AI changes workflows in ways that aren't obvious when you look at one task at a time. For example, if AI makes first drafts ten times faster, the bottleneck moves to review. If nobody plans for that, review quietly gets skipped.
+
+Map a workflow step by step, then mark each step:
+
+<ProcessFlow
+  label="Example: a client proposal workflow, with each step marked as AI-assisted or human-owned and a required human checkpoint before sending"
+  color="#134e4a"
+  steps={[
+    { title: "Discovery call", detail: "Human. Relationship and listening.", badge: "H" },
+    { title: "Call summary", detail: "AI drafts from notes; rep checks", badge: "AI" },
+    { title: "Solution design", detail: "Human. Expertise and judgment.", badge: "H" },
+    { title: "Proposal draft", detail: "AI drafts from template + design", badge: "AI" },
+    { title: "Review", detail: "Required: pricing, claims, fit", badge: "✓" },
+    { title: "Send", detail: "Human owns the commitment", badge: "H" },
+  ]}
+/>
+
+For each step, ask:
+
+1. **Fit and checkability:** Is this something AI does well, and can someone verify it efficiently?
+2. **Stakes:** What happens if an AI error gets through this step? Who is affected?
+3. **Checkpoint:** Where must a human review before work moves on? Who, specifically?
+4. **Judgment and relationships:** Does this step depend on expertise, trust, or a relationship that shouldn't be handed off?
+5. **Bottlenecks:** If AI speeds up this step, what happens downstream?
+
+---
+
+## Protect the Work That Builds Skills
+
+There's a delegation question unique to leaders: **how do people on your team learn?**
+
+Junior staff often build expertise by doing the routine work: first drafts, research, summaries, basic analysis. That's exactly the work AI handles most easily. If AI takes all of it, juniors may never develop the judgment needed to review AI output later. Over time, your team loses the expertise that makes its AI use safe.
+
+Ways to protect skill development:
+
+- **Rotate "AI-free" practice** on core skills, especially for new team members.
+- **Have juniors review AI output with a mentor**, so they learn what good looks like and why.
+- **Ask people to explain their reasoning**, not just deliver output.
+- **Track skill growth**, not only throughput.
+
+<Pitfall title="Speeding Up One Step and Breaking the Next">
+
+**Common mistake:** rolling out AI drafting and celebrating that the team now produces three times as many reports, without noticing that reviewers now spend a few minutes on each instead of twenty.
+
+Every time AI speeds up a step, check what happens to the steps after it, especially review. Speed that bypasses checking isn't productivity.
+
+</Pitfall>
+
+<TryIt title="Map One Workflow">
+
+1. Choose one recurring team workflow with at least five steps (for example, onboarding a client, publishing content, closing a support ticket, preparing a monthly report).
+2. List the steps in order. For each, note who does it today.
+3. Mark each step **AI**, **AI + human check**, or **Human**, using the five questions above.
+4. Mark required **checkpoints** and name the role responsible for each.
+5. Identify one step that builds junior skills, and decide how you'll protect it.
+6. Optional: share the map with an AI assistant and ask: *"Where is this workflow most likely to fail if AI output has a subtle error? Where might review become a bottleneck?"* Judge its answers against what you know of your team.
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "Why map workflows instead of only individual tasks?",
+    options: [
+      "Workflows are shorter.",
+      "AI changes how steps interact; speeding one step can overload or bypass the next, especially review.",
+      "Tasks can't use AI.",
+      "Workflows don't need humans."
+    ],
+    correctIndex: 1,
+    explanation: "One person's output is another's input. Workflow mapping shows bottlenecks and where checkpoints are needed."
+  },
+  {
+    question: "What's the risk of having AI handle all the routine work junior staff used to do?",
+    options: [
+      "Juniors will be bored.",
+      "They may never build the expertise needed to judge AI output, weakening the team over time.",
+      "AI will get tired.",
+      "There's no risk."
+    ],
+    correctIndex: 1,
+    explanation: "Routine work is often how expertise develops. Protect learning paths so the team can keep supervising AI well."
+  },
+  {
+    question: "In a workflow map, what does a checkpoint need to be effective?",
+    options: [
+      "A logo.",
+      "A specific responsible role and a clear standard for what's checked.",
+      "An AI tool.",
+      "A longer deadline."
+    ],
+    correctIndex: 1,
+    explanation: "A checkpoint without a named owner and a standard tends to get skipped."
+  }
+]} />
+
+---
+
+## Up Next
+
+Module 2 builds shared practice: how teams give AI consistent context and instructions, and how they review AI-assisted work.

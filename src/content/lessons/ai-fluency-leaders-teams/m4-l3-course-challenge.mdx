@@ -1,0 +1,180 @@
+---
+title: "Course Challenge"
+description: "Ten realistic leadership scenarios covering every module, then a capstone where you finalize your team's AI policy, shared practices, pilot, and 90-day plan."
+module: 4
+moduleTitle: "Rolling It Out"
+lesson: 3
+duration: "40 min"
+---
+
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## How the Challenge Works
+
+1. **Knowledge check:** ten leadership scenarios covering every module. Aim for at least 8 out of 10, and revisit any lesson where you missed one.
+2. **Capstone:** bring together the pieces you've built into a complete team AI fluency package.
+
+---
+
+## Part 1: Knowledge Check
+
+<Quiz questions={[
+  {
+    question: "(Module 1) Your survey shows team members use five different AI tools, mostly personal accounts, and nobody knows what data has been shared. What's the best first move?",
+    options: [
+      "Ban all AI immediately.",
+      "Thank people for being open, address urgent data risks now, and start building shared rules and approved tools.",
+      "Ignore it. Everyone's productive.",
+      "Discipline the heaviest users."
+    ],
+    correctIndex: 1,
+    explanation: "Visibility is valuable, so reward it. Fix urgent risks right away, then move from scattered to shared practice."
+  },
+  {
+    question: "(Module 1) AI makes your team's first drafts five times faster. What should you check next?",
+    options: [
+      "Nothing. It's a pure win.",
+      "Whether review downstream can keep up, and whether juniors still build skills they need.",
+      "Whether to reduce the team by 80%.",
+      "Which competitor uses AI more."
+    ],
+    correctIndex: 1,
+    explanation: "Speeding one step changes the workflow. Review can become a bottleneck or get skipped, and learning paths can disappear."
+  },
+  {
+    question: "(Module 2) Three people use three different prompts for weekly client reports, and the reports look inconsistent. What helps most?",
+    options: [
+      "Let each person keep their own approach.",
+      "Merge them into one tested, shared instruction with a definition of done, an owner, and a review date.",
+      "Ban AI for reports.",
+      "Buy a different tool."
+    ],
+    correctIndex: 1,
+    explanation: "Shared, maintained instructions and standards create consistency and spread what works."
+  },
+  {
+    question: "(Module 2) A reviewer approves dozens of AI-assisted documents a day in seconds each. What's the leadership problem?",
+    options: [
+      "The reviewer is too slow.",
+      "Review has become a rubber stamp, a classic automation-bias risk. Staff and measure review so careful checking is possible.",
+      "There's no problem.",
+      "The AI needs to be faster."
+    ],
+    correctIndex: 1,
+    explanation: "Review measured only on throughput gets rubber-stamped. Protect time and measure what review catches."
+  },
+  {
+    question: "(Module 2) An AI-assisted report sent a wrong figure to a client. What's the most useful response?",
+    options: [
+      "Find who to blame.",
+      "A blameless review: what happened, where it originated, why it wasn't caught, and what will change.",
+      "Stop using AI permanently.",
+      "Say nothing and hope the client didn't notice."
+    ],
+    correctIndex: 1,
+    explanation: "Fix the system, correct the error with the client, and keep people willing to report problems."
+  },
+  {
+    question: "(Module 3) Your organization has a formal AI policy, but your team still isn't sure what to do day to day. What should you write?",
+    options: [
+      "A second policy that contradicts the first.",
+      "A practical one-page team policy with examples that translates the organization's rules into everyday decisions.",
+      "Nothing. The formal policy is enough.",
+      "A ten-page legal document."
+    ],
+    correctIndex: 1,
+    explanation: "Team policies fill in practical details within organizational rules, and must stay consistent with them."
+  },
+  {
+    question: "(Module 3) A colleague wants to use AI to summarize HR records about a team member's health accommodations. Which data class applies?",
+    options: [
+      "Public",
+      "Internal",
+      "Restricted: not in AI tools unless explicitly approved by security, privacy, or legal",
+      "It doesn't matter."
+    ],
+    correctIndex: 2,
+    explanation: "Health and HR records are restricted personal data with strong legal protections."
+  },
+  {
+    question: "(Module 3) A vendor's AI ranks job applicants and promises to save 80% of screening time, but can't explain its bias testing. What do you do?",
+    options: [
+      "Adopt it. The time savings are worth it.",
+      "Don't use it on real candidates until fairness, testing, and legal questions are answered, and keep the hiring decision with humans.",
+      "Use it, but don't tell candidates.",
+      "Let it make final decisions to save more time."
+    ],
+    correctIndex: 1,
+    explanation: "Decisions about people come first in fairness review. Unanswered testing questions are a red flag."
+  },
+  {
+    question: "(Module 4) Leadership wants '80% of staff using AI daily.' What's the better goal to propose?",
+    options: [
+      "100% daily use.",
+      "Outcome goals on specific workflows, such as time saved and error rates compared with a baseline.",
+      "Counting prompts per person.",
+      "No goals at all."
+    ],
+    correctIndex: 1,
+    explanation: "Usage targets drive AI into places it doesn't help. Outcome measures, including quality, show real value."
+  },
+  {
+    question: "(Module 4) Your pilot cut drafting time by 40% but rework rose 30%. What's the right call?",
+    options: [
+      "Scale it. Faster is better.",
+      "Adjust (instructions, review, or scope) or stop. Quality matters as much as speed.",
+      "Hide the rework numbers.",
+      "Add more AI to fix the rework."
+    ],
+    correctIndex: 1,
+    explanation: "Rising rework means the pilot isn't working yet. Use the evidence to adjust or stop."
+  }
+]} />
+
+---
+
+## Part 2: Capstone
+
+<TryIt title="Build Your Team AI Fluency Package">
+
+Bring together the work from every module into one package you can use with your team.
+
+1. **Current state (Module 1):** your AI use snapshot summary and where your team sits on the Scattered → Visible → Shared → Fluent path.
+2. **Workflow maps (Lesson 1.2):** at least two key workflows, with AI fit, named checkpoints, and protected skill-building steps.
+3. **Shared practice (Module 2):** at least one tested shared instruction with a definition of done, plus your review tiers.
+4. **Governance (Module 3):** your one-page team AI policy, checked by the right people in your organization, and a fairness check for any AI use that affects decisions about people.
+5. **Rollout (Module 4):** your pilot design and your 90-day plan with owners and dates.
+
+**Self-assessment checklist.** You're done when you can say yes to all of these:
+
+- My team knows which tools are approved and what data can go where.
+- Every AI-assisted workflow has named human checkpoints at the right review tier.
+- Decisions about people stay with accountable humans.
+- We have at least one shared, owned, and dated instruction.
+- My pilot measures quality as well as speed, and has a stop condition.
+- People on my team know it's safe to raise AI concerns and report mistakes.
+
+</TryIt>
+
+---
+
+## Congratulations, You've Finished AI Fluency for Leaders & Teams
+
+You can now:
+
+- Move a team from **scattered** AI use to **shared, accountable** practice
+- **Map workflows** to place AI deliberately and protect skill development
+- Build **shared instructions** and **definitions of done**
+- Set **risk-tiered review**, counter automation bias, and run **blameless reviews**
+- Write a practical **team AI policy** within organizational and legal rules
+- Keep **decisions about people** human and check AI for **fairness**
+- Lead adoption through **pilots, champions, honest communication**, and **outcome measures**
+
+### Where to Go Next
+
+- **Get your whole team on the same page:** [AI Fluency: Foundations](/courses/ai-fluency-foundations/) gives everyone a shared vocabulary.
+- **Strengthen your review practices:** [Discernment: Judging AI Output](/courses/ai-fluency-discernment/) covers verification, bias, and team review techniques in depth.
+- **Think in systems:** [Human-Centered Systems Thinking](/courses/human-centered-systems-thinking/) helps you see how AI changes your organization as a whole.
+
+*The 4D AI Fluency Framework was created by Rick Dakan and Joseph Feller with Anthropic and is released under [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/). See [aifluencyframework.org](https://aifluencyframework.org/).*

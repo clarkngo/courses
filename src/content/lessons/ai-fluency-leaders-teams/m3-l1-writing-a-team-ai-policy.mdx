@@ -1,0 +1,130 @@
+---
+title: "Writing a Team AI Policy"
+description: "Write a short, practical team AI policy: approved tools, what data can go where, when to tell clients, and how to escalate, all within your organization's rules."
+module: 3
+moduleTitle: "Governance and Diligence"
+lesson: 1
+duration: "30 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## Start From What Already Exists
+
+Before writing anything, find out what already applies to your team:
+
+- **Your organization's AI policy**, if it has one, and its information security and privacy policies.
+- **Legal and regulatory requirements** for your industry and location. Data protection laws, sector rules (health, finance, education, government), and AI-specific regulations such as the EU AI Act may apply. Ask your legal, compliance, or privacy team. Don't guess.
+- **Contracts.** Client agreements may restrict how their data can be processed, or require disclosure of AI use.
+- **Approved vendors.** IT or procurement may already have approved AI tools with proper data agreements.
+
+Your team policy **fills in the practical details** within those rules. It should never contradict them.
+
+---
+
+## Five Things a Team Policy Must Answer
+
+### 1. Which Tools Can We Use?
+
+List the approved tools and what each is approved for. Be specific: "Our company AI assistant (enterprise account) for all internal work" is clearer than "approved AI tools." Say how to request a new tool.
+
+### 2. What Data Can Go Where?
+
+The most useful part of any policy is a simple **data classification** that maps to tools:
+
+| Class | Examples | AI use |
+|---|---|---|
+| **Public** | Published marketing, public website content | Any approved tool |
+| **Internal** | Internal processes, non-sensitive project notes | Approved enterprise tools only |
+| **Confidential** | Client data, financials, contracts, unreleased plans | Only tools specifically approved for confidential data, or de-identify first |
+| **Restricted** | Personal data about individuals (health, HR records), credentials, regulated data | Not in AI tools unless explicitly approved by security, privacy, or legal |
+
+If your organization already classifies data, use its categories. Don't invent a second system.
+
+### 3. When Do We Tell Clients and Stakeholders?
+
+Decide disclosure rules up front, based on contracts and on what clients would reasonably expect. For example: "We disclose AI use in client deliverables when AI drafted substantial content or analysis. We never present AI output as a named expert's personal judgment."
+
+### 4. What Must a Human Do?
+
+Point to your workflow maps and review tiers (Modules 1 and 2). Name the work that always stays with people, such as final decisions about people, legal commitments, and pricing.
+
+### 5. What Do I Do When Something Goes Wrong?
+
+Make escalation simple: who to tell about a data mistake (for example, confidential data pasted into the wrong tool), an AI error that reached a client, or an uncertain case. Make clear that **reporting quickly is always the right move**, and won't be punished.
+
+---
+
+## Make It Usable
+
+- **Keep it short.** One or two pages. People don't follow what they can't remember.
+- **Use examples.** "Okay: summarizing our public blog posts. Not okay: pasting a client's contract into a personal chatbot."
+- **Say why.** People follow rules they understand.
+- **Review it regularly**, at least twice a year and whenever tools or regulations change.
+
+<Pitfall title="The Policy Written for Lawyers">
+
+**Common mistake:** a ten-page policy full of legal language that nobody on the team reads, so everyone keeps doing whatever they were doing.
+
+Your organization may need a formal policy. Your team also needs a practical one-pager that translates it into everyday decisions, with examples. Ask a team member to explain it back to you. If they can't, rewrite it.
+
+</Pitfall>
+
+<TryIt title="Draft Your Team's One-Page Policy">
+
+1. Gather your organization's existing AI, security, and privacy policies, and note any client contract terms about AI or data.
+2. Draft a one-page policy covering the five questions above, with at least one "okay" and one "not okay" example for each.
+3. Ask an AI assistant (using an approved tool, with no confidential details) to stress-test it:
+   ```text
+   Here's a draft team AI policy. Act as a new employee in their first
+   week. List every situation where you'd be unsure what to do, and
+   any rule that seems to conflict with another.
+   ```
+4. Revise. Then have your legal, compliance, or IT contact review it before rollout.
+5. Plan how you'll walk the team through it, and when you'll review it next.
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "What should you check before writing a team AI policy?",
+    options: [
+      "Nothing. Start fresh.",
+      "Existing organizational policies, legal and regulatory requirements, client contracts, and approved vendors.",
+      "Only which AI tool is most popular.",
+      "Competitors' policies."
+    ],
+    correctIndex: 1,
+    explanation: "A team policy fills in practical details within existing rules. It must never contradict them."
+  },
+  {
+    question: "An employee wants to paste a client's contract into an AI tool to summarize it. Under the example data classification, what applies?",
+    options: [
+      "Any tool is fine.",
+      "It's confidential: use only a tool approved for confidential data, or de-identify first.",
+      "It's public, since the client already has it.",
+      "Only restricted-data tools may be used, and never for summaries."
+    ],
+    correctIndex: 1,
+    explanation: "Client contracts are confidential. They need specifically approved tools, or the sensitive details removed."
+  },
+  {
+    question: "What makes escalation rules effective?",
+    options: [
+      "Severe penalties for every mistake.",
+      "A simple path to report problems quickly, and a clear message that reporting won't be punished.",
+      "Only managers can report.",
+      "Keeping incidents quiet."
+    ],
+    correctIndex: 1,
+    explanation: "Fast reporting limits damage. People report quickly only when it's safe to do so."
+  }
+]} />
+
+---
+
+## Up Next
+
+Some AI uses carry higher stakes than others, especially when decisions affect people. The next lesson covers risk, fairness, and accountability.

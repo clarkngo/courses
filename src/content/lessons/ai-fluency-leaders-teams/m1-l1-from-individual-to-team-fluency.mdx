@@ -1,0 +1,130 @@
+---
+title: "From Individual to Team Fluency"
+description: "Why individual AI skill doesn't add up to team fluency, what 'shadow AI' costs, and the leader's role in turning scattered experiments into shared practice."
+module: 1
+moduleTitle: "Leading AI Fluency"
+lesson: 1
+duration: "20 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## Ten Fluent People Aren't a Fluent Team
+
+Picture a team where everyone uses AI, and uses it well, each in their own way. One person drafts client emails with a personal chatbot. Another summarizes meeting recordings with a browser extension. A third built a clever spreadsheet automation nobody else knows about.
+
+Individually, they're productive. As a team, there are problems:
+
+- **Nobody knows what data has gone where.** Client details may be sitting in personal accounts with unknown data terms.
+- **Quality is inconsistent.** One person checks AI output carefully; another doesn't check at all. Customers can't tell the difference until something goes wrong.
+- **Good practices don't spread.** The best prompt or workflow stays in one person's head.
+- **Accountability is fuzzy.** When AI-assisted work has an error, nobody is sure what the review process was supposed to be.
+
+This is often called **shadow AI**: AI use that happens outside any shared visibility or rules. It usually isn't anyone being reckless. It's what happens when people find useful tools and nobody has set shared expectations.
+
+---
+
+## The 4Ds at Team Level
+
+The 4D AI Fluency Framework applies to teams as well as individuals, but the questions change:
+
+| Competency | Individual question | Team question |
+|---|---|---|
+| **Delegation** | Should I use AI for this task? | Where does AI fit in our workflows, and where do we require human judgment? |
+| **Description** | How do I explain what I need? | What shared context, instructions, and standards do we give AI? |
+| **Discernment** | Is this output good? | Who reviews what, to what standard, and how do we learn from mistakes? |
+| **Diligence** | Am I using AI responsibly? | What are our rules for tools, data, disclosure, and accountability? |
+
+<ProcessFlow
+  label="The path from scattered individual AI use to team fluency"
+  color="#134e4a"
+  steps={[
+    { title: "Scattered", detail: "Individual use, no visibility" },
+    { title: "Visible", detail: "We know who uses what, for what" },
+    { title: "Shared", detail: "Common tools, instructions, and review" },
+    { title: "Fluent", detail: "Deliberate, improving, accountable" },
+  ]}
+/>
+
+---
+
+## The Leader's Role
+
+You don't need to be the team's best AI user. Your job is different:
+
+1. **Make it safe to talk about.** People hide AI use when they fear judgment or think it's against the rules. You can't improve what you can't see.
+2. **Set direction.** Decide, with the team, where AI belongs and where it doesn't.
+3. **Create shared resources.** Approved tools, shared instructions, review standards.
+4. **Model it.** Use AI openly and well, including showing when you checked it, corrected it, or decided not to use it.
+5. **Own the outcomes.** AI-assisted work from your team is your team's work.
+
+<Pitfall title="Leading by Ban or by Hype">
+
+**Common mistake:** either banning AI outright ("too risky") or pushing everyone to "use AI for everything" to hit a productivity target.
+
+A ban drives use into the shadows, where risk is highest. Hype pushes AI into tasks where it degrades quality or bypasses judgment. Both skip the real work: deciding, together, where AI genuinely helps.
+
+</Pitfall>
+
+<TryIt title="Run an AI Use Snapshot">
+
+1. Send your team a short, **anonymous** survey (or hold an open conversation, if trust is high). Ask:
+   - Which AI tools do you use for work, if any?
+   - What do you use them for?
+   - What kind of information do you put into them?
+   - Where has AI helped most? Where has it caused problems?
+   - What would make you more confident using AI at work?
+2. Make clear that the goal is to learn, not to punish.
+3. Summarize the results: tools, uses, data types, wins, and concerns.
+4. Mark where your team sits on the path above: Scattered, Visible, Shared, or Fluent.
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "What is 'shadow AI'?",
+    options: [
+      "AI tools that run at night.",
+      "AI use that happens without shared visibility or rules, usually by well-meaning people.",
+      "Malicious AI.",
+      "AI that only managers can use."
+    ],
+    correctIndex: 1,
+    explanation: "Shadow AI is unseen, unmanaged use. It's usually the natural result of useful tools without shared expectations."
+  },
+  {
+    question: "Why don't ten individually skilled AI users automatically make a fluent team?",
+    options: [
+      "Skilled users are slower.",
+      "Without shared rules and visibility, data handling, quality, and accountability are inconsistent, and good practices don't spread.",
+      "Teams can't use AI.",
+      "AI tools don't allow teams."
+    ],
+    correctIndex: 1,
+    explanation: "Team fluency needs shared delegation decisions, instructions, review standards, and rules."
+  },
+  {
+    question: "What's the first thing a leader should do to move from scattered to shared AI use?",
+    options: [
+      "Ban all tools until a policy is written.",
+      "Make AI use safe to talk about so it becomes visible.",
+      "Buy the most expensive AI tool.",
+      "Require AI use on every task."
+    ],
+    correctIndex: 1,
+    explanation: "You can't improve what you can't see. Visibility comes from trust."
+  }
+]} />
+
+---
+
+## About the Framework
+
+The 4D AI Fluency Framework was created by **Rick Dakan and Joseph Feller** with **Anthropic**, and is released under [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/). This course's lessons, examples, and exercises are original. For the individual-level framework, see [AI Fluency: Foundations](/courses/ai-fluency-foundations/).
+
+## Up Next
+
+With a picture of how your team uses AI today, the next step is deciding where it *should* fit: mapping your team's actual work.

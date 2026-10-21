@@ -1,0 +1,124 @@
+---
+title: "Shared Instructions and Standards"
+description: "Apply description at team level: build a shared library of context and instructions, and define what 'good' looks like so AI-assisted work is consistent no matter who produces it."
+module: 2
+moduleTitle: "Shared Practices"
+lesson: 1
+duration: "25 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## Everyone Re-Explaining the Same Things
+
+On most teams, each person who uses AI writes their own instructions from scratch, every time. They re-explain who the customers are, what tone the team uses, which products exist, and what format reports should follow, and each person explains it a little differently. The result:
+
+- **Inconsistent output.** The same kind of document looks different depending on who made it.
+- **Wasted time.** Everyone rebuilds context the team already knows.
+- **Hidden errors.** One person's outdated description of a product or policy quietly spreads into everything they produce.
+
+**Team description** fixes this by turning the context and instructions that work into **shared, maintained resources**.
+
+---
+
+## What Goes in a Team Description Library
+
+| Resource | What it contains | Example |
+|---|---|---|
+| **Team context brief** | Who you serve, what you do, key terms, and what AI should never assume | "We support small nonprofits. 'Members' means donor organizations, not individuals." |
+| **Voice and style guide** | Tone, reading level, words to use and avoid, formatting rules | "Plain language, no jargon, sentence-case headings, no exclamation points." |
+| **Task instructions** | Tested product, process, and performance descriptions for recurring work | Instructions for weekly status reports, first-draft customer replies, meeting summaries |
+| **Examples** | Approved samples of good work, with notes on why they're good | Three strong past proposals, labeled for what to imitate |
+| **Boundaries** | What AI should not do for this team | "Never state pricing; use [PRICE]. Never promise delivery dates." |
+
+Many AI tools now let teams save shared instructions, projects, or custom assistants that carry this context automatically. Whether you use those features or a shared document, the principle is the same: **write it once, test it, keep it current, and share it.**
+
+<ProcessFlow
+  label="The lifecycle of a shared team instruction: draft, test on real work, approve, share, and review on a schedule"
+  color="#134e4a"
+  loop="Review every quarter, or when products, policies, or tools change"
+  steps={[
+    { title: "Draft", detail: "From what already works for someone" },
+    { title: "Test", detail: "On 3 to 5 real cases, by 2+ people" },
+    { title: "Approve", detail: "An owner signs off" },
+    { title: "Share", detail: "In one known place" },
+  ]}
+/>
+
+---
+
+## Define What "Good" Looks Like
+
+Shared instructions tell AI what to produce. **Shared standards** tell your *people* how to judge it. For each recurring type of AI-assisted work, write down a short definition of done:
+
+- **Accuracy:** which facts must be verified, and against what source?
+- **Completeness:** what must every version include?
+- **Fit:** who is the audience, and what do they need?
+- **Voice:** does it sound like the team, not like a generic AI?
+- **Sign-off:** who has to approve it before it goes out?
+
+Standards make review faster and fairer, because reviewers check against the same list instead of personal taste. They also give new team members a clear picture of quality from day one.
+
+<Pitfall title="The Library Nobody Maintains">
+
+**Common mistake:** launching a shared prompt library with fanfare, then never updating it. Six months later it describes discontinued products and an old pricing model, and everyone who uses it spreads outdated information.
+
+Give each resource an **owner** and a **review date**. An outdated shared instruction is worse than none, because people trust it.
+
+</Pitfall>
+
+<TryIt title="Build One Shared Resource">
+
+1. Pick the recurring task your team does most often with AI (use your AI use snapshot from Lesson 1.1).
+2. Collect the instructions two or three people currently use for it. Compare them: what's the same, what's different, what's missing?
+3. Merge them into one tested instruction with product, process, and performance descriptions, plus a boundaries section.
+4. Write a five-point definition of done for that task.
+5. Have two people test the instruction on real work. Did they get consistent results? Revise.
+6. Assign an owner and a review date. Share it in one place everyone can find.
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "What's the main benefit of a shared team context brief?",
+    options: [
+      "It makes prompts longer.",
+      "Everyone gives AI the same accurate context, so output is consistent and nobody rebuilds it from scratch.",
+      "It replaces the need for review.",
+      "It lets AI make decisions."
+    ],
+    correctIndex: 1,
+    explanation: "Shared context improves consistency and saves time, as long as it's accurate and maintained."
+  },
+  {
+    question: "Why does every shared instruction need an owner and a review date?",
+    options: [
+      "For legal reasons only.",
+      "Outdated shared instructions spread errors widely, because people trust them.",
+      "AI tools require owners.",
+      "So someone can be blamed."
+    ],
+    correctIndex: 1,
+    explanation: "Shared resources multiply their effect, including errors. Maintenance keeps them trustworthy."
+  },
+  {
+    question: "What does a 'definition of done' for AI-assisted work help with?",
+    options: [
+      "Making AI faster.",
+      "Giving reviewers and new team members a consistent, shared standard for quality.",
+      "Avoiding review entirely.",
+      "Choosing an AI vendor."
+    ],
+    correctIndex: 1,
+    explanation: "Clear standards make review faster and fairer, and show everyone what good looks like."
+  }
+]} />
+
+---
+
+## Up Next
+
+Shared standards only matter if someone checks against them. The next lesson covers how teams review AI-assisted work, scaled to the stakes.

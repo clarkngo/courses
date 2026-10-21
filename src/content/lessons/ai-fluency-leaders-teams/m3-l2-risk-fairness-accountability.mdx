@@ -1,0 +1,127 @@
+---
+title: "Risk, Fairness, and Accountability"
+description: "Keep decisions about people in human hands, recognize where AI bias can cause harm, ask the right questions of AI vendors, and make accountability explicit."
+module: 3
+moduleTitle: "Governance and Diligence"
+lesson: 2
+duration: "25 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## Decisions About People Stay Human
+
+The highest-stakes uses of AI on most teams aren't technical. They're decisions that affect people's livelihoods and opportunities:
+
+- **Hiring:** screening resumes, ranking candidates, summarizing interviews
+- **Performance:** drafting reviews, scoring productivity, recommending promotions
+- **Customers:** approving or denying requests, setting prices, prioritizing complaints
+- **Discipline:** flagging behavior, investigating complaints
+
+In these areas, AI can **inform** a decision. It should not **make** it. A human with the relevant knowledge and authority must review the evidence, apply judgment, and be accountable for the outcome. Many jurisdictions also have specific legal requirements for automated decisions in areas like employment and credit, so involve legal or HR before using AI in these processes.
+
+---
+
+## Where Bias Comes From
+
+AI systems learn from large amounts of human-produced data, and that data reflects historical patterns, including unfair ones. Bias can show up as:
+
+- **Skewed recommendations:** favoring candidates whose backgrounds resemble past hires.
+- **Uneven language:** describing similar work by different people in different terms.
+- **Proxy discrimination:** using factors like zip code, school, or gaps in employment that correlate with protected characteristics.
+- **Unequal accuracy:** working well for some groups of people and poorly for others.
+
+Bias often isn't visible in any single output. It shows up in **patterns across many decisions**. That's why fairness needs monitoring, not just good intentions.
+
+<ProcessFlow
+  label="A fairness check for AI-assisted decisions about people"
+  color="#134e4a"
+  steps={[
+    { title: "Is AI needed here?", detail: "What does it add over a human-only process?" },
+    { title: "What could go wrong?", detail: "Who might be treated unfairly, and how?" },
+    { title: "Who decides?", detail: "A named, accountable human" },
+    { title: "How will we monitor?", detail: "Check outcomes across groups over time" },
+  ]}
+/>
+
+---
+
+## Questions to Ask AI Vendors
+
+When your team adopts an AI product, especially for anything people-related, ask:
+
+1. **Data:** What happens to our data? Is it stored, for how long, and is it used to train models?
+2. **Security and compliance:** What certifications and data agreements do you offer? Where is data processed?
+3. **Testing:** How was the system tested for accuracy and bias? Across which groups? Can we see the results?
+4. **Transparency:** Can we see why the system produced a particular output?
+5. **Control:** Can humans review and override every output? Can we turn features off?
+6. **Accountability:** What happens when the system makes a mistake? What support do you provide?
+
+Vague answers to these questions are themselves an answer.
+
+## Make Accountability Explicit
+
+For every significant AI use on your team, someone should be able to answer: **who is responsible if this goes wrong?** Write it down. "The AI did it" is never an acceptable answer, and if no one owns an AI process, that's a sign it shouldn't be running.
+
+<Pitfall title="The Efficiency Case That Ignores Fairness">
+
+**Common mistake:** adopting an AI resume screener because it cuts screening time by 80%, without asking how it was tested or checking who it filters out.
+
+Speed gains can hide systematic unfairness that harms candidates, damages your reputation, and may violate the law. For decisions about people, fairness review comes *before* efficiency gains.
+
+</Pitfall>
+
+<TryIt title="Audit One High-Stakes AI Use">
+
+1. Identify one place where AI touches decisions about people on your team, or where someone has proposed it.
+2. Run the four-step fairness check above, writing an answer for each step.
+3. If a vendor product is involved, list which of the six vendor questions you can answer, and which you can't yet.
+4. Write down the named, accountable person for this process.
+5. Decide: continue as is, add safeguards, or pause until questions are answered?
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "What's the right role for AI in a promotion decision?",
+    options: [
+      "Make the decision, since it's more objective.",
+      "Inform the decision at most, with an accountable human reviewing evidence and deciding.",
+      "Rank candidates and auto-approve the top one.",
+      "Replace the manager's input."
+    ],
+    correctIndex: 1,
+    explanation: "Decisions about people need human judgment and accountability. AI can inform, never decide."
+  },
+  {
+    question: "Why does AI bias often require monitoring rather than spot-checking?",
+    options: [
+      "Bias is always obvious.",
+      "Bias often shows up in patterns across many decisions, not in any single output.",
+      "Monitoring is cheaper.",
+      "Spot-checks are illegal."
+    ],
+    correctIndex: 1,
+    explanation: "Looking at outcomes across groups over time reveals patterns that single outputs hide."
+  },
+  {
+    question: "A vendor can't explain how its AI hiring tool was tested for bias. What does that tell you?",
+    options: [
+      "Nothing important.",
+      "It's a significant warning sign that should be resolved before adoption.",
+      "The tool must be unbiased.",
+      "You should test it on real candidates first."
+    ],
+    correctIndex: 1,
+    explanation: "Vague answers to testing and fairness questions are themselves an answer. Resolve them before using the tool on real people."
+  }
+]} />
+
+---
+
+## Up Next
+
+Module 4 covers rolling it all out: leading adoption in a way that builds skill and trust.
