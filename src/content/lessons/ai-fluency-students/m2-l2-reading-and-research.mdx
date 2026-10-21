@@ -1,0 +1,121 @@
+---
+title: "Reading and Research With AI"
+description: "Use AI to understand difficult readings and plan research, without letting it replace the reading or hand you fake sources."
+module: 2
+moduleTitle: "AI as a Study Partner"
+lesson: 2
+duration: "25 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## Reading: AI as a Guide, Not a Replacement
+
+Hard readings are where AI can help a lot, and where the shortcut is most tempting. "Summarize this article" saves twenty minutes, and costs you the understanding the reading was assigned to build. Instead, use AI **around** your reading:
+
+| Before you read | While you read | After you read |
+|---|---|---|
+| "What background do I need to understand an article about [topic]?" | "What does this paragraph mean? [paste it]" | "Here's my summary. What did I miss or get wrong?" |
+| "Define these five terms I'll see." | "Explain this term in simpler words." | "Ask me three questions to test whether I understood the main argument." |
+
+The pattern: **you read, you summarize, then AI checks you.** Not the other way around.
+
+---
+
+## Research: AI Is Not a Source
+
+When you research a topic, AI can help you get started:
+
+- Brainstorm angles and research questions
+- Suggest search terms and keywords
+- Explain background so you understand what you find
+- Help you organize notes and compare what sources say
+
+But **AI chat responses are not sources you can cite**, and AI can **invent sources** that look completely real: plausible titles, real-sounding authors, believable journal names, and links that go nowhere. This is called **hallucination**, and citations are one of the places it happens most.
+
+<ProcessFlow
+  label="A safe AI research workflow: AI helps you plan, you search real sources, you read and verify them, and you cite only what you actually read"
+  color="#14b8a6"
+  steps={[
+    { title: "Plan with AI", detail: "Questions, keywords, background" },
+    { title: "Search real sources", detail: "Library databases, search engines" },
+    { title: "Read and verify", detail: "Open it. Does it say what you think?" },
+    { title: "Cite what you read", detail: "Only sources you've actually checked" },
+  ]}
+/>
+
+### If AI Gives You a Source
+
+1. **Search for it** by exact title in a search engine or your library database.
+2. **Open it.** Confirm the author, date, and publication are real.
+3. **Find the claim.** Make sure the source actually says what the AI said it does. Real sources are often misquoted.
+4. **Cite only what you've read yourself.**
+
+Some AI tools search the web and show real links. That helps, but you still need to open the link and check the claim.
+
+<Pitfall title="The Fake Citation">
+
+**Common mistake:** copying an AI-generated reference list into your bibliography.
+
+If even one source doesn't exist, your teacher will notice, and fabricated citations are usually treated as a serious integrity problem, even if the AI made them up and you didn't know. You are responsible for every source you cite.
+
+</Pitfall>
+
+<TryIt title="Source Check Challenge">
+
+1. Ask an AI assistant:
+   ```text
+   Give me five scholarly sources about [a topic you're studying],
+   with authors, titles, years, and where they were published.
+   ```
+2. For each source, try to find it using a search engine or your school library's database.
+3. Mark each: ✅ exists and matches, ⚠️ exists but details are wrong, ❌ can't find it.
+4. For any that exist, check whether the source is actually about what the AI said.
+5. Now find two real sources yourself using your library database. Compare the time and effort, and the confidence you have in each.
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "What's the best way to use AI with a difficult reading?",
+    options: [
+      "Ask for a summary and skip the reading.",
+      "Read it yourself, write your own summary, then ask AI to check what you missed.",
+      "Ask AI to answer the reading questions.",
+      "Only read the AI's version."
+    ],
+    correctIndex: 1,
+    explanation: "You do the reading and summarizing, which is the learning. AI checks your understanding."
+  },
+  {
+    question: "AI gives you a source with a real-sounding title, authors, and journal. What should you do before citing it?",
+    options: [
+      "Cite it. It sounds real.",
+      "Find it yourself, open it, and confirm it says what the AI claimed.",
+      "Ask the AI if it's real.",
+      "Change the year to be safe."
+    ],
+    correctIndex: 1,
+    explanation: "AI can invent convincing sources. Only cite sources you've found and read yourself."
+  },
+  {
+    question: "Which is a good use of AI in research?",
+    options: [
+      "Citing the AI's chat response as a source.",
+      "Brainstorming search keywords and research questions.",
+      "Copying its reference list into your bibliography.",
+      "Having it write the literature review."
+    ],
+    correctIndex: 1,
+    explanation: "AI is useful for planning and getting started. Finding, reading, and citing sources is your job."
+  }
+]} />
+
+---
+
+## Up Next
+
+Module 3 moves to assignments: writing with AI without losing your own voice.

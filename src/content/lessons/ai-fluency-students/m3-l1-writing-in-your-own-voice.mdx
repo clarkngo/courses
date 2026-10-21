@@ -1,0 +1,135 @@
+---
+title: "Writing With AI in Your Own Voice"
+description: "Where AI can help in the writing process when your course allows it, from brainstorming to feedback, and how to keep the ideas, the argument, and the voice your own."
+module: 3
+moduleTitle: "AI in Your Assignments"
+lesson: 1
+duration: "25 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## Why Your Voice Matters
+
+Writing assignments aren't really about producing text. They're about learning to **think clearly, build an argument, and say what you mean**. Those are some of the most valuable skills you'll ever have. AI can write fluent text in seconds, which is exactly why handing it the writing skips the skill.
+
+AI-written text also tends to sound a certain way: smooth, balanced, a little generic, with no real point of view. Teachers who know your writing often notice when a submission doesn't sound like you.
+
+---
+
+## The Writing Process, Step by Step
+
+*Always check your course's AI level first (Lesson 1.2). If an assignment is "No AI," none of this applies.*
+
+<ProcessFlow
+  label="Where AI can help in the writing process when allowed: brainstorm, outline, draft yourself, get feedback, revise yourself"
+  color="#14b8a6"
+  steps={[
+    { title: "Brainstorm (AI can help)", detail: "AI widens your options. You choose." },
+    { title: "Outline (AI can critique)", detail: "You build it; AI points out gaps" },
+    { title: "Draft (you)", detail: "You write it, in your own words" },
+    { title: "Feedback (AI can help)", detail: "AI points out problems without fixing them" },
+    { title: "Revise (you)", detail: "You decide what to change and how" },
+  ]}
+/>
+
+### Brainstorming
+
+```text
+I'm writing an argumentative essay for 11th-grade English about
+whether cities should ban cars from downtown. Ask me questions to
+help me figure out what I actually believe. Then suggest three
+angles I might not have considered. Don't write any of the essay.
+```
+
+### Outline Feedback
+
+```text
+Here's my outline: [paste]. Don't rewrite it. Tell me: is my thesis
+clear and arguable? Is there a point that doesn't support it? What
+counterargument should I address?
+```
+
+### Draft Feedback
+
+```text
+Here's my draft paragraph. Act as a tough but fair writing tutor.
+Point out the two biggest problems, but don't fix them. I'll revise
+it myself.
+```
+
+The key words are **"don't rewrite"** and **"don't fix."** They're a performance description that keeps AI in the role of coach.
+
+---
+
+## Keeping It Yours
+
+- **Your ideas first.** Decide what you think before asking AI for angles, so you're choosing among options rather than adopting one.
+- **Your words.** Don't paste AI sentences into your draft. If AI phrases something well, close the chat and write the idea in your own way.
+- **Your decisions.** Feedback is advice. You decide what to change. Sometimes the AI is wrong, or would make your writing sound less like you.
+- **Your evidence.** Every quote, fact, and source in your essay should come from something you actually read (see Lesson 2.2).
+
+<Pitfall title="Death by a Thousand Edits">
+
+**Common mistake:** asking AI to "improve" your draft over and over, accepting each version, until the final essay is mostly AI's writing.
+
+Each change seems small, but together they replace your voice and thinking. If AI is rewriting rather than advising, you've crossed from feedback into authorship, which most course policies don't allow without disclosure.
+
+</Pitfall>
+
+<TryIt title="Coach, Don't Write">
+
+*Use a real writing assignment that allows AI feedback, or a practice piece.*
+
+1. Write one paragraph yourself, without AI.
+2. Ask AI for feedback using the "point out, don't fix" prompt above.
+3. Revise the paragraph yourself, using only the feedback you agree with.
+4. Now, as an experiment, ask AI to rewrite your original paragraph. Read it, but don't use it.
+5. Compare your revision and AI's rewrite. Which sounds more like you? Which says what *you* mean? Which would you rather defend in front of your teacher?
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "Which request keeps AI in a coaching role?",
+    options: [
+      "'Rewrite my essay to sound smarter.'",
+      "'Point out the two weakest parts of my argument, but don't fix them.'",
+      "'Write my conclusion.'",
+      "'Make this an A paper.'"
+    ],
+    correctIndex: 1,
+    explanation: "Asking AI to point out problems without fixing them keeps the thinking and writing yours."
+  },
+  {
+    question: "Why decide what you think before asking AI for brainstorming help?",
+    options: [
+      "AI can't brainstorm.",
+      "So you choose among options instead of adopting AI's view as your own.",
+      "It's faster.",
+      "Teachers require it."
+    ],
+    correctIndex: 1,
+    explanation: "Starting with your own view keeps your ideas at the center and makes AI a way to widen and test them."
+  },
+  {
+    question: "What's the risk of repeatedly accepting AI's 'improvements' to your draft?",
+    options: [
+      "The essay gets too short.",
+      "Small edits add up until the essay is mostly AI's writing and no longer your voice or thinking.",
+      "AI runs out of ideas.",
+      "There's no risk."
+    ],
+    correctIndex: 1,
+    explanation: "Many small rewrites can quietly turn feedback into authorship."
+  }
+]} />
+
+---
+
+## Up Next
+
+Not every assignment is an essay. Next: using AI well on problem sets, code, projects, and group work.

@@ -1,0 +1,148 @@
+---
+title: "AI as Your Tutor and Study Partner"
+description: "Use proven study techniques with AI: get explanations at your level, quiz yourself, teach the concept back, and plan spaced review, using prompts that keep you doing the thinking."
+module: 2
+moduleTitle: "AI as a Study Partner"
+lesson: 1
+duration: "25 min"
+---
+
+import LoopDiagram from '@components/LoopDiagram.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## A Tutor Who's Always Available
+
+A good tutor doesn't do your homework. They explain things in a way that clicks for you, ask questions that make you think, notice what you're missing, and quiz you until you know it. AI can do a lot of this, if you **describe** what you want.
+
+Here are four study techniques that learning research strongly supports, and how to do each with AI.
+
+---
+
+## 1. Explain It at My Level
+
+When the textbook doesn't click, ask for a different explanation, and tell the AI where you are:
+
+```text
+I'm in 10th-grade chemistry. I understand what atoms are but I'm
+confused about why some bonds are ionic and others covalent. Explain
+it using an everyday analogy, then check whether I understood by
+asking me one question.
+```
+
+The last line matters. It turns a passive explanation into an active check.
+
+## 2. Quiz Me (Retrieval Practice)
+
+Pulling information *out* of your memory strengthens it far more than rereading. This is called **retrieval practice**, and it's one of the most effective study methods there is.
+
+```text
+Here are my notes on the causes of World War I: [paste notes].
+Quiz me one question at a time. Mix easy and hard questions. Don't
+show the answer until I've tried. Keep track of what I get wrong
+and quiz me on those again at the end.
+```
+
+## 3. Let Me Teach It Back
+
+If you can explain something simply, you understand it. Ask AI to be your student:
+
+```text
+I'm going to explain photosynthesis to you as if you're a curious
+12-year-old. Ask follow-up questions like a real kid would. Then
+tell me what I explained well and what I got wrong or left out.
+```
+
+## 4. Spaced Review
+
+Studying a little over several days beats cramming, because spacing out review forces you to keep retrieving things you've half-forgotten. AI can help plan it:
+
+```text
+My biology test is in 8 days. The topics are [list]. I have about
+30 minutes a day. Make me a spaced review plan that revisits each
+topic at least three times, with more time on [hardest topics].
+```
+
+<LoopDiagram
+  label="The study loop: you try first, AI quizzes or questions you, you find your gaps, and you review those gaps again later"
+  colors={['#0f766e', '#14b8a6', '#2dd4bf']}
+  steps={[
+    { title: "Try first", subtitle: "your own attempt" },
+    { title: "AI quizzes", subtitle: "questions, hints" },
+    { title: "Find gaps", subtitle: "what you missed" },
+    { title: "Review later", subtitle: "spaced practice" },
+  ]}
+/>
+
+---
+
+## Discernment: Your Tutor Makes Mistakes
+
+AI tutors can be wrong: a wrong step in a math solution, a mixed-up date, a definition that's close but not quite right. Protect yourself:
+
+- **Check against your class materials.** Your textbook and notes are the source of truth for your course.
+- **Watch for differences from how your teacher does it.** AI might use a different method or notation. That can confuse you on a test.
+- **Be suspicious when AI is very confident and very specific.** Double-check names, dates, numbers, and formulas.
+- **Ask your teacher when AI and your notes disagree.** It's a great question to bring to class.
+
+<Pitfall title="Studying the AI Instead of the Material">
+
+**Common mistake:** asking AI for a summary of every chapter and studying only the summaries.
+
+Summaries skip details your teacher might test, may contain errors, and leave you with an illusion of competence. Use AI to *quiz* you on the real material, not to replace it.
+
+</Pitfall>
+
+<TryIt title="Run a Full Study Session With AI">
+
+1. Pick a test or quiz you have coming up.
+2. **Explain:** Ask for a different explanation of the topic you find hardest, at your level, ending with a check question.
+3. **Quiz:** Paste your own notes and run a retrieval quiz of at least 10 questions. Track what you miss.
+4. **Teach back:** Explain one concept to the AI as if it's a younger student, and ask for feedback on what you missed.
+5. **Plan:** Ask for a spaced review plan up to your test date.
+6. **Check:** Find one thing the AI said that you verified against your class materials. Was it right?
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "What is retrieval practice?",
+    options: [
+      "Rereading your notes several times.",
+      "Pulling information out of memory, such as answering quiz questions without looking.",
+      "Asking AI for summaries.",
+      "Highlighting the textbook."
+    ],
+    correctIndex: 1,
+    explanation: "Retrieving information strengthens memory far more than rereading. AI makes it easy to get quizzed on anything."
+  },
+  {
+    question: "Why add 'then check whether I understood by asking me one question' to an explanation request?",
+    options: [
+      "To make the answer longer.",
+      "It turns passive reading into active thinking and reveals whether you actually understood.",
+      "AI requires it.",
+      "To test the AI."
+    ],
+    correctIndex: 1,
+    explanation: "A check question guards against the illusion of competence: you find out right away whether the explanation stuck."
+  },
+  {
+    question: "AI's explanation of a math method is different from your teacher's. What should you do?",
+    options: [
+      "Always follow the AI.",
+      "Check against your class materials and ask your teacher, since tests will expect the class method.",
+      "Ignore both.",
+      "Use whichever is shorter."
+    ],
+    correctIndex: 1,
+    explanation: "Your class materials are the source of truth for your course. Differences are a great question to bring to your teacher."
+  }
+]} />
+
+---
+
+## Up Next
+
+Next: using AI for reading and research, and avoiding its most dangerous habit, inventing sources.

@@ -1,0 +1,123 @@
+---
+title: "Problem Sets, Code, and Group Projects"
+description: "Use AI to get unstuck on math and science problems, debug code you wrote, and work fairly in group projects, without letting it do the work you're there to learn."
+module: 3
+moduleTitle: "AI in Your Assignments"
+lesson: 2
+duration: "25 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## Problem Sets: Get Unstuck, Not Carried
+
+Math, science, and other problem-based courses build skill through practice. Each problem you solve yourself makes the next one easier. AI can solve most homework problems instantly, which makes it easy to "finish" homework and then freeze on the test.
+
+**Try first, then ask for the smallest help that gets you moving:**
+
+| Instead of | Try |
+|---|---|
+| "Solve this problem." | "Here's my work so far. What's the next step? Don't solve it." |
+| "Show me the answer." | "I got 42 but the answer key says 36. Where did I go wrong?" |
+| "Explain how to do this type of problem." | "Give me a similar problem with different numbers so I can practice." |
+
+```text
+I'm working on this physics problem: [paste]. Here's what I've done
+so far: [your work]. I'm stuck. Give me one hint about what to think
+about next. Don't give the next step or the answer.
+```
+
+**Discernment for math and science:** AI makes calculation and logic errors, sometimes with total confidence. Check its steps, and remember your answer key and teacher are the authority for your course.
+
+---
+
+## Code: Understand What You Submit
+
+In programming courses, AI coding assistants are powerful and the rules vary a lot, so check your course policy carefully. When AI help is allowed:
+
+- **Write it first.** Your attempt, even broken, is where learning happens.
+- **Ask AI to explain errors, not just fix them:** "What does this error message mean, and why is it happening?"
+- **Never submit code you can't explain.** If you couldn't walk your teacher through every line, you don't understand it yet, and it will show on exams and interviews.
+- **Test everything.** AI-generated code can look right and still fail on edge cases.
+
+```text
+Here's my function and the error I'm getting: [paste]. Explain what
+the error means and give me a hint about where the bug is. Don't
+rewrite my code.
+```
+
+---
+
+## Group Projects: Agree Before You Start
+
+Group projects add a new problem: **everyone's grade depends on everyone's AI choices.** One teammate's undisclosed AI use can put the whole group at risk. Settle it at the first meeting:
+
+1. **What does the course allow** for this project? Everyone reads the policy.
+2. **How will each of us use AI**, if at all?
+3. **How will we check** AI-assisted parts for accuracy?
+4. **How will we disclose** it in the final submission?
+
+Also: don't paste teammates' work or messages into AI without asking them. Their work is theirs to share.
+
+<Pitfall title="The Teammate Who Used AI Secretly">
+
+**Common mistake:** discovering the night before the deadline that one section was AI-written against the rules, with fake sources.
+
+Agree on AI use at the start, and review each other's sections, including sources, before submitting. If something violates the policy, fix it before submission or talk to your teacher. Don't hope nobody notices.
+
+</Pitfall>
+
+<TryIt title="The Smallest-Hint Challenge">
+
+1. Find a problem from a current class that you can't immediately solve (math, science, coding, or logic).
+2. Work on it yourself for at least five minutes. Write down where you got stuck.
+3. Ask AI for **one hint only**, using the prompt above.
+4. Try again. Need more help? Ask for one more hint. Count how many hints you needed.
+5. Once you've solved it, ask AI for a **similar problem** with different numbers, and solve it with no hints.
+6. Reflect: Could you solve a third one on a test tomorrow?
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "You're stuck halfway through a math problem. What's the best AI request?",
+    options: [
+      "'Solve it and show all steps.'",
+      "'Here's my work so far. Give me one hint about the next step without solving it.'",
+      "'What's the answer?'",
+      "'Do all ten problems.'"
+    ],
+    correctIndex: 1,
+    explanation: "The smallest hint that gets you moving keeps you doing the problem-solving, which is the skill you're building."
+  },
+  {
+    question: "What's the most important rule for using AI in a programming course where it's allowed?",
+    options: [
+      "Use the newest AI model.",
+      "Never submit code you can't explain line by line.",
+      "Always let AI write the first version.",
+      "Don't test AI code. It's usually right."
+    ],
+    correctIndex: 1,
+    explanation: "Understanding your code is the learning, and it's what exams and interviews test."
+  },
+  {
+    question: "When should a group agree on how it will use AI?",
+    options: [
+      "The night before it's due.",
+      "At the first meeting, after everyone reads the course policy.",
+      "Never. It's personal.",
+      "Only if someone gets caught."
+    ],
+    correctIndex: 1,
+    explanation: "Everyone's grade depends on everyone's choices. Agree early on use, checking, and disclosure."
+  }
+]} />
+
+---
+
+## Up Next
+
+Module 4 covers honesty: how to disclose AI use, what to do if you're ever accused of misusing AI, and building AI skills for your future.
