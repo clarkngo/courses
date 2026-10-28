@@ -1,0 +1,16 @@
+---
+export interface Props {
+  name: string;
+  label: string;
+  min: number;
+  max: number;
+  step?: number;
+  value: number;
+  pct?: boolean;
+}
+const { name, label, min, max, step = 1, value, pct = false } = Astro.props;
+---
+<label class="rl-field">
+  <span class="rl-field-label">{label} <output data-out={name}>{value}</output></span>
+  <input type="range" data-in={name} min={min} max={max} step={step} value={value} data-fmt={pct ? 'pct' : undefined} />
+</label>

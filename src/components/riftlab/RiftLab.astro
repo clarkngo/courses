@@ -1,0 +1,15 @@
+---
+import '../../styles/riftlab.css';
+
+export interface Props {
+  title: string;
+  lab: string;
+  subtitle?: string;
+}
+const { title, lab, subtitle } = Astro.props;
+---
+<section class="riftlab not-prose" data-rl={lab} aria-label={`Interactive lab: ${title}`}>
+  <div class="riftlab-title">🎮 Rift Lab: {title}</div>
+  {subtitle && <p class="riftlab-sub">{subtitle}</p>}
+  <slot />
+</section>

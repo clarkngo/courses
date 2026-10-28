@@ -1,0 +1,119 @@
+---
+import RiftLab from './RiftLab.astro';
+import Slider from './Slider.astro';
+import Stat from './Stat.astro';
+import Chart from './Chart.astro';
+---
+<RiftLab title="Is That Win Rate Real?" lab="winrate" subtitle="Enter a record and test it against a null hypothesis win rate. The top chart is the distribution of wins you'd expect if the null were true; orange bars are results at least as extreme as yours.">
+  <div class="rl-controls">
+    <label class="rl-field"><span class="rl-field-label">Wins</span><input type="number" data-in="wins" min="0" max="2000" value="22" /></label>
+    <label class="rl-field"><span class="rl-field-label">Games played</span><input type="number" data-in="games" min="1" max="2000" value="40" /></label>
+    <Slider name="p0" label="Null win rate (H₀)" min={0.4} max={0.6} step={0.01} value={0.5} pct />
+    <label class="rl-field">
+      <span class="rl-field-label">Significance level α</span>
+      <select data-in="alpha">
+        <option value="0.1">0.10 (90% CI)</option>
+        <option value="0.05" selected>0.05 (95% CI)</option>
+        <option value="0.01">0.01 (99% CI)</option>
+      </select>
+    </label>
+  </div>
+  <div class="rl-stats">
+    <Stat name="phat" label="Observed win rate" />
+    <Stat name="z" label="z statistic" />
+    <Stat name="pExact" label="p-value (exact, 2-sided)" />
+    <Stat name="pZ" label="p-value (normal approx.)" />
+    <Stat name="wald" label="Wald CI" />
+    <Stat name="wilson" label="Wilson CI" />
+    <Stat name="needed" label="Games needed at this rate" />
+  </div>
+  <p class="rl-verdict" data-stat="verdict"></p>
+  <Chart name="null" caption="Wins expected under H₀" label="Binomial distribution of wins under the null hypothesis with the observed result marked">
+    <div class="rl-legend"><span><i class="c1"></i>Under H₀</span><span><i class="c2"></i>As or more extreme than yours</span></div>
+  </Chart>
+  <Chart name="ci" caption="Same win rate, more games: the Wilson interval narrows" label="Upper and lower confidence bounds against number of games">
+    <div class="rl-legend"><span><i class="c1"></i>Wilson bounds</span><span><i class="c3"></i>H₀ win rate</span><span><i class="c2"></i>Your sample size</span></div>
+  </Chart>
+</RiftLab>
+
+<script>
+  import { onLab, bindInputs, setText, chart, fmt, pct, binomPmf, normCdf, normInv, range } from '../../scripts/riftlab';
+
+  function wilson(ph: number, n: number, z: number) {
+    const denom = 1 + (z * z) / n;
+    const center = (ph + (z * z) / (2 * n)) / denom;
+    const half = (z * Math.sqrt((ph * (1 - ph)) / n + (z * z) / (4 * n * n))) / denom;
+    return [center - half, center + half];
+  }
+
+  onLab('winrate', (root) => {
+    const nullSvg = root.querySelector<SVGSVGElement>('[data-chart="null"]')!;
+    const ciSvg = root.querySelector<SVGSVGElement>('[data-chart="ci"]')!;
+
+    bindInputs(root, (v) => {
+      const n = Math.max(1, Math.round(v.games));
+      const w = Math.min(n, Math.max(0, Math.round(v.wins)));
+      const ph = w / n;
+      const z = normInv(1 - v.alpha / 2);
+      const se0 = Math.sqrt((v.p0 * (1 - v.p0)) / n);
+      const zStat = (ph - v.p0) / se0;
+      const pZ = 2 * (1 - normCdf(Math.abs(zStat)));
+
+      // Exact two-sided p-value: total probability of outcomes no more likely than the one observed.
+      const pmf = Array.from({ length: n + 1 }, (_, k) => binomPmf(k, n, v.p0));
+      const pObs = pmf[w];
+      const extreme = pmf.map((pk) => pk <= pObs * (1 + 1e-7));
+      const pExact = Math.min(1, pmf.reduce((s, pk, k) => s + (extreme[k] ? pk : 0), 0));
+
+      const seHat = Math.sqrt((ph * (1 - ph)) / n);
+      const [wl, wu] = wilson(ph, n, z);
+      const diff = Math.abs(ph - v.p0);
+      const needed = diff > 0 ? Math.ceil(((z * Math.sqrt(v.p0 * (1 - v.p0))) / diff) ** 2) : Infinity;
+
+      setText(root, 'phat', `${pct(ph)} (${w}–${n - w})`);
+      setText(root, 'z', fmt(zStat, 2));
+      setText(root, 'pExact', fmt(pExact, 4));
+      setText(root, 'pZ', fmt(pZ, 4));
+      setText(root, 'wald', `${pct(ph - z * seHat)} – ${pct(ph + z * seHat)}`);
+      setText(root, 'wilson', `${pct(wl)} – ${pct(wu)}`);
+      setText(root, 'needed', Number.isFinite(needed) ? `≈ ${needed}` : '∞');
+
+      const verdict = root.querySelector<HTMLElement>('[data-stat="verdict"]')!;
+      const sig = pExact < v.alpha;
+      verdict.className = `rl-verdict ${sig ? 'good' : 'warn'}`;
+      verdict.textContent = sig
+        ? `p = ${fmt(pExact, 4)} < α = ${v.alpha}: reject H₀. A ${pct(ph)} record over ${n} games is unlikely if your true win rate were ${pct(v.p0, 0)}.`
+        : pExact < 2 * v.alpha
+          ? `p = ${fmt(pExact, 4)} ≥ α = ${v.alpha}: borderline, so fail to reject H₀. The evidence leans away from ${pct(v.p0, 0)}, but a ${pct(v.p0, 0)} player could still post this record.`
+          : `p = ${fmt(pExact, 4)} ≥ α = ${v.alpha}: not enough evidence. A ${pct(ph)} record over ${n} games is entirely plausible for a ${pct(v.p0, 0)} player.`;
+
+      const lo = Math.max(0, Math.floor(n * v.p0 - 4.5 * Math.sqrt(n * v.p0 * (1 - v.p0)) - 2));
+      const hi = Math.min(n, Math.ceil(n * v.p0 + 4.5 * Math.sqrt(n * v.p0 * (1 - v.p0)) + 2));
+      const xMin = Math.min(lo, w) - 0.5;
+      const xMax = Math.max(hi, w) + 0.5;
+      const ks = range(Math.ceil(xMin), Math.floor(xMax), Math.floor(xMax) - Math.ceil(xMin) + 1);
+      chart(nullSvg, {
+        xMin, xMax, yMin: 0, yMax: Math.max(...pmf) * 1.2,
+        xLabel: `Wins out of ${n}`, yLabel: 'Probability',
+        xFmt: (x) => (Number.isInteger(x) ? `${x}` : ''),
+        bars: ks.map((k) => ({ x0: k - 0.42, x1: k + 0.42, y: pmf[k], cls: extreme[k] ? 'c2' : 'c1' })),
+        vlines: [{ x: w, cls: 'c2', label: `you: ${w}` }],
+      });
+
+      const nMax = Math.max(400, n * 2);
+      const ns = range(10, nMax, 120);
+      chart(ciSvg, {
+        xMin: 0, xMax: nMax, yMin: Math.max(0, Math.min(ph, v.p0) - 0.3), yMax: Math.min(1, Math.max(ph, v.p0) + 0.3),
+        xLabel: `Games played (holding win rate at ${pct(ph)})`, yLabel: 'Win rate',
+        yFmt: (y) => `${Math.round(y * 100)}%`,
+        lines: [
+          { pts: ns.map((k) => [k, wilson(ph, k, z)[0]]), cls: 'c1' },
+          { pts: ns.map((k) => [k, wilson(ph, k, z)[1]]), cls: 'c1' },
+          { pts: [[0, ph], [nMax, ph]], cls: 'c1', dash: true },
+        ],
+        hlines: [{ y: v.p0, cls: 'c3', label: 'H₀' }],
+        vlines: [{ x: n, cls: 'c2', label: `n = ${n}` }],
+      });
+    });
+  });
+</script>

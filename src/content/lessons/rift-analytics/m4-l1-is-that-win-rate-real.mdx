@@ -1,0 +1,157 @@
+---
+title: "Is That Win Rate Real? Hypothesis Tests and Confidence Intervals"
+description: "Test whether a 55% win rate over 40 games is evidence of skill or just luck. Learn null and alternative hypotheses, test statistics, p-values, significance levels, Type I and II errors, and confidence intervals."
+module: 4
+moduleTitle: "Inferential Statistics"
+lesson: 1
+duration: "30 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import WinRateLab from '@components/riftlab/WinRateLab.astro';
+
+## From Describing to Inferring
+
+Descriptive statistics summarizes the games you **played**. Inferential statistics asks what those games say about games you **haven't played yet**.
+
+You went **22–18** on a new champion this week. That's a 55% win rate. Should you main this champion? The honest question is:
+
+> If my true long-run win rate on this champion were actually 50%, how surprising would a 22–18 record be?
+
+- The **population** is every game you would ever play on this champion. Its true win rate `p` is unknown.
+- The **sample** is the 40 games you played. Its win rate `p̂ = 22/40 = 0.55` is an **estimate** of `p`.
+
+Inference is about how far `p̂` can wander from `p` by chance alone.
+
+---
+
+## The Hypothesis Testing Recipe
+
+### 1. State Two Hypotheses
+
+- **Null hypothesis** `H₀: p = 0.50`. Nothing special is going on; you're a coin flip on this champion.
+- **Alternative hypothesis** `H₁: p ≠ 0.50`. Your true win rate differs from 50%.
+
+The null is the boring, skeptical claim. The test asks whether the data gives enough evidence to reject it.
+
+### 2. Pick a Significance Level
+
+The **significance level** `α` is how much risk of a false alarm you'll accept. `α = 0.05` is the common default: you'll reject a true null 5% of the time.
+
+### 3. Compute a Test Statistic
+
+If `H₀` is true, the number of wins in 40 games follows a binomial distribution with `n = 40, p = 0.5`. Its standard error (the typical size of chance swings in the win rate) is:
+
+```
+SE = √(p₀ (1 − p₀) / n) = √(0.25 / 40) ≈ 0.079
+```
+
+Your result is `0.55 − 0.50 = 0.05` above the null, so the **z statistic** is:
+
+```
+z = (p̂ − p₀) / SE = 0.05 / 0.079 ≈ 0.63
+```
+
+Your record is only 0.63 standard errors from what a 50% player would expect.
+
+### 4. Find the p-Value
+
+The **p-value** is the probability, assuming `H₀` is true, of a result **at least as extreme** as the one you observed.
+
+- Normal approximation: two-sided `p ≈ 0.53`
+- Exact binomial calculation: two-sided `p ≈ 0.64`
+
+### 5. Decide
+
+`p ≈ 0.64` is far above `α = 0.05`. **We fail to reject H₀.** A coin-flip player would post a record like 22–18 or more lopsided (in either direction) about 64% of the time. Forty games just can't tell 55% apart from 50%.
+
+"Fail to reject" is not the same as "proved you're a 50% player." It means the data is **consistent with** 50%. It's also consistent with 45% or 60%.
+
+---
+
+## Confidence Intervals
+
+A **confidence interval** gives the range of true win rates that are compatible with your data. The simple (Wald) 95% interval is:
+
+```
+p̂ ± 1.96 · √(p̂ (1 − p̂) / n) = 0.55 ± 1.96 · 0.0787 = 0.55 ± 0.154
+```
+
+So **39.6% to 70.4%**. That's huge: your data can't rule out that you're a below-average player on this champion, or a dominant one.
+
+The **Wilson interval** is a better choice for proportions, especially with small samples or win rates near 0% or 100%. For 22/40 it gives **39.8% to 69.3%**. The lab shows both.
+
+The interval and the test agree: 50% is inside the 95% interval, so a test at `α = 0.05` doesn't reject `p = 0.5`.
+
+### What "95% Confident" Means
+
+The *procedure* produces intervals that capture the true `p` in 95% of samples. It does **not** mean there's a 95% probability that `p` is in this particular interval. The true win rate is fixed; it's the interval that varies from sample to sample.
+
+---
+
+## How Many Games Do You Need?
+
+The width of the interval shrinks with `1/√n`. To cut it in half, you need **four times** as many games.
+
+To detect a true 55% win rate against a 50% null, solve `1.96 · √(0.25/n) = 0.05`:
+
+```
+n = (1.96 · 0.5 / 0.05)² ≈ 385 games
+```
+
+Even then, the exact test at 220–180 (55% over 400 games) gives `p ≈ 0.051`, right at the edge. Small edges need big samples. This is why professional analysts and game designers are cautious about win rates from a few dozen games.
+
+<WinRateLab />
+
+---
+
+## Errors and Power
+
+| | H₀ actually true | H₀ actually false |
+|---|---|---|
+| **Reject H₀** | **Type I error** (false positive), probability α | Correct: you detected a real effect |
+| **Fail to reject H₀** | Correct | **Type II error** (false negative), probability β |
+
+**Power** = `1 − β`, the chance of detecting an effect that's really there. With 40 games and a true 55% win rate, power is very low, under 10%. A non-significant result from a low-power test tells you almost nothing.
+
+<Pitfall title="Checking Thirty Champions and Celebrating the Winner">
+
+**Common mistake:** you look at your win rates on 30 champions, find one at 70% over 20 games, and call it significant at p = 0.04. But at α = 0.05, testing 30 champions where nothing real is going on would produce about 1.5 "significant" results by chance alone. This is the **multiple comparisons problem**. Corrections like **Bonferroni** (use α/30 for each test) or simply collecting new games on that champion to confirm protect you from it.
+
+A related trap is **optional stopping**: checking your p-value after every game and stopping the moment it dips below 0.05. Decide your sample size *before* you start.
+
+</Pitfall>
+
+<Quiz
+  questions={[
+    {
+      question: "You go 22–18 (55%) over 40 games. The two-sided p-value against H₀: p = 0.5 is about 0.64. What should you conclude?",
+      options: [
+        "Your true win rate is 50%",
+        "There's not enough evidence that your win rate differs from 50%",
+        "There's a 64% chance H₀ is true",
+        "Your true win rate is 55%"
+      ],
+      correctIndex: 1,
+      explanation: "A large p-value means the data is consistent with H₀. It doesn't prove H₀, and a p-value is not the probability that H₀ is true."
+    },
+    {
+      question: "To halve the width of a confidence interval for your win rate, you need roughly how many games?",
+      options: ["Twice as many", "Four times as many", "Half as many", "The same number at a higher α"],
+      correctIndex: 1,
+      explanation: "Width scales with 1/√n, so halving the width needs 4× the sample."
+    },
+    {
+      question: "Which is a Type I error in a win-rate test?",
+      options: [
+        "Concluding you're better than 50% when you really are a 50% player",
+        "Missing a real improvement",
+        "Playing too few games",
+        "Using the Wilson interval"
+      ],
+      correctIndex: 0,
+      explanation: "A Type I error rejects a true null hypothesis: a false positive. Its probability is α."
+    }
+  ]}
+/>

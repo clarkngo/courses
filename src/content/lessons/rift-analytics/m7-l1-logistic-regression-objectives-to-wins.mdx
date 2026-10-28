@@ -1,0 +1,164 @@
+---
+title: "Logistic Regression: From Objectives to Win Probability"
+description: "Predict win/loss from tower, dragon, and Baron differentials with logistic regression. Learn odds and log-odds, the sigmoid function, maximum likelihood and log-loss, gradient descent, decision boundaries, thresholds, and the confusion matrix."
+module: 7
+moduleTitle: "Logistic Regression & Classification"
+lesson: 1
+duration: "35 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import LogisticLab from '@components/riftlab/LogisticLab.astro';
+
+## A Classification Problem
+
+At 20 minutes, your team is up 2 towers, down 1 dragon, and nobody has taken Baron. **Who wins?** The outcome has only two values, win (1) or loss (0), so this is **binary classification**. We want a model that outputs a **probability** of winning, and then a rule that turns that probability into a call.
+
+The features are **differentials** (your team minus the enemy's) at a fixed snapshot time:
+
+- `T` = tower difference
+- `D` = dragon difference
+- `B` = Baron difference
+
+---
+
+## Odds and Log-Odds
+
+Probabilities live between 0 and 1. A linear score `b₀ + b₁x` can be any number. To connect them, logistic regression works through **odds**:
+
+```
+odds = p / (1 − p)
+```
+
+| P(win) | Odds | Log-odds ln(odds) |
+|---|---|---|
+| 0.10 | 0.11 (1 : 9) | −2.20 |
+| 0.50 | 1 (even) | 0 |
+| 0.75 | 3 (3 : 1) | 1.10 |
+| 0.90 | 9 (9 : 1) | 2.20 |
+
+Log-odds (also called the **logit**) range from −∞ to +∞, just like a linear score. So the model sets them equal:
+
+```
+z = ln(p / (1 − p)) = b₀ + b_T · T + b_D · D + b_B · B
+```
+
+## The Sigmoid
+
+Solve for `p` and you get the **sigmoid** (logistic) function:
+
+```
+p = σ(z) = 1 / (1 + e^(−z))
+```
+
+- `z = 0` → `p = 0.5`
+- Large positive `z` → `p` approaches 1, but never reaches it
+- Large negative `z` → `p` approaches 0
+
+The S-shape is exactly what the linear probability model in Module 6 was missing: big leads flatten out near certainty instead of shooting past 100%.
+
+### Interpreting Coefficients
+
+Each coefficient is the change in **log-odds** for a one-unit change in its feature. Exponentiate to get an **odds ratio**:
+
+```
+b_B = 1.1   →   e^1.1 ≈ 3.0
+```
+
+Each additional Baron advantage **triples the odds** of winning, holding towers and dragons fixed. If your odds were 1 : 1 (50%), one Baron makes them 3 : 1 (75%). If they were already 3 : 1, it makes them 9 : 1 (90%). The same coefficient moves probability by different amounts depending on where you start, which is the S-curve at work.
+
+---
+
+## Fitting: Maximum Likelihood and Log-Loss
+
+OLS minimized squared error. For probabilities, we instead choose coefficients that make the observed outcomes **most likely**. That's **maximum likelihood estimation**, and it's equivalent to minimizing the **log-loss** (binary cross-entropy):
+
+```
+log-loss = −(1/n) Σ [ yᵢ · ln(pᵢ) + (1 − yᵢ) · ln(1 − pᵢ) ]
+```
+
+When a team wins (`y = 1`), only `−ln(p)` counts: predicting 0.9 costs 0.105, but predicting 0.1 costs 2.30. Log-loss punishes **confident wrong answers** heavily.
+
+### Gradient Descent
+
+Unlike OLS, there's no closed-form solution. Instead, we take small steps downhill on the loss surface:
+
+```
+repeat:
+    for each match, compute pᵢ = σ(b · xᵢ)
+    gradient    = (1/n) Σ (pᵢ − yᵢ) · xᵢ
+    b = b − learning_rate · gradient
+```
+
+The gradient is built from partial derivatives (Module 1 again), and the update rule `(pᵢ − yᵢ) · xᵢ` has a natural reading: nudge each weight in proportion to how wrong the prediction was and how much that feature was present. Click **Fit with gradient descent** in the lab to watch the sliders move to the maximum-likelihood weights.
+
+---
+
+## Decision Boundaries and Thresholds
+
+To make a call, pick a **threshold** `t`: predict WIN if `p ≥ t`. Since the sigmoid is monotonic, `p ≥ t` is the same as `z ≥ ln(t / (1 − t))`. With `t = 0.5`, that's `z ≥ 0`:
+
+```
+b₀ + b_T · T + b_D · D + b_B · B ≥ 0
+```
+
+That's a **linear** inequality, so the **decision boundary** is a straight line (in 2 features), a plane (in 3), or a hyperplane (in more). The lab draws the boundary in the tower-dragon plane for games with no Baron difference. Raising the threshold slides the line toward the winning side, so the model only calls WIN when it's more certain.
+
+<LogisticLab />
+
+---
+
+## The Confusion Matrix
+
+Accuracy alone hides the kinds of mistakes a classifier makes. The **confusion matrix** splits them:
+
+| | Predicted WIN | Predicted LOSS |
+|---|---|---|
+| **Actual WIN** | True positive (TP) | False negative (FN) |
+| **Actual LOSS** | False positive (FP) | True negative (TN) |
+
+- **Accuracy** = (TP + TN) / total
+- **Precision** = TP / (TP + FP): when the model says WIN, how often is it right?
+- **Recall** = TP / (TP + FN): of all real wins, how many did the model catch?
+
+Raising the threshold usually **raises precision and lowers recall**. Which matters more depends on the cost of each mistake. A coach deciding when to call a risky Baron might want high precision; a broadcast win-probability graphic is judged mostly by whether its probabilities are **calibrated** (events it calls 70% happen about 70% of the time).
+
+<Pitfall title="Data Leakage from End-of-Game Stats">
+
+**Common mistake:** training on **end-of-game** tower counts. To win you destroy the enemy Nexus, which requires taking towers, so "towers destroyed at game end" nearly *is* the outcome. A model trained on it will post amazing accuracy and be useless for prediction. This is **data leakage**: a feature that contains information you wouldn't have at prediction time. Always use a fixed **snapshot** (like 15:00 or 20:00), and ask of every feature, "would I know this at the moment I need the prediction?"
+
+</Pitfall>
+
+<Quiz
+  questions={[
+    {
+      question: "A logistic model gives z = 0 for a match. What's the predicted win probability?",
+      options: ["0", "0.5", "1", "e"],
+      correctIndex: 1,
+      explanation: "σ(0) = 1 / (1 + e⁰) = 1/2."
+    },
+    {
+      question: "The dragon coefficient is 0.7. What does e^0.7 ≈ 2.0 mean?",
+      options: [
+        "Each dragon adds 2 percentage points of win chance",
+        "Each additional dragon advantage roughly doubles the odds of winning, holding the others fixed",
+        "Dragons explain 70% of wins",
+        "Two dragons guarantee a win"
+      ],
+      correctIndex: 1,
+      explanation: "Exponentiated logistic coefficients are odds ratios. The change in probability depends on the starting point."
+    },
+    {
+      question: "You raise the classification threshold from 0.5 to 0.8. What usually happens?",
+      options: [
+        "Precision rises and recall falls",
+        "Recall rises and precision falls",
+        "Both rise",
+        "The decision boundary stays the same"
+      ],
+      correctIndex: 0,
+      explanation: "The model predicts WIN less often but is right more often when it does, so precision tends to rise while more real wins are missed."
+    }
+  ]}
+/>

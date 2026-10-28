@@ -1,0 +1,155 @@
+/* Rift Analytics interactive labs. Plain CSS so the widgets work in both themes. */
+.riftlab {
+  --rl-accent: #0e7490;
+  --rl-bg: #ecfeff;
+  --rl-panel: #ffffff;
+  --rl-border: #a5f3fc;
+  --rl-text: #1f2937;
+  --rl-muted: #6b7280;
+  --rl-grid: #e5e7eb;
+  --rl-c1: #0891b2;
+  --rl-c2: #c2410c;
+  --rl-c3: #7c3aed;
+  --rl-c4: #15803d;
+  --rl-bad: #dc2626;
+  border-left: 4px solid var(--rl-accent);
+  background: var(--rl-bg);
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+  margin: 2rem 0;
+  color: var(--rl-text);
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+.dark .riftlab {
+  --rl-accent: #22d3ee;
+  --rl-bg: rgb(8 145 178 / 0.12);
+  --rl-panel: #111827;
+  --rl-border: #155e75;
+  --rl-text: #e5e7eb;
+  --rl-muted: #9ca3af;
+  --rl-grid: #374151;
+  --rl-c1: #22d3ee;
+  --rl-c2: #fb923c;
+  --rl-c3: #a78bfa;
+  --rl-c4: #4ade80;
+  --rl-bad: #f87171;
+}
+.riftlab-title {
+  font-weight: 700;
+  font-size: 0.8125rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--rl-accent);
+  margin-bottom: 0.25rem;
+}
+.riftlab-sub { color: var(--rl-muted); margin: 0 0 1rem; font-size: 0.8125rem; }
+.riftlab p { margin: 0.5rem 0; }
+
+.rl-controls {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.75rem 1.25rem;
+  margin-bottom: 1rem;
+}
+.rl-field { display: flex; flex-direction: column; gap: 0.25rem; font-size: 0.8125rem; }
+.rl-field-label { display: flex; justify-content: space-between; gap: 0.5rem; color: var(--rl-muted); }
+.rl-field-label output { color: var(--rl-text); font-weight: 600; font-variant-numeric: tabular-nums; }
+.rl-field input[type='range'] { width: 100%; accent-color: var(--rl-accent); }
+.rl-field input[type='number'],
+.rl-field select,
+.riftlab textarea {
+  background: var(--rl-panel);
+  color: var(--rl-text);
+  border: 1px solid var(--rl-border);
+  border-radius: 0.375rem;
+  padding: 0.35rem 0.5rem;
+  font: inherit;
+}
+.riftlab textarea { width: 100%; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.8125rem; min-height: 4.5rem; }
+
+.rl-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+.rl-stat {
+  background: var(--rl-panel);
+  border: 1px solid var(--rl-border);
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.65rem;
+}
+.rl-stat-label { display: block; font-size: 0.75rem; color: var(--rl-muted); }
+.rl-stat-value { display: block; font-size: 1.05rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+
+.rl-chart-wrap {
+  background: var(--rl-panel);
+  border: 1px solid var(--rl-border);
+  border-radius: 0.5rem;
+  padding: 0.25rem;
+  margin: 0.75rem 0;
+}
+.rl-chart-cap { font-size: 0.75rem; color: var(--rl-muted); padding: 0.25rem 0.5rem 0; font-weight: 600; }
+.lesson-prose .riftlab svg,
+.dark .lesson-prose .riftlab svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: transparent;
+  padding: 0;
+  border-radius: 0;
+  margin: 0;
+}
+.rl-grid line { stroke: var(--rl-grid); stroke-width: 1; }
+.rl-grid text, .rl-label, .rl-ref-label, .rl-cell-text { fill: var(--rl-muted); font-size: 10.5px; font-family: inherit; }
+.rl-label { font-size: 11px; font-weight: 600; }
+.rl-axis { stroke: var(--rl-muted); stroke-width: 1; }
+.rl-line { fill: none; stroke-width: 2.25; stroke-linejoin: round; stroke-linecap: round; }
+.rl-line.dash { stroke-dasharray: 5 4; stroke-width: 1.75; }
+.rl-ref { stroke: var(--rl-muted); stroke-width: 1.25; stroke-dasharray: 3 3; }
+.rl-ref.c2 { stroke: var(--rl-c2); stroke-width: 2; stroke-dasharray: 6 3; }
+.rl-ref.c3 { stroke: var(--rl-c3); stroke-width: 2; stroke-dasharray: 2 3; }
+.rl-area { stroke: none; opacity: 0.18; }
+.rl-bar { opacity: 0.85; }
+.rl-pt { stroke: var(--rl-panel); stroke-width: 1; }
+.rl-line.c1 { stroke: var(--rl-c1); } .rl-bar.c1, .rl-pt.c1, .rl-area.c1 { fill: var(--rl-c1); }
+.rl-line.c2 { stroke: var(--rl-c2); } .rl-bar.c2, .rl-pt.c2, .rl-area.c2 { fill: var(--rl-c2); }
+.rl-line.c3 { stroke: var(--rl-c3); } .rl-bar.c3, .rl-pt.c3, .rl-area.c3 { fill: var(--rl-c3); }
+.rl-line.c4 { stroke: var(--rl-c4); } .rl-bar.c4, .rl-pt.c4, .rl-area.c4 { fill: var(--rl-c4); }
+.rl-line.bad { stroke: var(--rl-bad); } .rl-bar.bad, .rl-pt.bad { fill: var(--rl-bad); }
+.rl-bar.muted, .rl-pt.muted { fill: var(--rl-muted); opacity: 0.45; }
+.rl-pt.hollow { fill: var(--rl-panel); stroke: var(--rl-c2); stroke-width: 2; }
+
+.rl-row { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; margin: 0.5rem 0; }
+.rl-btn {
+  background: var(--rl-accent);
+  color: #fff;
+  border: none;
+  border-radius: 0.375rem;
+  padding: 0.4rem 0.8rem;
+  font-weight: 600;
+  font-size: 0.8125rem;
+  cursor: pointer;
+}
+.dark .rl-btn { color: #082f49; }
+.rl-btn.ghost { background: transparent; color: var(--rl-accent); border: 1px solid var(--rl-accent); }
+.rl-btn:hover { filter: brightness(1.08); }
+.rl-btn:focus-visible { outline: 2px solid var(--rl-accent); outline-offset: 2px; }
+.rl-note { font-size: 0.8125rem; color: var(--rl-muted); }
+.rl-verdict { font-weight: 600; padding: 0.5rem 0.75rem; border-radius: 0.375rem; background: var(--rl-panel); border: 1px solid var(--rl-border); }
+.rl-verdict.good { border-color: var(--rl-c4); color: var(--rl-c4); }
+.rl-verdict.warn { border-color: var(--rl-c2); color: var(--rl-c2); }
+
+.rl-table { border-collapse: collapse; font-variant-numeric: tabular-nums; font-size: 0.8125rem; margin: 0.5rem 0; }
+.rl-table th, .rl-table td { border: 1px solid var(--rl-border); padding: 0.3rem 0.5rem; text-align: center; }
+.rl-table th { color: var(--rl-muted); font-weight: 600; background: var(--rl-panel); }
+.rl-scroll { overflow-x: auto; max-width: 100%; }
+.rl-cols { display: grid; grid-template-columns: 1fr; gap: 0; }
+.rl-legend { display: flex; flex-wrap: wrap; gap: 0.75rem; font-size: 0.75rem; color: var(--rl-muted); padding: 0 0.5rem 0.25rem; }
+.rl-legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 4px; vertical-align: -1px; }
+.rl-legend .c1 { background: var(--rl-c1); } .rl-legend .c2 { background: var(--rl-c2); }
+.rl-legend .c3 { background: var(--rl-c3); } .rl-legend .c4 { background: var(--rl-c4); }
+.rl-legend .muted { background: var(--rl-muted); }
+.rl-line.muted { stroke: var(--rl-muted); stroke-width: 1; opacity: 0.6; }
+.rl-cell-text.on-fill { fill: var(--rl-panel); font-weight: 700; }

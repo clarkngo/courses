@@ -1,0 +1,149 @@
+---
+title: "Linear Algebra Part 2: Team Matrices and Effective Health"
+description: "Stack champion vectors into a team matrix, compute a similarity matrix with matrix multiplication and transposes, sum columns into a team profile, and calculate every player's effective health against a mixed damage profile with a matrix-vector product."
+module: 5
+moduleTitle: "Linear Algebra"
+lesson: 2
+duration: "30 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TeamMatrixLab from '@components/riftlab/TeamMatrixLab.astro';
+
+## From Vectors to Matrices
+
+A **matrix** is a rectangular grid of numbers. Stack your five champions' attribute vectors as rows and you get the **team matrix** `T`:
+
+```
+            Eng  Bur  Pok  Sus  CC  Scl
+Malphite  [  9    6    2    3    8    5 ]
+Amumu     [  8    4    1    3    9    5 ]
+Orianna   [  5    7    6    2    7    8 ]
+Jinx      [  0    6    5    1    3   10 ]
+Leona     [  9    3    1    4    9    3 ]
+```
+
+`T` has **shape** 5 × 6: 5 rows (champions) by 6 columns (attributes). In data science, this is the standard layout: **rows are observations, columns are features**. A dataframe of 10,000 matches with 40 stats is just a 10,000 × 40 matrix.
+
+---
+
+## The Transpose
+
+The **transpose** `Tᵀ` flips rows and columns. `T` is 5 × 6, so `Tᵀ` is 6 × 5: now each row is an attribute and each column is a champion. Transposes show up constantly because they let you line up dimensions for multiplication.
+
+---
+
+## Matrix-Vector Multiplication
+
+Multiplying a matrix by a vector takes the **dot product of each row with the vector**. With the draft weights `w` from the last lesson:
+
+```
+T · w = [ Malphite · w,  Amumu · w,  Orianna · w,  Jinx · w,  Leona · w ]
+```
+
+One operation scores the whole team. A shape check keeps you honest: `(5 × 6) · (6 × 1) = (5 × 1)`. The inner dimensions (6 and 6) must match, and the outer ones give the result's shape.
+
+### Column Sums as a Product
+
+Multiply a row of ones by `T` and you add up every column:
+
+```
+p = 1ᵀ T = [1, 1, 1, 1, 1] · T = [31, 26, 15, 13, 36, 31]
+```
+
+That's the **team profile**: lots of engage and CC, less poke and sustain. Compare `p` to **archetype vectors** (Dive, Poke & Siege, Protect the Carry) with cosine similarity to classify the composition.
+
+---
+
+## Matrix-Matrix Multiplication: The Similarity Matrix
+
+To compare **every pair** of champions at once, first normalize each row of `T` to length 1 (call it `T̂`), then multiply by its own transpose:
+
+```
+S = T̂ T̂ᵀ        shape: (5 × 6) · (6 × 5) = (5 × 5)
+```
+
+Entry `S[i][j]` is the dot product of row `i` and row `j` of `T̂`, which is exactly the **cosine similarity** between champion `i` and champion `j`. This is called a **Gram matrix**, and it has two properties you can check:
+
+- **The diagonal is all 1s.** Every champion is perfectly similar to itself.
+- **It's symmetric:** `S = Sᵀ`, because `cos(i, j) = cos(j, i)`.
+
+High off-diagonal values flag **redundant** picks. In the example draft, Malphite, Amumu, and Leona all score above 0.95 with each other: three engage tanks.
+
+The same operation is used everywhere in machine learning: comparing every user to every other user in a recommender, or (as **attention** in transformer models) comparing every word to every other word in a sentence.
+
+---
+
+## Effective Health with Matrices
+
+From Module 1, armor and magic resist reduce damage by the multiplier `100 / (100 + R)`. **Effective health (EHP)** asks: how much *raw* damage does it take to kill you?
+
+```
+Physical EHP = HP / (100 / (100 + Armor)) = HP · (1 + Armor / 100)
+```
+
+A champion with 2,000 HP and 100 armor has `2,000 × 2 = 4,000` physical EHP.
+
+### Mixed Damage
+
+Real fights mix damage types. Write the enemy's damage profile as a vector `d` that sums to 1:
+
+```
+d = [physical share, magic share, true share] = [0.55, 0.35, 0.10]
+```
+
+Each champion has a row of **damage multipliers** `[100/(100+Armor), 100/(100+MR), 1]` (true damage ignores resists). Stack the five rows into a 5 × 3 matrix `R`. Then:
+
+```
+R · d = average multiplier for each champion   (5 × 3) · (3 × 1) = (5 × 1)
+EHP   = HP ÷ (R · d)                           (element by element)
+```
+
+One matrix-vector product gives the whole team's effective health against *this* enemy composition. Change `d` (say, the enemy swaps an AD carry for an AP carry) and every EHP updates at once.
+
+### Calculus Callback: How to Split Your Budget
+
+Physical EHP is `E(HP, A) = HP · (1 + A/100)`. Its partial derivatives:
+
+```
+∂E/∂HP = 1 + A/100        ∂E/∂A = HP / 100
+```
+
+Each point of armor is worth more when you have more HP, and each point of HP is worth more when you have more armor. The best split is where the **EHP per gold** of both stats is equal. Stacking only one stat is never optimal, which is why tank builds mix health and resists.
+
+<TeamMatrixLab />
+
+<Pitfall title="Mismatched Shapes and Orders">
+
+**Common mistake:** multiplying matrices whose inner dimensions don't match, or assuming `AB = BA`. `T̂ T̂ᵀ` is 5 × 5 (champion vs. champion), but `T̂ᵀ T̂` is 6 × 6 (attribute vs. attribute), a completely different matrix. Before any matrix operation, write the shapes down. Most bugs in NumPy, PyTorch, and spreadsheet models are shape bugs.
+
+</Pitfall>
+
+<Quiz
+  questions={[
+    {
+      question: "T is a 5 × 6 team matrix and w is a 6 × 1 weight vector. What is the shape of T · w?",
+      options: ["6 × 5", "5 × 1", "1 × 6", "It can't be computed"],
+      correctIndex: 1,
+      explanation: "(5 × 6)(6 × 1) = (5 × 1): one score per champion."
+    },
+    {
+      question: "Why is the similarity matrix S = T̂ T̂ᵀ always symmetric?",
+      options: [
+        "Because T is square",
+        "Because the cosine similarity of i with j equals that of j with i",
+        "Because all ratings are positive",
+        "It isn't always symmetric"
+      ],
+      correctIndex: 1,
+      explanation: "S[i][j] and S[j][i] are the same dot product, so S = Sᵀ."
+    },
+    {
+      question: "A champion has 1,500 HP and 50 armor. What is their physical effective health?",
+      options: ["1,550", "2,250", "3,000", "750"],
+      correctIndex: 1,
+      explanation: "EHP = HP · (1 + Armor/100) = 1,500 × 1.5 = 2,250."
+    }
+  ]}
+/>

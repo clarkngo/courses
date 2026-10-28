@@ -1,0 +1,171 @@
+---
+title: "Crits, Dragons, and Ganks: Probability on the Rift"
+description: "Model critical strikes with independent events and the binomial distribution, see how streak-breaking crit systems create dependent events, reason about dragon spawn order without replacement, and use conditional probability and Bayes' rule to decide when a gank is coming."
+module: 2
+moduleTitle: "Probability"
+lesson: 1
+duration: "30 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import CritLab from '@components/riftlab/CritLab.astro';
+import GankLab from '@components/riftlab/GankLab.astro';
+
+## Probability Is Long-Run Frequency
+
+A **probability** is a number between 0 and 1 that describes how often something happens over many repetitions. "25% crit chance" means that over thousands of auto-attacks, about a quarter of them crit. It does **not** mean every fourth attack crits.
+
+Three rules carry most of this lesson:
+
+| Rule | Formula | Rift example |
+|---|---|---|
+| Complement | `P(not A) = 1 − P(A)` | P(no crit) = 1 − 0.25 = 0.75 |
+| AND (multiplication) | `P(A and B) = P(A) · P(B given A)` | Win the fight **and** secure Baron |
+| OR (addition) | `P(A or B) = P(A) + P(B) − P(A and B)` | Infernal **or** Ocean drake spawns first |
+
+---
+
+## Independent Events: Crit Chance
+
+Two events are **independent** when one tells you nothing about the other. If every auto-attack rolls its crit with a fresh coin flip, crits are independent, and the multiplication rule simplifies to `P(A and B) = P(A) · P(B)`.
+
+With 25% crit chance:
+
+- P(two crits in a row) = 0.25 × 0.25 = **6.25%**
+- P(no crit in 6 autos) = 0.75⁶ ≈ **17.8%**
+- P(at least one crit in 6 autos) = 1 − 0.75⁶ ≈ **82.2%**
+
+That last one uses the complement trick: "at least one" is hard to count directly, but "none" is one easy product.
+
+### The Binomial Distribution
+
+If you make `n` independent attempts, each with success chance `p`, the number of successes `k` follows a **binomial distribution**:
+
+```
+P(k crits in n autos) = C(n, k) · pᵏ · (1 − p)ⁿ⁻ᵏ
+```
+
+`C(n, k)` ("n choose k") counts how many different orderings produce exactly `k` crits. The distribution's **expected value** is `n · p`. For 6 autos at 25%, that's 1.5 crits per trade.
+
+### Expected Damage
+
+With attack damage `AD`, crit chance `p`, and crit multiplier `m`, each auto's **expected damage** is:
+
+```
+E[damage] = (1 − p) · AD + p · m · AD = AD · (1 + p · (m − 1))
+```
+
+At 150 AD, 25% crit, and a 1.75× multiplier: `150 × (1 + 0.25 × 0.75) ≈ 178` per auto. Expected value is what you get *on average*; any single trade can land far from it.
+
+---
+
+## Dependent Events: Streak-Breaking Crits
+
+Pure independence feels unfair to players: sometimes you crit four times in a row, sometimes not once in ten attacks. Many games, League of Legends on PC among them, smooth this with a **pseudo-random distribution (PRD)**. Each attack that *doesn't* crit raises the chance on the next one, and a crit resets it:
+
+```
+P(crit on the k-th attack since your last crit) = C · k
+```
+
+The constant `C` is tuned so the **long-run average** still equals your listed crit chance. Now the attacks are **dependent**: what happened last attack changes the odds of this one. Over many fights the average is the same, but the **spread** (variance) is smaller, so there are fewer zero-crit trades and fewer four-crit spikes.
+
+Whether a specific game or mode uses PRD for a given mechanic is a detail to verify, not assume. The lab lets you compare both models.
+
+<CritLab />
+
+---
+
+## Sampling Without Replacement: Dragon Order
+
+Suppose (as a simplified rule) the first elemental drake is equally likely to be any of four types (Infernal, Mountain, Ocean, Cloud), and **the next drake can't repeat the previous type**. The second drake is now drawn from three options, not four. That's sampling **without replacement**, and it makes the events dependent.
+
+**P(Infernal is one of the first two drakes):**
+
+- Infernal first: 1/4
+- Not Infernal first (3/4), then Infernal from the remaining three (1/3): 3/4 × 1/3 = 1/4
+- Total: 1/4 + 1/4 = **1/2**
+
+If drakes were independent with repeats allowed, the answer would be `1 − (3/4)² = 7/16 ≈ 0.44`. The no-repeat rule raises the chance of seeing any specific type early.
+
+**P(the first two drakes are both Infernal)** is 1/16 under independence but **0** under the no-repeat rule. When events are dependent, multiplying the individual probabilities gives the wrong answer.
+
+Real spawn rules (which drake types exist, when the map changes, when Elder Dragon appears) vary by game and patch. The point is to recognize *which* model a rule implies.
+
+---
+
+## The Law of Total Probability: Baron Calls
+
+You're deciding whether to start Baron. Break the outcome into cases:
+
+- P(your team wins the fight at Baron) = 0.6, and if you win, you secure it 95% of the time.
+- If you lose the fight (0.4), there's still a 10% chance someone steals it.
+
+```
+P(secure) = P(win) · P(secure | win) + P(lose) · P(secure | lose)
+          = 0.6 · 0.95 + 0.4 · 0.10
+          = 0.57 + 0.04 = 0.61
+```
+
+This is the **law of total probability**: split into cases that cover every possibility, then weight each case by how likely it is.
+
+---
+
+## Conditional Probability and Bayes' Rule: Ganks
+
+`P(A | B)` (read "A given B") is the probability of A when you already know B happened:
+
+```
+P(A | B) = P(A and B) / P(B)
+```
+
+Top laners constantly face this question: **the enemy jungler just disappeared from the minimap. How likely is a gank?**
+
+Let `G` = "a gank is coming" and `E` = "the jungler is missing from vision." Your experience gives you:
+
+- **Base rate** `P(G) = 0.15`: in a typical 30-second window, a gank comes 15% of the time.
+- `P(E | G) = 0.9`: before a gank, the jungler is almost always missing.
+- `P(E | not G) = 0.3`: the jungler is also often missing when they're just farming.
+
+**Bayes' rule** flips the conditional:
+
+```
+P(G | E) = P(E | G) · P(G) / P(E)
+
+P(E) = 0.9 · 0.15 + 0.3 · 0.85 = 0.135 + 0.255 = 0.39
+
+P(G | E) = 0.135 / 0.39 ≈ 0.35
+```
+
+Seeing the jungler go missing raises the gank chance from 15% to about **35%**, a 2.3× jump. And if the jungler *is* visible, `P(G | not E) = 0.015 / 0.61 ≈ 2.5%`. Vision is valuable because it changes your probabilities in both directions.
+
+<GankLab />
+
+<Pitfall title="Ignoring the Base Rate">
+
+**Common mistake:** "The jungler is missing before 90% of ganks, so a missing jungler means a 90% gank chance." That confuses `P(E | G)` with `P(G | E)`. If ganks are rare (low base rate) and junglers go missing for many other reasons, most "missing" moments are false alarms. The same error shows up in medical tests, fraud alerts, and cheat detection: a 99%-accurate detector can still be wrong most of the time it fires when the thing it detects is rare.
+
+</Pitfall>
+
+<Quiz
+  questions={[
+    {
+      question: "With 20% crit chance and independent rolls, what is P(at least one crit in 5 autos)?",
+      options: ["50%", "1 − 0.8⁵ ≈ 67%", "5 × 0.2 = 100%", "0.2⁵ ≈ 0.03%"],
+      correctIndex: 1,
+      explanation: "Use the complement: P(no crit) = 0.8⁵ ≈ 0.328, so P(at least one) ≈ 0.672. Adding 5 × 0.2 double-counts overlaps."
+    },
+    {
+      question: "A streak-breaking (pseudo-random) crit system with the same average crit chance changes what?",
+      options: ["The expected number of crits", "The variance: fewer extreme streaks", "Nothing at all", "It makes crits independent"],
+      correctIndex: 1,
+      explanation: "PRD keeps the long-run average but makes attacks dependent, which narrows the spread of outcomes."
+    },
+    {
+      question: "In Bayes' rule, what does lowering P(E | not G), the false alarm rate, do to P(G | E)?",
+      options: ["Lowers it", "Raises it", "No effect", "Makes it exactly P(E | G)"],
+      correctIndex: 1,
+      explanation: "Fewer false alarms shrink P(E), the denominator, so a missing jungler becomes stronger evidence of a gank."
+    }
+  ]}
+/>

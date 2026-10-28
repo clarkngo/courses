@@ -1,0 +1,269 @@
+---
+import RiftLab from './RiftLab.astro';
+import Slider from './Slider.astro';
+import Stat from './Stat.astro';
+import Chart from './Chart.astro';
+---
+<RiftLab title="Teamfight Predictor: A Neural Network in Your Browser" lab="neural" subtitle="A 5 → H → 1 feedforward network (tanh hidden layer, sigmoid output) trained with backpropagation on 800 simulated teamfights. A plain logistic regression trains alongside it as a baseline. Everything runs locally in this page.">
+  <div class="rl-controls">
+    <Slider name="hidden" label="Hidden neurons (H)" min={1} max={12} step={1} value={6} />
+    <Slider name="lr" label="Learning rate" min={0.001} max={0.05} step={0.001} value={0.01} />
+  </div>
+  <div class="rl-row">
+    <button type="button" class="rl-btn" data-act="train">Train 300 epochs</button>
+    <button type="button" class="rl-btn ghost" data-act="reset">Reset weights</button>
+    <span class="rl-note" data-stat="epoch">Untrained — predictions are random.</span>
+  </div>
+  <div class="rl-stats">
+    <Stat name="nnTest" label="Network test accuracy" />
+    <Stat name="lrTest" label="Logistic test accuracy" />
+    <Stat name="nnLoss" label="Network test log-loss" />
+    <Stat name="lrLoss" label="Logistic test log-loss" />
+    <Stat name="params" label="Trainable parameters" />
+  </div>
+  <div class="rl-cols">
+    <Chart name="loss" caption="Log-loss per epoch" label="Training and test loss curves for the network and the logistic baseline">
+      <div class="rl-legend"><span><i class="c1"></i>Network (train)</span><span><i class="c2"></i>Network (test)</span><span><i class="c3"></i>Logistic (test)</span></div>
+    </Chart>
+    <figure class="rl-chart-wrap">
+      <figcaption class="rl-chart-cap">Network weights (blue = positive, orange = negative, thickness = size)</figcaption>
+      <svg data-chart="net" role="img" aria-label="Diagram of the network's neurons and weights" viewBox="0 0 560 280"></svg>
+    </figure>
+  </div>
+  <p class="rl-note"><strong>Ask the model about a fight:</strong> values are your team minus the enemy team.</p>
+  <div class="rl-controls">
+    <Slider name="g" label="Gold diff" min={-6000} max={6000} step={250} value={1000} />
+    <Slider name="lvl" label="Avg. level diff" min={-3} max={3} step={0.5} value={0} />
+    <Slider name="ult" label="Ultimates ready diff" min={-4} max={4} step={1} value={2} />
+    <Slider name="baron" label="Baron buff (−1 enemy, 0 none, 1 you)" min={-1} max={1} step={1} value={0} />
+    <Slider name="timer" label="Seconds until next objective spawns" min={0} max={300} step={10} value={40} />
+  </div>
+  <div class="rl-stats">
+    <Stat name="nnP" label="Network: P(win fight)" />
+    <Stat name="lrP" label="Logistic: P(win fight)" />
+    <Stat name="trueP" label="Simulator's true P" />
+  </div>
+</RiftLab>
+
+<script>
+  import { onLab, bindInputs, setText, chart, fmt, pct, sigmoid, rng, randn, mean } from '../../scripts/riftlab';
+
+  const NIN = 5;
+  const FEATURES = ['Gold', 'Level', 'Ults', 'Baron', 'Timer'];
+
+  /** Ground-truth teamfight odds: gold saturates, and ultimates matter far more when an objective is about to spawn. */
+  const trueLogit = (g: number, lvl: number, ult: number, baron: number, timer: number) =>
+    1.6 * Math.tanh(g / 2500) + 0.5 * lvl + ult * (0.12 + (timer < 60 ? 0.55 : 0)) + 1.3 * baron;
+
+  const encode = (g: number, lvl: number, ult: number, baron: number, timer: number) => [g / 3000, lvl / 2, ult / 3, baron, timer / 150 - 1];
+
+  function makeData() {
+    const r = rng(2026);
+    return Array.from({ length: 800 }, () => {
+      const g = randn(r) * 2500;
+      const lvl = Math.max(-3, Math.min(3, g / 2500 + randn(r) * 0.8));
+      const ult = Math.floor(r() * 9) - 4;
+      const u = r();
+      const baron = u < 0.15 ? -1 : u > 0.85 ? 1 : 0;
+      const timer = r() * 300;
+      const y = r() < sigmoid(trueLogit(g, lvl, ult, baron, timer)) ? 1 : 0;
+      return { x: encode(g, lvl, ult, baron, timer), y };
+    });
+  }
+
+  interface Net { W1: number[][]; b1: number[]; W2: number[]; b2: number }
+
+  function initNet(h: number, seed: number): Net {
+    const r = rng(seed);
+    return {
+      W1: Array.from({ length: h }, () => Array.from({ length: NIN }, () => randn(r) * Math.sqrt(1 / NIN))),
+      b1: new Array(h).fill(0),
+      W2: Array.from({ length: h }, () => randn(r) * Math.sqrt(1 / h)),
+      b2: 0,
+    };
+  }
+
+  function forward(net: Net, x: number[]) {
+    const h = net.W1.map((w, j) => Math.tanh(net.b1[j] + w.reduce((s, wi, i) => s + wi * x[i], 0)));
+    return { h, o: sigmoid(net.b2 + h.reduce((s, hj, j) => s + hj * net.W2[j], 0)) };
+  }
+
+  const logloss = (ps: number[], ys: number[]) => mean(ps.map((p, i) => -(ys[i] ? Math.log(Math.max(p, 1e-9)) : Math.log(Math.max(1 - p, 1e-9)))));
+  const accuracy = (ps: number[], ys: number[]) => mean(ps.map((p, i) => ((p >= 0.5 ? 1 : 0) === ys[i] ? 1 : 0)));
+
+  onLab('neural', (root) => {
+    const data = makeData();
+    const train = data.slice(0, 560);
+    const test = data.slice(560);
+    const lossSvg = root.querySelector<SVGSVGElement>('[data-chart="loss"]')!;
+    const netSvg = root.querySelector<SVGSVGElement>('[data-chart="net"]')!;
+    const epochNote = root.querySelector<HTMLElement>('[data-stat="epoch"]')!;
+    const NS = 'http://www.w3.org/2000/svg';
+
+    let v: Record<string, number> = {};
+    let net = initNet(6, 1);
+    let logit = { w: new Array(NIN).fill(0), b: 0 };
+    let history: { tr: number; te: number; lr: number }[] = [];
+    let epoch = 0;
+    let running = false;
+    let seed = 1;
+
+    const lrPredict = (x: number[]) => sigmoid(logit.b + logit.w.reduce((s, wi, i) => s + wi * x[i], 0));
+
+    function trainEpoch(lr: number) {
+      const r = rng(epoch + 99);
+      const order = train.map((_, i) => i).sort(() => r() - 0.5);
+      for (let start = 0; start < order.length; start += 32) {
+        const batch = order.slice(start, start + 32);
+        const H = net.W2.length;
+        const gW1 = net.W1.map((row) => row.map(() => 0));
+        const gb1 = new Array(H).fill(0);
+        const gW2 = new Array(H).fill(0);
+        let gb2 = 0;
+        const gw = new Array(NIN).fill(0);
+        let gb = 0;
+        batch.forEach((i) => {
+          const { x, y } = train[i];
+          const { h, o } = forward(net, x);
+          const dO = o - y;
+          gb2 += dO;
+          for (let j = 0; j < H; j++) {
+            gW2[j] += dO * h[j];
+            const dh = dO * net.W2[j] * (1 - h[j] * h[j]);
+            gb1[j] += dh;
+            for (let k = 0; k < NIN; k++) gW1[j][k] += dh * x[k];
+          }
+          const e = lrPredict(x) - y;
+          gb += e;
+          for (let k = 0; k < NIN; k++) gw[k] += e * x[k];
+        });
+        const step = (lr * 10) / batch.length;
+        for (let j = 0; j < H; j++) {
+          net.W2[j] -= step * gW2[j];
+          net.b1[j] -= step * gb1[j];
+          for (let k = 0; k < NIN; k++) net.W1[j][k] -= step * gW1[j][k];
+        }
+        net.b2 -= step * gb2;
+        logit.b -= step * gb;
+        for (let k = 0; k < NIN; k++) logit.w[k] -= step * gw[k];
+      }
+      epoch++;
+    }
+
+    function evaluate() {
+      const nnTr = train.map((d) => forward(net, d.x).o);
+      const nnTe = test.map((d) => forward(net, d.x).o);
+      const lrTe = test.map((d) => lrPredict(d.x));
+      const yTr = train.map((d) => d.y);
+      const yTe = test.map((d) => d.y);
+      return { nnTr, nnTe, lrTe, yTr, yTe };
+    }
+
+    function drawNet() {
+      netSvg.replaceChildren();
+      const H = net.W2.length;
+      const xIn = 70, xH = 290, xOut = 500;
+      const yIn = (i: number) => 40 + i * (200 / (NIN - 1));
+      const yH = (j: number) => (H === 1 ? 140 : 25 + j * (230 / (H - 1)));
+      const maxW = Math.max(0.5, ...net.W1.flat().map(Math.abs), ...net.W2.map(Math.abs));
+      const line = (x1: number, y1: number, x2: number, y2: number, w: number) => {
+        const l = document.createElementNS(NS, 'line');
+        Object.entries({ x1, y1, x2, y2 }).forEach(([k, val]) => l.setAttribute(k, String(val)));
+        l.setAttribute('class', `rl-line ${w >= 0 ? 'c1' : 'c2'}`);
+        l.setAttribute('style', `stroke-width:${0.4 + (3.5 * Math.abs(w)) / maxW};opacity:${0.25 + (0.65 * Math.abs(w)) / maxW}`);
+        netSvg.append(l);
+      };
+      const node = (x: number, y: number, label?: string, anchor = 'end') => {
+        const c = document.createElementNS(NS, 'circle');
+        c.setAttribute('cx', String(x)); c.setAttribute('cy', String(y)); c.setAttribute('r', '9');
+        c.setAttribute('class', 'rl-pt c3');
+        netSvg.append(c);
+        if (label) {
+          const t = document.createElementNS(NS, 'text');
+          t.setAttribute('x', String(anchor === 'end' ? x - 14 : x + 14)); t.setAttribute('y', String(y + 4));
+          t.setAttribute('text-anchor', anchor); t.setAttribute('class', 'rl-cell-text');
+          t.textContent = label;
+          netSvg.append(t);
+        }
+      };
+      for (let j = 0; j < H; j++) {
+        for (let i = 0; i < NIN; i++) line(xIn, yIn(i), xH, yH(j), net.W1[j][i]);
+        line(xH, yH(j), xOut, 140, net.W2[j]);
+      }
+      FEATURES.forEach((f, i) => node(xIn, yIn(i), f));
+      for (let j = 0; j < H; j++) node(xH, yH(j));
+      node(xOut, 140, 'P(win)', 'start');
+    }
+
+    function render() {
+      const e = evaluate();
+      setText(root, 'nnTest', pct(accuracy(e.nnTe, e.yTe)));
+      setText(root, 'lrTest', pct(accuracy(e.lrTe, e.yTe)));
+      setText(root, 'nnLoss', fmt(logloss(e.nnTe, e.yTe), 4));
+      setText(root, 'lrLoss', fmt(logloss(e.lrTe, e.yTe), 4));
+      const H = net.W2.length;
+      setText(root, 'params', String(H * NIN + H + H + 1));
+      const x = encode(v.g, v.lvl, v.ult, v.baron, v.timer);
+      setText(root, 'nnP', pct(forward(net, x).o));
+      setText(root, 'lrP', pct(lrPredict(x)));
+      setText(root, 'trueP', pct(sigmoid(trueLogit(v.g, v.lvl, v.ult, v.baron, v.timer))));
+
+      const yMax = Math.max(0.8, ...history.map((h) => Math.max(h.tr, h.te, h.lr))) * 1.05;
+      chart(lossSvg, {
+        xMin: 0, xMax: Math.max(50, epoch), yMin: 0.4, yMax,
+        xLabel: 'Epoch', yLabel: 'Log-loss',
+        lines: [
+          { pts: history.map((h, i) => [i, h.tr]), cls: 'c1' },
+          { pts: history.map((h, i) => [i, h.te]), cls: 'c2' },
+          { pts: history.map((h, i) => [i, h.lr]), cls: 'c3', dash: true },
+        ],
+      });
+      drawNet();
+    }
+
+    function record() {
+      const e = evaluate();
+      history.push({ tr: logloss(e.nnTr, e.yTr), te: logloss(e.nnTe, e.yTe), lr: logloss(e.lrTe, e.yTe) });
+    }
+
+    function reset() {
+      running = false;
+      net = initNet(v.hidden, seed++);
+      logit = { w: new Array(NIN).fill(0), b: 0 };
+      history = [];
+      epoch = 0;
+      record();
+      epochNote.textContent = 'Untrained — predictions are random.';
+      render();
+    }
+
+    let lastHidden = 6;
+    bindInputs(root, (vals) => {
+      v = vals;
+      if (vals.hidden !== lastHidden) {
+        lastHidden = vals.hidden;
+        reset();
+      } else {
+        render();
+      }
+    });
+    record();
+    render();
+
+    root.querySelector('[data-act="reset"]')!.addEventListener('click', reset);
+    root.querySelector('[data-act="train"]')!.addEventListener('click', () => {
+      if (running) return;
+      running = true;
+      const target = epoch + 300;
+      const tick = () => {
+        if (!running) return;
+        for (let k = 0; k < 6 && epoch < target; k++) { trainEpoch(v.lr); record(); }
+        epochNote.textContent = `Epoch ${epoch}`;
+        render();
+        if (epoch < target) setTimeout(tick, 16);
+        else running = false;
+      };
+      tick();
+    });
+  });
+</script>

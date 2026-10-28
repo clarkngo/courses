@@ -1,0 +1,162 @@
+---
+title: "Neural Networks: A Teamfight Predictor in Your Browser"
+description: "Build up from a single logistic neuron to a small feedforward network. Learn hidden layers, activation functions, forward passes, backpropagation with the chain rule, epochs and learning rates, and when a network beats logistic regression, then train one live on simulated teamfights."
+module: 8
+moduleTitle: "Neural Networks"
+lesson: 1
+duration: "35 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import NeuralLab from '@components/riftlab/NeuralLab.astro';
+
+## Where Logistic Regression Runs Out
+
+A teamfight is about to break out near a Dragon that spawns in 40 seconds. Your team is up 1,000 gold, levels are even, and you have two more ultimates ready than the enemy. Who wins the fight?
+
+Logistic regression can only learn a **linear** score: each feature adds a fixed amount to the log-odds. But teamfights aren't that simple:
+
+- **Saturation:** going from even to +2,000 gold is a big swing. Going from +6,000 to +8,000 barely changes a fight you were already winning.
+- **Interactions:** ultimate advantage matters a lot when an objective is about to spawn and both teams *must* fight. It matters less when nobody is forced to commit.
+
+A linear model can't represent "the effect of ults depends on the objective timer" unless you hand-build that feature. A **neural network** can learn it from data.
+
+---
+
+## A Neuron Is Logistic Regression
+
+A single artificial **neuron**:
+
+1. Takes inputs `x₁ … xₙ`
+2. Computes a weighted sum plus a bias: `z = w · x + b` (a dot product, from Module 5)
+3. Passes it through an **activation function**: `a = f(z)`
+
+If `f` is the sigmoid, that neuron **is** logistic regression. Everything you learned in Module 7 carries over.
+
+## Layers
+
+A **feedforward network** chains neurons into layers:
+
+```
+inputs (5)  →  hidden layer (H neurons, tanh)  →  output (1 neuron, sigmoid)
+```
+
+Our teamfight model's five inputs (each scaled to roughly −1 to +1):
+
+| Input | Meaning |
+|---|---|
+| Gold | Team gold difference |
+| Level | Average level difference |
+| Ults | Number of ultimates ready, your team minus theirs |
+| Baron | +1 if you have Baron buff, −1 if they do, 0 if neither |
+| Timer | Seconds until the next objective spawns |
+
+In matrix form (Module 5), the whole hidden layer is one matrix-vector product:
+
+```
+h = tanh(W₁ x + b₁)        W₁ is H × 5
+p = σ(W₂ · h + b₂)         W₂ is a vector of length H
+```
+
+Each hidden neuron learns its own combination of the inputs, a feature the network invented. One might fire for "objective soon AND ult advantage"; another might capture "big gold lead" with a curve that flattens out. The output neuron then does logistic regression on those learned features.
+
+### Why the Activation Function Matters
+
+**tanh** squashes any number into −1 to +1 with an S-curve. Without a nonlinear activation, stacking layers is pointless: a linear function of a linear function is still linear, and the whole network would collapse into ordinary logistic regression. The nonlinearity is what lets networks bend decision boundaries.
+
+### Counting Parameters
+
+With `H` hidden neurons: `5H` weights in `W₁`, `H` biases in `b₁`, `H` weights in `W₂`, and 1 output bias: `7H + 1` parameters. At `H = 6`, that's 43 parameters, compared with 6 for logistic regression. Large language models apply the same idea at the scale of billions.
+
+---
+
+## Training: Backpropagation
+
+Training uses the same recipe as Module 7: minimize log-loss with gradient descent. The new problem is computing the gradient for weights **inside** the network. The answer is the **chain rule** from calculus:
+
+```
+∂Loss/∂W₁  =  ∂Loss/∂p  ·  ∂p/∂h  ·  ∂h/∂W₁
+```
+
+**Backpropagation** applies the chain rule layer by layer, starting at the output error `(p − y)` and passing it **backward** through the network:
+
+1. **Forward pass:** compute `h` and `p` for a batch of fights.
+2. **Output error:** `δ_out = p − y` (the same term as logistic regression).
+3. **Hidden error:** `δ_h = δ_out · W₂ · (1 − h²)` (the `1 − h²` is the derivative of tanh).
+4. **Gradients:** each weight's gradient is its error times its input.
+5. **Update:** `w = w − learning_rate · gradient`.
+
+### Training Vocabulary
+
+- **Mini-batch:** the lab updates weights after every 32 fights rather than the whole dataset at once, which is faster and adds helpful noise.
+- **Epoch:** one full pass through the training data.
+- **Learning rate:** step size. Too small and training crawls. Too large and the loss bounces around or blows up.
+- **Initialization:** weights start as small random numbers. If they all started at zero, every hidden neuron would compute the same thing and learn the same thing forever.
+
+<NeuralLab />
+
+---
+
+## Reading the Lab
+
+The data comes from a **simulator** whose true rule is known: gold matters with saturation (a `tanh` curve), and ultimates matter much more when an objective spawns in under 60 seconds. Because we know the truth, the **Simulator's true P** stat lets you check how close each model gets.
+
+Things to try:
+
+1. **Train 300 epochs** with 6 hidden neurons. Compare network and logistic test log-loss. Accuracy may tie, but the network's log-loss should edge ahead because it can learn the timer-ult interaction.
+2. In the fight query, set **Ults = +3**, then slide the **timer** from 300 down past 60 seconds. The network's probability climbs as the timer approaches and passes 60 seconds (it learns a smoothed version of the true jump). The logistic model barely moves, because it can only add a fixed amount per ult no matter the timer.
+3. Set **H = 1**. With one hidden neuron, the network is barely more flexible than logistic regression.
+4. Set **H = 12** and a high learning rate, then train several times. Watch whether training loss keeps falling while test loss levels off or rises. That gap is **overfitting**.
+
+<Pitfall title="Reaching for a Neural Network First">
+
+**Common mistake:** assuming a neural network is always better. On small or simple datasets, logistic regression often matches or beats a network, trains instantly, and its coefficients can be read directly ("a Baron triples the odds"). A network's hidden weights are much harder to explain. Start with the simplest model that could work, measure it on held-out data, and add complexity only when the test score, not the training score, says it's worth it.
+
+</Pitfall>
+
+---
+
+## The Whole Track in One Model
+
+Look at what the teamfight predictor uses:
+
+| Module | Where it shows up |
+|---|---|
+| 1. Calculus | Derivatives and the chain rule power backpropagation |
+| 2. Probability | The output is a probability; outcomes are random draws |
+| 3. Descriptive stats | Inputs are scaled by their typical spread |
+| 4. Inferential stats | Test-set scores are estimates with uncertainty |
+| 5. Linear algebra | Every layer is a matrix-vector product |
+| 6. Linear regression | Train/test splits and overfitting |
+| 7. Logistic regression | Each neuron is one; log-loss is the objective |
+
+Neural networks aren't a separate kind of magic. They're the math from the previous seven modules, stacked.
+
+<Quiz
+  questions={[
+    {
+      question: "Why does a neural network need a nonlinear activation function like tanh?",
+      options: [
+        "To make training faster",
+        "Without it, stacked layers collapse into a single linear model",
+        "To keep weights positive",
+        "To reduce the number of parameters"
+      ],
+      correctIndex: 1,
+      explanation: "A composition of linear functions is linear, so without nonlinearity the network can't learn interactions or curves that logistic regression can't."
+    },
+    {
+      question: "A network has 5 inputs, 8 hidden neurons, and 1 output (with biases). How many parameters does it have?",
+      options: ["14", "40", "57", "48"],
+      correctIndex: 2,
+      explanation: "5·8 weights + 8 hidden biases + 8 output weights + 1 output bias = 40 + 8 + 8 + 1 = 57, or 7H + 1 with H = 8."
+    },
+    {
+      question: "Training loss keeps dropping but test loss starts rising. What is happening?",
+      options: ["Underfitting", "Overfitting", "The learning rate is too small", "Data leakage is fixed"],
+      correctIndex: 1,
+      explanation: "The model is memorizing quirks of the training data that don't generalize. Stop earlier, use a smaller network, or get more data."
+    }
+  ]}
+/>

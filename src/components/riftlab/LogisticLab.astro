@@ -1,0 +1,137 @@
+---
+import RiftLab from './RiftLab.astro';
+import Slider from './Slider.astro';
+import Stat from './Stat.astro';
+import Chart from './Chart.astro';
+---
+<RiftLab title="Objectives → Win Probability (Logistic Regression)" lab="logit" subtitle="z = b₀ + b_T·Towers + b_D·Dragons + b_B·Barons, and P(win) = σ(z) = 1 / (1 + e⁻ᶻ). Each feature is your team's count minus the enemy's. Set the weights by hand, or let gradient descent find them from 300 simulated matches.">
+  <div class="rl-controls">
+    <Slider name="b0" label="Intercept b₀" min={-2} max={2} step={0.05} value={0} />
+    <Slider name="bT" label="Tower weight b_T" min={-1} max={2} step={0.05} value={0.2} />
+    <Slider name="bD" label="Dragon weight b_D" min={-1} max={2} step={0.05} value={0.2} />
+    <Slider name="bB" label="Baron weight b_B" min={-1} max={3} step={0.05} value={0.2} />
+    <Slider name="thr" label="Decision threshold" min={0.1} max={0.9} step={0.05} value={0.5} />
+  </div>
+  <div class="rl-row">
+    <button type="button" class="rl-btn" data-act="fit">Fit with gradient descent</button>
+    <span class="rl-note" data-stat="fitNote"></span>
+  </div>
+  <p class="rl-note"><strong>Your match:</strong></p>
+  <div class="rl-controls">
+    <Slider name="t" label="Tower diff" min={-7} max={7} step={1} value={2} />
+    <Slider name="d" label="Dragon diff" min={-4} max={4} step={1} value={-1} />
+    <Slider name="b" label="Baron diff" min={-2} max={2} step={1} value={0} />
+  </div>
+  <div class="rl-stats">
+    <Stat name="z" label="z (log-odds)" />
+    <Stat name="p" label="P(win)" />
+    <Stat name="odds" label="Odds" />
+    <Stat name="call" label="Prediction" />
+    <Stat name="acc" label="Accuracy (300 games)" />
+    <Stat name="loss" label="Log-loss" />
+  </div>
+  <div class="rl-cols">
+    <Chart name="sig" caption="The sigmoid squashes z into a probability" label="Sigmoid curve with your match marked">
+      <div class="rl-legend"><span><i class="c1"></i>σ(z)</span><span><i class="c2"></i>Your match</span><span><i class="c3"></i>Threshold</span></div>
+    </Chart>
+    <Chart name="bound" caption="Decision boundary (barons = 0 slice)" label="Scatter of matches by tower and dragon difference with the logistic decision boundary">
+      <div class="rl-legend"><span><i class="c4"></i>Win</span><span><i class="c2"></i>Loss</span><span><i class="c3"></i>Boundary: P(win) = threshold</span></div>
+    </Chart>
+  </div>
+  <div class="rl-scroll"><table class="rl-table" data-stat="confusion"></table></div>
+</RiftLab>
+
+<script>
+  import { onLab, bindInputs, setText, chart, fmt, pct, sigmoid, range, simulateMatches } from '../../scripts/riftlab';
+
+  onLab('logit', (root) => {
+    const sigSvg = root.querySelector<SVGSVGElement>('[data-chart="sig"]')!;
+    const bSvg = root.querySelector<SVGSVGElement>('[data-chart="bound"]')!;
+    const table = root.querySelector<HTMLTableElement>('[data-stat="confusion"]')!;
+    const data = simulateMatches(42, 300);
+    const X = data.map((m) => [1, m.towers, m.dragons, m.barons]);
+    const Y = data.map((m) => m.win);
+
+    const update = bindInputs(root, (v) => {
+      const w = [v.b0, v.bT, v.bD, v.bB];
+      const z = w[0] + w[1] * v.t + w[2] * v.d + w[3] * v.b;
+      const p = sigmoid(z);
+      setText(root, 'z', fmt(z, 2));
+      setText(root, 'p', pct(p));
+      setText(root, 'odds', `${fmt(Math.exp(z), 2)} : 1`);
+      setText(root, 'call', p >= v.thr ? 'WIN' : 'LOSS');
+
+      let tp = 0, fp = 0, tn = 0, fn = 0, loss = 0;
+      X.forEach((x, i) => {
+        const q = sigmoid(w[0] * x[0] + w[1] * x[1] + w[2] * x[2] + w[3] * x[3]);
+        const yHat = q >= v.thr ? 1 : 0;
+        if (yHat && Y[i]) tp++; else if (yHat) fp++; else if (Y[i]) fn++; else tn++;
+        loss -= Y[i] ? Math.log(Math.max(q, 1e-9)) : Math.log(Math.max(1 - q, 1e-9));
+      });
+      setText(root, 'acc', pct((tp + tn) / Y.length));
+      setText(root, 'loss', fmt(loss / Y.length, 4));
+      table.innerHTML = `<tr><th></th><th>Predicted WIN</th><th>Predicted LOSS</th></tr>`
+        + `<tr><th>Actual WIN</th><td>${tp} (true positive)</td><td>${fn} (false negative)</td></tr>`
+        + `<tr><th>Actual LOSS</th><td>${fp} (false positive)</td><td>${tn} (true negative)</td></tr>`
+        + `<tr><th>Precision</th><td colspan="2">${pct(tp / (tp + fp || 1))} of predicted wins were wins · Recall ${pct(tp / (tp + fn || 1))} of wins were caught</td></tr>`;
+
+      const zThr = Math.log(v.thr / (1 - v.thr));
+      chart(sigSvg, {
+        xMin: -8, xMax: 8, yMin: 0, yMax: 1,
+        xLabel: 'z = b₀ + b·x', yLabel: 'P(win)',
+        yFmt: (y) => `${Math.round(y * 100)}%`,
+        lines: [{ pts: range(-8, 8, 100).map((s) => [s, sigmoid(s)]), cls: 'c1' }],
+        hlines: [{ y: v.thr, cls: 'c3' }],
+        vlines: [{ x: zThr, cls: 'c3' }],
+        points: [{ x: z, y: p, cls: 'c2', r: 6 }],
+      });
+
+      // Boundary in the (towers, dragons) plane with barons = 0: b0 + bT·t + bD·d = zThr.
+      const slice = data.filter((m) => m.barons === 0);
+      const seg = Math.abs(w[2]) > 1e-6
+        ? [{ x1: -8, y1: (zThr - w[0] + 8 * w[1]) / w[2], x2: 8, y2: (zThr - w[0] - 8 * w[1]) / w[2], cls: 'c3' }]
+        : [{ x1: (zThr - w[0]) / (w[1] || 1e-6), y1: -5, x2: (zThr - w[0]) / (w[1] || 1e-6), y2: 5, cls: 'c3' }];
+      chart(bSvg, {
+        xMin: -8, xMax: 8, yMin: -5, yMax: 5,
+        xLabel: 'Tower diff', yLabel: 'Dragon diff',
+        segments: seg,
+        points: [
+          ...slice.map((m, i) => ({
+            x: m.towers + (((i * 17) % 9) / 9 - 0.5) * 0.6,
+            y: m.dragons + (((i * 29) % 7) / 7 - 0.5) * 0.6,
+            cls: m.win ? 'c4' : 'c2', r: 3,
+          })),
+          { x: v.t, y: v.d, cls: 'hollow', r: 7 },
+        ],
+      });
+    });
+
+    root.querySelector('[data-act="fit"]')!.addEventListener('click', () => {
+      const w = [0, 0, 0, 0];
+      const note = root.querySelector<HTMLElement>('[data-stat="fitNote"]')!;
+      const keys = ['b0', 'bT', 'bD', 'bB'];
+      let iter = 0;
+      const step = () => {
+        for (let s = 0; s < 40; s++, iter++) {
+          const g = [0, 0, 0, 0];
+          X.forEach((x, i) => {
+            const err = sigmoid(w[0] * x[0] + w[1] * x[1] + w[2] * x[2] + w[3] * x[3]) - Y[i];
+            for (let j = 0; j < 4; j++) g[j] += (err * x[j]) / X.length;
+          });
+          for (let j = 0; j < 4; j++) w[j] -= 0.15 * g[j];
+        }
+        keys.forEach((k, j) => {
+          root.querySelector<HTMLInputElement>(`[data-in="${k}"]`)!.value = String(w[j]);
+        });
+        update();
+        keys.forEach((k, j) => {
+          root.querySelector<HTMLElement>(`[data-out="${k}"]`)!.textContent = w[j].toFixed(2);
+        });
+        note.textContent = `Iteration ${iter}: w = [${w.map((x) => x.toFixed(2)).join(', ')}]`;
+        if (iter < 1200) setTimeout(step, 16);
+        else note.textContent += ' — done, close to the maximum-likelihood weights.';
+      };
+      step();
+    });
+  });
+</script>

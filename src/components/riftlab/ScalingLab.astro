@@ -1,0 +1,88 @@
+---
+import RiftLab from './RiftLab.astro';
+import Slider from './Slider.astro';
+import Stat from './Stat.astro';
+import Chart from './Chart.astro';
+---
+<RiftLab title="Scaling Curves & Derivatives" lab="scaling" subtitle="Tune an ability and watch how its damage and cooldown respond. The dashed lines are tangent lines: their slope is the derivative at your current build.">
+  <div class="rl-controls">
+    <Slider name="base" label="Base damage" min={50} max={400} step={10} value={200} />
+    <Slider name="ratio" label="AP ratio" min={0.2} max={1.2} step={0.05} value={0.6} />
+    <Slider name="ap" label="Your AP" min={0} max={600} step={10} value={180} />
+    <Slider name="mr" label="Target magic resist" min={0} max={200} step={5} value={45} />
+    <Slider name="cd" label="Base cooldown (s)" min={4} max={120} step={1} value={12} />
+    <Slider name="haste" label="Ability haste" min={0} max={200} step={5} value={30} />
+    <Slider name="cap" label="Legacy CDR cap" min={0.3} max={0.6} step={0.05} value={0.4} pct />
+  </div>
+  <div class="rl-stats">
+    <Stat name="raw" label="Raw damage" />
+    <Stat name="dealt" label="Damage after MR" />
+    <Stat name="dDdAP" label="dDealt / dAP" />
+    <Stat name="dDdMR" label="dDealt / dMR" />
+    <Stat name="cdNow" label="Cooldown" />
+    <Stat name="dCd" label="dCD / dHaste" />
+    <Stat name="cdrEq" label="Equivalent CDR" />
+    <Stat name="casts" label="Casts / minute" />
+  </div>
+  <div class="rl-cols">
+    <Chart name="dmg" caption="Damage vs. AP" label="Line chart of ability damage against ability power">
+      <div class="rl-legend"><span><i class="c1"></i>Raw</span><span><i class="c2"></i>After magic resist</span></div>
+    </Chart>
+    <Chart name="cdc" caption="Cooldown vs. ability haste" label="Curve of cooldown against ability haste with tangent line">
+      <div class="rl-legend"><span><i class="c1"></i>Cooldown</span><span><i class="c2"></i>Tangent at your haste</span><span><i class="c3"></i>Legacy cap floor</span></div>
+    </Chart>
+  </div>
+  <p class="rl-note">Try it: push haste from 0 to 200 and watch dCD/dHaste shrink toward zero (diminishing returns on seconds saved), while casts per minute climbs in a perfectly straight line.</p>
+</RiftLab>
+
+<script>
+  import { onLab, bindInputs, setText, chart, fmt, pct, range } from '../../scripts/riftlab';
+
+  onLab('scaling', (root) => {
+    const dmgSvg = root.querySelector<SVGSVGElement>('[data-chart="dmg"]')!;
+    const cdSvg = root.querySelector<SVGSVGElement>('[data-chart="cdc"]')!;
+
+    bindInputs(root, (v) => {
+      const mult = 100 / (100 + v.mr);
+      const raw = v.base + v.ratio * v.ap;
+      const dealt = raw * mult;
+      // d(dealt)/d(MR) = -raw * 100 / (100 + MR)^2
+      const dMR = (-raw * 100) / (100 + v.mr) ** 2;
+      setText(root, 'raw', fmt(raw, 0));
+      setText(root, 'dealt', fmt(dealt, 0));
+      setText(root, 'dDdAP', `+${fmt(v.ratio * mult, 3)}`);
+      setText(root, 'dDdMR', fmt(dMR, 2));
+
+      const cdAt = (h: number) => (v.cd * 100) / (100 + h);
+      const slope = (-v.cd * 100) / (100 + v.haste) ** 2;
+      const cdNow = cdAt(v.haste);
+      setText(root, 'cdNow', `${fmt(cdNow, 2)} s`);
+      setText(root, 'dCd', `${fmt(slope, 4)} s`);
+      setText(root, 'cdrEq', pct(v.haste / (100 + v.haste)));
+      setText(root, 'casts', fmt(60 / cdNow, 2));
+
+      const apMax = 600;
+      const dMax = (v.base + v.ratio * apMax) * 1.05;
+      chart(dmgSvg, {
+        xMin: 0, xMax: apMax, yMin: 0, yMax: dMax,
+        xLabel: 'Ability power', yLabel: 'Damage',
+        lines: [
+          { pts: range(0, apMax, 2).map((a) => [a, v.base + v.ratio * a]), cls: 'c1' },
+          { pts: range(0, apMax, 2).map((a) => [a, (v.base + v.ratio * a) * mult]), cls: 'c2' },
+        ],
+        points: [{ x: v.ap, y: raw, cls: 'c1', r: 5 }, { x: v.ap, y: dealt, cls: 'c2', r: 5 }],
+        vlines: [{ x: v.ap, label: `${v.ap} AP` }],
+      });
+
+      const hMax = 200;
+      chart(cdSvg, {
+        xMin: 0, xMax: hMax, yMin: 0, yMax: v.cd * 1.05,
+        xLabel: 'Ability haste', yLabel: 'Cooldown (s)',
+        lines: [{ pts: range(0, hMax, 80).map((h) => [h, cdAt(h)]), cls: 'c1' }],
+        segments: [{ x1: v.haste - 60, y1: cdNow - 60 * slope, x2: v.haste + 60, y2: cdNow + 60 * slope, cls: 'c2', dash: true }],
+        hlines: [{ y: v.cd * (1 - v.cap), cls: 'c3', label: `legacy ${Math.round(v.cap * 100)}% cap floor` }],
+        points: [{ x: v.haste, y: cdNow, cls: 'c2', r: 5 }],
+      });
+    });
+  });
+</script>

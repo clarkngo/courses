@@ -1,0 +1,197 @@
+---
+title: "Scaling Curves and Rates of Change"
+description: "Treat every stat in a MOBA as a function. Use slopes and derivatives to read AP/AD scaling, armor and magic resist mitigation, and why cooldown reduction has diminishing returns while casts per minute do not."
+module: 1
+moduleTitle: "Basic Math & Calculus Review"
+lesson: 1
+duration: "25 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import ScalingLab from '@components/riftlab/ScalingLab.astro';
+
+## Why Learn Data Science Through a Game?
+
+A MOBA like *League of Legends: Wild Rift* is a very good statistics textbook that happens to be fun. Every match produces dozens of numbers: gold, damage, kills, objectives, timers. Every item and ability is a **formula**. If you've ever asked "is this item worth it?" or "am I actually improving?", you were already asking a math question.
+
+This track walks through the same progression a data science program uses:
+
+1. **Calculus review**: how outputs change when inputs change (this lesson)
+2. **Probability**: crits, dragon spawns, ganks
+3. **Descriptive statistics**: summarizing your match history
+4. **Inferential statistics**: is a win rate real or just luck?
+5. **Linear algebra**: champions as vectors, teams as matrices
+6. **Linear regression**: forecasting damage from gold leads
+7. **Logistic regression**: predicting win/loss from objectives
+8. **Neural networks**: a teamfight predictor that runs in your browser
+
+Every lesson has a **Rift Lab**, an interactive widget where you can change the numbers yourself.
+
+<Pitfall title="About the Numbers in This Course">
+
+Wild Rift is a trademark of Riot Games. This course is an independent teaching resource and isn't affiliated with or endorsed by Riot. Champion ratings, base stats, and match datasets here are **illustrative or simulated** values chosen to make the math clear. Real values change every patch, so treat the *methods* as the lesson, not the specific numbers.
+
+</Pitfall>
+
+---
+
+## Stats Are Functions
+
+A **function** takes an input and returns an output. When a tooltip says an ability deals "200 (+60% AP) magic damage", it's describing a function of your ability power:
+
+```
+D(AP) = 200 + 0.6 · AP
+```
+
+- At 0 AP: `D = 200`
+- At 100 AP: `D = 260`
+- At 300 AP: `D = 380`
+
+This is a **linear** function. Its graph is a straight line with a **slope** of 0.6: every extra point of AP adds 0.6 damage, no matter how much AP you already have. Attack damage scaling works the same way: "50 (+120% bonus AD)" means `D = 50 + 1.2 · bonusAD`.
+
+### Slope Is a Rate of Change
+
+The slope answers "if I change the input a little, how much does the output change?" For a straight line, the answer is the same everywhere:
+
+```
+slope = ΔD / ΔAP = (380 − 260) / (300 − 100) = 120 / 200 = 0.6
+```
+
+In calculus, this rate is the **derivative**, written `dD/dAP`. For a linear scaling, `dD/dAP = 0.6` everywhere. Players call this the **AP ratio**, and it's the single most important number for deciding whether stacking AP on a champion pays off.
+
+---
+
+## Curves: Armor and Magic Resist
+
+Defensive stats are **not** linear. In League-family games, armor and magic resist reduce damage with a multiplier like this:
+
+```
+M(R) = 100 / (100 + R)
+```
+
+where `R` is the target's armor or magic resist.
+
+| Resist | Multiplier | Damage taken |
+|---|---|---|
+| 0 | 100/100 = 1.00 | 100% |
+| 50 | 100/150 = 0.67 | 67% |
+| 100 | 100/200 = 0.50 | 50% |
+| 200 | 100/300 = 0.33 | 33% |
+
+The first 50 resist cuts damage by 33 percentage points. Going from 100 to 200 resist only cuts another 17. That's **diminishing returns**, and the derivative tells you exactly how fast it diminishes:
+
+```
+dM/dR = −100 / (100 + R)²
+```
+
+At `R = 45`, the derivative is about `−100 / 145² ≈ −0.0048` per point. At `R = 150`, it's `−100 / 250² = −0.0016`, only a third as much protection per point.
+
+### Combining Functions
+
+Damage actually dealt combines both formulas:
+
+```
+Dealt(AP, MR) = (200 + 0.6 · AP) · 100 / (100 + MR)
+```
+
+Because this depends on two inputs, we take **partial derivatives**, changing one input while holding the other fixed:
+
+- `∂Dealt/∂AP = 0.6 · 100/(100 + MR)`: each AP point is worth less against a tanky target.
+- `∂Dealt/∂MR = −(200 + 0.6 · AP) · 100/(100 + MR)²`: each point of MR blocks more when the attacker has more AP.
+
+That second result is why tanks build resists *after* the enemy carry gets strong: the same resist point blocks more damage when incoming damage is larger.
+
+---
+
+## Cooldowns: Haste, CDR, and Limits
+
+Cooldowns can be reduced two ways, and the game has used different systems over its lifetime. The math for both is worth knowing.
+
+### Ability Haste
+
+Ability haste `h` reduces a base cooldown `CD₀` like this:
+
+```
+CD(h) = CD₀ · 100 / (100 + h)
+```
+
+For a 12-second ability: 0 haste → 12 s, 30 haste → 9.23 s, 100 haste → 6 s.
+
+The derivative is:
+
+```
+dCD/dh = −CD₀ · 100 / (100 + h)²
+```
+
+At 30 haste, that's `−1200 / 130² ≈ −0.071` seconds per point. At 100 haste it's only `−0.03`. **Seconds saved** show diminishing returns.
+
+But look at **casts per minute**:
+
+```
+casts/min = 60 / CD(h) = 60 · (100 + h) / (100 · CD₀)
+```
+
+That's a *linear* function of `h`. Each point of haste adds the same number of extra casts per minute, no matter how much you have. That's why haste was designed this way: it's the measure that matters (how often you can act) that stays linear.
+
+The equivalent percentage reduction is `h / (100 + h)`. 100 haste equals 50% reduction.
+
+### Legacy CDR and the Cap
+
+The older system reduced cooldowns by a flat percentage `c`, with a hard **cap**:
+
+```
+CD(c) = CD₀ · (1 − c),   with c ≤ c_max
+```
+
+Here, casts per minute is `60 / (CD₀ · (1 − c))`. As `c → 1`, the denominator goes to zero and casts per minute **blows up toward infinity**. That's a vertical asymptote. Without a cap, 100% CDR would mean infinite casts. The cap turns the function into a **piecewise** function whose derivative drops to zero once you hit the cap. Any CDR above the cap is wasted stat budget.
+
+Haste doesn't need a cap: as `h → ∞`, `CD(h) → 0`, but it never gets there. That's a **limit**.
+
+<ScalingLab />
+
+---
+
+## Average vs. Instantaneous Rate
+
+The **average rate of change** between two points is the slope of the **secant** line joining them. The **instantaneous rate** at one point is the slope of the **tangent** line, which is the derivative. For the haste curve, the secant from 0 to 100 haste has slope `(6 − 12) / 100 = −0.06`, but the tangent at 0 is `−0.12` and at 100 is `−0.03`. "Each haste point saves 0.06 seconds" is only true on average.
+
+<Pitfall title="Using the Average Slope as the Marginal Value">
+
+**Common mistake:** "My first 40 haste saved 3 seconds, so 40 more will save another 3." The first 40 points (12 s → 8.57 s) saved 3.43 s. The next 40 (8.57 s → 6.67 s) save only 1.9 s. On a curve, always evaluate the derivative **at your current build**, not the average from zero.
+
+</Pitfall>
+
+---
+
+## Rates of Change in Item Decisions
+
+**Marginal value per gold** is a derivative divided by a price. If 40 AP costs 1,000 gold on a champion with a 0.6 ratio, that's `0.6 × 40 / 1000 = 0.024` damage per gold per cast. Comparing those "damage per gold" numbers across items is the same reasoning economists use for marginal utility, and the same reasoning data scientists use when they ask which feature change will move a model's output the most.
+
+<Quiz
+  questions={[
+    {
+      question: "An ability deals 150 (+80% AP). What is dD/dAP?",
+      options: ["150", "0.8", "80", "It depends on current AP"],
+      correctIndex: 1,
+      explanation: "D(AP) = 150 + 0.8·AP is linear, so its derivative is the constant ratio 0.8 at every AP value."
+    },
+    {
+      question: "With the multiplier 100/(100 + R), which change reduces damage taken the most?",
+      options: ["Armor 0 → 50", "Armor 100 → 150", "Armor 200 → 250", "They are all equal"],
+      correctIndex: 0,
+      explanation: "The derivative −100/(100+R)² is largest in size at small R. Going from 0 to 50 cuts the multiplier from 1.00 to 0.67; from 200 to 250 only cuts it from 0.33 to 0.29."
+    },
+    {
+      question: "Why does ability haste not need a hard cap, while flat percentage CDR does?",
+      options: [
+        "Haste is cheaper",
+        "Casts per minute is linear in haste, but under flat CDR it grows toward infinity as CDR approaches 100%",
+        "Haste only affects ultimates",
+        "Flat CDR has no derivative"
+      ],
+      correctIndex: 1,
+      explanation: "60(100+h)/(100·CD₀) grows linearly, while 60/(CD₀(1−c)) has a vertical asymptote at c = 1, so it must be capped."
+    }
+  ]}
+/>

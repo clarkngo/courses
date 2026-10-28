@@ -1,0 +1,13 @@
+---
+export interface Props {
+  name: string;
+  caption?: string;
+  label: string;
+}
+const { name, caption, label } = Astro.props;
+---
+<figure class="rl-chart-wrap">
+  {caption && <figcaption class="rl-chart-cap">{caption}</figcaption>}
+  <svg data-chart={name} role="img" aria-label={label} viewBox="0 0 560 280"></svg>
+  <slot />
+</figure>

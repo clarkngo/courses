@@ -1,0 +1,80 @@
+---
+import RiftLab from './RiftLab.astro';
+import Slider from './Slider.astro';
+import Stat from './Stat.astro';
+import Chart from './Chart.astro';
+---
+<RiftLab title="Champion Vectors & Dot Products" lab="vectors" subtitle="Every champion is a 6-dimensional vector: [Engage, Burst, Poke, Sustain, CC, Scaling]. Compare two champions, then set a 'team needs' weight vector and rank every pick by its dot product with it.">
+  <div class="rl-controls">
+    <label class="rl-field"><span class="rl-field-label">Champion A</span><select data-act="a"></select></label>
+    <label class="rl-field"><span class="rl-field-label">Champion B</span><select data-act="b"></select></label>
+  </div>
+  <div class="rl-stats">
+    <Stat name="dot" label="A · B" />
+    <Stat name="na" label="‖A‖" />
+    <Stat name="nb" label="‖B‖" />
+    <Stat name="cos" label="cos θ" />
+    <Stat name="angle" label="Angle θ" />
+    <Stat name="dist" label="Distance ‖A − B‖" />
+  </div>
+  <Chart name="bars" caption="Attribute profile" label="Grouped bar chart comparing the attribute vectors of two champions">
+    <div class="rl-legend"><span><i class="c1"></i>Champion A</span><span><i class="c2"></i>Champion B</span></div>
+  </Chart>
+  <p class="rl-note"><strong>Team needs vector w</strong>: how much does your draft still need each attribute? Score = w · champion.</p>
+  <div class="rl-controls">
+    <Slider name="w0" label="Engage" min={0} max={3} step={0.5} value={2} />
+    <Slider name="w1" label="Burst" min={0} max={3} step={0.5} value={1} />
+    <Slider name="w2" label="Poke" min={0} max={3} step={0.5} value={0} />
+    <Slider name="w3" label="Sustain" min={0} max={3} step={0.5} value={0.5} />
+    <Slider name="w4" label="CC" min={0} max={3} step={0.5} value={2} />
+    <Slider name="w5" label="Scaling" min={0} max={3} step={0.5} value={0.5} />
+  </div>
+  <div class="rl-scroll"><table class="rl-table" data-stat="rank"></table></div>
+</RiftLab>
+
+<script>
+  import { onLab, bindInputs, setText, chart, fmt, dot, norm, cosine, ATTRS, CHAMPS, champ, champOptions } from '../../scripts/riftlab';
+
+  onLab('vectors', (root) => {
+    const selA = root.querySelector<HTMLSelectElement>('[data-act="a"]')!;
+    const selB = root.querySelector<HTMLSelectElement>('[data-act="b"]')!;
+    const svg = root.querySelector<SVGSVGElement>('[data-chart="bars"]')!;
+    const table = root.querySelector<HTMLTableElement>('[data-stat="rank"]')!;
+    champOptions(selA, 'Malphite');
+    champOptions(selB, 'Leona');
+
+    const compare = () => {
+      const a = champ(selA.value).v;
+      const b = champ(selB.value).v;
+      const c = cosine(a, b);
+      setText(root, 'dot', fmt(dot(a, b), 0));
+      setText(root, 'na', fmt(norm(a), 2));
+      setText(root, 'nb', fmt(norm(b), 2));
+      setText(root, 'cos', fmt(c, 3));
+      setText(root, 'angle', `${fmt((Math.acos(Math.min(1, c)) * 180) / Math.PI, 1)}°`);
+      setText(root, 'dist', fmt(norm(a.map((x, i) => x - b[i])), 2));
+      chart(svg, {
+        xMin: -0.5, xMax: 5.5, yMin: 0, yMax: 10.5, height: 230,
+        yLabel: 'Rating',
+        xFmt: (x) => (Number.isInteger(x) ? ATTRS[x] ?? '' : ''),
+        bars: [
+          ...a.map((y, i) => ({ x0: i - 0.38, x1: i, y, cls: 'c1' })),
+          ...b.map((y, i) => ({ x0: i, x1: i + 0.38, y, cls: 'c2' })),
+        ],
+      });
+    };
+
+    selA.addEventListener('change', compare);
+    selB.addEventListener('change', compare);
+    compare();
+
+    bindInputs(root, (v) => {
+      const w = [v.w0, v.w1, v.w2, v.w3, v.w4, v.w5];
+      const ranked = CHAMPS.map((c) => ({ c, score: dot(w, c.v) })).sort((x, y) => y.score - x.score);
+      const head = `<tr><th>#</th><th>Champion</th>${ATTRS.map((a) => `<th>${a}</th>`).join('')}<th>w · v</th></tr>`;
+      const rows = ranked.slice(0, 6).map(({ c, score }, i) =>
+        `<tr><td>${i + 1}</td><td>${c.name}</td>${c.v.map((x, j) => `<td>${x}×${w[j]}</td>`).join('')}<td><strong>${fmt(score, 1)}</strong></td></tr>`);
+      table.innerHTML = head + rows.join('');
+    });
+  });
+</script>
