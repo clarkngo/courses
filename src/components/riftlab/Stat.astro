@@ -1,0 +1,8 @@
+---
+export interface Props {
+  name: string;
+  label: string;
+}
+const { name, label } = Astro.props;
+---
+<div class="rl-stat"><span class="rl-stat-label">{label}</span><span class="rl-stat-value" data-stat={name}>—</span></div>

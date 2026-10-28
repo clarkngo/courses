@@ -1,0 +1,136 @@
+---
+title: "Linear Regression Part 1: Forecasting Damage from Gold Leads"
+description: "Fit a line to match data with Ordinary Least Squares. Learn the regression model, residuals, the closed-form slope and intercept, how to interpret coefficients, and how R² measures the share of variation the line explains."
+module: 6
+moduleTitle: "Linear Regression"
+lesson: 1
+duration: "30 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import OlsLab from '@components/riftlab/OlsLab.astro';
+
+## The Question
+
+A mid laner with a gold lead at 10 minutes should deal more damage over the game. But **how much more**? If you're up 1,500 gold at 10:00, what's a reasonable forecast for your damage to champions?
+
+That's a **regression** question: predict a numeric **response** `y` (damage) from a **predictor** `x` (gold difference at 10:00).
+
+---
+
+## The Linear Model
+
+Simple linear regression assumes:
+
+```
+y = b₀ + b₁ · x + ε
+```
+
+- `b₀` is the **intercept**: predicted damage when the gold difference is 0 (an even lane).
+- `b₁` is the **slope**: extra damage per extra gold of lead. From Module 1, it's the rate of change `dy/dx`.
+- `ε` is the **error**: everything the line doesn't capture (teamfight chaos, champion picks, game length, luck).
+
+The line gives a **prediction** `ŷ = b₀ + b₁ · x`. The gap between what happened and what the line predicted is the **residual**:
+
+```
+residual eᵢ = yᵢ − ŷᵢ
+```
+
+---
+
+## Ordinary Least Squares
+
+Many lines could pass through a cloud of points. **Ordinary Least Squares (OLS)** picks the one that minimizes the **sum of squared errors**:
+
+```
+SSE = Σ (yᵢ − b₀ − b₁ xᵢ)²
+```
+
+Why squared? Squaring makes every residual positive (so misses above and below don't cancel), punishes big misses more than small ones, and makes the math solvable with calculus. Set the partial derivatives of SSE with respect to `b₀` and `b₁` to zero (the bottom of a bowl has zero slope) and you get:
+
+```
+b₁ = Σ (xᵢ − x̄)(yᵢ − ȳ) / Σ (xᵢ − x̄)²   =  Sxy / Sxx
+b₀ = ȳ − b₁ · x̄
+```
+
+Two things to notice:
+
+- The slope is the **covariance** of x and y divided by the **variance** of x (the `n − 1` terms cancel).
+- The OLS line always passes through the point of averages `(x̄, ȳ)`.
+
+### Interpreting the Coefficients
+
+Suppose OLS gives `b₀ = 18,100` and `b₁ = 2.15`:
+
+- **Slope:** each extra gold of lead at 10:00 is associated with about **2.15 more damage** to champions. A 1,000-gold lead is worth roughly 2,150 damage.
+- **Intercept:** a mid laner who is dead even at 10:00 is forecast to deal about **18,100** damage.
+- **Prediction:** at +1,500 gold, `ŷ = 18,100 + 2.15 × 1,500 ≈ 21,325`.
+
+Note the word *associated*. Regression measures how variables move together, not why.
+
+---
+
+## R²: How Much Does the Line Explain?
+
+Start with the **total variation** in damage, ignoring gold entirely:
+
+```
+SST = Σ (yᵢ − ȳ)²
+```
+
+After fitting the line, the variation left over is SSE. **R²** is the share of variation the line removed:
+
+```
+R² = 1 − SSE / SST
+```
+
+- `R² = 0`: the line is no better than predicting the average every time.
+- `R² = 1`: every point sits exactly on the line.
+- `R² = 0.45`: gold lead at 10:00 accounts for 45% of the variation in damage; 55% comes from everything else.
+
+For simple regression, `R²` is the square of the **correlation coefficient** `r`. A correlation of 0.7 means `R² = 0.49`.
+
+There's no universal "good" R². In physics, 0.99 might be expected. In anything involving human players, 0.3 can be a useful, real relationship.
+
+<OlsLab />
+
+---
+
+## Reading the Lab
+
+1. Drag **your intercept** and **your slope** to fit the cloud by eye, and watch your SSE.
+2. Compare it to the OLS SSE. You can get close, but you can't go lower: OLS is the minimum by construction.
+3. Raise **noise** and watch R² fall while the slope stays near the same value. More chaos makes the trend harder to see, but it doesn't change the trend.
+4. Click far out on the chart (say, +4,500 gold and 2,000 damage) to add an **outlier**. One extreme point can swing the line noticeably, because squared errors weight it heavily.
+
+<Pitfall title="Correlation, Causation, and Extrapolation">
+
+**Common mistake 1:** "A 1,000-gold lead *causes* 2,150 more damage." Better players get gold leads **and** deal more damage. Skill drives both. To estimate a causal effect, you need an experiment or a careful design that accounts for the **confounder**.
+
+**Common mistake 2:** predicting far outside your data. If your sample only covers −4,000 to +4,000 gold, the line says nothing reliable about +10,000. Games that lopsided often end before damage piles up, so the true relationship may bend. Keep predictions inside the range you observed.
+
+</Pitfall>
+
+<Quiz
+  questions={[
+    {
+      question: "OLS gives ŷ = 18,000 + 2.2x for damage vs. gold diff at 10:00. What's the prediction at −1,000 gold?",
+      options: ["20,200", "15,800", "18,000", "−2,200"],
+      correctIndex: 1,
+      explanation: "18,000 + 2.2 × (−1,000) = 15,800."
+    },
+    {
+      question: "What does OLS minimize?",
+      options: ["The sum of residuals", "The sum of squared residuals", "The largest residual", "The number of points off the line"],
+      correctIndex: 1,
+      explanation: "OLS minimizes SSE = Σ(yᵢ − ŷᵢ)². The plain sum of residuals is always 0 for an OLS line with an intercept, so it can't be the target."
+    },
+    {
+      question: "A model has R² = 0.36. What is the correlation between x and y (assuming a positive slope)?",
+      options: ["0.36", "0.6", "0.13", "0.64"],
+      correctIndex: 1,
+      explanation: "In simple regression R² = r², so r = √0.36 = 0.6."
+    }
+  ]}
+/>

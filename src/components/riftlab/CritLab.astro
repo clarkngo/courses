@@ -1,0 +1,126 @@
+---
+import RiftLab from './RiftLab.astro';
+import Slider from './Slider.astro';
+import Stat from './Stat.astro';
+import Chart from './Chart.astro';
+---
+<RiftLab title="Critical Strike Simulator" lab="crit" subtitle="Bars show the exact binomial probability of landing k crits in your trade. Hit Simulate to roll 5,000 trades and compare independent rolls against a pseudo-random (streak-breaking) crit system with the same average chance.">
+  <div class="rl-controls">
+    <Slider name="p" label="Crit chance" min={0} max={1} step={0.05} value={0.25} pct />
+    <Slider name="n" label="Auto-attacks in the trade" min={1} max={20} step={1} value={6} />
+    <Slider name="ad" label="Attack damage" min={60} max={400} step={10} value={150} />
+    <Slider name="mult" label="Crit multiplier" min={1.5} max={2.5} step={0.05} value={1.75} />
+  </div>
+  <div class="rl-stats">
+    <Stat name="atLeast" label="P(≥ 1 crit)" />
+    <Stat name="none" label="P(0 crits)" />
+    <Stat name="twice" label="P(2 crits in a row)" />
+    <Stat name="expCrits" label="Expected crits" />
+    <Stat name="expDmg" label="Expected dmg / auto" />
+    <Stat name="tradeDmg" label="Expected trade dmg" />
+  </div>
+  <div class="rl-row">
+    <button type="button" class="rl-btn" data-act="sim">Simulate 5,000 trades</button>
+    <span class="rl-note" data-stat="simNote">Not simulated yet.</span>
+  </div>
+  <Chart name="dist" caption="Number of crits in one trade" label="Bar chart of the binomial distribution of crit counts">
+    <div class="rl-legend"><span><i class="c1"></i>Exact binomial</span><span><i class="c2"></i>Simulated: independent</span><span><i class="c3"></i>Simulated: pseudo-random</span></div>
+  </Chart>
+</RiftLab>
+
+<script>
+  import { onLab, bindInputs, setText, chart, fmt, pct, binomPmf, rng } from '../../scripts/riftlab';
+
+  /** Pseudo-random distribution: chance = C·k on the k-th attack since the last crit. Find C whose long-run rate is p. */
+  function prdConstant(p: number) {
+    if (p <= 0 || p >= 1) return p;
+    const rate = (c: number) => {
+      let survive = 1;
+      let expected = 0;
+      for (let k = 1; k < 1000; k++) {
+        const hit = Math.min(1, c * k);
+        expected += k * survive * hit;
+        survive *= 1 - hit;
+        if (survive < 1e-12) break;
+      }
+      return 1 / expected;
+    };
+    let lo = 0;
+    let hi = p;
+    for (let i = 0; i < 60; i++) {
+      const mid = (lo + hi) / 2;
+      if (rate(mid) < p) lo = mid; else hi = mid;
+    }
+    return (lo + hi) / 2;
+  }
+
+  onLab('crit', (root) => {
+    const svg = root.querySelector<SVGSVGElement>('[data-chart="dist"]')!;
+    let sim: { ind: number[]; prd: number[] } | null = null;
+    let current: Record<string, number> = {};
+
+    const draw = (v: Record<string, number>) => {
+      const ks = Array.from({ length: v.n + 1 }, (_, k) => k);
+      const exact = ks.map((k) => binomPmf(k, v.n, v.p));
+      const simMax = sim ? Math.max(...sim.ind, ...sim.prd) : 0;
+      const yMax = Math.min(1, Math.max(...exact, simMax) * 1.15) || 1;
+      chart(svg, {
+        xMin: -0.5, xMax: v.n + 0.5, yMin: 0, yMax,
+        xLabel: 'Crits in the trade (k)', yLabel: 'Probability',
+        xFmt: (x) => (Number.isInteger(x) ? `${x}` : ''),
+        bars: ks.map((k) => ({ x0: k - 0.4, x1: k + 0.4, y: exact[k], cls: 'c1' })),
+        points: sim
+          ? [
+              ...sim.ind.map((y, k) => ({ x: k - 0.15, y, cls: 'c2', r: 4, title: `independent: ${pct(y)}` })),
+              ...sim.prd.map((y, k) => ({ x: k + 0.15, y, cls: 'c3', r: 4, title: `pseudo-random: ${pct(y)}` })),
+            ]
+          : [],
+      });
+    };
+
+    const update = bindInputs(root, (v) => {
+      if (current.n !== v.n || current.p !== v.p) {
+        sim = null;
+        setText(root, 'simNote', 'Not simulated yet.');
+      }
+      current = v;
+      const expAuto = v.ad * (1 + v.p * (v.mult - 1));
+      setText(root, 'atLeast', pct(1 - (1 - v.p) ** v.n));
+      setText(root, 'none', pct((1 - v.p) ** v.n));
+      setText(root, 'twice', pct(v.p * v.p));
+      setText(root, 'expCrits', fmt(v.n * v.p, 2));
+      setText(root, 'expDmg', fmt(expAuto, 1));
+      setText(root, 'tradeDmg', fmt(expAuto * v.n, 0));
+      draw(v);
+    });
+
+    let seed = 7;
+    root.querySelector('[data-act="sim"]')!.addEventListener('click', () => {
+      const v = current;
+      const r = rng(seed++);
+      const trials = 5000;
+      const c = prdConstant(v.p);
+      const ind = new Array(v.n + 1).fill(0);
+      const prd = new Array(v.n + 1).fill(0);
+      for (let t = 0; t < trials; t++) {
+        let a = 0;
+        let b = 0;
+        // Start each pseudo-random trade from a random point in its cycle.
+        let since = 1 + Math.floor(r() * Math.max(1, Math.round(1 / Math.max(v.p, 0.05))));
+        for (let i = 0; i < v.n; i++) {
+          if (r() < v.p) a++;
+          if (r() < Math.min(1, c * since)) { b++; since = 1; } else since++;
+        }
+        ind[a]++;
+        prd[b]++;
+      }
+      sim = { ind: ind.map((x) => x / trials), prd: prd.map((x) => x / trials) };
+      const spread = (d: number[]) => {
+        const m = d.reduce((s, y, k) => s + k * y, 0);
+        return Math.sqrt(d.reduce((s, y, k) => s + (k - m) ** 2 * y, 0));
+      };
+      setText(root, 'simNote', `SD of crits per trade — independent: ${fmt(spread(sim.ind), 2)}, pseudo-random: ${fmt(spread(sim.prd), 2)} (lower = fewer crit streaks and droughts).`);
+      update();
+    });
+  });
+</script>

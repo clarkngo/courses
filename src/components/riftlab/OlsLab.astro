@@ -1,0 +1,105 @@
+---
+import RiftLab from './RiftLab.astro';
+import Slider from './Slider.astro';
+import Stat from './Stat.astro';
+import Chart from './Chart.astro';
+---
+<RiftLab title="Gold Lead → Damage Forecast (OLS)" lab="ols" subtitle="Each dot is a simulated match: the mid laner's gold difference at 10:00 against their total damage to champions. Fit a line by hand, then compare it to Ordinary Least Squares. Click the chart to add your own match.">
+  <div class="rl-controls">
+    <Slider name="n" label="Matches in sample" min={10} max={150} step={5} value={40} />
+    <Slider name="noise" label="Noise (game chaos)" min={1000} max={12000} step={500} value={3500} />
+    <Slider name="gb0" label="Your intercept (b₀)" min={10000} max={30000} step={250} value={16000} />
+    <Slider name="gb1" label="Your slope (b₁, dmg per gold)" min={-1} max={5} step={0.05} value={1} />
+    <Slider name="x0" label="Predict at gold diff" min={-4000} max={4000} step={100} value={1500} />
+  </div>
+  <div class="rl-row">
+    <label class="rl-note"><input type="checkbox" data-act="resid" checked /> Show OLS residuals</label>
+    <button type="button" class="rl-btn ghost" data-act="reseed">New sample</button>
+    <button type="button" class="rl-btn ghost" data-act="clear">Remove added matches</button>
+  </div>
+  <div class="rl-stats">
+    <Stat name="b0" label="OLS intercept b₀" />
+    <Stat name="b1" label="OLS slope b₁" />
+    <Stat name="r" label="Correlation r" />
+    <Stat name="r2" label="R²" />
+    <Stat name="sseOls" label="SSE (OLS)" />
+    <Stat name="sseYou" label="SSE (your line)" />
+    <Stat name="pred" label="Predicted damage" />
+  </div>
+  <Chart name="scatter" caption="Gold diff @10 vs. damage to champions" label="Scatter plot with OLS regression line, your manual line, and residuals">
+    <div class="rl-legend"><span><i class="c1"></i>Matches</span><span><i class="c2"></i>OLS line</span><span><i class="c3"></i>Your line</span><span><i class="muted"></i>Residuals</span></div>
+  </Chart>
+</RiftLab>
+
+<script>
+  import { onLab, bindInputs, setText, chart, fmt, rng, randn, mean, sum, rSquared } from '../../scripts/riftlab';
+
+  onLab('ols', (root) => {
+    const svg = root.querySelector<SVGSVGElement>('[data-chart="scatter"]')!;
+    const residBox = root.querySelector<HTMLInputElement>('[data-act="resid"]')!;
+    let seed = 11;
+    let added: [number, number][] = [];
+    let api: ReturnType<typeof chart> | null = null;
+
+    const sample = (n: number, noise: number) => {
+      const r = rng(seed);
+      return Array.from({ length: n }, () => {
+        const x = Math.max(-4500, Math.min(4500, randn(r) * 1600));
+        const y = 18000 + 2.2 * x + randn(r) * noise;
+        return [Math.round(x), Math.max(2000, Math.round(y))] as [number, number];
+      });
+    };
+
+    const update = bindInputs(root, (v) => {
+      const pts = [...sample(v.n, v.noise), ...added];
+      const xs = pts.map((p) => p[0]);
+      const ys = pts.map((p) => p[1]);
+      const mx = mean(xs);
+      const my = mean(ys);
+      const sxy = sum(xs.map((x, i) => (x - mx) * (ys[i] - my)));
+      const sxx = sum(xs.map((x) => (x - mx) ** 2));
+      const syy = sum(ys.map((y) => (y - my) ** 2));
+      const b1 = sxy / sxx;
+      const b0 = my - b1 * mx;
+      const yhat = xs.map((x) => b0 + b1 * x);
+      const sse = (f: (x: number) => number) => sum(xs.map((x, i) => (ys[i] - f(x)) ** 2));
+
+      setText(root, 'b0', fmt(b0, 0));
+      setText(root, 'b1', fmt(b1, 3));
+      setText(root, 'r', fmt(sxy / Math.sqrt(sxx * syy), 3));
+      setText(root, 'r2', fmt(rSquared(ys, yhat), 3));
+      setText(root, 'sseOls', `${fmt(sse((x) => b0 + b1 * x) / 1e6, 1)}M`);
+      setText(root, 'sseYou', `${fmt(sse((x) => v.gb0 + v.gb1 * x) / 1e6, 1)}M`);
+      setText(root, 'pred', `${fmt(b0 + b1 * v.x0, 0)}`);
+
+      const yMin = Math.min(0, ...ys);
+      const yMax = Math.max(40000, ...ys) * 1.05;
+      api = chart(svg, {
+        xMin: -5000, xMax: 5000, yMin, yMax, height: 320,
+        xLabel: 'Gold difference at 10:00', yLabel: 'Damage to champions',
+        segments: [
+          ...(residBox.checked ? xs.map((x, i) => ({ x1: x, y1: ys[i], x2: x, y2: yhat[i], cls: 'muted' })) : []),
+          { x1: -5000, y1: b0 - 5000 * b1, x2: 5000, y2: b0 + 5000 * b1, cls: 'c2' },
+          { x1: -5000, y1: v.gb0 - 5000 * v.gb1, x2: 5000, y2: v.gb0 + 5000 * v.gb1, cls: 'c3', dash: true },
+        ],
+        points: [
+          ...pts.map(([x, y], i) => ({ x, y, cls: i >= pts.length - added.length ? 'hollow' : 'c1', title: `${x} gold → ${y} dmg` })),
+          { x: v.x0, y: b0 + b1 * v.x0, cls: 'c2', r: 6, title: 'prediction' },
+        ],
+        vlines: [{ x: v.x0, cls: 'c2' }],
+      });
+    });
+
+    svg.addEventListener('click', (e) => {
+      if (!api) return;
+      const { x, y } = api.invert(e.clientX, e.clientY);
+      if (x < -5000 || x > 5000) return;
+      added.push([Math.round(x), Math.round(y)]);
+      update();
+    });
+    svg.style.cursor = 'crosshair';
+    residBox.addEventListener('change', update);
+    root.querySelector('[data-act="reseed"]')!.addEventListener('click', () => { seed++; update(); });
+    root.querySelector('[data-act="clear"]')!.addEventListener('click', () => { added = []; update(); });
+  });
+</script>

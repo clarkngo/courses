@@ -1,0 +1,77 @@
+---
+import RiftLab from './RiftLab.astro';
+import Slider from './Slider.astro';
+import Stat from './Stat.astro';
+---
+<RiftLab title="Gank Probability with Bayes' Rule" lab="gank" subtitle="You're in top lane. Should you back off when the enemy jungler goes missing? Each square below is one of 100 similar moments from your match history.">
+  <div class="rl-controls">
+    <Slider name="prior" label="P(gank) — base rate" min={0.01} max={0.6} step={0.01} value={0.15} pct />
+    <Slider name="sens" label="P(jungler missing | gank coming)" min={0.05} max={1} step={0.05} value={0.9} pct />
+    <Slider name="fpr" label="P(jungler missing | no gank)" min={0.01} max={1} step={0.01} value={0.3} pct />
+  </div>
+  <div class="rl-stats">
+    <Stat name="post" label="P(gank | missing)" />
+    <Stat name="postNot" label="P(gank | visible)" />
+    <Stat name="evid" label="P(missing)" />
+    <Stat name="lift" label="Risk multiplier" />
+  </div>
+  <div class="rl-chart-wrap">
+    <svg data-chart="grid" role="img" aria-label="Grid of 100 game moments split by gank and jungler visibility" viewBox="0 0 560 150"></svg>
+    <div class="rl-legend">
+      <span><i class="c2"></i>Gank, jungler was missing</span>
+      <span><i class="c3"></i>Gank, jungler was visible</span>
+      <span><i class="c1"></i>No gank, jungler was missing (false alarm)</span>
+      <span><i class="muted"></i>No gank, jungler visible</span>
+    </div>
+  </div>
+  <p class="rl-verdict" data-stat="verdict"></p>
+</RiftLab>
+
+<script>
+  import { onLab, bindInputs, setText, pct, fmt } from '../../scripts/riftlab';
+
+  onLab('gank', (root) => {
+    const svg = root.querySelector<SVGSVGElement>('[data-chart="grid"]')!;
+    const NS = 'http://www.w3.org/2000/svg';
+
+    bindInputs(root, (v) => {
+      const pE = v.sens * v.prior + v.fpr * (1 - v.prior);
+      const post = (v.sens * v.prior) / pE;
+      const postNot = ((1 - v.sens) * v.prior) / (1 - pE || 1);
+      setText(root, 'post', pct(post));
+      setText(root, 'postNot', pct(postNot));
+      setText(root, 'evid', pct(pE));
+      setText(root, 'lift', `${fmt(post / v.prior, 2)}×`);
+
+      // Frequency grid: 100 moments, grouped by (gank, evidence).
+      const gankMissing = Math.round(100 * v.prior * v.sens);
+      const gankTotal = Math.round(100 * v.prior);
+      const gankVisible = gankTotal - gankMissing;
+      const falseAlarm = Math.round(100 * (1 - v.prior) * v.fpr);
+      const classes = [
+        ...Array(gankMissing).fill('c2'),
+        ...Array(gankVisible).fill('c3'),
+        ...Array(falseAlarm).fill('c1'),
+      ];
+      while (classes.length < 100) classes.push('muted');
+      svg.replaceChildren();
+      classes.slice(0, 100).forEach((cls, i) => {
+        const rect = document.createElementNS(NS, 'rect');
+        const col = i % 25;
+        const row = Math.floor(i / 25);
+        rect.setAttribute('x', String(12 + col * 21.6));
+        rect.setAttribute('y', String(10 + row * 33));
+        rect.setAttribute('width', '18');
+        rect.setAttribute('height', '28');
+        rect.setAttribute('rx', '3');
+        rect.setAttribute('class', `rl-bar ${cls}`);
+        svg.append(rect);
+      });
+
+      const verdict = root.querySelector<HTMLElement>('[data-stat="verdict"]')!;
+      verdict.className = `rl-verdict ${post >= 0.4 ? 'warn' : 'good'}`;
+      verdict.textContent = `Of the ${gankMissing + falseAlarm} moments when the jungler was missing, ${gankMissing} were real ganks. `
+        + (post >= 0.4 ? 'That is high enough to play safe until you see the jungler again.' : 'Most "missing" moments are false alarms, but your risk is still higher than baseline.');
+    });
+  });
+</script>

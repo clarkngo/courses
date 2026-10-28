@@ -1,0 +1,148 @@
+---
+title: "Reading Your Match History: Center and Spread"
+description: "Summarize a season of games with mean, median, and mode, measure consistency with variance, standard deviation, IQR, and coefficient of variation, and see how one stomp game can distort an average."
+module: 3
+moduleTitle: "Descriptive Statistics"
+lesson: 1
+duration: "25 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import DescriptiveLab from '@components/riftlab/DescriptiveLab.astro';
+
+## A Season Is a Dataset
+
+Your match history is a **dataset**: each game is an **observation**, and each stat (gold per minute, KDA, damage, vision score, game length) is a **variable**. Descriptive statistics compresses dozens of games into a handful of numbers that answer two questions:
+
+1. **Center:** what's a typical game for you?
+2. **Spread:** how much do your games vary?
+
+### Types of Variables
+
+| Type | Examples | Summaries that make sense |
+|---|---|---|
+| **Continuous** | Gold per minute, damage dealt, game length | Mean, median, SD, histogram |
+| **Discrete count** | Kills, deaths, towers destroyed | Mean, median, mode, bar chart |
+| **Categorical** | Role, champion, win/loss | Counts, proportions, mode |
+
+You can average GPM. You can't average "Mid lane" and "Jungle." Picking the right summary starts with knowing the variable type.
+
+---
+
+## Measures of Center
+
+Here are 20 games of **gold per minute (GPM)** for one mid laner:
+
+```
+412 455 388 501 437 466 420 398 445 520
+431 455 470 405 455 489 362 441 478 430
+```
+
+- **Mean** (arithmetic average): add them up and divide by n. `8,858 / 20 = 442.9`
+- **Median**: sort the values and take the middle. With 20 values, average the 10th and 11th: `(441 + 445) / 2 = 443`
+- **Mode**: the most frequent value. `455` appears three times.
+
+Here the mean and median agree closely, which suggests the data is roughly **symmetric**.
+
+### When the Mean Lies
+
+Now add one game where you stomped lane and finished at **780 GPM**:
+
+- New mean: `9,638 / 21 ≈ 459.0` (up 16 points)
+- New median: `445` (up 2 points)
+
+One unusual game moved the mean eight times as much as the median. The mean uses every value's *size*; the median only uses their *order*. That makes the median **robust** to outliers. When a distribution is **skewed** (a long tail on one side), report the median, or report both.
+
+---
+
+## Measures of Spread
+
+Two players can have the same average and very different games. Consider KDA over 15 games:
+
+| | Mean KDA | Median KDA | Standard deviation |
+|---|---|---|---|
+| **Player A** (steady) | 3.07 | 3.1 | 0.29 |
+| **Player B** (coin-flip) | 3.07 | 2.4 | 2.27 |
+
+Same mean, but Player B swings between 0.5 and 7.3. **Spread** is the statistic that tells them apart.
+
+### Variance and Standard Deviation
+
+Variance measures the average squared distance from the mean:
+
+```
+s² = Σ (xᵢ − x̄)² / (n − 1)
+```
+
+Standard deviation is its square root, `s = √s²`, which puts it back in the original units (GPM, KDA). For the 20-game GPM sample, `s ≈ 39.2` GPM.
+
+Why divide by `n − 1` instead of `n`? Because we measured distances from the *sample* mean, which sits closer to the data than the true long-run mean does. Dividing by `n − 1` (**Bessel's correction**) corrects that bias when you treat your games as a sample of how you play in general.
+
+### Rules of Thumb for SD
+
+For roughly bell-shaped data, about **68%** of values fall within 1 SD of the mean and about **95%** within 2 SD. For our GPM data, that predicts most games between `443 ± 39`, about 404 to 482. Counting directly, 14 of 20 games (70%) land in that range.
+
+### Interquartile Range (IQR)
+
+The **first quartile (Q1)** is the value 25% of the way through the sorted data; **Q3** is 75% of the way. `IQR = Q3 − Q1` covers the middle half of your games. For the GPM data, Q1 = 418 and Q3 = 467, so IQR = 49. Like the median, the IQR ignores extreme values, which makes it the robust partner to the SD.
+
+A common outlier rule flags values below `Q1 − 1.5 · IQR` or above `Q3 + 1.5 · IQR`. Here that range is roughly 345 to 541, so the 780 GPM stomp is flagged as an outlier.
+
+### Coefficient of Variation
+
+To compare spreads on different scales, divide SD by the mean: `CV = s / x̄`. Player A's KDA has `CV ≈ 9%`; Player B's is `≈ 74%`. CV lets you ask "is my GPM more or less consistent than my KDA?" even though the units differ.
+
+### z-Scores
+
+How unusual was a single game? Convert it to a **z-score**:
+
+```
+z = (x − x̄) / s
+```
+
+The 520 GPM game: `(520 − 442.9) / 39.2 ≈ 1.97`, almost 2 standard deviations above your average. z-scores will come back in Module 4 as the basis of hypothesis testing.
+
+<DescriptiveLab />
+
+---
+
+## Reading a Histogram
+
+A histogram groups values into **bins** and shows how many fall in each. Look for:
+
+- **Shape:** symmetric, skewed right (long tail of high values), skewed left, or bimodal (two peaks)
+- **Center:** where the bulk of the data sits
+- **Spread:** how wide the bulk is
+- **Outliers:** isolated bars far from the rest
+
+A **bimodal** GPM histogram is a clue that two different things are going on, for example games on a farming champion vs. games on a roaming one. When you see two peaks, split the data before summarizing it.
+
+<Pitfall title="Averaging Ratios Like KDA">
+
+**Common mistake:** averaging per-game KDA values. KDA is `(Kills + Assists) / Deaths`, and a 10/0/8 game is usually reported as 18 (dividing by 1 instead of 0), which can single-handedly drag the mean upward. A more stable season KDA divides **total** kills plus assists by **total** deaths. The same issue shows up whenever you average ratios, like click-through rates or batting averages: decide whether you want the average of ratios or the ratio of totals, and say which one you used.
+
+</Pitfall>
+
+<Quiz
+  questions={[
+    {
+      question: "Your GPM is skewed right because of a few stomp games. Which statistic best describes a typical game?",
+      options: ["Mean", "Median", "Maximum", "Variance"],
+      correctIndex: 1,
+      explanation: "The median depends only on order, so a few extreme high values barely move it. The mean gets pulled toward the tail."
+    },
+    {
+      question: "Two players both average 3.0 KDA. Player A's SD is 0.3, Player B's is 2.3. What can you conclude?",
+      options: ["Player B is better", "Player A's games are far more consistent", "They have the same median", "Player A has more kills"],
+      correctIndex: 1,
+      explanation: "Standard deviation measures spread around the mean. Same center, very different consistency."
+    },
+    {
+      question: "Your mean damage is 18,000 with SD 3,000. A game with 24,000 damage has what z-score?",
+      options: ["0.5", "1", "2", "6"],
+      correctIndex: 2,
+      explanation: "z = (24,000 − 18,000) / 3,000 = 2, two standard deviations above your average."
+    }
+  ]}
+/>

@@ -1,0 +1,127 @@
+---
+import RiftLab from './RiftLab.astro';
+import Slider from './Slider.astro';
+import Stat from './Stat.astro';
+---
+<RiftLab title="Team Composition Matrices" lab="team" subtitle="Draft five champions. Stacking their vectors gives a 5×6 team matrix T. From it we compute a similarity matrix, a team profile, and every player's effective health against the enemy's damage mix.">
+  <div class="rl-controls" data-act="picks"></div>
+
+  <p class="rl-note"><strong>1. Similarity matrix S = T̂ T̂ᵀ</strong> (rows of T normalized to length 1, so each cell is a cosine similarity). Stronger color means two champions bring the same thing. The diagonal is always 1.00 (each champion vs. itself), and S is symmetric: S = Sᵀ.</p>
+  <div class="rl-chart-wrap"><svg data-chart="heat" role="img" aria-label="Heatmap of cosine similarity between the five drafted champions" viewBox="0 0 320 240"></svg></div>
+  <div class="rl-stats">
+    <Stat name="redund" label="Avg. off-diagonal similarity" />
+    <Stat name="pair" label="Most redundant pair" />
+  </div>
+
+  <p class="rl-note"><strong>2. Team profile p = 1ᵀT</strong> (sum the columns), compared to archetype vectors by cosine similarity.</p>
+  <div class="rl-scroll"><table class="rl-table" data-stat="profile"></table></div>
+
+  <p class="rl-note"><strong>3. Effective health = HP ÷ (R · d)</strong>, where each row of R is a champion's damage multipliers [100/(100+Armor), 100/(100+MR), 1] and d is the enemy damage mix.</p>
+  <div class="rl-controls">
+    <Slider name="phys" label="Enemy physical damage" min={0} max={1} step={0.05} value={0.55} pct />
+    <Slider name="magic" label="Enemy magic damage" min={0} max={1} step={0.05} value={0.35} pct />
+  </div>
+  <div class="rl-stats">
+    <Stat name="trueDmg" label="True damage share" />
+    <Stat name="teamEhp" label="Team effective HP" />
+  </div>
+  <div class="rl-scroll"><table class="rl-table" data-stat="ehp"></table></div>
+</RiftLab>
+
+<script>
+  import { onLab, bindInputs, setText, fmt, pct, dot, norm, cosine, sum, ATTRS, ARCHETYPES, champ, champOptions } from '../../scripts/riftlab';
+
+  const DEFAULTS = ['Malphite', 'Amumu', 'Orianna', 'Jinx', 'Leona'];
+
+  onLab('team', (root) => {
+    const picks = root.querySelector<HTMLElement>('[data-act="picks"]')!;
+    const heat = root.querySelector<SVGSVGElement>('[data-chart="heat"]')!;
+    const profile = root.querySelector<HTMLTableElement>('[data-stat="profile"]')!;
+    const ehpTable = root.querySelector<HTMLTableElement>('[data-stat="ehp"]')!;
+    const NS = 'http://www.w3.org/2000/svg';
+    const selects = DEFAULTS.map((name, i) => {
+      const label = document.createElement('label');
+      label.className = 'rl-field';
+      label.innerHTML = `<span class="rl-field-label">Pick ${i + 1}</span>`;
+      const sel = document.createElement('select');
+      champOptions(sel, name);
+      label.append(sel);
+      picks.append(label);
+      return sel;
+    });
+    let dmg = { phys: 0.55, magic: 0.35 };
+
+    const svgEl = (tag: string, attrs: Record<string, string | number>, text?: string) => {
+      const e = document.createElementNS(NS, tag);
+      Object.entries(attrs).forEach(([k, v]) => e.setAttribute(k, String(v)));
+      if (text) e.textContent = text;
+      return e;
+    };
+
+    const render = () => {
+      const team = selects.map((s) => champ(s.value));
+      const T = team.map((c) => c.v);
+      const That = T.map((r) => r.map((x) => x / (norm(r) || 1)));
+      const S = That.map((a) => That.map((b) => dot(a, b)));
+
+      // Heatmap
+      heat.replaceChildren();
+      const cell = 40;
+      const x0 = 90;
+      const y0 = 30;
+      team.forEach((c, i) => {
+        heat.append(svgEl('text', { x: x0 - 8, y: y0 + i * cell + cell / 2 + 4, 'text-anchor': 'end', class: 'rl-cell-text' }, c.name));
+        heat.append(svgEl('text', { x: x0 + i * cell + cell / 2, y: y0 - 8, 'text-anchor': 'middle', class: 'rl-cell-text' }, c.name.slice(0, 5)));
+        team.forEach((_, j) => {
+          heat.append(svgEl('rect', { x: x0 + j * cell, y: y0 + i * cell, width: cell - 2, height: cell - 2, rx: 3, class: 'rl-bar c1', 'fill-opacity': Math.max(0.06, (S[i][j] - 0.4) / 0.6) }));
+          heat.append(svgEl('text', { x: x0 + j * cell + cell / 2 - 1, y: y0 + i * cell + cell / 2 + 3, 'text-anchor': 'middle', class: `rl-cell-text${S[i][j] > 0.8 ? ' on-fill' : ''}` }, S[i][j].toFixed(2)));
+        });
+      });
+
+      let best = { v: -1, i: 0, j: 1 };
+      const off: number[] = [];
+      for (let i = 0; i < 5; i++) for (let j = i + 1; j < 5; j++) {
+        off.push(S[i][j]);
+        if (S[i][j] > best.v) best = { v: S[i][j], i, j };
+      }
+      setText(root, 'redund', fmt(sum(off) / off.length, 3));
+      setText(root, 'pair', `${team[best.i].name} + ${team[best.j].name} (${fmt(best.v, 2)})`);
+
+      // Profile vs archetypes
+      const p = ATTRS.map((_, j) => sum(T.map((r) => r[j])));
+      const sims = ARCHETYPES.map((a) => ({ name: a.name, s: cosine(p, a.v) })).sort((x, y) => y.s - x.s);
+      profile.innerHTML = `<tr><th></th>${ATTRS.map((a) => `<th>${a}</th>`).join('')}</tr>`
+        + `<tr><th>p</th>${p.map((x) => `<td><strong>${x}</strong></td>`).join('')}</tr>`
+        + sims.map((a, k) => `<tr><th>${a.name}</th><td colspan="6">cos(p, ${a.name}) = <strong>${a.s.toFixed(3)}</strong>${k === 0 ? ' ← closest archetype' : ''}</td></tr>`).join('');
+
+      // Effective health: R (5×3) times d (3×1)
+      const trueShare = Math.max(0, 1 - dmg.phys - dmg.magic);
+      const total = dmg.phys + dmg.magic + trueShare || 1;
+      const d = [dmg.phys / total, dmg.magic / total, trueShare / total];
+      const rows = team.map((c) => {
+        const R = [100 / (100 + c.armor), 100 / (100 + c.mr), 1];
+        const mult = dot(R, d);
+        return { c, R, mult, ehp: c.hp / mult };
+      });
+      setText(root, 'trueDmg', pct(d[2], 0));
+      setText(root, 'teamEhp', fmt(sum(rows.map((r) => r.ehp)), 0));
+      ehpTable.innerHTML = '<tr><th>Champion</th><th>HP</th><th>Armor</th><th>MR</th><th>R row</th><th>R · d</th><th>Phys EHP</th><th>Magic EHP</th><th>Mixed EHP</th></tr>'
+        + rows.map((r) => `<tr><td>${r.c.name}</td><td>${r.c.hp}</td><td>${r.c.armor}</td><td>${r.c.mr}</td>`
+          + `<td>[${r.R.map((x) => x.toFixed(2)).join(', ')}]</td><td>${r.mult.toFixed(3)}</td>`
+          + `<td>${fmt(r.c.hp / r.R[0], 0)}</td><td>${fmt(r.c.hp / r.R[1], 0)}</td><td><strong>${fmt(r.ehp, 0)}</strong></td></tr>`).join('');
+    };
+
+    selects.forEach((s) => s.addEventListener('change', render));
+    bindInputs(root, (v) => {
+      // Keep physical + magic ≤ 100%; the remainder is true damage.
+      if (v.phys + v.magic > 1) {
+        const magic = root.querySelector<HTMLInputElement>('[data-in="magic"]')!;
+        magic.value = String(Math.round((1 - v.phys) * 100) / 100);
+        v.magic = Number(magic.value);
+        root.querySelector<HTMLElement>('[data-out="magic"]')!.textContent = `${Math.round(v.magic * 100)}%`;
+      }
+      dmg = { phys: v.phys, magic: v.magic };
+      render();
+    });
+  });
+</script>

@@ -1,0 +1,138 @@
+---
+title: "Linear Algebra Part 1: Champion Vectors and the Dot Product"
+description: "Represent champions as attribute vectors, then use vector addition, norms, the dot product, cosine similarity, and weighted scoring to compare picks and rank them against what your draft still needs."
+module: 5
+moduleTitle: "Linear Algebra"
+lesson: 1
+duration: "25 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import VectorLab from '@components/riftlab/VectorLab.astro';
+
+## Why Linear Algebra?
+
+Almost every data science model stores data as **vectors** (lists of numbers) and **matrices** (tables of numbers), then combines them with a few operations. Regression, recommendation systems, search embeddings, and neural networks are all built from dot products and matrix multiplication. This lesson and the next build that toolkit with champions and teams.
+
+---
+
+## A Champion Is a Vector
+
+Rate each champion from 0 to 10 on six attributes, always in the same order:
+
+```
+[Engage, Burst, Poke, Sustain, CC, Scaling]
+```
+
+| Champion | Vector |
+|---|---|
+| Malphite | `[9, 6, 2, 3, 8, 5]` |
+| Leona | `[9, 3, 1, 4, 9, 3]` |
+| Jinx | `[0, 6, 5, 1, 3, 10]` |
+| Soraka | `[0, 1, 4, 10, 4, 6]` |
+
+These ratings are teaching values, not official data. The order matters: position 1 is always Engage, position 6 is always Scaling. Each champion is now a point (or an arrow) in **6-dimensional space**. You can't picture six dimensions, but the math works exactly like it does in two or three.
+
+### Vector Operations
+
+- **Addition** combines profiles component by component. A bot lane duo is `Jinx + Leona = [9, 9, 6, 5, 12, 13]`.
+- **Scalar multiplication** stretches a vector. `0.5 × Malphite = [4.5, 3, 1, 1.5, 4, 2.5]`.
+- **Subtraction** shows differences. `Malphite − Leona = [0, 3, 1, −1, −1, 2]`: Malphite brings more burst and scaling; Leona brings a bit more sustain and CC.
+
+### Length (Norm)
+
+The **norm** (Euclidean length) of a vector measures its overall size:
+
+```
+‖v‖ = √(v₁² + v₂² + … + vₙ²)
+‖Malphite‖ = √(81 + 36 + 4 + 9 + 64 + 25) = √219 ≈ 14.80
+```
+
+A big norm means a champion rates highly overall. The **distance** between two champions is the norm of their difference: `‖Malphite − Leona‖ = √(0 + 9 + 1 + 1 + 1 + 4) = 4`.
+
+---
+
+## The Dot Product
+
+The **dot product** multiplies matching components and adds them up:
+
+```
+a · b = a₁b₁ + a₂b₂ + … + aₙbₙ
+
+Malphite · Leona = 9·9 + 6·3 + 2·1 + 3·4 + 8·9 + 5·3
+                 = 81 + 18 + 2 + 12 + 72 + 15 = 200
+```
+
+The dot product is large when both vectors are big **in the same places**. Malphite and Leona both have high Engage and CC, so those positions dominate the sum.
+
+### Cosine Similarity
+
+The dot product mixes two things: how big the vectors are and how aligned they are. To isolate alignment, divide by both norms:
+
+```
+cos θ = (a · b) / (‖a‖ · ‖b‖)
+```
+
+- `cos θ = 1`: same direction, the same *kind* of champion
+- `cos θ = 0`: perpendicular (orthogonal), nothing in common
+- `cos θ = −1`: opposite direction (impossible here since ratings are never negative)
+
+For Malphite and Leona: `200 / (14.80 × 14.04) ≈ 0.963`, an angle of about 16°. They play almost the same role in a team fight. Malphite and Jinx: `≈ 0.64`. Jinx and Soraka: also `≈ 0.64`.
+
+Cosine similarity is exactly how search engines and AI systems compare **embeddings**, the long vectors that represent words, documents, and images. The math you're doing with six champion attributes is the same math they do with hundreds or thousands of dimensions.
+
+---
+
+## Weighted Scoring Is a Dot Product
+
+During draft, you know what your team is missing. Write that as a **weight vector** `w`. If you have damage but no frontline:
+
+```
+w = [2, 1, 0, 0.5, 2, 0.5]    (Engage and CC matter most)
+```
+
+Each champion's fit score is `w · v`:
+
+```
+w · Malphite = 2·9 + 1·6 + 0·2 + 0.5·3 + 2·8 + 0.5·5 = 18 + 6 + 0 + 1.5 + 16 + 2.5 = 44
+w · Jinx     = 0 + 6 + 0 + 0.5 + 6 + 5 = 17.5
+```
+
+Ranking every champion by `w · v` is a tiny **recommendation system**. Change `w` and the ranking changes. Linear regression (Module 6) learns weights like `w` from data instead of having you guess them.
+
+<VectorLab />
+
+<Pitfall title="Similar Is Not the Same as Synergistic">
+
+**Common mistake:** assuming high cosine similarity means two champions work well together. Malphite and Leona are very similar (0.96), which means picking both gives you a lot of *one thing* and none of something else. Real **synergy** often comes from **complementary** vectors: an engage tank plus a scaling carry. Similarity tells you about redundancy. Synergy needs a model of how attributes *interact*, which is what the matrices in the next lesson start to capture.
+
+</Pitfall>
+
+<Quiz
+  questions={[
+    {
+      question: "What is [2, 0, 3] · [4, 5, 1]?",
+      options: ["11", "8", "15", "[8, 0, 3]"],
+      correctIndex: 0,
+      explanation: "2·4 + 0·5 + 3·1 = 8 + 0 + 3 = 11. A dot product is a single number, not a vector."
+    },
+    {
+      question: "Champion A = [8, 8, 8, 8, 8, 8] and champion B = [4, 4, 4, 4, 4, 4]. What is their cosine similarity?",
+      options: ["0.5", "1", "0", "2"],
+      correctIndex: 1,
+      explanation: "B is just A scaled by 0.5, so they point the same direction: cos θ = 1. Cosine ignores size and measures only direction."
+    },
+    {
+      question: "Your draft weight vector puts 0 on Poke. What does that mean for ranking champions by w · v?",
+      options: [
+        "Poke champions get a negative score",
+        "A champion's Poke rating has no effect on its score",
+        "Poke champions are removed from the list",
+        "The ranking can't be computed"
+      ],
+      correctIndex: 1,
+      explanation: "A zero weight multiplies the Poke component by 0, so it contributes nothing to the dot product."
+    }
+  ]}
+/>

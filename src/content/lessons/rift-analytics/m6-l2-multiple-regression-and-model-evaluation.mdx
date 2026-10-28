@@ -1,0 +1,144 @@
+---
+title: "Linear Regression Part 2: Multiple Predictors and Honest Evaluation"
+description: "Extend OLS to several features with the matrix formula β = (XᵀX)⁻¹Xᵀy, interpret coefficients while holding other features fixed, evaluate with train/test splits, adjusted R², and RMSE, and see why a straight line is the wrong tool for predicting win/loss."
+module: 6
+moduleTitle: "Linear Regression"
+lesson: 2
+duration: "30 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import MultiRegLab from '@components/riftlab/MultiRegLab.astro';
+
+## More Than One Predictor
+
+Gold at 10:00 isn't the only early signal. Kill difference and dragon control also tell you how a game is going. **Multiple regression** uses several predictors at once:
+
+```
+ŷ = b₀ + b₁ · Gold@10 + b₂ · Kills@10 + b₃ · Dragons
+```
+
+Here the response is the team's **gold difference at 20:00**, a measure of how decisively a match is going. Each coefficient now means:
+
+> `b₁` = the change in predicted gold@20 for one more gold@10, **holding kills and dragons fixed**.
+
+That "holding fixed" phrase is the big difference from simple regression. A simple regression slope for gold@10 absorbs the effect of everything correlated with it. A multiple regression slope tries to separate them.
+
+---
+
+## The Matrix Form (Linear Algebra Pays Off)
+
+Write the data as a matrix `X` with a column of 1s (for the intercept) and one column per feature. Each row is a match:
+
+```
+        1   Gold@10  Kills@10  Dragons
+X = [   1     1200       2        1   ]
+    [   1     -800      -1        0   ]
+    [   1      300       0       -1   ]
+    [  ...    ...       ...      ...  ]
+```
+
+The OLS coefficients for **any** number of features come from one formula:
+
+```
+β = (XᵀX)⁻¹ Xᵀ y
+```
+
+- `XᵀX` is a small square matrix (4 × 4 here) summarizing how the features vary together.
+- `Xᵀy` summarizes how each feature moves with the response.
+- Multiplying by the **inverse** solves the system of equations you get by setting every partial derivative of SSE to zero, the same calculus as Part 1, just in matrix form.
+
+Every regression library (NumPy, scikit-learn, R's `lm`, Excel's LINEST) is computing this, usually with a numerically safer method than a direct inverse. The lab uses Gaussian elimination.
+
+### Multicollinearity
+
+Gold@10 and Kills@10 are strongly correlated: kills give gold. When predictors overlap this much, the model struggles to decide which one deserves credit, and their coefficients become unstable (they can swing a lot between samples, even flip sign) while predictions stay fine. In the lab, compare the gold@10 coefficient with and without Kills@10 checked.
+
+---
+
+## Evaluating a Model Honestly
+
+### Training vs. Test Data
+
+If you judge a model on the same games it learned from, you're grading a student on questions they already saw. Instead, split the data:
+
+- **Training set** (70% here): used to fit the coefficients.
+- **Test set** (30%): held back and only used to measure performance.
+
+The test score estimates how the model will do on **new** games, which is what you actually care about.
+
+### Metrics
+
+| Metric | Formula | What it tells you |
+|---|---|---|
+| **R²** | `1 − SSE/SST` | Share of variation explained |
+| **Adjusted R²** | `1 − (1 − R²)(n − 1)/(n − k − 1)` | R² with a penalty for each of the `k` features |
+| **RMSE** | `√(mean of squared residuals)` | Typical prediction error, in the response's units (gold) |
+
+**Training R² never goes down when you add a feature**, even a useless one, because OLS can always set its coefficient to zero or use it to chase noise. Adjusted R² and test R² don't have that guarantee, so they're the honest scores.
+
+### The Junk Feature Test
+
+The lab includes **Skins owned**, which is random and unrelated to the game. Check it and watch:
+
+- Training R² ticks up slightly. (It always will.)
+- Adjusted R² usually drops, because the tiny gain doesn't cover its penalty.
+- Test R² barely moves, and it's about as likely to fall as rise. The feature carries no real signal, so any change is noise.
+
+Click **New season of data** a few times with the junk feature on and off to see the pattern.
+
+Fitting noise in the training data that doesn't generalize is called **overfitting**. It's the central danger of every model in the rest of this track.
+
+<MultiRegLab />
+
+---
+
+## Why Not Predict Win/Loss with a Line?
+
+Code wins as 1 and losses as 0, and you can technically run OLS on them. This is called a **linear probability model**, and the second chart in the lab shows its problems:
+
+1. **Impossible predictions.** A straight line keeps going. At large gold leads it predicts "probabilities" above 1, and at large deficits, below 0.
+2. **Wrong shape.** Going from −500 to +500 gold matters a lot to a close game. Going from +5,500 to +6,500 barely changes a game that's already won. Real win probability flattens out at both ends, which a straight line can't do.
+3. **Unequal errors.** The residuals for 0/1 data can't be normally distributed with constant spread, so the usual regression standard errors are off.
+
+The fix is to pass the linear score through a function that bends it into the 0 to 1 range. That's **logistic regression**, the topic of Module 7.
+
+<Pitfall title="Reporting Only Training Performance">
+
+**Common mistake:** "My model has R² = 0.92!" measured on the data it was trained on. With enough features, almost any model fits its own training data well. Always report performance on held-out data, and when the dataset is small, use **cross-validation** (rotate which slice is the test set and average the scores) so one lucky split doesn't fool you.
+
+</Pitfall>
+
+<Quiz
+  questions={[
+    {
+      question: "In a multiple regression, the Kills@10 coefficient is 340. What does it mean?",
+      options: [
+        "Each kill causes 340 gold",
+        "One more kill at 10:00 is associated with 340 more gold at 20:00, holding the other features fixed",
+        "Kills explain 34% of the variation",
+        "Kills@10 and Gold@10 are uncorrelated"
+      ],
+      correctIndex: 1,
+      explanation: "Multiple regression coefficients are partial effects: the change in prediction when one feature changes and the others stay the same. It's still an association, not proof of cause."
+    },
+    {
+      question: "You add a random 'skins owned' feature. Which number is guaranteed not to decrease?",
+      options: ["Test R²", "Adjusted R²", "Training R²", "Test RMSE"],
+      correctIndex: 2,
+      explanation: "Adding a feature can never make the training fit worse, so training R² can't drop. That's exactly why it's a misleading score."
+    },
+    {
+      question: "What's the main problem with using OLS to predict a 0/1 win outcome?",
+      options: [
+        "OLS can't handle numbers below 1",
+        "Its predictions can fall below 0 or above 1",
+        "It needs at least 1,000 matches",
+        "It always predicts 0.5"
+      ],
+      correctIndex: 1,
+      explanation: "A straight line has no bounds, so it produces impossible probabilities at the extremes. Logistic regression fixes this with the sigmoid."
+    }
+  ]}
+/>
