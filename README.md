@@ -30,6 +30,7 @@ A self-paced course platform built with [Astro](https://astro.build), Tailwind C
 | Spec-Driven Development: Writing for AI Agents | ✅ Available |
 | Teaching Above the Line | ✅ Available |
 | Rift Analytics: Applied Statistics & Data Science with Wild Rift | ✅ Available |
+| How to Reclaim Your Power After Abuse | ✅ Available |
 
 ## Stack
 
