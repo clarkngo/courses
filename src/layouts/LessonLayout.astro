@@ -5,6 +5,7 @@ import SearchButton from '../components/SearchButton.astro';
 import BaseLayout from './BaseLayout.astro';
 import Sidebar from '../components/Sidebar.astro';
 import YouTubeEmbed from '../components/YouTubeEmbed.astro';
+import QuickExit from '../components/QuickExit.astro';
 import { getCollection } from 'astro:content';
 
 export interface Props {
@@ -226,6 +227,7 @@ const showOutline = outline.length >= 3;
       </div>
     </main>
   </div>
+  <QuickExit courseSlug={courseSlug} />
 </BaseLayout>
 
 <!-- Lightbox overlay: persisted across client-side navigations so its listeners are bound once -->
