@@ -1,0 +1,193 @@
+---
+title: "The RAG Pipeline: Ingest, Retrieve, Generate"
+description: "Build RAG conceptually from end to end with LangChain: documents and metadata, recursive chunking with overlap, stable chunk IDs, embedding and storing; then retrieval, prompt templates, generation, and grounding tests — plus simulated streaming and indirect prompt injection."
+module: 9
+moduleTitle: "Retrieval-Augmented Generation"
+lesson: 2
+duration: "19 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import ProcessFlow from '@components/ProcessFlow.astro';
+
+## Two Pipelines, Not One
+
+RAG is really two pipelines that share a vector database:
+
+- **Ingest (indexing)** runs ahead of time, whenever the source data changes: turn documents into searchable vectors.
+- **Query (retrieval and generation)** runs on every user question: find the relevant passages and let the LLM answer from them.
+
+Both are built with **LangChain**, a framework that simplifies LLM applications by providing interchangeable building blocks — **document loaders**, **text splitters**, **embedding** wrappers, **vector store** integrations, **prompt templates**, and **model** wrappers. Because each block has a standard interface, you can swap Chroma for another vector store, or one LLM for another, without rewriting the pipeline.
+
+---
+
+## The Ingest Pipeline
+
+<ProcessFlow
+  label="Ingest pipeline: load source records as documents, split them into overlapping chunks, assign each chunk a stable ID, embed each chunk, and store new chunks in the vector database."
+  color="#9333ea"
+  steps={[
+    { title: 'Load', detail: 'records → Documents + metadata' },
+    { title: 'Split', detail: '~800 chars, 80 overlap' },
+    { title: 'Assign IDs', detail: 'source : page : index' },
+    { title: 'Embed', detail: 'embedding model' },
+    { title: 'Store', detail: 'add only new chunks' },
+  ]}
+/>
+
+### 1. Load
+
+The ingest script asks the gateway for a small random sample of movies and turns each one into a LangChain **Document**: the **page content** is the movie's title and plot, and the **metadata** records the movie's database ID. Metadata travels with the text all the way through retrieval, which is what later lets an answer cite where it came from.
+
+The demo loads only a handful of movies — enough to test whether answers are grounded, light enough for a free-tier environment.
+
+### 2. Split into chunks
+
+Long documents are split into **chunks** before embedding, for three reasons: an embedding of a whole book blurs many topics into one vector; LLM prompts have a limited **context window**; and smaller, focused passages make retrieval more precise.
+
+The splitter used is a **recursive character text splitter** with a **chunk size** of about 800 characters and a **chunk overlap** of 80:
+
+- **Recursive** means it tries to split on the largest natural boundary first — paragraphs, then sentences, then words — and only cuts mid-word as a last resort, keeping chunks coherent.
+- **Overlap** repeats the last 80 characters of one chunk at the start of the next, so a sentence cut at a boundary still appears whole in at least one chunk.
+
+<figure class="not-prose my-6">
+<svg viewBox="0 0 720 150" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Chunking with overlap. A long document is divided into three chunks of about 800 characters each. Each chunk shares about 80 characters with the next, shown as overlapping shaded regions, so sentences that cross a boundary still appear complete in one chunk.">
+  <g font-family="system-ui, -apple-system, sans-serif" fill="#1f2937">
+    <rect x="20" y="20" width="680" height="26" rx="6" fill="#e2e8f0" />
+    <text x="360" y="38" text-anchor="middle" font-size="11.5">original document</text>
+    <rect x="20" y="66" width="250" height="30" rx="6" fill="#f3e8ff" stroke="#9333ea" />
+    <text x="130" y="86" text-anchor="middle" font-size="11.5" font-weight="600">chunk 1 (~800)</text>
+    <rect x="235" y="102" width="250" height="30" rx="6" fill="#f3e8ff" stroke="#9333ea" />
+    <text x="345" y="122" text-anchor="middle" font-size="11.5" font-weight="600">chunk 2</text>
+    <rect x="450" y="66" width="250" height="30" rx="6" fill="#f3e8ff" stroke="#9333ea" />
+    <text x="575" y="86" text-anchor="middle" font-size="11.5" font-weight="600">chunk 3</text>
+    <rect x="235" y="66" width="35" height="66" fill="#c084fc" opacity="0.45" />
+    <rect x="450" y="66" width="35" height="66" fill="#c084fc" opacity="0.45" />
+    <text x="252" y="146" text-anchor="middle" font-size="10" fill="#6b21a8">overlap ~80</text>
+    <text x="467" y="146" text-anchor="middle" font-size="10" fill="#6b21a8">overlap ~80</text>
+  </g>
+</svg>
+</figure>
+
+Chunk size is a real design decision. Too small, and chunks lose the context needed to answer; too large, and retrieval returns long passages where the relevant sentence is diluted. (Short movie plots usually fit in one chunk — the splitter matters more for the long PDFs in Module 10.)
+
+### 3. Assign stable chunk IDs
+
+Each chunk gets an ID built from its **source**, its **page**, and its **position** on that page — for example `data/movies.pdf:3:2` for the third chunk of page 3. Stable IDs make ingestion **idempotent**: before adding anything, the script fetches the IDs already in the database and inserts only chunks it hasn't seen. Run the script twice and you don't get duplicates. A **reset** option wipes the store when you genuinely want to rebuild it.
+
+An ID scheme only works if it's built from fields the documents actually have. Movie records have no file source or page number, so an ID built from those comes out the same on every run — and a second run with *different* random movies would see "existing" IDs and silently skip them. For records, build the ID from the record's own unique key, such as the movie ID in the metadata.
+
+### 4–5. Embed and store
+
+Each new chunk is embedded and written to Chroma, which **persists** to a local folder so the index survives restarts.
+
+---
+
+## The Query Pipeline
+
+<ProcessFlow
+  label="Query pipeline: embed the user's question, retrieve the five most similar chunks, assemble them into a prompt template with the question, have the LLM generate an answer, and return the answer with the source chunk IDs."
+  color="#db2777"
+  steps={[
+    { title: 'Embed question', detail: 'same embedding model' },
+    { title: 'Retrieve', detail: 'top k = 5 by similarity' },
+    { title: 'Build prompt', detail: 'context + question' },
+    { title: 'Generate', detail: 'LLM answers' },
+    { title: 'Cite', detail: 'return source IDs' },
+  ]}
+/>
+
+The retrieved chunks are joined (with a visible separator between them) and inserted into a **prompt template**:
+
+```
+Answer the question based only on the following context:
+
+{context}
+
+---
+
+Answer the question based on the above context: {question}
+```
+
+The instruction "based only on the following context" is the heart of **grounding**: it asks the model to use the retrieved facts instead of its own memory. The response is returned along with the **source IDs** of the chunks used, so answers can be traced and checked.
+
+### Testing for hallucinations
+
+Two tests tell you whether grounding works:
+
+1. **Positive test** — ask about a movie that *was* loaded. The answer should reflect that movie's actual plot.
+2. **Negative test** — ask about a well-known movie that *wasn't* loaded. A grounded system should say it doesn't have that information, not recite facts from the model's training.
+
+Expect imperfection. A 2-billion-parameter model sometimes ignores instructions, and similarity search **always returns *k* results** — even when none are relevant — so irrelevant context can still leak in. Production systems add a **similarity score threshold**, explicit "I don't know" handling, and automated evaluation sets.
+
+---
+
+## The Chat Path Now — and a Streaming Illusion
+
+The chat request now travels: frontend → Express `/chat` → FastAPI `/chat` (retrieve, prompt, generate) → back.
+
+There's a catch. The RAG function waits for the LLM's **complete** answer and returns it as one block. Express then sets up a chunked response and writes the finished text out piece by piece — so the user sees words appear progressively. That's **simulated streaming**: it looks like Module 8's live stream, but the user still waits the full generation time before the first character arrives.
+
+**Real** streaming would request a streamed response from the LLM inside the RAG service and pass each piece through FastAPI and Express as it's generated. When you see text appearing, it's worth asking: is this the model generating in real time, or a typing effect over a finished answer?
+
+<Pitfall title="Trusting Retrieved Text as Instructions">
+
+**Common mistake:** assuming that because documents come from your own database, everything retrieved into the prompt is safe.
+
+Retrieved text is inserted right next to your instructions, and the model can't reliably tell them apart. A plot summary, review, or PDF containing "ignore previous instructions and..." can steer the model — **indirect prompt injection**. Treat all retrieved content as untrusted data: control who can add documents, clearly delimit context in the prompt, limit what the model's output is allowed to trigger, and never let generated text directly execute actions.
+
+</Pitfall>
+
+<Quiz questions={[
+  {
+    question: "Why does the splitter use an 80-character overlap between chunks?",
+    options: [
+      "To make the database larger",
+      "So text cut at a chunk boundary still appears intact in at least one chunk",
+      "To speed up embedding",
+      "Because embedding models require it"
+    ],
+    correctIndex: 1,
+    explanation: "Overlap preserves context that would otherwise be split across two chunks."
+  },
+  {
+    question: "What do stable chunk IDs enable in the ingest pipeline?",
+    options: [
+      "Faster LLM generation",
+      "Idempotent ingestion — re-running adds only new chunks, without duplicates",
+      "Automatic translation",
+      "Better embeddings"
+    ],
+    correctIndex: 1,
+    explanation: "Comparing IDs against what's stored lets the script skip chunks it has already added."
+  },
+  {
+    question: "A user asks about a movie that was never loaded, and the system describes its plot accurately. What does this indicate?",
+    options: [
+      "Retrieval is working perfectly",
+      "The model answered from training memory, so grounding failed the negative test",
+      "The vector database is corrupted",
+      "Chunk size is too large"
+    ],
+    correctIndex: 1,
+    explanation: "With no relevant context retrieved, a grounded system should decline. Answering from memory means the instruction to use only the context wasn't followed."
+  },
+  {
+    question: "Why is the RAG chat response in this module only 'simulated' streaming?",
+    options: [
+      "The frontend can't read streams",
+      "The full answer is generated first, then sent out piece by piece, so time to first token isn't improved",
+      "Chunked transfer encoding isn't used",
+      "The LLM doesn't support streaming at all"
+    ],
+    correctIndex: 1,
+    explanation: "Progressive display over a finished answer improves appearance, not latency."
+  }
+]} />
+
+---
+
+## Up Next
+
+The final module swaps the data source from database records to PDF documents — and steps back to look at foundation models, fine-tuning versus RAG, advanced retrieval techniques, and a security review of the whole system.

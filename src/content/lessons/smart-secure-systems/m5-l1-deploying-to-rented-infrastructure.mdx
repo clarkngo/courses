@@ -1,0 +1,187 @@
+---
+title: "Deploying to Rented Infrastructure"
+description: "Why the API moves from a dev workspace to a cloud virtual machine, and the IaaS vocabulary that comes with it: instances, images, instance types, key pairs, SSH, public addresses, security groups, and a continuous-deployment job that ships code on every push."
+module: 5
+moduleTitle: "DevSecOps II: Deploying to the Cloud"
+lesson: 1
+duration: "17 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import ProcessFlow from '@components/ProcessFlow.astro';
+import StackEvolution from '@components/StackEvolution.astro';
+
+## Why Leave the Dev Workspace?
+
+Until now the API has run inside the cloud development environment. That's ideal for writing code and wrong for serving users:
+
+- Dev workspaces **sleep** when idle and stop when you close them.
+- Their URLs and resources are tied to a **developer's account**.
+- They're sized and configured for editing, not for steady traffic.
+
+Production code needs a machine that is always on, configured deliberately, and controlled by the team. The movie API moves to **Amazon EC2** (Elastic Compute Cloud), AWS's virtual server service — the IaaS tier from Module 1. You rent the virtual machine; everything from the operating system up is yours to manage and secure.
+
+<StackEvolution stage={5} caption="Module 5: the API runs on an EC2 instance, the pipeline gains a deploy job, and a tunnel gives the phone a public HTTPS address." />
+
+---
+
+## The IaaS Vocabulary
+
+| Term | Meaning |
+|---|---|
+| **Instance** | One virtual machine running in the provider's data center |
+| **Image (AMI)** | The template the instance boots from — here, an Ubuntu Linux image |
+| **Instance type** | The hardware size: CPU, memory, network. Small burstable types (like `t2.micro`) suit light workloads and free tiers |
+| **Region / Availability Zone** | The geographic area and the isolated data center within it where the instance lives |
+| **Key pair** | A public/private key pair for logging in. AWS keeps the public key on the instance; you download the private key once, as a `.pem` file |
+| **Public IPv4 address / DNS name** | How the internet reaches the instance. By default these **change** when the instance is stopped and started |
+| **Security group** | A virtual firewall attached to the instance |
+
+### SSH and key pairs
+
+**SSH** (Secure Shell) is an encrypted protocol for logging in to a remote machine and running commands. Rather than a password, the movie deployment uses **public-key authentication**: the instance holds the public key, and whoever holds the matching private key can prove their identity. The `.pem` file is that private key — **PEM** (Privacy-Enhanced Mail) is just the text format it's stored in. Possessing this file is equivalent to being able to log in, so it's one of the most sensitive files in the whole project.
+
+### Security groups
+
+A **security group** is a **stateful** firewall: you write **inbound rules** stating which ports accept traffic from which sources, and responses to allowed traffic are automatically permitted back out. Each rule has a protocol, a port, and a **source** written in CIDR notation — a specific address like `203.0.113.7/32`, a range, or `0.0.0.0/0` for everyone.
+
+<figure class="not-prose my-6">
+<svg viewBox="0 0 720 250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Traffic from the internet reaches an EC2 instance only through its security group. Port 22 for SSH should be limited to trusted addresses; port 3000 for the API is open in the lab setup. Inside the instance, the Express API listens on port 3000 and makes outbound connections to MongoDB Atlas.">
+  <defs>
+    <marker id="sg-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#475569" />
+    </marker>
+  </defs>
+  <g font-family="system-ui, -apple-system, sans-serif" fill="#1f2937">
+    <rect x="16" y="70" width="130" height="110" rx="12" fill="#f1f5f9" stroke="#64748b" stroke-width="1.5" />
+    <text x="81" y="118" text-anchor="middle" font-size="14" font-weight="700">Internet</text>
+    <text x="81" y="138" text-anchor="middle" font-size="11">phones · browsers</text>
+    <text x="81" y="153" text-anchor="middle" font-size="11">· scanners · bots</text>
+
+    <rect x="200" y="30" width="170" height="190" rx="12" fill="#fef3c7" stroke="#d97706" stroke-width="2" stroke-dasharray="6 4" />
+    <text x="285" y="54" text-anchor="middle" font-size="13" font-weight="700">Security group</text>
+    <rect x="214" y="70" width="142" height="40" rx="8" fill="#ffffff" stroke="#16a34a" />
+    <text x="285" y="88" text-anchor="middle" font-size="11" font-weight="600">22 · SSH</text>
+    <text x="285" y="102" text-anchor="middle" font-size="10">source: your IP only</text>
+    <rect x="214" y="118" width="142" height="40" rx="8" fill="#ffffff" stroke="#dc2626" />
+    <text x="285" y="136" text-anchor="middle" font-size="11" font-weight="600">3000 · API</text>
+    <text x="285" y="150" text-anchor="middle" font-size="10">source: 0.0.0.0/0 (lab)</text>
+    <rect x="214" y="166" width="142" height="40" rx="8" fill="#f1f5f9" stroke="#94a3b8" />
+    <text x="285" y="184" text-anchor="middle" font-size="11" font-weight="600">everything else</text>
+    <text x="285" y="198" text-anchor="middle" font-size="10">denied by default</text>
+
+    <rect x="420" y="50" width="160" height="150" rx="12" fill="#ede9fe" stroke="#7c3aed" stroke-width="1.5" />
+    <text x="500" y="76" text-anchor="middle" font-size="13" font-weight="700">EC2 instance</text>
+    <text x="500" y="96" text-anchor="middle" font-size="11">Ubuntu</text>
+    <rect x="436" y="110" width="128" height="46" rx="8" fill="#ffffff" stroke="#7c3aed" />
+    <text x="500" y="130" text-anchor="middle" font-size="11" font-weight="600">Express API</text>
+    <text x="500" y="145" text-anchor="middle" font-size="10">listening on :3000</text>
+    <text x="500" y="182" text-anchor="middle" font-size="10">.env written by the pipeline</text>
+
+    <rect x="620" y="95" width="90" height="60" rx="12" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5" />
+    <text x="665" y="122" text-anchor="middle" font-size="11" font-weight="700">MongoDB</text>
+    <text x="665" y="138" text-anchor="middle" font-size="11" font-weight="700">Atlas</text>
+
+    <line x1="148" y1="125" x2="198" y2="125" stroke="#475569" stroke-width="1.5" marker-end="url(#sg-arrow)" />
+    <line x1="372" y1="138" x2="418" y2="138" stroke="#475569" stroke-width="1.5" marker-end="url(#sg-arrow)" />
+    <line x1="582" y1="125" x2="618" y2="125" stroke="#475569" stroke-width="1.5" marker-end="url(#sg-arrow)" />
+    <text x="665" y="172" text-anchor="middle" font-size="10">outbound only</text>
+  </g>
+</svg>
+</figure>
+
+The lab setup opens port 3000 (and port 80 for HTTP) to the whole internet so a phone anywhere can reach the API. That's the trade-off to notice: every open port is attack surface, and SSH in particular should never be open to everyone.
+
+### Stop vs. terminate
+
+**Stopping** an instance shuts it down but keeps its disk, so you can start it again (with a new public address unless you've reserved a static one, called an **Elastic IP**). **Terminating** deletes the instance and, by default, its disk — permanently. Idle instances still cost money, and forgotten ones are a classic source of surprise bills and unpatched servers.
+
+---
+
+## Continuous Deployment with a Deploy Job
+
+Module 4's pipeline gains a third job. It declares `needs: build_test`, so it runs **only if the tests pass** — the essence of safe continuous deployment.
+
+<ProcessFlow
+  label="The deploy job: after tests pass, the pipeline writes the .env file from secrets, loads the SSH private key from secrets, copies the code to the instance, then logs in over SSH to install runtimes if missing, stop the old process, start the new one, and open a tunnel."
+  color="#0f766e"
+  steps={[
+    { title: 'Tests pass', detail: 'needs: build_test' },
+    { title: 'Write .env', detail: 'from repository secrets' },
+    { title: 'Load SSH key', detail: 'EC2_SSH_KEY secret' },
+    { title: 'Copy code', detail: 'scp to the instance' },
+    { title: 'Remote commands', detail: 'install · stop old · start new' },
+  ]}
+/>
+
+The secrets involved — `MONGODB_URI`, `EC2_SSH_KEY` (the private key's contents), and `EC2_PUBLIC_DNS` — live in GitHub's encrypted secret store, never in the repository.
+
+On the instance, the remote commands are worth understanding conceptually:
+
+- **Idempotent setup** — install Node.js, npm, and tools *only if missing*, so the same script works on a fresh instance or an existing one.
+- **Stop the old version** — kill whatever is listening on port 3000; two processes can't bind the same port.
+- **Start the new version in the background** — `nohup` keeps the server running after the SSH session ends, with output sent to a log file.
+
+This is a minimal deployment, good for learning the moving parts. Production systems usually go further: a **process manager** (like systemd or PM2) restarts the app if it crashes, a **load balancer** spreads traffic across several instances, and an **auto scaling group** adds or removes instances with demand. A single EC2 instance on its own doesn't scale automatically — those services do.
+
+<Pitfall title="Private Keys in the Project Folder">
+
+**Common mistake:** leaving the downloaded `.pem` key inside the project directory, where it's one `git add .` away from being committed.
+
+A committed private key gives anyone who sees the repository shell access to your server. Store keys outside the project, restrict their file permissions, keep them in the CI secret store for pipelines, and if one leaks, **replace the key pair** — deleting the commit isn't enough. Also restrict port 22 to known addresses; better still, use the cloud provider's browser-based or session-manager access so SSH needn't be exposed at all.
+
+</Pitfall>
+
+<Quiz questions={[
+  {
+    question: "What does a security group's inbound rule with source 0.0.0.0/0 on port 22 mean?",
+    options: [
+      "Only the instance owner can connect via SSH",
+      "Any address on the internet can attempt SSH connections",
+      "SSH is disabled",
+      "Only AWS services can connect"
+    ],
+    correctIndex: 1,
+    explanation: "0.0.0.0/0 matches every IPv4 address. For SSH, restrict the source to trusted addresses."
+  },
+  {
+    question: "Why does the deploy job declare needs: build_test?",
+    options: [
+      "To run faster",
+      "So deployment happens only after the build and tests succeed",
+      "To share the same runner",
+      "Because YAML requires it"
+    ],
+    correctIndex: 1,
+    explanation: "The dependency gates deployment on passing tests — failing code never reaches the server."
+  },
+  {
+    question: "After stopping and restarting an EC2 instance, the deploy job can no longer reach it. What's the most likely cause?",
+    options: [
+      "The security group was deleted",
+      "The instance received a new public DNS name and IP, and the EC2_PUBLIC_DNS secret is stale",
+      "The SSH key expired",
+      "Node.js was uninstalled"
+    ],
+    correctIndex: 1,
+    explanation: "Without an Elastic IP, public addresses change on stop/start, so secrets that reference them must be updated."
+  },
+  {
+    question: "Which statement about scaling is accurate?",
+    options: [
+      "A single EC2 instance automatically scales with traffic",
+      "Scaling across instances requires services like load balancers and auto scaling groups",
+      "nohup provides auto scaling",
+      "Security groups balance load"
+    ],
+    correctIndex: 1,
+    explanation: "An instance is one machine. Elasticity comes from adding services that distribute traffic and manage instance counts."
+  }
+]} />
+
+---
+
+## Up Next
+
+The API is running on EC2 — yet the phone still can't reliably reach it. The next lesson explains why: NAT, ports, HTTPS requirements on mobile platforms, and how a tunnel gets around them.

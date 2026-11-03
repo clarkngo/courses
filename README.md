@@ -31,6 +31,7 @@ A self-paced course platform built with [Astro](https://astro.build), Tailwind C
 | Teaching Above the Line | ✅ Available |
 | Rift Analytics: Applied Statistics & Data Science with Wild Rift | ✅ Available |
 | How to Reclaim Your Power After Abuse | ✅ Available |
+| Smart & Secure Systems: One App from Cloud to RAG | ✅ Available |
 
 ## Stack
 

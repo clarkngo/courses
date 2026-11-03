@@ -1,0 +1,150 @@
+---
+title: "Running an LLM on Your Own Server"
+description: "The chat user story brings a large language model into the system. Learn what model parameters are, how model size drives memory and quality, what Ollama does, how two small open models — Gemma 2 and TinyLlama — compare, and the trade-offs of self-hosting vs. calling a hosted API."
+module: 8
+moduleTitle: "Adding an LLM"
+lesson: 1
+duration: "16 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import StackEvolution from '@components/StackEvolution.astro';
+
+## The Third User Story
+
+> As a movie enthusiast using a mobile device, I want to **chat** and get movie recommendations from my selections.
+
+Search filtered data. Recommendations computed similarity. Chat requires something new: understanding a free-form question and **generating** a natural-language answer. That's the job of a **large language model (LLM)**.
+
+<StackEvolution stage={8} caption="Module 8: an LLM server joins the system, and Express becomes the single gateway every frontend request passes through." />
+
+---
+
+## What an LLM Is, Briefly
+
+An LLM is a neural network trained on enormous amounts of text to predict the next piece of text given everything before it. Generate one piece, append it, predict again — repeat, and you get sentences, answers, and summaries.
+
+- **Input:** a text string — a question, an instruction, or a document to summarize.
+- **Output:** generated text — an answer, a summary, a recommendation.
+
+Module 10 looks more closely at tokens, embeddings, and how these models are built. For now, the important ideas are size and where the model runs.
+
+## Parameters: What "2 Billion" Means
+
+**Parameters** are the values a model learns from its training data. In neural networks they're mainly:
+
+- **Weights** — the strength of each connection between neurons in neighboring layers;
+- **Biases** — constants added to each layer's inputs that shift when neurons activate.
+
+During training, the model makes predictions, measures how wrong they are (the **loss**), and nudges every parameter to reduce that loss, using an optimization method such as **gradient descent**. Repeat over trillions of words and the parameters come to encode grammar, facts, and reasoning patterns.
+
+The **parameter count** is the headline measure of model size. More parameters can capture subtler patterns, but cost more memory and compute — and need more data to train well.
+
+### Size drives memory
+
+A model's parameters must fit in memory to run. A useful rule of thumb:
+
+**memory ≈ number of parameters × bytes per parameter**
+
+At 16-bit precision (2 bytes each), a 2-billion-parameter model needs about 4 GB just for its weights. **Quantization** stores weights at lower precision — commonly 4 bits — cutting that by roughly three-quarters, with a modest loss in quality. That's how small models run on laptops, cloud dev environments, and even phones.
+
+---
+
+## Ollama: A Local LLM Server
+
+**Ollama** is a lightweight tool for downloading and running open language models on your own machine. It provides:
+
+- a **model library** — `pull` a model by name and tag, such as `gemma2:2b` or `tinyllama`;
+- an interactive **run** mode for chatting in the terminal;
+- a background **server** with an HTTP API (on port **11434** by default) that applications call to generate text, with responses that can **stream** token by token.
+
+In the movie app, Ollama is the **LLM server** tier. It can run a variety of open model families — Llama, Mistral, Gemma, and others — and swapping models is a matter of pulling a different one and changing a name in configuration.
+
+## Two Small Open Models
+
+**Open-weight** models publish their trained parameters, so anyone can download and run them. The movie app uses one of two:
+
+| | Gemma 2 (2B) | TinyLlama |
+|---|---|---|
+| **From** | Google DeepMind, built on the research behind the Gemini models | An open-source project using the Llama architecture |
+| **Size** | ~2 billion parameters (family also has 9B and 27B) | 1.1 billion parameters |
+| **Training data** | About 2 trillion tokens for the 2B model (13T for 27B) — web documents, code, and mathematics, primarily English | About 3 trillion tokens |
+| **Download (quantized, via Ollama)** | Roughly 1.6 GB | Roughly 0.6 GB |
+| **Good for** | Better answers on modest hardware | Very constrained machines — the fallback when memory runs out |
+
+Gemma's training data was filtered for safety: harmful and illegal content was removed, and automated techniques screened out personal and sensitive information. Data filtering is part of what "responsible" model development means — a model can only be as clean as what it learned from.
+
+Both models are tiny compared with frontier models that have hundreds of billions of parameters or more. They're fast and cheap, but they know less, reason less reliably, and **hallucinate** — produce confident, fluent, wrong answers — more often. Keep that in mind; Module 9 exists largely to manage it.
+
+These specific models will date quickly — newer generations appear every few months. The concepts don't: parameter count, quantization, memory budget, and the quality–cost trade-off apply to whatever model you pick next.
+
+---
+
+## Self-Hosting vs. a Hosted API
+
+| | Self-hosted (Ollama + open model) | Hosted API (a provider's frontier model) |
+|---|---|---|
+| **Data** | Prompts never leave your infrastructure | Prompts go to the provider, under its data terms |
+| **Cost** | Your hardware; no per-request fee | Pay per token; no hardware |
+| **Capability** | Limited by what your hardware can run | Access to the most capable models |
+| **Operations** | You install, update, scale, and secure it | Provider handles it |
+| **Availability** | Works offline and with no vendor dependency | Depends on the provider's uptime and limits |
+
+Neither choice is universally right. Sensitive data, offline use, and predictable cost favor self-hosting; capability and zero operations favor a hosted API. Many systems route simple requests to a small local model and hard ones to a hosted model.
+
+<Pitfall title="Exposing the LLM Server Directly">
+
+**Common mistake:** making the LLM server's port public so the frontend can call it.
+
+A local model server typically has no authentication. Anyone who finds the port can run unlimited prompts on your hardware, pull or delete models, and bypass every rule your application applies. Keep the LLM server reachable only from your own backend (bound to `localhost` or a private network), and put the application tier in front of it — which is exactly what the next lesson does.
+
+</Pitfall>
+
+<Quiz questions={[
+  {
+    question: "Roughly how much memory do the weights of a 2-billion-parameter model need at 16-bit precision?",
+    options: ["About 500 MB", "About 4 GB", "About 40 GB", "About 2 TB"],
+    correctIndex: 1,
+    explanation: "2 billion parameters × 2 bytes ≈ 4 GB. Four-bit quantization would cut it to roughly a quarter."
+  },
+  {
+    question: "What are a neural network's parameters?",
+    options: [
+      "The settings you choose before training",
+      "The weights and biases learned from training data",
+      "The prompts users send",
+      "The server's port numbers"
+    ],
+    correctIndex: 1,
+    explanation: "Parameters are learned; hyperparameters are chosen."
+  },
+  {
+    question: "Why might a team choose TinyLlama over Gemma 2 2B?",
+    options: [
+      "It always gives better answers",
+      "It fits on machines with very little memory, at some cost in answer quality",
+      "It's the only model Ollama supports",
+      "It doesn't hallucinate"
+    ],
+    correctIndex: 1,
+    explanation: "Smaller models trade capability for a smaller memory and compute footprint."
+  },
+  {
+    question: "Which is the strongest reason to self-host an open model rather than call a hosted API?",
+    options: [
+      "Self-hosted models are always more capable",
+      "Prompts and data stay on infrastructure you control",
+      "Self-hosting needs no maintenance",
+      "Hosted APIs can't stream"
+    ],
+    correctIndex: 1,
+    explanation: "Data control is the clearest advantage. Capability and operations usually favor hosted APIs."
+  }
+]} />
+
+---
+
+## Up Next
+
+The system now has five services. The next lesson reorganizes them behind a single API gateway, maps every port and protocol in the system, and explains how chat responses stream to the screen — and when "streaming" is only an illusion.

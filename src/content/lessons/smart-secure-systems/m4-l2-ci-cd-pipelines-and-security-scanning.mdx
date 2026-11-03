@@ -1,0 +1,184 @@
+---
+title: "CI/CD Pipelines and Security Scanning"
+description: "Read a GitHub Actions workflow like an engineer: YAML basics, triggers, jobs, runners, steps, matrices, secrets, and permissions. Then see what an OWASP ZAP baseline scan does, how passive and active scans differ, and how to tune and read the results."
+module: 4
+moduleTitle: "DevSecOps I: Pipelines and Scanning"
+lesson: 2
+duration: "18 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## YAML: The Language of Pipelines
+
+CI/CD pipelines are written as configuration files, almost always in **YAML** ("YAML Ain't Markup Language"), a human-readable **data serialization** format — a way of writing structured data as text.
+
+| Format | Strengths | Weaknesses |
+|---|---|---|
+| **XML** | Rich structure, schemas, mature tooling | Verbose, hard to read |
+| **JSON** | Concise, universal, easy for programs | No comments; strict quoting and commas |
+| **YAML** | Very readable, supports comments | Indentation mistakes change meaning silently |
+
+YAML's building blocks:
+
+- **Indentation defines nesting.** It must use **spaces — tabs are not allowed** for indentation.
+- **Scalars** are single values: strings, numbers, booleans.
+- **Mappings** are key–value pairs (`name: CI`).
+- **Sequences** are lists, one item per line starting with `-`.
+- **Comments** start with `#`.
+
+YAML is a superset of JSON in spirit — anything you can express in JSON, you can express in YAML — but because whitespace carries meaning, a single misaligned line can move a setting into the wrong block without any error.
+
+---
+
+## Anatomy of a GitHub Actions Workflow
+
+**GitHub Actions** is GitHub's built-in CI/CD service. A **workflow** is a YAML file in the repository's `.github/workflows/` folder. Its structure nests like this:
+
+<figure class="not-prose my-6">
+<svg viewBox="0 0 720 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Anatomy of a GitHub Actions workflow. A workflow file is started by triggers (push, pull request, manual dispatch). It contains jobs; each job runs on its own runner virtual machine and contains ordered steps, which either use a reusable action or run shell commands. Jobs run in parallel unless one declares that it needs another.">
+  <g font-family="system-ui, -apple-system, sans-serif" fill="#1f2937">
+    <rect x="10" y="10" width="700" height="280" rx="14" fill="#fff7ed" stroke="#d97706" stroke-width="1.5" />
+    <text x="28" y="36" font-size="14" font-weight="700">Workflow  ·  .github/workflows/ci.yml</text>
+    <text x="28" y="56" font-size="11">on: push · pull_request · workflow_dispatch      permissions: least privilege</text>
+
+    <rect x="28" y="72" width="210" height="200" rx="10" fill="#ffffff" stroke="#9333ea" stroke-width="1.5" />
+    <text x="40" y="94" font-size="12.5" font-weight="700">Job: build_test</text>
+    <text x="40" y="110" font-size="10.5">runs-on: ubuntu-latest</text>
+    <rect x="40" y="120" width="186" height="26" rx="6" fill="#f3e8ff" /><text x="50" y="137" font-size="10.5">uses: checkout the code</text>
+    <rect x="40" y="152" width="186" height="26" rx="6" fill="#f3e8ff" /><text x="50" y="169" font-size="10.5">uses: set up Node.js</text>
+    <rect x="40" y="184" width="186" height="26" rx="6" fill="#f3e8ff" /><text x="50" y="201" font-size="10.5">run: install dependencies</text>
+    <rect x="40" y="216" width="186" height="26" rx="6" fill="#f3e8ff" /><text x="50" y="233" font-size="10.5">run: tests (with a secret)</text>
+    <text x="40" y="262" font-size="10" fill="#6b21a8">steps run in order</text>
+
+    <rect x="256" y="72" width="210" height="200" rx="10" fill="#ffffff" stroke="#be123c" stroke-width="1.5" />
+    <text x="268" y="94" font-size="12.5" font-weight="700">Job: zap_scan</text>
+    <text x="268" y="110" font-size="10.5">runs-on: ubuntu-latest</text>
+    <rect x="268" y="120" width="186" height="26" rx="6" fill="#ffe4e6" /><text x="278" y="137" font-size="10.5">uses: checkout the code</text>
+    <rect x="268" y="152" width="186" height="26" rx="6" fill="#ffe4e6" /><text x="278" y="169" font-size="10.5">uses: ZAP baseline scan</text>
+    <text x="268" y="262" font-size="10" fill="#9f1239">runs in parallel</text>
+
+    <rect x="484" y="72" width="208" height="200" rx="10" fill="#ffffff" stroke="#0f766e" stroke-width="1.5" stroke-dasharray="5 4" />
+    <text x="496" y="94" font-size="12.5" font-weight="700">Job: deploy</text>
+    <text x="496" y="110" font-size="10.5">needs: build_test</text>
+    <text x="496" y="134" font-size="10.5">runs only if tests pass —</text>
+    <text x="496" y="150" font-size="10.5">added in Module 5</text>
+    <text x="496" y="262" font-size="10" fill="#0f766e">waits for its dependency</text>
+  </g>
+</svg>
+</figure>
+
+- **Triggers** (`on`) decide *when* the workflow runs. The movie app's workflow runs on a `push` to `main`, on a `pull_request` targeting `main`, and on `workflow_dispatch` — a button for running it manually.
+- **Jobs** are independent units of work. Each runs on a fresh **runner** — a temporary virtual machine (here, the latest Ubuntu) that is thrown away afterward. Jobs run **in parallel** unless one declares `needs:` on another.
+- **Steps** run in order inside a job. A step either **uses** a published, reusable **action** (like "check out the code" or "set up Node.js") or **runs** shell commands.
+- A **matrix strategy** runs the same job across several configurations — for example, several Node.js versions — to catch compatibility problems.
+
+The trigger block is short enough to read at a glance:
+
+```yaml
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:   # manual "Run workflow" button
+```
+
+### Installing reproducibly
+
+`npm install` resolves versions and may update the lock file. **`npm ci`** installs *exactly* what the lock file specifies, from a clean slate, and fails if the lock file and `package.json` disagree. Pipelines should use `npm ci` so that every build tests the same dependency versions that were reviewed.
+
+### Secrets and permissions
+
+Tests in the movie app need a database connection string. It's stored as a **repository secret** (`MONGODB_URI`) in GitHub's settings and injected into the step as an environment variable at runtime. GitHub masks known secret values in logs.
+
+Every workflow also receives an automatic, short-lived `GITHUB_TOKEN`. The `permissions:` block limits what that token can do — read the code, write an issue with scan results — following least privilege. If a malicious dependency runs inside your pipeline, the token's permissions define how much damage it can do.
+
+---
+
+## OWASP ZAP: Scanning a Running App
+
+**ZAP** (Zed Attack Proxy) is a free, open-source **DAST** tool maintained under the OWASP umbrella. It sits between a client and a web application, observes the traffic, and probes for weaknesses.
+
+Two scan modes matter:
+
+| | Baseline (passive) scan | Full (active) scan |
+|---|---|---|
+| **What it does** | Crawls (**spiders**) the site and inspects responses without attacking | Sends crafted attack payloads to inputs |
+| **Finds** | Missing security headers, cookie flags, information leaks, insecure configuration | Injection, cross-site scripting, and other exploitable flaws |
+| **Risk to the target** | Low | Can change data or degrade service |
+| **Run it against** | Any environment you're authorized to test | Only test environments you own, with permission |
+
+ZAP's results are **alerts**, each with a risk level (high, medium, low, informational), a description, and the URLs where it was seen. A **rules file** lets you tune each rule to `IGNORE`, `WARN`, or `FAIL` — so a known, accepted finding doesn't block every build, while a new high-risk one does. In the movie app's pipeline, the report is saved as a build artifact and summarized in a GitHub issue.
+
+A scan that ends with warnings or a failed status isn't a broken pipeline — it's the pipeline doing its job. The decision is what to fix, what to accept with a documented reason, and what to block on.
+
+<Pitfall title="Scanning the Wrong Target — or One You Don't Own">
+
+**Common mistake:** wiring the scanner to a convenient public demo site and treating the result as a check on your app.
+
+A scan of someone else's site tells you nothing about yours, and actively scanning a system you don't own or have written permission to test can violate laws and terms of service. Point DAST at **your own** deployed test environment — once the API has a public address (next module), that's the target. Run active scans only against environments built for it.
+
+</Pitfall>
+
+<Pitfall title="Loose Pipeline Hygiene">
+
+**Common mistakes:** a step that prints all environment variables "for debugging," and actions referenced by old, floating version tags.
+
+Masking only hides values GitHub knows are secrets; derived or transformed values print in plain text, and logs are often widely readable. Referencing actions by outdated major versions misses security fixes, and floating tags can change underneath you. Pin third-party actions to a specific release (or a commit hash), keep them updated, and never dump the environment in CI.
+
+</Pitfall>
+
+<Quiz questions={[
+  {
+    question: "In a GitHub Actions workflow, what runs in parallel by default?",
+    options: [
+      "Steps within a job",
+      "Jobs, unless one declares needs: on another",
+      "Triggers",
+      "Nothing; everything is sequential"
+    ],
+    correctIndex: 1,
+    explanation: "Steps run in order inside a job; separate jobs run in parallel on their own runners unless a dependency is declared."
+  },
+  {
+    question: "Why should a pipeline use npm ci rather than npm install?",
+    options: [
+      "npm ci is the only command that works on Linux",
+      "npm ci installs exactly the locked versions from a clean state, so builds are reproducible",
+      "npm ci skips dev dependencies",
+      "npm ci runs the tests"
+    ],
+    correctIndex: 1,
+    explanation: "Reproducible installs mean the pipeline tests the exact dependency tree that was reviewed."
+  },
+  {
+    question: "What is the key difference between a ZAP baseline scan and an active scan?",
+    options: [
+      "Baseline scans only work on mobile apps",
+      "A baseline scan observes responses passively; an active scan sends attack payloads",
+      "Active scans are faster",
+      "Baseline scans require source code"
+    ],
+    correctIndex: 1,
+    explanation: "Passive scanning inspects traffic without attacking; active scanning tries exploits and must only target systems you're authorized to test."
+  },
+  {
+    question: "Which YAML statement is correct?",
+    options: [
+      "Tabs and spaces are interchangeable for indentation",
+      "Indentation must use spaces; tabs aren't allowed",
+      "YAML doesn't support comments",
+      "Indentation has no meaning in YAML"
+    ],
+    correctIndex: 1,
+    explanation: "YAML forbids tabs for indentation, and indentation determines structure."
+  }
+]} />
+
+---
+
+## Up Next
+
+The pipeline tests and scans the code, but the API still runs inside a development workspace. Module 5 deploys it to a rented cloud server, adds a deploy job to the pipeline, and deals with the networking problems that follow.

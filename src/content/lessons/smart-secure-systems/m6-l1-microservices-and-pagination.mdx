@@ -1,0 +1,139 @@
+---
+title: "Microservices and Pagination"
+description: "A new user story calls for a second backend. Learn why the recommendation logic gets its own Python service, how microservices compare with a monolith, how services should own their data, and why pagination and input validation matter once the API serves a real catalog."
+module: 6
+moduleTitle: "Adding Machine Learning"
+lesson: 1
+duration: "15 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import StackEvolution from '@components/StackEvolution.astro';
+
+## A Second User Story
+
+The app gets its first genuinely "smart" requirement:
+
+> As a movie enthusiast using a mobile device, I want to **get movie recommendations from my selections**.
+
+The experience works like this: the app shows a handful of **initial recommendations** drawn from a few random genres. The user picks up to three movies they like and submits them. The app returns **new recommendations** based on those picks, and tapping any movie shows others with a **similar cast** or **similar genres**.
+
+Search was a lookup. Recommendation is a computation — and that changes the architecture.
+
+<StackEvolution stage={6} caption="Module 6: a FastAPI machine-learning service joins the system. The app calls it directly for recommendations, and it asks the Express service for movie data." />
+
+---
+
+## Why a Second Backend?
+
+The Express server could, in principle, compute recommendations too. Instead the system adds a separate service built with **FastAPI**, a modern Python web framework. The reasons generalize well beyond this app:
+
+- **Use the right ecosystem.** Python's machine-learning libraries — **scikit-learn**, **NumPy** — are the industry standard. Node.js is excellent at handling many I/O-bound requests, like database calls.
+- **Separation of concerns.** Data access and recommendation logic change for different reasons and at different speeds.
+- **Independent scaling.** Similarity calculations are CPU-heavy; searches are light. Separate services can be scaled separately.
+
+FastAPI earns its name through asynchronous request handling, and it adds two features that matter for reliability: **request models** (declared with the Pydantic library) that automatically validate incoming JSON, and **automatic interactive documentation** generated from the code.
+
+---
+
+## Monolith vs. Microservices
+
+A **monolith** is a single deployable application containing all features. **Microservices** split an application into small, independent services, each focused on one business capability, communicating over the network (usually HTTP), and deployable on their own.
+
+| | Monolith | Microservices |
+|---|---|---|
+| **Deploy** | One unit; any change redeploys everything | Each service ships independently |
+| **Scale** | Scale the whole app | Scale only the busy service |
+| **Technology** | One stack | Each service can choose its stack |
+| **Failure** | A crash can take down everything | Failures can be isolated — if handled well |
+| **Calls between parts** | Fast, in-process function calls | Network calls: slower, and they can fail |
+| **Operations** | One thing to monitor and secure | Many things to monitor, secure, and keep compatible |
+
+Microservices aren't automatically better. They trade code complexity for **operational** complexity: more deployments, more network failure modes, more endpoints to authenticate. Many successful systems start as a well-organized monolith and split out services only when there's a concrete reason — like the Python ecosystem here.
+
+### Who owns the data?
+
+Notice in the diagram that the ML service doesn't connect to MongoDB itself. It asks the **Express service** for movie data over HTTP. This follows a key microservices principle: **each piece of data has one owning service.** If both services queried the database directly, a schema change could silently break one of them, and access rules would have to be enforced in two places.
+
+### The new endpoints
+
+| Service | Endpoint | Purpose |
+|---|---|---|
+| Express | `GET /movies` | One **page** of movies |
+| Express | `POST /movies` | Full details for a list of movie IDs |
+| Express | `GET /initial-recommendations` | Picks a few distinct genres at random and returns movies from each |
+| Express | `POST /similar` | Movies sharing cast members or genres with a given movie |
+| FastAPI | `POST /recommend` | Takes selected movie IDs, returns the most similar movies |
+| FastAPI | `POST /similar` | Similar cast and genres, excluding the movie itself |
+
+At this stage the frontend knows **two** API addresses — one for search, one for recommendations. Keep that in mind; Module 8 revisits it.
+
+---
+
+## Pagination
+
+Module 3's `/movies` returned the **entire** collection. With a sample dataset of thousands of documents, that's slow for the database, heavy on the network, and wasteful on a phone that can show ten items at a time.
+
+**Pagination** divides a large result set into smaller **pages**, returning one at a time. Two common designs:
+
+- **Offset pagination** — the client asks for `page=3&limit=20`, and the server skips the first 40 results. Simple and allows jumping to any page, but skipping gets slower deep into large collections, and results can shift if data changes between requests.
+- **Cursor pagination** — the client passes a pointer to the last item it saw ("give me 20 after this ID"). Stable and fast at any depth, but you can't jump straight to page 50.
+
+The movie app uses a **Load More** button: each tap fetches the next page and appends it to the list. It's a deliberate trade-off — less data per request in exchange for more requests — and it's the server-side cousin of FlatList's virtualization from Module 2.
+
+<Pitfall title="Unbounded Queries and Unvalidated Input">
+
+**Common mistake:** letting a client request any amount of data, or passing client-supplied values straight into database queries.
+
+An endpoint that returns everything — or accepts `limit=1000000` — lets a single request tie up your database. Always enforce a **maximum page size** on the server. Likewise, validate inputs before using them: the movie API checks that each ID is a well-formed database ID before querying, and FastAPI's request models reject malformed bodies automatically. Validation at the boundary is cheap; recovering from injection or resource exhaustion is not.
+
+</Pitfall>
+
+<Quiz questions={[
+  {
+    question: "Why does the ML service request movie data from the Express service instead of querying MongoDB directly?",
+    options: [
+      "Python can't connect to MongoDB",
+      "Each piece of data should have one owning service, so schema and access rules live in one place",
+      "It's faster",
+      "FastAPI doesn't support databases"
+    ],
+    correctIndex: 1,
+    explanation: "Single ownership keeps data access rules and schema knowledge in one service, so changes don't silently break others."
+  },
+  {
+    question: "Which is a genuine cost of microservices compared with a monolith?",
+    options: [
+      "You can't use more than one language",
+      "Calls between parts become network calls that are slower and can fail",
+      "You can't scale individual parts",
+      "Deployments must include every feature"
+    ],
+    correctIndex: 1,
+    explanation: "In-process function calls become remote calls, bringing latency, partial failure, and more to monitor and secure."
+  },
+  {
+    question: "What's a weakness of offset pagination on a very large, frequently changing collection?",
+    options: [
+      "It can't return more than one page",
+      "Deep pages get slower, and items can shift between pages as data changes",
+      "It requires a cursor",
+      "It only works in SQL"
+    ],
+    correctIndex: 1,
+    explanation: "Skipping many records is expensive, and inserts or deletes move items across page boundaries."
+  },
+  {
+    question: "Which server-side control best prevents one request from overloading the database through pagination parameters?",
+    options: ["CORS", "A maximum page size enforced by the server", "HTTPS", "A Load More button"],
+    correctIndex: 1,
+    explanation: "Clients can send any value; the server must cap it."
+  }
+]} />
+
+---
+
+## Up Next
+
+The services are in place. The next lesson opens up the recommendation itself: how text becomes vectors, and how cosine similarity decides which movies are "close" to the ones you picked.

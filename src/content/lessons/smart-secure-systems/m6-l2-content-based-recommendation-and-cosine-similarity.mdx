@@ -1,0 +1,193 @@
+---
+title: "Content-Based Recommendation and Cosine Similarity"
+description: "Why recommendations use machine learning, the difference between content-based and collaborative filtering, how CountVectorizer turns genres and cast into vectors, and how cosine similarity ranks movies — with a worked example and the limits of bag-of-words."
+module: 6
+moduleTitle: "Adding Machine Learning"
+lesson: 2
+duration: "17 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import ProcessFlow from '@components/ProcessFlow.astro';
+
+## Why Machine Learning for Recommendations?
+
+You could hand-write rules: "if they liked an action movie, show action movies." That breaks down fast. **Machine learning** — systems that learn patterns from data rather than following hand-written rules — earns its place in recommendation because of:
+
+- **Personalization** — suggestions tailored to each person's actual choices.
+- **Scale** — catalogs with thousands of items and many attributes are too large to reason about by hand.
+- **Hidden patterns** — similarities that aren't obvious, like shared casts across different genres.
+- **Improvement over time** — more interaction data means better suggestions, without rewriting rules.
+
+## Two Families of Recommenders
+
+| | Content-based filtering | Collaborative filtering |
+|---|---|---|
+| **Idea** | Recommend items *similar to* ones you liked | Recommend what *similar people* liked |
+| **Needs** | Item attributes (genres, cast, plot) | Many users' interaction histories |
+| **Strength** | Works with no other users; explainable ("same director") | Finds surprising cross-genre picks |
+| **Weakness** | Stays close to what you already know | **Cold start** — useless for new items and new users |
+
+Streaming services usually combine both in **hybrid** systems. The movie app uses **content-based filtering**: it has rich movie attributes but no history of other users' choices.
+
+---
+
+## Step 1: Turning Movies into Numbers
+
+Algorithms compare numbers, not words. **Feature extraction** converts each movie into a numeric representation. The app builds a short text from each movie's genres and cast, then uses scikit-learn's **CountVectorizer**:
+
+1. Build a **vocabulary** of every distinct word (**token**) across all the movies.
+2. Represent each movie as a **vector** — a list of numbers, one position per vocabulary word — holding how many times that word appears.
+
+This is called a **bag-of-words** representation: word order is thrown away, and only counts remain. The result is a **matrix** with one row per movie and one column per word.
+
+Take three movies described only by genre:
+
+| Movie | Genres | action | comedy | drama | thriller |
+|---|---|---|---|---|---|
+| **A** | Action, Thriller | 1 | 0 | 0 | 1 |
+| **B** | Action, Thriller, Drama | 1 | 0 | 1 | 1 |
+| **C** | Comedy, Drama | 0 | 1 | 1 | 0 |
+
+---
+
+## Step 2: Measuring Closeness with Cosine Similarity
+
+Each movie is now an arrow in a space with one dimension per word. **Cosine similarity** measures how closely two arrows point in the same direction — the cosine of the angle between them:
+
+```
+cosine(A, B) = (A · B) / (|A| × |B|)
+```
+
+The top is the **dot product**: multiply matching positions and add them up. The bottom multiplies the vectors' **lengths** (magnitudes). For count vectors, the result runs from **0** (nothing in common) to **1** (identical direction).
+
+<figure class="not-prose my-6">
+<svg viewBox="0 0 720 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Cosine similarity illustrated in two dimensions, action count on the horizontal axis and drama count on the vertical axis. Vectors P (1,1) and Q (3,3) point in exactly the same direction, so their cosine similarity is 1 even though Q is three times longer. Vector R (3, 0.5) points mostly along the action axis, making a wider angle with P and therefore a lower similarity.">
+  <defs>
+    <marker id="cs-p" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2563eb" /></marker>
+    <marker id="cs-q" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#7c3aed" /></marker>
+    <marker id="cs-r" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#ea580c" /></marker>
+    <marker id="cs-ax" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569" /></marker>
+  </defs>
+  <g font-family="system-ui, -apple-system, sans-serif" fill="#1f2937">
+    <line x1="60" y1="240" x2="380" y2="240" stroke="#475569" stroke-width="1.5" marker-end="url(#cs-ax)" />
+    <line x1="60" y1="240" x2="60" y2="20" stroke="#475569" stroke-width="1.5" marker-end="url(#cs-ax)" />
+    <text x="372" y="262" text-anchor="end" font-size="11">action count →</text>
+    <text x="70" y="22" font-size="11">drama count ↑</text>
+    <line x1="60" y1="240" x2="120" y2="180" stroke="#2563eb" stroke-width="5" marker-end="url(#cs-p)" />
+    <line x1="60" y1="240" x2="240" y2="60" stroke="#7c3aed" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#cs-q)" />
+    <line x1="60" y1="240" x2="240" y2="210" stroke="#ea580c" stroke-width="2.5" marker-end="url(#cs-r)" />
+    <text x="110" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#1d4ed8">P (1, 1)</text>
+    <text x="246" y="58" font-size="12" font-weight="700" fill="#6d28d9">Q (3, 3)</text>
+    <text x="246" y="214" font-size="12" font-weight="700" fill="#c2410c">R (3, 0.5)</text>
+    <path d="M 110 190 A 70 70 0 0 1 128 228" fill="none" stroke="#ea580c" stroke-width="1.5" />
+    <text x="134" y="210" font-size="11" fill="#c2410c">θ</text>
+
+    <rect x="420" y="40" width="284" height="200" rx="12" fill="#f8fafc" stroke="#cbd5e1" />
+    <text x="436" y="70" font-size="12.5" font-weight="700">What the angle tells you</text>
+    <text x="436" y="98" font-size="11.5">P vs Q: same direction → cosine = 1.00</text>
+    <text x="436" y="116" font-size="11" fill="#475569">Q is longer, but length doesn't matter</text>
+    <text x="436" y="144" font-size="11.5">P vs R: wider angle → cosine ≈ 0.81</text>
+    <text x="436" y="162" font-size="11" fill="#475569">R is mostly action, P is balanced</text>
+    <text x="436" y="196" font-size="11.5">Perpendicular → cosine = 0</text>
+    <text x="436" y="214" font-size="11" fill="#475569">no words in common at all</text>
+  </g>
+</svg>
+</figure>
+
+### Working the example
+
+- **A vs. B:** dot product = 1·1 + 0 + 0 + 1·1 = 2. Lengths: √2 ≈ 1.41 and √3 ≈ 1.73. Cosine = 2 ÷ 2.45 ≈ **0.82**.
+- **A vs. C:** no shared genres, dot product = 0. Cosine = **0**.
+- **B vs. C:** they share only Drama. Cosine = 1 ÷ 2.45 ≈ **0.41**.
+
+So someone who picked A gets B recommended first, and C last — exactly what intuition says.
+
+### Why cosine, not raw overlap?
+
+Cosine similarity is **magnitude-independent**. A movie with a 30-person cast list has a much longer vector than one with 5, but a long list isn't more relevant — only the *proportion* of overlap matters. Dividing by the lengths normalizes that away. (Euclidean distance, by contrast, would treat long and short vectors as far apart even when they point the same way.)
+
+---
+
+## The Full Recommendation Flow
+
+<ProcessFlow
+  label="Recommendation flow: the user picks up to three movies, the ML service fetches their details from the Express service, builds count vectors from genres and cast, computes cosine similarity against candidate movies, ranks them, and returns the top results."
+  color="#ea580c"
+  steps={[
+    { title: 'Pick 3', detail: 'user selects movies' },
+    { title: 'Fetch details', detail: 'ML service → Express' },
+    { title: 'Vectorize', detail: 'CountVectorizer on genres + cast' },
+    { title: 'Compare', detail: 'cosine similarity' },
+    { title: 'Rank', detail: 'top results, minus the picks' },
+  ]}
+/>
+
+In scikit-learn, the core is only a few lines:
+
+```python
+vectors = CountVectorizer().fit_transform(texts)   # movies → count matrix
+scores = cosine_similarity(vectors[selected], vectors)  # picks vs. all
+```
+
+The service averages each candidate's similarity to the selected movies, removes the movies the user already picked, sorts, and returns the top few.
+
+## Where Bag-of-Words Falls Short
+
+Count vectors are a strong **baseline** — simple, fast, and explainable — but they have clear limits:
+
+- **No meaning, only spelling.** "Sci-Fi" and "Science Fiction" share nothing; "thriller" and "suspense" look unrelated.
+- **Common words dominate.** A token that appears everywhere adds similarity to everything. **TF-IDF** (term frequency–inverse document frequency) fixes this by down-weighting common tokens.
+- **No sense of context.** **Embeddings** — learned vectors that place similar *meanings* close together — address that, and they return as the foundation of RAG in Module 9.
+
+<Pitfall title="Letting the Tokenizer Split Names and Labels">
+
+**Common mistake:** feeding cast names and genre labels to a default text vectorizer.
+
+By default, CountVectorizer lower-cases text and splits on non-word characters. "Tom Hanks" and "Tom Cruise" both produce the token `tom`, creating a false match; "Sci-Fi" becomes `sci` and `fi`. Treat names and labels as whole tokens — for example, join them with underscores (`tom_hanks`) or supply a custom tokenizer — so the model compares people, not first names.
+
+</Pitfall>
+
+<Quiz questions={[
+  {
+    question: "Using the genre vectors A = [1,0,0,1] and C = [0,1,1,0], what is their cosine similarity?",
+    options: ["1", "0.5", "0", "-1"],
+    correctIndex: 2,
+    explanation: "The dot product is 0 — they share no genres — so the cosine is 0."
+  },
+  {
+    question: "Why is cosine similarity preferred over raw shared-word counts for comparing movies with very different cast-list lengths?",
+    options: [
+      "It's faster to compute",
+      "It normalizes by vector length, so only the proportion of overlap matters",
+      "It ignores shared words",
+      "It requires fewer features"
+    ],
+    correctIndex: 1,
+    explanation: "Dividing by the magnitudes removes the advantage long descriptions would otherwise get."
+  },
+  {
+    question: "A brand-new streaming service with no user history wants recommendations. Which approach can work immediately?",
+    options: ["Collaborative filtering", "Content-based filtering", "Neither", "Only a hybrid"],
+    correctIndex: 1,
+    explanation: "Content-based filtering needs only item attributes. Collaborative filtering suffers from cold start without interaction data."
+  },
+  {
+    question: "Which limitation of bag-of-words do embeddings address?",
+    options: [
+      "Vectors are too short",
+      "Words with similar meanings but different spelling look unrelated",
+      "It can't run in Python",
+      "It needs labeled data"
+    ],
+    correctIndex: 1,
+    explanation: "Embeddings learn representations where related meanings sit close together, not just identical tokens."
+  }
+]} />
+
+---
+
+## Up Next
+
+This recommender uses a fixed formula. Module 7 trains several actual models, tracks every experiment, compares them honestly, and serves the chosen one — the discipline called MLOps.

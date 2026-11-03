@@ -1,0 +1,162 @@
+---
+title: "Edge Computing: What Runs Where"
+description: "Moving the movie app onto a phone turns the device into part of the system. Learn what edge computing is, the latency–capability spectrum from device to cloud, why work moves to the edge, and why anything shipped to a device should be treated as public."
+module: 2
+moduleTitle: "Moving to the Edge"
+lesson: 1
+duration: "14 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import StackEvolution from '@components/StackEvolution.astro';
+
+## Same Story, New Device
+
+The user story gains two words:
+
+> As a movie enthusiast **using a mobile device**, I want to search and browse a list of movies with details such as title, genre, and year, so that I can easily find information about movies I'm interested in **while on the go**.
+
+"While on the go" changes the engineering. A phone has a smaller screen, a touch interface, a battery, and a network connection that can be fast, slow, or gone. It's also a real computer — and that's the idea behind edge computing.
+
+<StackEvolution stage={2} caption="Module 2: the frontend becomes a mobile app. The search still runs entirely on the device." />
+
+---
+
+## What Edge Computing Means
+
+**Edge computing** means processing data close to where it's produced or used — on the device itself, or on infrastructure near it — instead of sending everything to a distant, centralized data center.
+
+"The edge" isn't one place. It's a spectrum:
+
+<figure class="not-prose my-6">
+<svg viewBox="0 0 720 230" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The device-to-cloud spectrum. On the left, the device itself: lowest latency, works offline, but limited compute and battery. In the middle, edge infrastructure such as local gateways and nearby edge servers or CDN locations. On the right, a centralized cloud region: the most compute and storage, but the longest round trip.">
+  <defs>
+    <linearGradient id="edge-grad" x1="0" x2="1">
+      <stop offset="0" stop-color="#2563eb" />
+      <stop offset="1" stop-color="#7c3aed" />
+    </linearGradient>
+    <marker id="edge-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#475569" />
+    </marker>
+  </defs>
+  <g font-family="system-ui, -apple-system, sans-serif" fill="#1f2937">
+    <rect x="20" y="30" width="200" height="90" rx="12" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5" />
+    <text x="120" y="60" text-anchor="middle" font-size="15" font-weight="700">Device</text>
+    <text x="120" y="80" text-anchor="middle" font-size="11">phone · laptop · sensor</text>
+    <text x="120" y="100" text-anchor="middle" font-size="11">runs the UI, filters locally</text>
+
+    <rect x="260" y="30" width="200" height="90" rx="12" fill="#ede9fe" stroke="#6d28d9" stroke-width="1.5" />
+    <text x="360" y="60" text-anchor="middle" font-size="15" font-weight="700">Near edge</text>
+    <text x="360" y="80" text-anchor="middle" font-size="11">gateways · edge servers</text>
+    <text x="360" y="100" text-anchor="middle" font-size="11">CDN locations near users</text>
+
+    <rect x="500" y="30" width="200" height="90" rx="12" fill="#f3e8ff" stroke="#7c3aed" stroke-width="1.5" />
+    <text x="600" y="60" text-anchor="middle" font-size="15" font-weight="700">Cloud region</text>
+    <text x="600" y="80" text-anchor="middle" font-size="11">large data centers</text>
+    <text x="600" y="100" text-anchor="middle" font-size="11">databases · heavy compute</text>
+
+    <rect x="20" y="148" width="680" height="10" rx="5" fill="url(#edge-grad)" opacity="0.8" />
+    <line x1="130" y1="185" x2="30" y2="185" stroke="#475569" stroke-width="1.5" marker-end="url(#edge-arrow)" />
+    <text x="140" y="189" font-size="11.5">lower latency · works offline · more private</text>
+    <line x1="590" y1="212" x2="690" y2="212" stroke="#475569" stroke-width="1.5" marker-end="url(#edge-arrow)" />
+    <text x="580" y="216" text-anchor="end" font-size="11.5">more compute and storage · shared data · easier to update</text>
+  </g>
+</svg>
+</figure>
+
+Moving left buys speed, independence, and privacy. Moving right buys power, shared data, and central control. Real systems split work across the whole spectrum, and a large part of architecture is deciding **what runs where**.
+
+---
+
+## Why Push Work to the Edge
+
+| Reason | What it means for the movie app |
+|---|---|
+| **Latency** | Filtering on the phone responds instantly — no network round trip per keystroke |
+| **Bandwidth** | Sending results once and filtering locally uses less data than asking a server each time |
+| **Resilience** | Already-loaded movies stay searchable in a tunnel or on a plane |
+| **Privacy** | Data that never leaves the device can't leak in transit or from a server breach |
+| **Cost** | Every request a device handles itself is one the provider doesn't pay to serve |
+
+Edge computing becomes essential in industrial sensors, vehicles, cameras, and retail — places where a round trip to the cloud is too slow, too expensive, or too unreliable. A phone app is the most familiar example of the same idea.
+
+## What the Edge Costs You
+
+The edge isn't free:
+
+- **Limited resources.** Phones have less memory, storage, and processing power than servers, and every computation costs battery.
+- **Harder updates.** A server is updated once; an app lives on millions of devices running different versions.
+- **Fragmentation.** Different operating systems, screen sizes, and hardware all have to work.
+- **Physical exposure.** Users — and attackers — hold the device in their hands.
+
+That last point is the security lesson of this module.
+
+---
+
+## Client-Side vs. Server-Side
+
+Two terms you'll use constantly from here on:
+
+- **Client-side** code runs on the user's device — the browser or the phone app.
+- **Server-side** code runs on machines you control.
+
+The defining property of client-side code is that **the user can see it and change it.** Web code can be read in browser developer tools. Mobile app bundles can be unpacked and inspected. Network traffic from a device can be intercepted by the device's owner. You can make this harder, but you can't make it impossible.
+
+That leads to a rule that shapes the rest of this course's architecture: **anything that must stay secret, or any decision that must be trusted, belongs on a server.**
+
+<Pitfall title="Hiding Secrets in the App Bundle">
+
+**Common mistake:** putting a database password, a paid API key, or admin logic inside the mobile app because "users can't see the code."
+
+They can. Anything shipped to a device — including values loaded from build-time environment variables — ends up inside the bundle and can be extracted. Treat client-side configuration as public. If the app needs to use a secret, the app should call *your* server, and the server uses the secret on its behalf. This is one of the main reasons the app gets a backend in Module 3.
+
+</Pitfall>
+
+<Quiz questions={[
+  {
+    question: "Which statement best defines edge computing?",
+    options: [
+      "Running all computation in the largest available data center",
+      "Processing data close to where it is produced or used, rather than only in a centralized cloud",
+      "Using the newest phones available",
+      "Storing data on the edge of a hard drive"
+    ],
+    correctIndex: 1,
+    explanation: "Edge computing moves processing toward the device or nearby infrastructure, trading central power for lower latency, resilience, and privacy."
+  },
+  {
+    question: "The movie app filters search results on the phone instead of asking a server on each keystroke. Which benefit is MOST direct?",
+    options: ["Stronger encryption", "Lower latency", "Unlimited storage", "Easier app store approval"],
+    correctIndex: 1,
+    explanation: "Local filtering skips a network round trip per keystroke, so results update instantly."
+  },
+  {
+    question: "A developer stores a paid API key in the mobile app's environment config so it's 'not in the source code.' What's the problem?",
+    options: [
+      "Environment config is slower to read",
+      "The key is compiled into the app bundle and can be extracted by anyone with the app",
+      "Mobile apps can't make network requests",
+      "There's no problem"
+    ],
+    correctIndex: 1,
+    explanation: "Client-side configuration ends up on the device. Secrets belong on a server that the app calls."
+  },
+  {
+    question: "Which is a genuine cost of moving work to the edge?",
+    options: [
+      "Higher latency for local operations",
+      "Updates must reach many devices running different versions",
+      "Data must always leave the device",
+      "It requires a cloud region nearby"
+    ],
+    correctIndex: 1,
+    explanation: "Server code is updated once; edge code lives on every device, which makes rollouts and fragmentation real concerns."
+  }
+]} />
+
+---
+
+## Up Next
+
+The next lesson looks at the toolkit that gets the same React ideas onto a phone — React Native and Expo — and the development loop that connects a cloud workspace to the device in your hand.

@@ -1,0 +1,160 @@
+---
+title: "RAG over Documents and the Full-System Review"
+description: "Point RAG at PDF files: extraction, preprocessing, indexing by page, and grounded generation. Survey advanced RAG techniques organized by pipeline stage, then review the security of the complete ten-tier system, tier by tier."
+module: 10
+moduleTitle: "RAG over Documents"
+lesson: 2
+duration: "20 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import ProcessFlow from '@components/ProcessFlow.astro';
+import StackEvolution from '@components/StackEvolution.astro';
+
+## From Records to Documents
+
+In Module 9, the knowledge base came from database records. Most organizational knowledge doesn't live in tidy records — it lives in **documents**: manuals, policies, reports, contracts, catalogs. The final version of the app indexes **PDF files** from a data folder instead.
+
+The rest of the system doesn't change. That's the reward for building RAG from interchangeable parts: only the **loader** at the front of the ingest pipeline is different.
+
+<StackEvolution stage={10} caption="Module 10: the complete system. The ingest script now reads PDF files; everything downstream is unchanged." />
+
+---
+
+## The PDF RAG Pipeline
+
+<ProcessFlow
+  label="Six processes in a PDF RAG system: extract text from PDFs, clean and preprocess it, index it by embedding chunks into the vector database, embed the query and retrieve relevant segments, pass the segments to the LLM, and generate a grounded answer."
+  color="#dc2626"
+  steps={[
+    { title: 'Extract', detail: 'text from each PDF page' },
+    { title: 'Preprocess', detail: 'clean, normalize, split' },
+    { title: 'Index', detail: 'embed chunks, store vectors' },
+    { title: 'Retrieve', detail: 'embed query, find segments' },
+    { title: 'LLM + generate', detail: 'answer from context' },
+  ]}
+/>
+
+1. **PDF extraction** — pull text out of each page. A directory loader reads every PDF in a folder and produces one document per page, with metadata recording the **source file** and **page number**.
+2. **Text preprocessing** — clean the extracted text: remove repeated headers and footers, fix broken hyphenation, normalize whitespace — then split into chunks.
+3. **Indexing** — embed each chunk and store it in the vector database. Now the chunk IDs from Module 9 — `source : page : index` — are meaningful, because PDFs really have sources and pages.
+4. **Query and retrieval** — embed the question and search for the most relevant segments.
+5. **LLM interaction** — pass the retrieved segments to the LLM with the question.
+6. **Generation** — the LLM combines the retrieved context with its language ability to produce an answer, and the page-level metadata lets it point to *where in which document* the answer came from.
+
+### Why PDFs are harder than they look
+
+PDF is a format for **printing**, not for reading by machines. Text is stored as positioned fragments, so extraction can scramble **multi-column layouts**, flatten **tables** into nonsense, mix in page numbers and running headers, or return nothing at all from **scanned pages**, which are images and need **OCR** (optical character recognition). Garbage in, garbage retrieved: the quality of extraction caps the quality of every answer. Always inspect what the extractor produced before blaming the model.
+
+---
+
+## Advanced RAG Techniques
+
+The pipeline in this course is **simple (naive) RAG**: split, embed, retrieve top-*k*, generate. A large toolbox of techniques improves it. They're easiest to understand by where they act in the pipeline:
+
+| Stage | Technique | What it does |
+|---|---|---|
+| **Indexing** | Choosing chunk size | Tune size and overlap for context vs. precision |
+| | Semantic chunking | Split where the *topic* changes, not at a fixed length |
+| | Context enrichment | Embed small units but return them with neighboring sentences |
+| | Document augmentation | Generate likely questions for each chunk and index those too |
+| | Hierarchical indices | Summaries at the top, details below; search top-down |
+| | RAPTOR | Recursively summarize clusters of chunks into a tree |
+| | Knowledge graphs | Add entities and relationships alongside unstructured text |
+| | Multi-modal retrieval | Index images, tables, audio, and video, not just text |
+| **Query** | Query transformations | Rewrite the question, step back to a broader one, or break it into sub-questions |
+| | HyDE (hypothetical document embeddings) | Have the LLM draft a hypothetical answer, then search with *that* — it often sits closer to real answers than the question does |
+| **Retrieval** | Fusion (hybrid) retrieval | Combine keyword search with vector search |
+| | Ensemble retrieval | Merge results from several retrievers |
+| | Multi-faceted filtering | Filter by metadata, relevance score, content, and diversity |
+| | Adaptive and iterative retrieval | Change strategy by query type; retrieve in several rounds |
+| **Post-retrieval** | Reranking | Re-score candidates with a stronger model (such as a cross-encoder or an LLM) |
+| | Contextual compression | Keep only the query-relevant parts of each chunk |
+| **Generation and control** | Self-RAG | The model decides *whether* to retrieve and critiques its own use of sources |
+| | Corrective RAG | Detect poor retrievals and correct them, e.g. with other sources |
+| | Explainable retrieval | Show users why each source was chosen |
+| | Feedback loops | Learn from user ratings to improve future retrieval |
+| | Agentic RAG | An agent plans multi-step retrieval and reasoning over a controlled graph |
+
+Two of these are worth reaching for early. **Hybrid retrieval** fixes vector search's weakness with exact terms — names, product codes, error numbers — that keyword search handles well. **Reranking** fixes the "top-*k* always returns something" problem from Module 9 by putting the truly relevant passages first. Add techniques one at a time, and measure each with a fixed set of test questions; complexity that doesn't move the numbers is just complexity.
+
+---
+
+## The Full-System Security Review
+
+You've watched one app grow from a browser page to ten tiers. Each step added capability and attack surface. Here's every security trade-off from the course in one place:
+
+| Tier | Shortcut taken in the learning build | Production hardening |
+|---|---|---|
+| **Repository** | Secrets could be committed by accident | `.gitignore` for `.env`, secret scanning, rotate anything leaked |
+| **Dev environment** | Public forwarded ports | Private by default; public only when necessary, briefly |
+| **Mobile app** | Config in the bundle | Treat all client config as public; secrets stay server-side |
+| **Database** | Network access from `0.0.0.0/0` | Allowlist server addresses or private networking; least-privilege users |
+| **API / gateway** | CORS open to all; unbounded queries | Allowlisted origins and routes, input validation, page-size caps, rate limits, authentication |
+| **CI/CD** | Environment printed in logs; outdated action versions; scanner aimed at a demo site | No env dumps; pinned, updated actions; least-privilege tokens; scan your own test environment |
+| **Cloud server** | Ports open to the world; SSH key handling; plain HTTP | Restricted security groups, no public SSH, keys in a secret store, TLS on your own domain |
+| **Tunnel** | Third party terminates TLS | Use only for development; production uses your own TLS endpoint |
+| **ML service and MLflow** | Open tracking server; CORS open to all | Authentication, network isolation, serve pinned, reviewed model versions |
+| **LLM server** | Port could be exposed | Loopback or private network only, behind the gateway, rate limited |
+| **RAG pipeline** | Retrieved text trusted; embeddings from a chat model | Treat retrieved content as untrusted, control who adds documents, dedicated embedding model, evaluation tests |
+
+Notice the pattern. Nearly every shortcut traded **security for convenience during development**: open the port, allow every origin, print the variables, trust the data. That's often reasonable while learning — the danger is when those shortcuts quietly survive into production. A system is "smart and secure" when every tier has a deliberate answer to *who can reach this, what can they do, and what happens if it's compromised?*
+
+<Pitfall title="Assuming the Model Is the Only AI Risk">
+
+**Common mistake:** focusing all AI security attention on what the LLM might say, while ignoring the system around it.
+
+In this architecture, the most likely real-world incidents aren't exotic model attacks — they're an exposed database, an open tracking server serving a swapped model, a leaked SSH key, or a document that injects instructions into the prompt. AI features inherit every classic risk of the stack they run on, and add new ones. Secure the whole system.
+
+</Pitfall>
+
+<Quiz questions={[
+  {
+    question: "Moving from database records to PDF files, which part of the RAG system must change?",
+    options: [
+      "The vector database",
+      "The LLM",
+      "The document loader at the front of the ingest pipeline",
+      "The frontend"
+    ],
+    correctIndex: 2,
+    explanation: "Modular RAG means only the loader changes; splitting, embedding, storage, retrieval, and generation stay the same."
+  },
+  {
+    question: "Why might RAG retrieve nothing useful from a scanned PDF?",
+    options: [
+      "Scanned PDFs are too large",
+      "Scanned pages are images, so text extraction returns nothing without OCR",
+      "Vector databases can't store PDF text",
+      "Embedding models reject PDFs"
+    ],
+    correctIndex: 1,
+    explanation: "Without optical character recognition, there's no text to chunk or embed."
+  },
+  {
+    question: "Users search for exact product codes and vector search keeps missing them. Which technique targets this directly?",
+    options: ["RAPTOR", "Fusion (hybrid) retrieval combining keyword and vector search", "Contextual compression", "Fine-tuning"],
+    correctIndex: 1,
+    explanation: "Keyword search excels at exact terms; combining it with vector search covers both exact and semantic matches."
+  },
+  {
+    question: "Which statement best captures the course's security theme?",
+    options: [
+      "Security tools make a system secure automatically",
+      "Development shortcuts trade security for convenience, and each must be deliberately reversed before production",
+      "Only the LLM needs securing",
+      "Cloud providers secure everything on IaaS"
+    ],
+    correctIndex: 1,
+    explanation: "Each tier added a convenience shortcut; a secure system has a deliberate answer for every one of them."
+  }
+]} />
+
+---
+
+## Where to Go Next
+
+You've followed one app from a single browser page to a full system: cloud, edge, full-stack, DevSecOps, cloud deployment, machine learning, MLOps, a self-hosted LLM, and retrieval over documents. Each module answered the same question — *what does this app need next, and what does it cost?* — and that question is the core skill of systems design.
+
+To go deeper on the AI tiers and build the RAG chatbot hands-on, continue with [AI Engineer Quick Start](/courses/ai-engineer-quick-start/).

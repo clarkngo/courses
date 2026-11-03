@@ -1,0 +1,190 @@
+---
+title: "Why a Backend and a Database?"
+description: "The case for going full-stack: three-tier architecture, separation of concerns, and persistence. Then the data tier itself — SQL vs. NoSQL, MongoDB documents and collections, managed databases, connection strings, and network access rules."
+module: 3
+moduleTitle: "Going Full-Stack"
+lesson: 1
+duration: "16 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import StackEvolution from '@components/StackEvolution.astro';
+
+## The Limits of a Frontend-Only App
+
+The user story hasn't changed since Module 2. What changes is the question behind it: the app works — so why add more moving parts?
+
+Because a frontend alone has four hard limits:
+
+1. **Limited data handling.** React Native is built for interfaces, not for storing and querying large datasets. A real movie catalog has tens of thousands of entries with cast, plot, ratings, and more.
+2. **No shared, persistent data.** Data that lives on the device disappears when the app is uninstalled, isn't there when the user switches phones, and can't be updated for everyone at once.
+3. **Security.** As Module 2 showed, nothing on the client can be trusted or kept secret. Validation, access control, and credentials need a place the user can't tamper with.
+4. **Tangled concerns.** Mixing display logic, business rules, and data access in one codebase makes every change risky.
+
+The fix is the classic shape of web and mobile systems: **full-stack** development, where you build both the interface (frontend) and the server-side logic and storage behind it (backend).
+
+<StackEvolution stage={3} caption="Module 3: the app gains an API server and a cloud database. The phone no longer holds the data; it asks for it." />
+
+---
+
+## Three-Tier Architecture
+
+Full-stack systems are usually organized into three tiers, each with one job:
+
+<figure class="not-prose my-6">
+<svg viewBox="0 0 720 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Three-tier architecture. The presentation tier (the mobile app) sends an HTTP request to the application tier (the Express API server), which queries the data tier (MongoDB Atlas). Results flow back as documents, then as a JSON response.">
+  <defs>
+    <marker id="tier-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#475569" />
+    </marker>
+  </defs>
+  <g font-family="system-ui, -apple-system, sans-serif" fill="#1f2937">
+    <rect x="20" y="40" width="190" height="110" rx="12" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5" />
+    <text x="115" y="70" text-anchor="middle" font-size="11" font-weight="700" fill="#1d4ed8">PRESENTATION</text>
+    <text x="115" y="96" text-anchor="middle" font-size="14" font-weight="700">Mobile app</text>
+    <text x="115" y="116" text-anchor="middle" font-size="11">shows data, takes input</text>
+    <text x="115" y="132" text-anchor="middle" font-size="11">untrusted</text>
+
+    <rect x="265" y="40" width="190" height="110" rx="12" fill="#ede9fe" stroke="#7c3aed" stroke-width="1.5" />
+    <text x="360" y="70" text-anchor="middle" font-size="11" font-weight="700" fill="#6d28d9">APPLICATION</text>
+    <text x="360" y="96" text-anchor="middle" font-size="14" font-weight="700">API server</text>
+    <text x="360" y="116" text-anchor="middle" font-size="11">rules, validation, secrets</text>
+    <text x="360" y="132" text-anchor="middle" font-size="11">trusted</text>
+
+    <rect x="510" y="40" width="190" height="110" rx="12" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5" />
+    <text x="605" y="70" text-anchor="middle" font-size="11" font-weight="700" fill="#15803d">DATA</text>
+    <text x="605" y="96" text-anchor="middle" font-size="14" font-weight="700">Database</text>
+    <text x="605" y="116" text-anchor="middle" font-size="11">stores and queries</text>
+    <text x="605" y="132" text-anchor="middle" font-size="11">never exposed directly</text>
+
+    <line x1="212" y1="80" x2="262" y2="80" stroke="#475569" stroke-width="1.5" marker-end="url(#tier-arrow)" />
+    <text x="237" y="30" text-anchor="middle" font-size="10.5">HTTP request</text>
+    <line x1="262" y1="112" x2="212" y2="112" stroke="#475569" stroke-width="1.5" marker-end="url(#tier-arrow)" />
+    <text x="237" y="178" text-anchor="middle" font-size="10.5">JSON response</text>
+
+    <line x1="457" y1="80" x2="507" y2="80" stroke="#475569" stroke-width="1.5" marker-end="url(#tier-arrow)" />
+    <text x="482" y="30" text-anchor="middle" font-size="10.5">query</text>
+    <line x1="507" y1="112" x2="457" y2="112" stroke="#475569" stroke-width="1.5" marker-end="url(#tier-arrow)" />
+    <text x="482" y="178" text-anchor="middle" font-size="10.5">documents</text>
+  </g>
+</svg>
+</figure>
+
+- **Presentation tier** — the frontend. It displays data and collects input, and it is *untrusted*.
+- **Application tier** — the backend, or API server. It applies business rules (filtering, validation, permissions), holds secrets, and decides what each request is allowed to do. In this app it's built with **Express**, a minimal web framework for **Node.js** (JavaScript running on a server).
+- **Data tier** — the database. It stores data durably and answers queries. Clients never talk to it directly; only the application tier does.
+
+The value of this split is **separation of concerns**: each tier can be developed, tested, secured, and scaled independently. You can redesign the app's screens without touching the database, or move the database without changing the screens.
+
+The stack in this module has a common nickname — **MERN**: **M**ongoDB, **E**xpress, **R**eact (here, React Native), and **N**ode.js.
+
+---
+
+## The Data Tier: SQL vs. NoSQL
+
+A **database** is an organized collection of data stored and accessed electronically. There are two broad families:
+
+| | SQL (relational) | NoSQL (document, key-value, graph, ...) |
+|---|---|---|
+| **Shape** | Tables of rows and columns with a fixed schema | Flexible structures; documents can differ |
+| **Relationships** | Joins across tables | Often embedded inside one document |
+| **Schema changes** | Planned migrations | Add fields as you go |
+| **Strengths** | Strong consistency, complex queries, transactions | Flexible data, horizontal scaling, natural fit for JSON |
+| **Examples** | PostgreSQL, MySQL | MongoDB, DynamoDB, Redis |
+
+Neither is "better." The choice depends on the data's shape and how it's queried.
+
+### MongoDB: documents and collections
+
+**MongoDB** is a document database. A **document** is a JSON-like record (stored in a binary form called BSON), and related documents are grouped in a **collection** — roughly analogous to a table, but without a fixed schema. A movie document looks like this:
+
+```json
+{
+  "title": "Inception",
+  "year": 2010,
+  "genres": ["Action", "Adventure", "Sci-Fi"],
+  "cast": ["Leonardo DiCaprio", "Elliot Page"],
+  "imdb": { "rating": 8.8, "votes": 2070468 }
+}
+```
+
+Lists (genres, cast) and nested objects (the IMDb rating) live right inside the record — no extra tables or joins. Movies are a natural fit: some have awards, some don't; some list writers, some don't. The app in this course uses MongoDB's public **sample movie dataset**, a collection of thousands of real movie documents with titles, genres, cast, plots, and ratings. Its richness is what makes recommendations and chat possible later.
+
+### Managed databases
+
+**MongoDB Atlas** is MongoDB offered as a managed cloud service — a PaaS in Module 1's terms, often called **DBaaS** (database as a service). You choose a cloud provider and region; Atlas runs the servers, replication, backups, and upgrades. A **cluster** is the group of database servers holding your data, and a free tier is enough for learning.
+
+---
+
+## Reaching the Database Safely
+
+Two settings decide who can talk to an Atlas cluster.
+
+**1. Database users.** Every connection authenticates with a username and password. Give each application its own user with only the permissions it needs — read-only if it only reads. This is the **principle of least privilege**.
+
+**2. Network access.** Atlas also keeps an **IP access list**: only connections from listed IP addresses are accepted, even with a valid password. That's **defense in depth** — two independent locks.
+
+The application finds the cluster through a **connection string**:
+
+```
+mongodb+srv://<user>:<password>@<cluster-host>/<database>?retryWrites=true
+```
+
+The `mongodb+srv` scheme tells the driver to look up the cluster's servers via DNS. Notice that this one string contains a password — it is a **secret**, and the next lesson shows where secrets belong.
+
+<Pitfall title="Allowing Access from Anywhere (0.0.0.0/0)">
+
+**Common mistake:** adding `0.0.0.0/0` to the network access list because a cloud dev environment's IP address keeps changing.
+
+`0.0.0.0/0` means *every IPv4 address on the internet*. It removes the network lock entirely and leaves the password as your only protection. Internet-wide scanners constantly probe for exposed databases, and weak or leaked credentials have caused countless breaches. It's tolerable for a throwaway sandbox with sample data; for anything real, allow only your server's fixed address, or use private networking between your servers and the database.
+
+</Pitfall>
+
+<Quiz questions={[
+  {
+    question: "In three-tier architecture, which tier should hold the database password?",
+    options: ["Presentation tier", "Application tier", "Data tier", "Any tier, as long as it's encrypted"],
+    correctIndex: 1,
+    explanation: "The API server is trusted and server-side. The client is untrusted, and the database is what the password protects."
+  },
+  {
+    question: "Why is a document database a natural fit for movie data?",
+    options: [
+      "It's always faster than SQL",
+      "Movies have varied fields and lists (genres, cast) that fit naturally inside one flexible document",
+      "SQL can't store text",
+      "It doesn't need a server"
+    ],
+    correctIndex: 1,
+    explanation: "Flexible documents hold nested lists and optional fields without extra tables or schema migrations."
+  },
+  {
+    question: "An Atlas cluster has a strong password but its IP access list contains 0.0.0.0/0. What's the effect?",
+    options: [
+      "Only local connections are allowed",
+      "Anyone on the internet can attempt to connect; the password is the only remaining protection",
+      "The cluster is fully offline",
+      "Connections are automatically encrypted"
+    ],
+    correctIndex: 1,
+    explanation: "0.0.0.0/0 matches every IPv4 address, removing the network layer of defense in depth."
+  },
+  {
+    question: "What is the main benefit of separation of concerns across tiers?",
+    options: [
+      "It reduces the number of servers",
+      "Each tier can be developed, tested, secured, and scaled independently",
+      "It removes the need for a database",
+      "It makes the frontend trusted"
+    ],
+    correctIndex: 1,
+    explanation: "Clear boundaries let you change one tier without breaking the others."
+  }
+]} />
+
+---
+
+## Up Next
+
+The data tier is in place. Next, the application tier: what a REST API is, how Express processes a request through middleware, why browsers enforce CORS, and where secrets like that connection string should live.

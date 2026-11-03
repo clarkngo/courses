@@ -1,0 +1,152 @@
+---
+// The movie app's architecture at a given module (1–10). Each module adds or
+// changes tiers; parts that arrive in later modules are left out, and parts
+// that are new or changed in this module are highlighted.
+export interface Props {
+  stage: number;
+  caption?: string;
+}
+
+const { stage, caption } = Astro.props;
+
+type Node = {
+  id: string;
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+  color: string;
+  from: number;
+  changedAt?: number[];
+  label: (s: number) => string;
+  sub: (s: number) => string;
+};
+
+const nodes: Node[] = [
+  { id: 'repo', x: 16, y: 20, w: 160, h: 56, color: '#64748b', from: 1,
+    label: () => 'GitHub repo', sub: () => 'Codespaces dev env' },
+  { id: 'cicd', x: 196, y: 20, w: 176, h: 56, color: '#d97706', from: 4, changedAt: [5],
+    label: () => 'GitHub Actions', sub: (s) => (s >= 5 ? 'test · ZAP scan · deploy' : 'test · ZAP scan') },
+  { id: 'mongo', x: 400, y: 20, w: 160, h: 56, color: '#16a34a', from: 3,
+    label: () => 'MongoDB Atlas', sub: () => 'document database' },
+  { id: 'llm', x: 600, y: 20, w: 204, h: 56, color: '#db2777', from: 8,
+    label: () => 'LLM server', sub: () => 'Ollama · Gemma / TinyLlama' },
+  { id: 'user', x: 16, y: 205, w: 76, h: 50, color: '#94a3b8', from: 1,
+    label: () => 'User', sub: () => '' },
+  { id: 'frontend', x: 112, y: 195, w: 148, h: 70, color: '#2563eb', from: 1, changedAt: [2, 6],
+    label: (s) => (s === 1 ? 'Web frontend' : s < 6 ? 'Mobile app' : 'Mobile + web app'),
+    sub: (s) => (s === 1 ? 'React · browser' : s < 6 ? 'React Native · Expo' : 'React Native Web') },
+  { id: 'api', x: 330, y: 190, w: 150, h: 80, color: '#7c3aed', from: 3, changedAt: [6, 8],
+    label: (s) => (s >= 8 ? 'API gateway' : 'API server'),
+    sub: (s) => (s >= 8 ? 'Express · single entry' : s >= 6 ? 'Express · search + paging' : 'Express · Node.js') },
+  { id: 'ml', x: 580, y: 190, w: 164, h: 80, color: '#ea580c', from: 6, changedAt: [7, 9],
+    label: () => 'ML service',
+    sub: (s) => (s >= 9 ? 'FastAPI · recommend + RAG' : s >= 7 ? 'FastAPI · model server' : 'FastAPI · cosine similarity') },
+  { id: 'train', x: 150, y: 380, w: 156, h: 56, color: '#64748b', from: 7,
+    label: () => 'Training scripts', sub: () => 'LR · RF · GB · NN' },
+  { id: 'mlflow', x: 336, y: 380, w: 156, h: 56, color: '#0891b2', from: 7,
+    label: () => 'MLflow tracking', sub: () => 'runs · metrics · models' },
+  { id: 'chroma', x: 540, y: 380, w: 130, h: 56, color: '#9333ea', from: 9,
+    label: () => 'Vector DB', sub: () => 'ChromaDB' },
+  { id: 'ingest', x: 690, y: 380, w: 120, h: 56, color: '#475569', from: 9, changedAt: [10],
+    label: () => 'Ingest script', sub: (s) => (s >= 10 ? 'LangChain · PDFs' : 'LangChain · movies') },
+  { id: 'pdfs', x: 690, y: 296, w: 120, h: 50, color: '#dc2626', from: 10,
+    label: () => 'PDF files', sub: () => 'source documents' },
+];
+
+type Edge = { d: string; label?: (s: number) => string; lx?: number; ly?: number; from: number; to?: number; changedAt?: number[] };
+
+const edges: Edge[] = [
+  { d: 'M92 230 L110 230', from: 1 },
+  { d: 'M176 48 L194 48', from: 4 },
+  { d: 'M300 76 L372 188', from: 4, changedAt: [5], label: (s) => (s >= 5 ? 'deploy (SSH)' : 'run tests'), lx: 300, ly: 140, to: 5 },
+  { d: 'M260 222 L328 222', from: 3, changedAt: [8], label: (s) => (s >= 8 ? 'all calls' : 'REST'), lx: 294, ly: 214 },
+  { d: 'M420 190 L470 78', from: 3, label: () => 'query', lx: 430, ly: 132 },
+  { d: 'M186 265 L186 320 L640 320 L640 272', from: 6, to: 7, label: () => 'recommend (direct)', lx: 413, ly: 314 },
+  { d: 'M578 252 L482 252', from: 6, label: () => 'fetch movies', lx: 530, ly: 268 },
+  { d: 'M482 216 L578 216', from: 8, changedAt: [9], label: (s) => (s >= 9 ? 'recommend · chat' : 'recommend'), lx: 530, ly: 208 },
+  { d: 'M470 190 L650 78', from: 8, to: 8, label: () => 'chat', lx: 604, ly: 142 },
+  { d: 'M690 190 L720 78', from: 9, label: () => 'generate', lx: 728, ly: 140 },
+  { d: 'M600 270 L452 378', from: 7, label: () => 'load model', lx: 548, ly: 338 },
+  { d: 'M306 408 L334 408', from: 7, label: () => 'log runs', lx: 320, ly: 452 },
+  { d: 'M620 270 L608 378', from: 9, label: () => 'retrieve', lx: 640, ly: 352 },
+  { d: 'M688 408 L672 408', from: 9, label: () => 'store', lx: 680, ly: 452 },
+  { d: 'M750 346 L750 378', from: 10 },
+];
+
+const visibleNodes = nodes.filter((n) => n.from <= stage);
+const visibleEdges = edges.filter((e) => e.from <= stage && (e.to === undefined || stage <= e.to));
+const isFresh = (from: number, changedAt?: number[]) => stage > 1 && (from === stage || (changedAt ?? []).includes(stage));
+const bottom = Math.max(
+  ...visibleNodes.map((n) => n.y + n.h + (n.id === 'api' ? 20 : 0)),
+  ...visibleEdges.map((e) => (e.ly ?? 0) + 6),
+  ...(visibleEdges.some((e) => e.d.includes('L640 320')) ? [326] : []),
+);
+const viewH = Math.min(470, bottom + 14);
+const markerId = `se-arrow-${stage}`;
+const markerHot = `se-arrow-hot-${stage}`;
+const host = stage === 5 ? 'hosted on EC2, exposed via ngrok' : stage >= 3 ? 'runs in Codespaces' : '';
+const freshNames = visibleNodes.filter((n) => isFresh(n.from, n.changedAt)).map((n) => n.label(stage));
+const ariaLabel = `Architecture of the movie app in module ${stage}. Components: ${visibleNodes
+  .map((n) => `${n.label(stage)}${n.sub(stage) ? ` (${n.sub(stage)})` : ''}`)
+  .join(', ')}. New or changed in this module: ${freshNames.join(', ')}.`;
+---
+
+<figure class="stack-evolution not-prose my-6">
+  <div class="overflow-x-auto rounded-xl border border-gray-200 dark:border-transparent">
+    <svg viewBox={`0 0 820 ${viewH}`} xmlns="http://www.w3.org/2000/svg" role="img" aria-label={ariaLabel} class="w-full min-w-[640px]" style="color:#1f2937">
+      <defs>
+        <marker id={markerId} viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0,0 L10,5 L0,10 z" fill="currentColor" opacity="0.55" />
+        </marker>
+        <marker id={markerHot} viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0,0 L10,5 L0,10 z" fill="#e11d48" />
+        </marker>
+      </defs>
+      <g font-family="system-ui, -apple-system, sans-serif">
+        {stage === 5 && (
+          <g>
+            <rect x="316" y="150" width="178" height="150" rx="12" fill="none" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="6 4" />
+            <text x="486" y="166" text-anchor="end" font-size="10" fill="#d97706" font-weight="600">AWS EC2</text>
+          </g>
+        )}
+        {visibleEdges.map((e) => {
+          const hot = isFresh(e.from, e.changedAt);
+          return (
+            <g>
+              <path d={e.d} fill="none" stroke={hot ? '#e11d48' : 'currentColor'} stroke-opacity={hot ? 1 : 0.45} stroke-width={hot ? 2 : 1.4} marker-end={`url(#${hot ? markerHot : markerId})`} />
+              {e.label && (
+                <text x={e.lx} y={e.ly} text-anchor="middle" font-size="9.5" fill={hot ? '#e11d48' : 'currentColor'} opacity={hot ? 1 : 0.7}>{e.label(stage)}</text>
+              )}
+            </g>
+          );
+        })}
+        {visibleNodes.map((n) => {
+          const hot = isFresh(n.from, n.changedAt);
+          const sub = n.sub(stage);
+          const cx = n.x + n.w / 2;
+          return (
+            <g>
+              <rect x={n.x} y={n.y} width={n.w} height={n.h} rx="10" fill={n.color} fill-opacity="0.14" stroke={hot ? '#e11d48' : n.color} stroke-width={hot ? 2.5 : 1.4} />
+              <text x={cx} y={n.y + n.h / 2 + (sub ? -3 : 4)} text-anchor="middle" font-size="12.5" font-weight="700" fill="currentColor">{n.label(stage)}</text>
+              {sub && <text x={cx} y={n.y + n.h / 2 + 13} text-anchor="middle" font-size="10" fill="currentColor" opacity="0.75">{sub}</text>}
+              {hot && (
+                <g>
+                  <rect x={n.x + n.w - (n.from === stage ? 34 : 58)} y={n.y - 9} width={n.from === stage ? 36 : 60} height="16" rx="8" fill="#e11d48" />
+                  <text x={n.x + n.w - (n.from === stage ? 16 : 28)} y={n.y + 3} text-anchor="middle" font-size="9" font-weight="700" fill="#ffffff">{n.from === stage ? 'NEW' : 'CHANGED'}</text>
+                </g>
+              )}
+              {n.id === 'api' && host && (
+                <text x={cx} y={n.y + n.h + 14} text-anchor="middle" font-size="9.5" fill="currentColor" opacity="0.6" font-style="italic">{host}</text>
+              )}
+            </g>
+          );
+        })}
+      </g>
+    </svg>
+  </div>
+  <figcaption class="mt-2 text-xs text-gray-600 dark:text-gray-400">
+    {caption ?? `The app as of Module ${stage}.`}
+    {stage > 1 && <> Highlighted in red: what's new or changed in this module.</>}
+  </figcaption>
+</figure>

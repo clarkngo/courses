@@ -1,0 +1,126 @@
+---
+title: "From DevOps to DevSecOps"
+description: "What DevOps and CI/CD automate, how DevSecOps weaves security tasks into every stage of the lifecycle, why 'shifting left' is cheaper, and the main families of automated security testing: SAST, DAST, SCA, and secret scanning."
+module: 4
+moduleTitle: "DevSecOps I: Pipelines and Scanning"
+lesson: 1
+duration: "15 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import LoopDiagram from '@components/LoopDiagram.astro';
+import StackEvolution from '@components/StackEvolution.astro';
+
+## The Problem with Manual Releases
+
+The movie app now has a frontend, a backend, and a database. Every change carries risk: a typo can crash the server, an updated package can introduce a vulnerability, a rushed fix can expose data. When testing and checking happen by hand — if they happen — they're inconsistent, slow, and skipped exactly when people are under pressure.
+
+**DevOps** is the practice of breaking down the wall between the people who build software (development) and the people who run it (operations), and **automating** the path from a code change to running software. The automation backbone is **CI/CD**:
+
+- **Continuous Integration (CI)** — every change pushed to the shared repository is automatically built and tested, so problems are caught within minutes of being introduced.
+- **Continuous Delivery** — every change that passes is automatically prepared for release; a human approves the final step.
+- **Continuous Deployment** — every change that passes goes to production automatically, with no manual gate.
+
+<StackEvolution stage={4} caption="Module 4: a GitHub Actions pipeline runs tests and a security scan whenever code is pushed." />
+
+---
+
+## DevSecOps: Security in Every Stage
+
+Traditional security was a gate at the end: build the thing, then hand it to a security team for review. That fails in a world of daily releases — the gate either becomes a bottleneck or gets skipped.
+
+**DevSecOps** integrates security into each stage of the DevOps lifecycle and automates it wherever possible, making security a shared responsibility rather than one team's final checkpoint.
+
+<LoopDiagram
+  label="The DevSecOps lifecycle: plan, develop, commit, build test and deploy, and operate and monitor, looping continuously, with security tasks at every stage."
+  steps={[
+    { title: 'Plan', subtitle: 'threat model' },
+    { title: 'Develop', subtitle: 'secure coding' },
+    { title: 'Commit', subtitle: 'check deps' },
+    { title: 'Build', subtitle: 'test · scan' },
+    { title: 'Operate', subtitle: 'monitor · detect' },
+  ]}
+  colors={['#b45309', '#c2410c', '#be123c', '#9333ea', '#4338ca']}
+/>
+
+| Stage | Security tasks | In the movie app |
+|---|---|---|
+| **Plan** | Threat modeling, impact analysis | "What happens if the database credentials leak?" |
+| **Develop** | Finding and classifying vulnerabilities, security tools in the editor, automated fixes | Linting for injection risks while writing routes |
+| **Code commit** | Dependency management, secure CI/CD pipelines, secret scanning | Flagging a vulnerable package version or a committed password |
+| **Build, test, deploy** | Configuration validation, infrastructure scanning, application scanning | Scanning the running API for missing security headers |
+| **Operate and monitor** | Log analysis, anomaly detection | Alerting on a spike of failed requests |
+
+## Why "Shift Left"?
+
+Picture the lifecycle as a timeline running left to right. **Shifting left** means moving security checks earlier. The reason is economics: a flaw caught in the editor costs a minute to fix; caught in code review, an hour; caught in production after a breach, potentially millions — plus users' trust. Early feedback is also better feedback, because the developer still remembers what they were doing.
+
+Shifting left doesn't mean *only* left. Some issues only appear in a running system, so monitoring and runtime scanning stay on the right. Good programs check at every stage.
+
+---
+
+## The Families of Automated Security Testing
+
+| Type | What it examines | Finds | Blind spots |
+|---|---|---|---|
+| **SAST** — static application security testing | Source code, without running it | Injection patterns, unsafe functions, hard-coded secrets | Runtime configuration, deployment issues; can be noisy |
+| **DAST** — dynamic application security testing | The running application, from the outside | Missing security headers, exposed endpoints, injectable inputs | Code it can't reach; needs a running target |
+| **SCA** — software composition analysis | Third-party dependencies | Packages with known vulnerabilities (CVEs), license problems | Flaws in your own code |
+| **Secret scanning** | Commits and history | API keys, passwords, tokens | Secrets that are encoded or split |
+| **IaC scanning** | Infrastructure configuration | Open ports, public storage, overly broad permissions | Application logic |
+
+A modern Node.js app often has hundreds of transitive dependencies, so SCA tends to find the most issues by volume. The next lesson uses a well-known **DAST** tool, OWASP ZAP, inside the CI pipeline.
+
+**OWASP** — the Open Worldwide Application Security Project — is a nonprofit community that publishes free security tools and guidance, including the widely used **OWASP Top 10** list of the most critical web application risks.
+
+<Pitfall title="Treating a Green Pipeline as 'Secure'">
+
+**Common mistake:** concluding that because the scanner passed, the app has no vulnerabilities.
+
+Each tool only sees what it's designed to see. A DAST scan won't find a vulnerable dependency that's never exercised; SAST won't notice a database left open to the internet; none of them understand your business logic ("can a user see another user's data?"). Automated checks raise the floor — they don't replace threat modeling, code review, and testing the things that matter most to your users.
+
+</Pitfall>
+
+<Quiz questions={[
+  {
+    question: "What distinguishes continuous deployment from continuous delivery?",
+    options: [
+      "Continuous deployment skips testing",
+      "Continuous deployment releases every passing change to production automatically, with no manual approval",
+      "Continuous delivery only works for mobile apps",
+      "They are the same thing"
+    ],
+    correctIndex: 1,
+    explanation: "Delivery keeps every passing change ready to release behind a human approval; deployment removes that gate."
+  },
+  {
+    question: "Which testing type would most likely flag that the API responds without important security headers?",
+    options: ["SAST", "DAST", "SCA", "Secret scanning"],
+    correctIndex: 1,
+    explanation: "Headers are a property of the running application's responses, which DAST observes from the outside."
+  },
+  {
+    question: "A package your API depends on has a newly published CVE. Which practice catches this?",
+    options: ["SCA", "DAST", "Threat modeling", "Load testing"],
+    correctIndex: 0,
+    explanation: "Software composition analysis checks dependency versions against databases of known vulnerabilities."
+  },
+  {
+    question: "Why is 'shifting left' cost-effective?",
+    options: [
+      "It removes the need for production monitoring",
+      "Flaws found earlier are cheaper and faster to fix, while context is fresh",
+      "It moves security work to a separate team",
+      "It makes builds faster"
+    ],
+    correctIndex: 1,
+    explanation: "The later a flaw is found, the more work has been built on top of it — and in production, the cost can include a breach."
+  }
+]} />
+
+---
+
+## Up Next
+
+Theory into pipeline: the next lesson reads a real GitHub Actions workflow — triggers, jobs, runners, steps, and secrets — and walks through what an OWASP ZAP scan does and how to read its results.
