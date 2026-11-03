@@ -1,0 +1,187 @@
+---
+title: "API Gateways, Ports, and Streaming"
+description: "Why the system funnels every request through one gateway, its pros and cons, a full map of the six tiers with their ports, protocols, and connections, the loopback interface, and how LLM responses stream to the screen with chunked transfer encoding."
+module: 8
+moduleTitle: "Adding an LLM"
+lesson: 2
+duration: "17 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+
+## From Many Addresses to One
+
+In Module 6 the frontend knew two backend addresses — one for search, one for recommendations. Add an LLM server and an MLflow server, and a frontend that talks to each service directly would need to know, configure, authenticate with, and handle failures from four or five of them.
+
+The system is restructured so **Express is the only endpoint the frontend ever calls**. Express forwards each request to the right service behind it: the database for search, the ML service for recommendations, the LLM server for chat. In this role Express is both a **reverse proxy** (it forwards requests on behalf of clients) and an **API gateway** (a single, managed entry point to a set of backend services).
+
+<figure class="not-prose my-6">
+<svg viewBox="0 0 720 250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Two designs compared. Left: direct calls, where the frontend holds four addresses and calls the database API, ML service, LLM server, and MLflow separately, each exposed publicly. Right: a gateway, where the frontend calls only the gateway, which is the single public entry point and forwards to the internal services.">
+  <defs>
+    <marker id="gw-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569" /></marker>
+  </defs>
+  <g font-family="system-ui, -apple-system, sans-serif" fill="#1f2937">
+    <text x="175" y="22" text-anchor="middle" font-size="13" font-weight="700">Direct calls</text>
+    <rect x="20" y="100" width="90" height="50" rx="10" fill="#dbeafe" stroke="#2563eb" />
+    <text x="65" y="129" text-anchor="middle" font-size="11.5" font-weight="600">Frontend</text>
+    <g font-size="11">
+      <rect x="220" y="36" width="110" height="34" rx="8" fill="#ede9fe" stroke="#dc2626" /><text x="275" y="57" text-anchor="middle">Search API</text>
+      <rect x="220" y="86" width="110" height="34" rx="8" fill="#ffedd5" stroke="#dc2626" /><text x="275" y="107" text-anchor="middle">ML service</text>
+      <rect x="220" y="136" width="110" height="34" rx="8" fill="#fce7f3" stroke="#dc2626" /><text x="275" y="157" text-anchor="middle">LLM server</text>
+      <rect x="220" y="186" width="110" height="34" rx="8" fill="#cffafe" stroke="#dc2626" /><text x="275" y="207" text-anchor="middle">MLflow</text>
+    </g>
+    <line x1="112" y1="118" x2="216" y2="55" stroke="#475569" marker-end="url(#gw-arrow)" />
+    <line x1="112" y1="122" x2="216" y2="103" stroke="#475569" marker-end="url(#gw-arrow)" />
+    <line x1="112" y1="128" x2="216" y2="153" stroke="#475569" marker-end="url(#gw-arrow)" />
+    <line x1="112" y1="132" x2="216" y2="201" stroke="#475569" marker-end="url(#gw-arrow)" />
+    <text x="175" y="244" text-anchor="middle" font-size="10.5" fill="#b91c1c">4 public endpoints · 4 addresses to configure</text>
+
+    <line x1="360" y1="30" x2="360" y2="230" stroke="#cbd5e1" stroke-dasharray="4 4" />
+
+    <text x="545" y="22" text-anchor="middle" font-size="13" font-weight="700">API gateway</text>
+    <rect x="380" y="100" width="90" height="50" rx="10" fill="#dbeafe" stroke="#2563eb" />
+    <text x="425" y="129" text-anchor="middle" font-size="11.5" font-weight="600">Frontend</text>
+    <rect x="500" y="92" width="96" height="66" rx="10" fill="#ede9fe" stroke="#7c3aed" stroke-width="2" />
+    <text x="548" y="122" text-anchor="middle" font-size="11.5" font-weight="700">Gateway</text>
+    <text x="548" y="138" text-anchor="middle" font-size="10">Express</text>
+    <line x1="472" y1="125" x2="497" y2="125" stroke="#475569" marker-end="url(#gw-arrow)" />
+    <rect x="618" y="36" width="92" height="190" rx="10" fill="#f8fafc" stroke="#94a3b8" stroke-dasharray="4 3" />
+    <text x="664" y="54" text-anchor="middle" font-size="9.5" fill="#475569">internal only</text>
+    <g font-size="10.5">
+      <rect x="626" y="64" width="76" height="30" rx="6" fill="#dcfce7" stroke="#16a34a" /><text x="664" y="83" text-anchor="middle">Database</text>
+      <rect x="626" y="102" width="76" height="30" rx="6" fill="#ffedd5" stroke="#ea580c" /><text x="664" y="121" text-anchor="middle">ML service</text>
+      <rect x="626" y="140" width="76" height="30" rx="6" fill="#fce7f3" stroke="#db2777" /><text x="664" y="159" text-anchor="middle">LLM server</text>
+      <rect x="626" y="178" width="76" height="30" rx="6" fill="#cffafe" stroke="#0891b2" /><text x="664" y="197" text-anchor="middle">MLflow</text>
+    </g>
+    <line x1="598" y1="110" x2="623" y2="80" stroke="#475569" marker-end="url(#gw-arrow)" />
+    <line x1="598" y1="120" x2="623" y2="117" stroke="#475569" marker-end="url(#gw-arrow)" />
+    <line x1="598" y1="132" x2="623" y2="155" stroke="#475569" marker-end="url(#gw-arrow)" />
+    <text x="545" y="244" text-anchor="middle" font-size="10.5" fill="#15803d">1 public endpoint · services stay private</text>
+  </g>
+</svg>
+</figure>
+
+### Pros and cons of a gateway
+
+| Pros | Cons |
+|---|---|
+| **Simpler frontend** — one address to configure | **Single point of failure** — if the gateway goes down, everything does |
+| **Centralized routing** — one place decides where traffic goes | **Added latency** — every request takes an extra hop |
+| **Independent scaling** — services behind it can scale and move freely | **Bottleneck risk** — heavy traffic can overwhelm it if it isn't scaled |
+| **Security at one entry point** — authentication, rate limiting, logging, input validation | **Growing complexity** — the gateway accumulates responsibilities and gets harder to maintain |
+
+Production systems mitigate the cons by running several gateway instances behind a load balancer, keeping the gateway thin (routing and cross-cutting concerns only), and often using a dedicated gateway product instead of hand-written code.
+
+---
+
+## Mapping the System: Tiers, Ports, Protocols
+
+A useful exercise with any architecture is to list every running component, its port, and every connection between them. The movie app at this stage has **six tiers**:
+
+| # | Tier | Default port |
+|---|---|---|
+| 1 | LLM server (Ollama) | 11434 |
+| 2 | Database (MongoDB Atlas) | 27017 |
+| 3 | Application server / gateway (Express) | 3000 |
+| 4 | MLflow tracking server | 5000 |
+| 5 | ML API server (FastAPI) | 8000 |
+| 6 | Mobile app (Expo, web version) | 8081 |
+
+And **seven connections**:
+
+- **From Express:** to MongoDB (`mongodb+srv`), to Ollama, and to FastAPI.
+- **From FastAPI:** to Express (for movie data), to Ollama, and to MLflow (to load the model).
+- **From the frontend:** to Express only.
+
+Only **two protocol types** appear: **HTTP** (every service-to-service call) and **mongodb+srv** (the database driver's protocol). That's typical — most internal traffic in modern systems is plain HTTP carrying JSON.
+
+### Loopback: localhost and 127.0.0.1
+
+Most of these connections target `127.0.0.1` — the **loopback** address, also called `localhost`. Traffic to it never leaves the machine. A service that listens *only* on loopback can't be reached from the network at all, even if a firewall rule is wrong. That's the right default for Ollama, FastAPI, and MLflow here: only the gateway needs a public face. (Development workspaces complicate this by forwarding ports — another reason to check each port's visibility.)
+
+---
+
+## Streaming Responses
+
+LLMs generate text one piece at a time, and a long answer can take many seconds. Two ways to deliver it:
+
+- **Wait for the whole thing** — the user stares at a spinner, then the full answer appears.
+- **Stream it** — send each piece as soon as it's generated, so text appears progressively.
+
+Total time is the same; what changes is **time to first token** — how long before the user sees *anything*. Streaming makes a slow model feel responsive.
+
+### How streaming travels over HTTP
+
+**Streaming** means continuous transmission where the receiver can process data as it arrives. Over HTTP/1.1, the standard mechanism is **chunked transfer encoding**: the server sends the header `Transfer-Encoding: chunked`, then writes the body as a series of **chunks**, each prefixed with its size in bytes, and signals the end with a zero-length chunk. It's built for exactly this situation — when the total length isn't known in advance.
+
+In this module, the chat path really streams end to end:
+
+1. Express calls Ollama's chat API with streaming enabled.
+2. As each piece of the answer arrives from Ollama, Express **writes it straight through** to the frontend's response.
+3. The frontend reads the response body as a stream, decodes each chunk of bytes into text, and appends it to the chat bubble.
+
+Other streaming mechanisms you'll meet include **Server-Sent Events** (a simple standard for server-to-browser streams of messages) and **WebSockets** (two-way, long-lived connections).
+
+> **Two kinds of "chunking."** Here, a chunk is a piece of an HTTP response. In Module 9, *chunking* means splitting documents into passages before indexing them. Same word, unrelated ideas.
+
+<Pitfall title="A Gateway That Forwards Anything">
+
+**Common mistake:** writing a "generic" proxy route that takes a target path or URL from the client and forwards the request.
+
+That turns your gateway into a tool for attackers to reach internal services directly — or, if it accepts full URLs, to make your server fetch arbitrary addresses (**server-side request forgery**, SSRF). A gateway should expose a fixed **allowlist** of routes, validate inputs, and apply **rate limits** — especially on the chat route, where every request costs real compute.
+
+</Pitfall>
+
+<Quiz questions={[
+  {
+    question: "Which is a genuine disadvantage of routing every request through one gateway?",
+    options: [
+      "The frontend needs more addresses",
+      "The gateway becomes a single point of failure and potential bottleneck",
+      "Security can't be centralized",
+      "Services can't scale independently"
+    ],
+    correctIndex: 1,
+    explanation: "Centralizing traffic means the gateway must be made highly available and scaled — otherwise it limits the whole system."
+  },
+  {
+    question: "Why bind the FastAPI and Ollama servers to 127.0.0.1?",
+    options: [
+      "It's faster for the frontend",
+      "Loopback traffic never leaves the machine, so only local services like the gateway can reach them",
+      "It enables HTTPS",
+      "It's required for streaming"
+    ],
+    correctIndex: 1,
+    explanation: "Listening only on loopback removes these services from the network entirely, shrinking attack surface."
+  },
+  {
+    question: "What does streaming an LLM response improve?",
+    options: [
+      "The total generation time",
+      "Time to first token — the user sees text sooner",
+      "The answer's accuracy",
+      "The model's memory use"
+    ],
+    correctIndex: 1,
+    explanation: "Streaming doesn't make generation faster; it makes the wait visible and progressive."
+  },
+  {
+    question: "In chunked transfer encoding, how does the receiver know the response is finished?",
+    options: [
+      "The Content-Length header",
+      "A zero-length chunk",
+      "A timeout",
+      "The connection is always closed"
+    ],
+    correctIndex: 1,
+    explanation: "Each chunk carries its size; a chunk of size zero marks the end."
+  }
+]} />
+
+---
+
+## Up Next
+
+The chatbot works — but a small model answering from memory makes things up. Module 9 gives it a memory it can check: embeddings, a vector database, and retrieval-augmented generation.

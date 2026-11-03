@@ -1,0 +1,147 @@
+---
+title: "MLOps: Experiment Tracking and Model Management"
+description: "Why machine learning needs its own operations discipline, the MLOps lifecycle, and MLflow's building blocks — experiments, runs, parameters, metrics, artifacts, and a model registry with versions — plus why a tracking server is a security-sensitive asset."
+module: 7
+moduleTitle: "MLOps"
+lesson: 1
+duration: "15 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import LoopDiagram from '@components/LoopDiagram.astro';
+import StackEvolution from '@components/StackEvolution.astro';
+
+## ML Is More Than Code
+
+In Module 6 the recommender used a fixed formula. Real machine-learning systems **train** models — and a trained model's behavior depends on far more than its source code:
+
+- the **data** it was trained on, and how that data was cleaned;
+- the **hyperparameters** chosen (settings like the number of trees or the learning rate);
+- **randomness** in how data was split and how training started;
+- the exact **library versions** used.
+
+Change any one and you get a different model. Six weeks later, "which model is in production, and how was it made?" becomes surprisingly hard to answer. **MLOps** — machine-learning operations — applies DevOps thinking to this problem: automate, track, and manage models so they can be reproduced, compared, deployed, and improved reliably.
+
+<StackEvolution stage={7} caption="Module 7: training scripts log runs and models to an MLflow tracking server, and the ML service loads its model from the registry." />
+
+---
+
+## The MLOps Lifecycle
+
+<LoopDiagram
+  label="The MLOps lifecycle: prepare data, train models, track experiments, register the chosen model, deploy it, and monitor it in use, which feeds back into new data and retraining."
+  steps={[
+    { title: 'Data', subtitle: 'collect · clean' },
+    { title: 'Train', subtitle: 'try models' },
+    { title: 'Track', subtitle: 'log runs' },
+    { title: 'Register', subtitle: 'version it' },
+    { title: 'Deploy', subtitle: 'serve it' },
+    { title: 'Monitor', subtitle: 'watch drift' },
+  ]}
+  colors={['#0e7490', '#0891b2', '#0284c7', '#2563eb', '#4f46e5', '#7c3aed']}
+/>
+
+Four practices hold it together:
+
+| Practice | What it means | For the movie recommender |
+|---|---|---|
+| **Experiment tracking** | Systematically recording every training run's configuration, code, and results | Compare four candidate models side by side instead of by memory |
+| **Model management** | Organizing, storing, and **versioning** trained models | Know exactly which version is serving recommendations |
+| **Model deployment** | Making a model available to applications for real-time predictions | The ML service loads a registered model at startup |
+| **Monitoring** | Watching live performance and data for **drift** (the world changing away from the training data) | New releases shift tastes; the model needs retraining |
+
+### What teams do without a tool
+
+It's possible to do all of this by hand: experiments logged in spreadsheets, models saved in carefully named folders or committed to Git, deployment through custom scripts or containers. It works for one person and a few models. It breaks down with teams, many runs, and audits — which is why dedicated platforms exist.
+
+---
+
+## MLflow's Building Blocks
+
+**MLflow** is a widely used open-source platform for the ML lifecycle. It works with most ML libraries and scales from a laptop to large production setups. Its vocabulary:
+
+- **Tracking server** — a service with a web UI and API where runs are recorded.
+- **Experiment** — a named group of related runs, such as all attempts to predict movie ratings.
+- **Run** — one execution of training code. Each run records:
+  - **Parameters** — inputs you chose, like `n_estimators=100` or `learning_rate=0.1`;
+  - **Metrics** — numbers measuring results, like mean squared error;
+  - **Tags** — labels for searching and context, like the model type or the feature list;
+  - **Artifacts** — output files: the serialized model, plots, data samples.
+- **Model signature** — a description of the model's expected input and output, so callers know what to send.
+- **Model registry** — a catalog of **named** models with numbered **versions**. Applications load a model by name and version — for example `models:/MovieRatingGB/1` — instead of by file path.
+
+When training scripts run, MLflow writes two kinds of local storage: **runs** (the metadata — parameters, metrics, tags) and **artifacts** (the files). The tracking UI reads both to let you browse, filter, and compare runs.
+
+### Parameters, hyperparameters, and model parameters
+
+These words get mixed up, so pin them down:
+
+- **Model parameters** are *learned* during training — the weights and biases inside a model, or the split points in a tree.
+- **Hyperparameters** are *chosen* before training — the number of trees, the learning rate, the depth.
+- In MLflow, "**params**" means whatever configuration you log, which is usually the hyperparameters.
+
+### Reproducibility
+
+A run is reproducible only if you can recreate its inputs exactly. Good tracking records the code version (a Git commit), the data version or query, the library versions, and fixed **random seeds** (`random_state=42` in scikit-learn) so data splits and initializations repeat. Leave any of these out and two "identical" runs can disagree.
+
+<Pitfall title="Leaving the Tracking Server Open">
+
+**Common mistake:** making the tracking server's port public so teammates can see the UI, without adding authentication.
+
+A basic tracking server has no login by default. Anyone who can reach it can read experiment details, download model files — which may encode information about training data — and in many setups **register new model versions**. If the serving code loads "the latest version," an attacker who uploads a poisoned model has just changed what your application does. Put the tracking server behind authentication and network restrictions, and pin serving to a reviewed version.
+
+</Pitfall>
+
+<Quiz questions={[
+  {
+    question: "Which of these is a hyperparameter rather than a learned model parameter?",
+    options: [
+      "A neural network's connection weights",
+      "The number of trees in a random forest, chosen before training",
+      "A decision tree's learned split thresholds",
+      "A linear model's fitted coefficients"
+    ],
+    correctIndex: 1,
+    explanation: "Hyperparameters are set before training; model parameters are learned from data."
+  },
+  {
+    question: "Why should an application load a model as models:/Name/Version from a registry instead of a file path?",
+    options: [
+      "File paths are slower",
+      "The registry gives a stable, versioned reference, so you know exactly which model is serving and can roll forward or back",
+      "Registries compress models",
+      "It removes the need for training"
+    ],
+    correctIndex: 1,
+    explanation: "Named versions make deployment explicit and auditable."
+  },
+  {
+    question: "In MLflow, what is a run?",
+    options: [
+      "A group of experiments",
+      "One execution of training code, with its parameters, metrics, tags, and artifacts",
+      "A deployed endpoint",
+      "A data cleaning step"
+    ],
+    correctIndex: 1,
+    explanation: "Experiments group runs; each run is a single recorded training attempt."
+  },
+  {
+    question: "What does 'drift' refer to in model monitoring?",
+    options: [
+      "The model file becoming corrupted",
+      "Real-world data changing away from what the model was trained on, degrading performance",
+      "Slow network calls",
+      "A version number increasing"
+    ],
+    correctIndex: 1,
+    explanation: "When the world changes, a once-accurate model can quietly get worse — monitoring catches it and triggers retraining."
+  }
+]} />
+
+---
+
+## Up Next
+
+With tracking in place, the next lesson trains four model types, compares them using the right metrics — and shows why reading those metrics honestly matters more than picking a winner.

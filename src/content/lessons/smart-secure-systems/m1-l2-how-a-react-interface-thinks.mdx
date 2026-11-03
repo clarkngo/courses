@@ -1,0 +1,172 @@
+---
+title: "How a React Interface Thinks"
+description: "Components, props, state, hooks, and the render cycle — the mental model behind the movie list and live search, plus why derived data shouldn't be stored twice and what a component library buys you."
+module: 1
+moduleTitle: "The Cloud and the Frontend"
+lesson: 2
+duration: "14 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import LoopDiagram from '@components/LoopDiagram.astro';
+
+## The Frontend's Job
+
+The **frontend** is everything the user sees and touches: layout, text, inputs, buttons. In the first version of the movie app, the frontend *is* the app — the movie data is a small hard-coded list, and there's no server behind it.
+
+That's a deliberate starting point. It lets us focus on how a modern interface is structured before networks, databases, and security enter the picture.
+
+**React** is a JavaScript library for building interfaces out of reusable pieces. Its core promise: you describe *what the screen should look like for a given set of data*, and React works out *how to update the page* when the data changes. You never manually find a list element and delete a row — you change the data, and the interface follows.
+
+---
+
+## Components: Interfaces Built from Parts
+
+A **component** is a function that returns a piece of interface. The movie app breaks down like this:
+
+| Component | Role |
+|---|---|
+| **App** | The root. Owns the data and the search term, and composes everything else |
+| **Container** | Wraps the page to give consistent spacing and width |
+| **Typography** | Renders text in consistent styles — the "Movie List" heading, each movie's details |
+| **TextField** | The search input |
+| **List / ListItem** | The list of movies, one item per movie, separated by a border |
+| **ListItemText** | The title, genre, and year inside each item |
+
+Because these are **functional components** — plain functions rather than classes — they're short, easy to read, and easy to test.
+
+Components communicate through **props** (properties): values a parent passes down to a child, like the title a `ListItemText` should show. Props flow one way, from parent to child. A child can't reach up and change its parent's data directly — which is exactly what makes React apps predictable.
+
+---
+
+## State: Data That Changes Over Time
+
+Props are inputs. **State** is a component's own memory — data that can change while the app runs and that should cause the screen to update when it does.
+
+The movie app needs exactly one piece of state that truly changes: **what the user has typed in the search box.** React provides it through a **hook** — a special function, named starting with `use`, that lets a functional component tap into React features. The state hook is `useState`:
+
+```jsx
+const [searchTerm, setSearchTerm] = useState('');
+```
+
+This one line gives you the current value (`searchTerm`), a setter (`setSearchTerm`), and an initial value (an empty string). The crucial rule: **you change state only through the setter.** Calling the setter tells React "the data changed, re-render."
+
+### The render cycle
+
+Every interaction in a React app follows the same loop:
+
+<LoopDiagram
+  label="React render cycle: a user event calls a state setter, React re-renders the component, the screen updates, and the user sees the new screen and acts again."
+  steps={[
+    { title: 'Event', subtitle: 'user types' },
+    { title: 'Set state', subtitle: 'setSearchTerm' },
+    { title: 'Re-render', subtitle: 'run component' },
+    { title: 'Update UI', subtitle: 'diff the page' },
+  ]}
+  colors={['#1d4ed8', '#2563eb', '#4f46e5', '#7c3aed']}
+/>
+
+1. The user types a letter — an **event**.
+2. The input's change handler calls `setSearchTerm` with the new text.
+3. React **re-renders**: it calls the component function again with the new state.
+4. React compares the new output with what's on screen and updates only what changed.
+
+This is why the search feels instant. There is no "search" button and no page reload — each keystroke is a full trip around the loop.
+
+---
+
+## Derive, Don't Duplicate
+
+The filtered movie list depends entirely on two things: the full list and the search term. That makes it **derived data** — something you can always recompute — rather than independent state:
+
+```jsx
+const visible = movies.filter((m) =>
+  m.title.toLowerCase().includes(searchTerm.toLowerCase())
+);
+```
+
+Notice two details. First, both sides are lower-cased, so "matrix" finds "The Matrix." Second, `visible` is calculated fresh on every render rather than stored.
+
+A very common pattern is to store the filtered list in its own `useState` and update it inside the search handler. It works for a demo, but it creates two sources of truth that can drift apart — add a movie to the full list and forget to re-filter, and the screen is now wrong. When data can be computed from other state, compute it.
+
+<Pitfall title="Storing a Copy of Something You Can Calculate">
+
+**Common mistake:** keeping both `movies` and `filteredMovies` in state and updating them separately.
+
+Every extra piece of state is something that must be kept in sync by hand. The bugs this causes are subtle: stale results after data loads, a cleared search box that still shows filtered results, or a list that ignores new items. If a value can be computed from props and existing state, compute it during render. (When the list later grows to thousands of items fetched from a server, the right fix is filtering *on the server*, which Module 6 covers — not caching a second copy in the browser.)
+
+</Pitfall>
+
+---
+
+## Component Libraries and Styling
+
+Writing every button, input, and list style from scratch is slow and inconsistent. A **component library** such as **Material UI (MUI)** provides ready-made, accessible, consistently styled components — the `Container`, `Typography`, `TextField`, and `List` pieces above all come from it.
+
+Libraries also offer a styling utility (in MUI, `styled`) to customize a component — say, adding a border and padding to each list item — while keeping the library's behavior. The trade-off is a dependency: your app's look and size now depend on a third-party package you must keep updated, which becomes a security concern later in the course when we talk about dependency management.
+
+---
+
+## What This Version Can't Do
+
+The browser-only app works, but it has hard limits that will drive the next modules:
+
+- **The data is baked into the code.** Adding a movie means editing and redeploying the app.
+- **It only works in a browser.** There's no native mobile experience.
+- **Every user gets the same tiny list.** There's nowhere to store more data, and nothing personalized.
+
+The next module tackles the second limit by moving the interface onto the phone.
+
+<Quiz questions={[
+  {
+    question: "In React, what causes the screen to update after the user types in the search box?",
+    options: [
+      "The browser reloads the page",
+      "The change handler calls a state setter, which makes React re-render the component",
+      "The TextField edits the list directly",
+      "A timer checks the input every second"
+    ],
+    correctIndex: 1,
+    explanation: "Updating state through its setter tells React the data changed. React re-runs the component and updates only the parts of the page that differ."
+  },
+  {
+    question: "Which of these is best treated as derived data rather than separate state?",
+    options: [
+      "The text in the search box",
+      "The list of movies matching the search term",
+      "Whether a dialog is open",
+      "The user's chosen theme"
+    ],
+    correctIndex: 1,
+    explanation: "The matching list can always be recomputed from the full list and the search term. Storing it separately creates a second source of truth that can drift."
+  },
+  {
+    question: "What are props?",
+    options: [
+      "A component's private memory that changes over time",
+      "Values passed from a parent component down to a child",
+      "CSS styles for a component",
+      "Hooks that fetch data"
+    ],
+    correctIndex: 1,
+    explanation: "Props flow one way, from parent to child. State is the component's own changing memory."
+  },
+  {
+    question: "Why does the filter lower-case both the title and the search term?",
+    options: [
+      "To make it faster",
+      "So matching ignores capitalization",
+      "Because React requires lowercase strings",
+      "To prevent security issues"
+    ],
+    correctIndex: 1,
+    explanation: "Without normalizing case, searching 'matrix' would miss 'The Matrix'."
+  }
+]} />
+
+---
+
+## Up Next
+
+Same user story, new device. Module 2 moves the app onto a phone and asks what "edge computing" means when the edge is in your pocket.

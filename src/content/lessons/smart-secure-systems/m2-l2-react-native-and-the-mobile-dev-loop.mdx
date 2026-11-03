@@ -1,0 +1,147 @@
+---
+title: "React Native and the Mobile Development Loop"
+description: "How React Native keeps the React mental model while rendering real native UI, why FlatList virtualizes long lists, what Expo and Expo Go add, and how a tunnel connects a cloud workspace to a phone."
+module: 2
+moduleTitle: "Moving to the Edge"
+lesson: 2
+duration: "13 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import ProcessFlow from '@components/ProcessFlow.astro';
+
+## Same Ideas, Different Building Blocks
+
+**React Native** lets you build mobile apps with the same model you learned in Module 1: components, props, state, hooks, and the render cycle. What changes is the set of building blocks. Instead of HTML elements rendered by a browser, React Native components map to **real native interface elements** on iOS and Android.
+
+| Web (React) | React Native | Purpose in the movie app |
+|---|---|---|
+| `div` | **View** | Containers for layout — the screen wrapper and each list item |
+| `span`, `h1`, `p` | **Text** | All visible text — the title, each movie's details |
+| `input` | **TextInput** | The search bar |
+| a mapped list | **FlatList** | The scrollable movie list |
+| CSS | **StyleSheet** | Style objects written in JavaScript |
+
+Two rules surprise web developers. First, **all text must live inside a `Text` component** — there's no loose text in a `View`. Second, layout uses **flexbox by default**, and the default direction is a column (top to bottom), which suits phone screens.
+
+The state logic doesn't change at all. The same `useState` hook holds the search term, and the same filter derives the visible list. That's the payoff of learning the model rather than the syntax: the behavior moved platforms untouched.
+
+---
+
+## FlatList and Virtualization
+
+A naive list renders every item at once. With 20 movies that's fine; with 20,000 the app stalls and runs out of memory.
+
+**FlatList** uses **virtualization**: it renders only the items currently on screen (plus a small buffer) and recycles them as the user scrolls. Memory use stays roughly constant no matter how long the list gets. Each item needs a stable **key** so FlatList can tell which row is which when the data changes — usually a unique ID from the data.
+
+Virtualization is a recurring idea in systems design: *don't do work for things the user can't see.* It returns in Module 6 as pagination, the server-side version of the same principle.
+
+## Styling with StyleSheet
+
+Styles are JavaScript objects created with `StyleSheet.create`:
+
+```js
+const styles = StyleSheet.create({
+  title: { fontSize: 24, fontWeight: 'bold' },
+  listItem: { paddingVertical: 12, borderBottomWidth: 1 },
+});
+```
+
+The property names mirror CSS in camelCase, and numbers are density-independent units rather than pixels, so the same layout looks right on screens with different resolutions.
+
+---
+
+## Expo: The Toolkit Around React Native
+
+Building a native app from scratch involves platform SDKs, build tools, signing certificates, and simulators. **Expo** is a framework and set of tools that handles most of that, so you can focus on the app.
+
+During development, the key pieces are:
+
+- **Metro** — the bundler that packages your JavaScript into a single bundle the phone can run.
+- **The Expo dev server** — serves that bundle and pushes updates when you save.
+- **Expo Go** — an app you install from the App Store or Google Play that loads your bundle and runs it like a real app, without building and installing anything.
+
+Expo Go is a **development** tool. Shipping to real users means producing a **production build** — a signed app package submitted to the app stores — which is a separate process.
+
+### The development loop
+
+<ProcessFlow
+  label="The mobile development loop: edit code in the cloud workspace, Metro bundles it, the dev server exposes it through a tunnel, the phone scans a QR code, Expo Go downloads and runs the bundle, and saving again triggers a fast refresh."
+  color="#2563eb"
+  steps={[
+    { title: 'Edit code', detail: 'in the cloud dev environment' },
+    { title: 'Bundle', detail: 'Metro packages the JavaScript' },
+    { title: 'Serve', detail: 'dev server, reachable through a tunnel' },
+    { title: 'Scan QR', detail: 'phone camera or Expo Go' },
+    { title: 'Run', detail: 'Expo Go downloads and runs the bundle' },
+  ]}
+  loop="save a file → fast refresh updates the phone in place"
+/>
+
+### Why a tunnel?
+
+When you run the dev server on your own laptop, your phone can usually reach it over the same Wi-Fi network. When the dev server runs in a **cloud** workspace, there's no shared network — the Codespace is a container in a data center, and your phone is on cellular or home Wi-Fi.
+
+A **tunnel** solves this. The dev server opens an *outbound* connection to a relay service, and the relay gives you a public URL that forwards traffic back through that connection. Your phone talks to the public URL; the relay passes it along. You'll see tunnels again in Module 5 as a deployment tool, with a closer look at how they work and what they expose.
+
+<Pitfall title="Forgetting That a Tunnel Is a Public Door">
+
+**Common mistake:** treating a tunnel URL as private because it's long and random-looking.
+
+Anyone who learns the URL can reach whatever is behind it while the tunnel is open — screenshots, chat messages, and shared logs leak URLs all the time. For a development bundle of a movie list, that's low risk. For a dev server that has access to real data or credentials, it isn't. Close tunnels when you're done, and never put secrets in a bundle you serve this way.
+
+</Pitfall>
+
+<Quiz questions={[
+  {
+    question: "What changes when moving the movie app from React to React Native?",
+    options: [
+      "The state and render model",
+      "The UI building blocks — View, Text, TextInput, FlatList replace HTML elements",
+      "The programming language changes to Swift",
+      "Hooks are no longer available"
+    ],
+    correctIndex: 1,
+    explanation: "React Native keeps components, props, state, and hooks. It swaps browser elements for components that map to native UI."
+  },
+  {
+    question: "Why use FlatList instead of rendering every movie at once?",
+    options: [
+      "FlatList sorts the data automatically",
+      "FlatList renders only visible items and recycles them, keeping memory use flat for long lists",
+      "FlatList fetches data from the server",
+      "It is required for text to display"
+    ],
+    correctIndex: 1,
+    explanation: "Virtualization avoids rendering thousands of off-screen rows, which keeps scrolling smooth and memory low."
+  },
+  {
+    question: "Why does a dev server running in a cloud workspace typically need a tunnel to reach a phone?",
+    options: [
+      "Phones can't run JavaScript",
+      "The workspace and the phone aren't on the same network, so the server isn't directly reachable",
+      "Tunnels make the app faster",
+      "Expo Go only works offline"
+    ],
+    correctIndex: 1,
+    explanation: "The tunnel's outbound connection plus a public relay URL bridges the gap between a data-center container and a phone on another network."
+  },
+  {
+    question: "What is Expo Go?",
+    options: [
+      "A production app store build",
+      "A development app that loads and runs your JavaScript bundle without a full native build",
+      "A cloud database",
+      "A testing framework"
+    ],
+    correctIndex: 1,
+    explanation: "Expo Go is for fast development. Real users get a signed production build."
+  }
+]} />
+
+---
+
+## Up Next
+
+The app now runs in two places, but its data is still a hard-coded list inside the code. Module 3 gives it a backend server and a cloud database — and explains why that's about much more than storage.

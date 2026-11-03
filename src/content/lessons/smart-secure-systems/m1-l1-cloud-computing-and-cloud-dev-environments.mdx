@@ -1,0 +1,154 @@
+---
+title: "Cloud Computing and Cloud Development Environments"
+description: "Meet the movie app you'll grow through this course, learn what 'the cloud' actually means, how IaaS, PaaS, and SaaS divide responsibility, and why a containerized cloud dev environment plus Git version control is where every tier begins."
+module: 1
+moduleTitle: "The Cloud and the Frontend"
+lesson: 1
+duration: "15 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import StackEvolution from '@components/StackEvolution.astro';
+
+## One App, Ten Architectures
+
+This course follows a single application from its simplest possible form to a system with ten moving parts. The app never changes its purpose — it helps someone find movies — but every module asks the same question: **what does this app need next, and what does adding it cost in complexity and risk?**
+
+The purpose is captured in a **user story**, a one-sentence statement of who wants what and why:
+
+> **As a** movie enthusiast, **I want to** search and browse a list of movies with details such as title, genre, and year, **so that I can** easily find information about movies I'm interested in.
+
+User stories keep engineering effort pointed at value for a real person. Notice what the story *doesn't* say: nothing about React, databases, or clouds. Those are implementation choices, and they'll change many times while the story stays nearly the same. Later modules add only two more sentences — "get recommendations from my selections" and "chat to get recommendations" — and those two sentences drive most of the course's complexity.
+
+Version one has exactly two features:
+
+| Feature | What | Why |
+|---|---|---|
+| **Movie list display** | Shows titles, genres, and release years | Gives a complete view of what's available |
+| **Search** | A text field that filters the list as you type | Finds a specific movie fast |
+
+Here is the whole architecture at this stage. It will grow a tier at a time.
+
+<StackEvolution stage={1} caption="Module 1: a browser frontend, with the code living in a GitHub repository and edited in a cloud dev environment." />
+
+---
+
+## What "The Cloud" Actually Means
+
+**Cloud computing** is renting computing resources — servers, storage, databases, networks, even whole applications — over the internet, on demand, and paying for what you use instead of buying and running hardware yourself.
+
+Five characteristics separate genuine cloud services from "a server somewhere else":
+
+- **On-demand self-service** — you provision resources yourself through a console or API, with no ticket to a human.
+- **Broad network access** — reachable over standard internet protocols from any device.
+- **Resource pooling** — the provider shares a large pool of hardware among many customers.
+- **Rapid elasticity** — capacity scales up and down quickly, sometimes automatically.
+- **Measured service** — usage is metered, and you pay for what you consume.
+
+### Who manages what: IaaS, PaaS, SaaS
+
+Cloud services are usually grouped by how much of the stack the provider runs for you. The line between "provider's job" and "your job" is called the **shared responsibility model**, and it matters most for security: anything on your side of the line is yours to patch, configure, and protect.
+
+| Model | You manage | Provider manages | Examples you'll meet in this course |
+|---|---|---|---|
+| **IaaS** (Infrastructure as a Service) | OS, runtime, app, data | Physical hardware, networking, virtualization | Amazon EC2 virtual servers (Module 5) |
+| **PaaS** (Platform as a Service) | Your app and data | Everything underneath, including OS and runtime | Managed databases like MongoDB Atlas (Module 3) |
+| **SaaS** (Software as a Service) | Your settings and content | The whole application | GitHub, Google Docs |
+
+The further right you rent, the less you control — and the less you have to secure yourself. Choosing a tier is always a trade between control and responsibility.
+
+---
+
+## The Cloud Development Environment
+
+Before any user sees the app, a developer has to write it. Traditionally that meant installing the right language version, package manager, database, and tools on your own laptop — and discovering that your laptop and your teammate's laptop behave differently.
+
+A **cloud development environment** (GitHub Codespaces is the one used throughout this course) moves the whole workspace into the cloud. You open a browser tab or editor and get a ready-to-use machine with the code, terminal, and tools already set up. Think of it as Google Docs for coding: the work lives in the cloud, and any device can open it.
+
+What makes this work is **containerization**. A **container** packages an application together with everything it needs to run — runtime, libraries, system tools, configuration — into one isolated unit. A Codespace is a container described by a configuration file in the repository, so every person who opens the project gets an identical environment.
+
+| Benefit | Why it matters |
+|---|---|
+| **Consistency** | "Works on my machine" stops being a problem — every machine is the same machine |
+| **Fast onboarding** | A new contributor is productive in minutes, not days |
+| **Device independence** | A Chromebook or tablet can run a full development stack |
+| **Isolation** | Experiments can't damage your personal computer |
+
+### Port forwarding
+
+When you start a development server inside a Codespace, it listens on a **port** — a numbered door on a machine that a particular program answers. The React dev server, for example, typically listens on port 3000. Because the Codespace is a remote machine, the platform **forwards** that port to a URL you can open in your browser.
+
+Each forwarded port has a **visibility** setting. **Private** means only you, signed in, can reach it. **Public** means anyone with the URL can. You'll see later in the course that some setups need public ports (a phone can't sign in to your GitHub account), and that this convenience is also an exposure.
+
+---
+
+## Version Control with Git and GitHub
+
+**Version control** records every change to a codebase so you can see history, undo mistakes, and work in parallel without overwriting each other. **Git** is the version control tool; **GitHub** is a hosted service for Git repositories plus collaboration features. If Codespaces is Google Docs for coding, GitHub is the shared Google Drive where the documents and their full revision history live.
+
+The core vocabulary:
+
+- **Repository (repo)** — the project folder plus its complete change history.
+- **Commit** — a saved snapshot of changes, with a message explaining what changed and why.
+- **Branch** — a parallel line of work that can later be merged back.
+- **Push / pull** — send your commits to the shared repo, or bring others' commits into yours.
+- **Pull request** — a proposal to merge a branch, where teammates review the change before it lands.
+
+Version control is also the foundation for everything automated later in the course. In Module 4, a *push* to the repository becomes the trigger that runs tests, security scans, and deployments.
+
+<Pitfall title="Treating the Repository as a Private Notebook">
+
+**Common mistake:** committing passwords, database connection strings, or API keys "just for now" because the repo feels private.
+
+Git keeps *every* version forever. Deleting a secret in a later commit doesn't remove it from history, and repositories get made public, forked, or cloned onto laptops that get lost. Secrets belong in environment variables or a secrets manager — a pattern you'll use from Module 3 on — and a leaked secret must be **rotated** (replaced), not just deleted.
+
+</Pitfall>
+
+<Quiz questions={[
+  {
+    question: "A team moves its database to a managed service where the provider handles the operating system, patching, and backups, while the team manages its data and access rules. Which service model is closest?",
+    options: ["IaaS", "PaaS", "SaaS", "On-premises"],
+    correctIndex: 1,
+    explanation: "The provider runs the platform underneath (OS, runtime, database engine) and you manage your application data and configuration — that's Platform as a Service. With IaaS you'd still be patching the OS yourself."
+  },
+  {
+    question: "What is the main reason a cloud dev environment eliminates 'works on my machine' problems?",
+    options: [
+      "It runs faster than a laptop",
+      "Every contributor gets the same container, defined by configuration stored in the repository",
+      "It automatically fixes bugs",
+      "It stops anyone from installing packages"
+    ],
+    correctIndex: 1,
+    explanation: "Containerization packages the runtime, libraries, and tools together, and the environment's definition lives in the repo — so everyone opens an identical environment."
+  },
+  {
+    question: "You accidentally committed a database password, then removed it in the next commit. What's the correct next step?",
+    options: [
+      "Nothing — the latest commit no longer contains it",
+      "Rename the file",
+      "Rotate the password, because it's still in the repository's history",
+      "Make the repository private"
+    ],
+    correctIndex: 2,
+    explanation: "Git history keeps the old commit, so the password is still exposed to anyone who has, or ever had, access. Rotating it makes the leaked value useless."
+  },
+  {
+    question: "Why does the user story deliberately avoid naming technologies like React or MongoDB?",
+    options: [
+      "Because the technologies aren't chosen yet",
+      "Because it describes a user's need and goal, which stays stable while implementation choices change",
+      "Because user stories are only for managers",
+      "Because naming tools is a security risk"
+    ],
+    correctIndex: 1,
+    explanation: "A user story captures who wants what and why. The same story survives every architecture in this course — only the implementation underneath it changes."
+  }
+]} />
+
+---
+
+## Up Next
+
+With the environment and repository in place, the next lesson looks inside the frontend itself: how a React interface holds state, re-renders, and turns keystrokes in a search box into a filtered list.

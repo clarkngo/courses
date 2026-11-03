@@ -1,0 +1,131 @@
+---
+title: "Foundation Models, Fine-Tuning, and RAG"
+description: "Step back to the models underneath the chatbot: what foundation models are, their lifecycle from data selection to continuous improvement, how tokens and embeddings work inside an LLM, and how prompt engineering, RAG, and fine-tuning differ as ways to adapt a model."
+module: 10
+moduleTitle: "RAG over Documents"
+lesson: 1
+duration: "15 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import ProcessFlow from '@components/ProcessFlow.astro';
+
+## Foundation Models
+
+A **foundation model (FM)** is a large model trained on broad, diverse data that can be adapted to many tasks it wasn't specifically built for. The same pre-trained model can summarize, answer questions, classify, write code, or chat — depending on how it's prompted or adapted. Gemma, used throughout Modules 8–10, is a foundation model; so are the large models behind commercial chat assistants.
+
+Large language models are foundation models specialized for text. Most of today's state-of-the-art LLMs use the **transformer** architecture, whose **attention** mechanism lets every word in a passage weigh how relevant every other word is when building its meaning.
+
+### The FM lifecycle
+
+<ProcessFlow
+  label="The foundation model lifecycle: data selection, pre-training, optimization, evaluation, deployment, and feedback and continuous improvement, which loops back to the start."
+  color="#4f46e5"
+  steps={[
+    { title: 'Data selection', detail: 'massive, diverse sources' },
+    { title: 'Pre-training', detail: 'self-supervised learning' },
+    { title: 'Optimization', detail: 'prompting, tuning' },
+    { title: 'Evaluation', detail: 'metrics and benchmarks' },
+    { title: 'Deployment', detail: 'apps, APIs, systems' },
+  ]}
+  loop="feedback from users and experts → continuous improvement"
+/>
+
+1. **Data selection** — gather huge datasets from many sources: web text, code, books, mathematics.
+2. **Pre-training** — learn by **self-supervised learning**: the data supplies its own labels, because the "right answer" for predicting the next word is simply the next word in the text. No human labeling is required, which is what makes training on trillions of tokens feasible.
+3. **Optimization** — adapt the model for use, through prompt engineering and tuning.
+4. **Evaluation** — measure quality and safety with metrics and standard benchmarks.
+5. **Deployment** — integrate the model into applications, APIs, and systems.
+6. **Feedback and continuous improvement** — input from users, domain experts, and other stakeholders guides the next round.
+
+---
+
+## Inside an LLM: Tokens and Embeddings
+
+### Tokens
+
+**Tokens** are the basic units of text a model processes. A token might be a whole word, part of a word, or a punctuation mark. Tokenizing standardizes input into a fixed vocabulary the model knows. At a word level, the sentence
+
+> "A puppy is to dog as a kitten is to cat."
+
+breaks into pieces like `A` · `puppy` · `is` · `to` · `dog` · `as` · `a` · `kitten` · `is` · `to` · `cat` · `.`
+
+Real tokenizers usually work with **subwords**, so a rare word may become several tokens while common words are one. For English, a token averages roughly three-quarters of a word. Tokens matter in practice because they're the unit of **context-window size** (how much text a model can consider at once), **speed**, and — for hosted models — **cost**.
+
+### Embeddings inside the model
+
+Each token is mapped to an **embedding** — a vector learned during training that captures its meaning and relationships. The vector for "cat" ends up close to "feline" and "kitten," without anyone programming that relationship explicitly; it emerges because those words appear in similar contexts. The transformer's layers then refine these vectors using the surrounding context, so "bank" in "river bank" and "bank account" ends up with different representations.
+
+These are the same kind of vectors Module 9 stored in Chroma. RAG works because a model trained to understand meaning can also produce vectors where meaning becomes distance.
+
+---
+
+## Three Ways to Adapt a Model
+
+A pre-trained foundation model knows a lot in general and nothing about *your* data. There are three main ways to close that gap:
+
+| | Prompt engineering | RAG | Fine-tuning |
+|---|---|---|---|
+| **What changes** | The instructions and examples in the prompt | The context supplied with each prompt | The model's **weights** |
+| **Learning type** | None | None | **Supervised** learning on a smaller labeled dataset |
+| **Data needed** | A few examples | A searchable document collection | Hundreds to thousands of labeled examples |
+| **Knowledge freshness** | Whatever fits in the prompt | Update documents any time; no retraining | Frozen until you fine-tune again |
+| **Can cite sources** | No | **Yes** — answers trace to retrieved chunks | No |
+| **Cost and effort** | Lowest | Moderate (pipeline + vector DB) | Highest (training compute, ML expertise) |
+| **Best for** | Formatting, tone, simple tasks | Facts that change, private documents, traceability | Teaching a consistent style, format, or specialized skill |
+
+The key distinction: **RAG does not change the model's weights; fine-tuning does.** RAG supplies knowledge at question time. Fine-tuning changes how the model behaves.
+
+They aren't mutually exclusive. A common progression is to start with prompt engineering, add RAG when the model needs facts it doesn't have, and fine-tune only when the model's *behavior* — not its knowledge — still falls short. Many production systems use a fine-tuned model *with* RAG.
+
+<Pitfall title="Fine-Tuning to Teach Facts">
+
+**Common mistake:** fine-tuning a model on your documents so it will "know" them.
+
+Fine-tuning is good at shaping behavior and style, but unreliable for injecting facts: the model may blend, distort, or confidently misremember them, and it can't tell you which document an answer came from. Every time the documents change, you'd need to retrain. For knowledge that changes or must be traceable, RAG is usually the right tool.
+
+</Pitfall>
+
+<Quiz questions={[
+  {
+    question: "Why is pre-training called self-supervised?",
+    options: [
+      "The model supervises itself without any data",
+      "The training text provides its own labels — the next word is the answer to predict",
+      "Humans label every sentence",
+      "It uses reinforcement from users"
+    ],
+    correctIndex: 1,
+    explanation: "Because labels come from the data itself, models can learn from trillions of tokens without manual labeling."
+  },
+  {
+    question: "Which approach changes a model's weights?",
+    options: ["Prompt engineering", "RAG", "Fine-tuning", "Tokenization"],
+    correctIndex: 2,
+    explanation: "Fine-tuning continues training on new labeled data. RAG and prompting leave the weights untouched."
+  },
+  {
+    question: "A company's policy documents change monthly, and answers must cite the source. Which approach fits best?",
+    options: ["Fine-tuning monthly", "RAG", "A larger pre-trained model", "Prompt engineering alone"],
+    correctIndex: 1,
+    explanation: "RAG picks up document changes without retraining and returns the sources it used."
+  },
+  {
+    question: "Why do tokens matter in practice?",
+    options: [
+      "They determine the model's training date",
+      "They're the unit of context-window size, speed, and often cost",
+      "They encrypt the prompt",
+      "They decide which GPU is used"
+    ],
+    correctIndex: 1,
+    explanation: "Limits, latency, and pricing are all measured in tokens."
+  }
+]} />
+
+---
+
+## Up Next
+
+The final lesson points the RAG pipeline at PDF files, surveys the advanced techniques that improve retrieval at each stage, and reviews the security of the entire ten-tier system you've followed through this course.

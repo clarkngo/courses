@@ -1,0 +1,158 @@
+---
+title: "Comparing Models Honestly and Serving Them"
+description: "Train four regression models to predict IMDb ratings from genres: one-hot features, train/test splits, linear regression vs. random forest vs. gradient boosting vs. neural networks, MSE and R². Then read the results honestly and see how the chosen model is served and combined with similarity."
+module: 7
+moduleTitle: "MLOps"
+lesson: 2
+duration: "18 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import ProcessFlow from '@components/ProcessFlow.astro';
+
+## The Prediction Task
+
+The experiment asks a concrete question: **given a movie's genres, how well can we predict its IMDb rating?** Because the answer is a number on a continuous scale, this is a **regression** problem (as opposed to **classification**, which predicts a category).
+
+One naming note: the experiment in the source project is called "Movie Genre Prediction," but the models *use* genres to *predict ratings*. Clear names matter in a tracking server that a whole team will search later.
+
+### Preparing the features
+
+A movie can have several genres at once, so each movie becomes a **multi-label one-hot** vector: one column per genre, set to 1 if the movie has it and 0 otherwise.
+
+| Movie | Action | Comedy | Drama | Romance | ... | IMDb rating (target) |
+|---|---|---|---|---|---|---|
+| Movie 1 | 1 | 0 | 1 | 0 | ... | 7.4 |
+| Movie 2 | 0 | 1 | 0 | 1 | ... | 6.1 |
+
+Unlike Module 6's word counts, these are fixed columns for a known set of labels — a cleaner way to represent categories. Movies missing a rating had it filled with the **average** rating, a simple form of **imputation**. That keeps the rows, but it also pulls predictions toward the middle — a choice worth recording as a tag.
+
+### Train/test split
+
+The data is split **80% for training, 20% for testing**. Models learn only from the training set and are scored on the test set, which simulates data they've never seen. Scoring on training data would reward **overfitting** — memorizing the training examples instead of learning patterns that generalize.
+
+---
+
+## Four Candidate Models
+
+| Model | How it works | Pros | Cons | Best for |
+|---|---|---|---|---|
+| **Linear regression** | Fits a weighted sum of the features — a straight-line relationship | Simple, fast, interpretable | Can't capture non-linear effects or interactions; sensitive to outliers | Roughly linear relationships; a baseline |
+| **Random forest** | Averages many decision trees, each trained on random subsets | Handles non-linearity; less prone to overfitting than a single tree | Slower on large data; less interpretable | Robust results with moderate tuning |
+| **Gradient boosting** | Builds trees one after another, each correcting the previous ones' errors | Often the most accurate on tabular data; captures interactions | Overfits without tuning; slower to train | Accuracy when you can tune carefully |
+| **Neural network** | Layers of connected units learning complex functions | Can model very complex patterns | Needs lots of data and compute; hard to interpret; overfits without regularization | Large datasets with complex structure |
+
+All four are trained by the same script pattern, and each logs its parameters, metrics, tags, and model to MLflow as a separate **run** in the same experiment — so the tracking UI can compare them side by side.
+
+---
+
+## The Metrics
+
+**Mean squared error (MSE)** — the average of (actual − predicted)² across the test set. **Lower is better.** Squaring punishes big misses heavily, and the units are "rating points squared," so the square root (**RMSE**) is easier to interpret: it's in rating points.
+
+**R² (coefficient of determination)** — the share of the variation in ratings that the model explains. **Higher is better.**
+- **1.0** = perfect predictions.
+- **0.0** = no better than always predicting the average rating.
+- **Below 0** = worse than predicting the average.
+
+### The results
+
+| Model | MSE | RMSE (≈ rating points) | R² |
+|---|---|---|---|
+| Gradient boosting | 0.765 | 0.87 | 0.197 |
+| Random forest | 0.767 | 0.88 | 0.196 |
+| Linear regression | 0.776 | 0.88 | 0.186 |
+| Neural network | 0.819 | 0.90 | 0.141 |
+
+### Reading them honestly
+
+A quick read says "gradient boosting wins: lowest error, highest R²." That's true, and it's the model the app serves. But an honest read says much more:
+
+1. **All four models are weak.** An R² around 0.19 means genres explain roughly a fifth of the variation in ratings. Typical predictions miss by almost a full rating point. That makes sense — a movie's genre says little about whether it's *good*.
+2. **The top three are practically tied.** A difference of 0.002 in MSE on a single 80/20 split is well within the noise you'd see from a different random split. Before declaring a winner, use **cross-validation** (averaging scores over several splits).
+3. **When models tie, prefer the simplest.** Linear regression is nearly as good, trains instantly, and is easy to explain — a strong argument in production.
+4. **The real lever is features, not algorithms.** Adding information like director, cast, runtime, or year would likely help more than switching models.
+
+If some metrics show **NaN** (not a number), the test set was too small or empty — there wasn't enough data to evaluate. More documents fix that.
+
+<Pitfall title="Crowning a Winner from a Rounding Error">
+
+**Common mistake:** choosing a model because its score is better in the third decimal place on one test split.
+
+Small differences on a single split are often noise. Picking the "best" from many experiments this way can also overfit to the test set itself. Look at the size of the gap, the variation across cross-validation folds, the cost and complexity of each model, and whether *any* model is good enough for the job. Recording all of that in the tracking server is what turns a guess into a decision.
+
+</Pitfall>
+
+---
+
+## Serving the Chosen Model
+
+The ML service from Module 6 becomes a **model server**. At startup it connects to the tracking server and loads a specific registered model version. Recommendations now blend two signals:
+
+<ProcessFlow
+  label="Serving flow: the model server loads a registered model version at startup. For each request it builds genre vectors for the selected movies, computes each candidate's genre similarity, predicts the candidate's rating with the model, multiplies the two into a combined score, and returns the top five."
+  color="#0891b2"
+  steps={[
+    { title: 'Load model', detail: 'registry name + version, at startup' },
+    { title: 'Genre vectors', detail: 'selected movies → one-hot' },
+    { title: 'Similarity', detail: 'best cosine match to a pick' },
+    { title: 'Predict rating', detail: 'model scores each candidate' },
+    { title: 'Combine + rank', detail: 'rating × similarity → top 5' },
+  ]}
+/>
+
+The **combined score** rewards movies that are both *similar* to what the user picked and *predicted to be well rated*. Notice what didn't change: the frontend. The app still calls `/recommend` and gets a list back. Because the model lives behind a service boundary and is loaded by version, you can train, compare, and swap models without touching the mobile app — the practical payoff of MLOps.
+
+<Quiz questions={[
+  {
+    question: "A model has R² = 0. What does that mean?",
+    options: [
+      "It predicts perfectly",
+      "It performs no better than always predicting the average",
+      "It has zero error",
+      "It failed to train"
+    ],
+    correctIndex: 1,
+    explanation: "R² measures improvement over the mean baseline. Zero means no improvement."
+  },
+  {
+    question: "Gradient boosting scored MSE 0.765 and random forest 0.767 on one test split. What's the most defensible conclusion?",
+    options: [
+      "Gradient boosting is clearly superior",
+      "They're practically tied; confirm with cross-validation before deciding",
+      "Random forest is broken",
+      "Both models are overfitting"
+    ],
+    correctIndex: 1,
+    explanation: "A 0.002 difference on one split is within normal variation."
+  },
+  {
+    question: "Why are models scored on a held-out test set rather than the training set?",
+    options: [
+      "It's faster",
+      "To estimate performance on unseen data and expose overfitting",
+      "Training data can't be scored",
+      "MLflow requires it"
+    ],
+    correctIndex: 1,
+    explanation: "A model can memorize training data; only unseen data shows whether it generalizes."
+  },
+  {
+    question: "The team swaps the served model for a newly registered version. What must change in the mobile app?",
+    options: [
+      "The API URL",
+      "Nothing — the model sits behind the service's unchanged /recommend endpoint",
+      "The recommendation screen",
+      "The app must be resubmitted to the stores"
+    ],
+    correctIndex: 1,
+    explanation: "The service boundary hides the model, so models change without client changes."
+  }
+]} />
+
+---
+
+## Up Next
+
+The final user story arrives: "I want to *chat* to get movie recommendations." Module 8 adds a large language model running on your own server — and reorganizes the system around a single gateway.

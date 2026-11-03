@@ -1,0 +1,153 @@
+---
+title: "Embeddings and Vector Databases"
+description: "Why a small chat model needs a memory it can check, how embeddings place similar meanings close together, why dedicated embedding models beat chat models for retrieval, and what vector databases like Chroma add: storage, nearest-neighbor search, and approximate indexes."
+module: 9
+moduleTitle: "Retrieval-Augmented Generation"
+lesson: 1
+duration: "16 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import StackEvolution from '@components/StackEvolution.astro';
+
+## The Problem: Confident and Wrong
+
+Ask Module 8's chatbot about a movie and it answers fluently — whether or not it knows anything about that movie. A small model's knowledge is whatever it absorbed during training: incomplete, frozen at a cutoff date, and blind to *your* data. Asked about something it doesn't know, it often **hallucinates**: it produces plausible text that isn't true.
+
+The fix is to stop asking the model to remember and start **giving it the facts** each time — retrieve relevant information from your own data and put it in the prompt. That's **retrieval-augmented generation (RAG)**. Before building the pipeline in the next lesson, we need the two technologies that make the retrieval step work: **embeddings** and **vector databases**.
+
+<StackEvolution stage={9} caption="Module 9: an ingest script loads movie descriptions into a vector database, and the ML service retrieves from it before asking the LLM." />
+
+---
+
+## Embeddings: Meaning as Coordinates
+
+In Module 6, a movie became a vector of word counts. Counts capture spelling, not meaning: "a heist in a dream" and "thieves infiltrate the subconscious" share almost no words.
+
+An **embedding** is a vector — typically hundreds or thousands of numbers long — produced by a neural network trained so that **texts with similar meanings get nearby vectors**. The individual numbers aren't interpretable on their own; what matters is distance. In that space, "kitten" sits near "cat" and "feline," and a plot about a dream heist sits near other mind-bending thrillers even with no words in common.
+
+<figure class="not-prose my-6">
+<svg viewBox="0 0 720 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A simplified two-dimensional picture of an embedding space. Movie descriptions about space exploration cluster together in one region, romantic comedies in another, and crime and heist stories in a third. A user question about a heist movie is embedded into the same space and lands near the crime and heist cluster, so its nearest neighbors are the most relevant passages.">
+  <g font-family="system-ui, -apple-system, sans-serif" fill="#1f2937">
+    <rect x="10" y="10" width="700" height="280" rx="14" fill="#f8fafc" stroke="#cbd5e1" />
+    <text x="26" y="34" font-size="11" fill="#475569">embedding space (simplified to 2 of many dimensions)</text>
+
+    <ellipse cx="160" cy="110" rx="110" ry="58" fill="#dbeafe" opacity="0.8" />
+    <text x="160" y="72" text-anchor="middle" font-size="12" font-weight="700" fill="#1d4ed8">space exploration</text>
+    <circle cx="110" cy="105" r="6" fill="#2563eb" /><circle cx="150" cy="125" r="6" fill="#2563eb" /><circle cx="200" cy="100" r="6" fill="#2563eb" /><circle cx="185" cy="140" r="6" fill="#2563eb" />
+
+    <ellipse cx="560" cy="95" rx="115" ry="55" fill="#fce7f3" opacity="0.8" />
+    <text x="560" y="58" text-anchor="middle" font-size="12" font-weight="700" fill="#be185d">romantic comedy</text>
+    <circle cx="520" cy="95" r="6" fill="#db2777" /><circle cx="570" cy="115" r="6" fill="#db2777" /><circle cx="610" cy="90" r="6" fill="#db2777" />
+
+    <ellipse cx="420" cy="215" rx="130" ry="55" fill="#ffedd5" opacity="0.85" />
+    <text x="420" y="178" text-anchor="middle" font-size="12" font-weight="700" fill="#c2410c">crime &amp; heists</text>
+    <circle cx="360" cy="215" r="6" fill="#ea580c" /><circle cx="410" cy="235" r="6" fill="#ea580c" /><circle cx="455" cy="205" r="6" fill="#ea580c" /><circle cx="495" cy="230" r="6" fill="#ea580c" />
+
+    <path d="M 432 214 l 8 -8 l 8 8 l -8 8 z" fill="#111827" />
+    <text x="250" y="270" font-size="11.5" font-weight="700">◆ question: "a team steals secrets from dreams?"</text>
+    <line x1="440" y1="214" x2="456" y2="206" stroke="#111827" stroke-dasharray="3 2" />
+    <line x1="440" y1="214" x2="412" y2="234" stroke="#111827" stroke-dasharray="3 2" />
+    <text x="556" y="262" font-size="10.5" fill="#475569">nearest neighbors</text>
+    <text x="556" y="276" font-size="10.5" fill="#475569">= most relevant passages</text>
+  </g>
+</svg>
+</figure>
+
+This is what makes **semantic search** possible: embed the user's question with the same model, then find the stored vectors closest to it. Closeness is measured with the same tools as Module 6 — **cosine similarity**, the **dot product**, or **Euclidean distance**.
+
+### Choosing an embedding model
+
+Embeddings come from an **embedding model**. The source project computes them with the same small chat model it uses for answers (`gemma2:2b`, through Ollama). That works, but it isn't ideal: chat models are trained to *generate* text, not to produce vectors that rank well in search. **Dedicated embedding models** — `nomic-embed-text` is one that runs in Ollama — are smaller, faster, and usually retrieve better. The source project itself suggests switching to one when the chat model struggles.
+
+One rule is non-negotiable: **embed the documents and the queries with the same model.** Vectors from different models live in different spaces, and comparing them is meaningless.
+
+---
+
+## Vector Databases
+
+A **vector database** stores embeddings and finds the nearest ones quickly. Each record typically holds:
+
+- the **vector**;
+- the **original text** it came from, so it can be handed to the LLM;
+- **metadata** — an ID, a source, a page number — for filtering and citations.
+
+| Capability | Why it matters |
+|---|---|
+| **Vector storage** | Persist millions of high-dimensional vectors efficiently |
+| **Similarity search** | Return the *k* nearest neighbors to a query vector |
+| **High-dimensional indexing** | Traditional database indexes don't help with "closest in 768 dimensions" |
+| **Metadata filtering** | "Nearest neighbors, but only from this source or date range" |
+| **Low latency and scale** | Fast enough for interactive apps; many scale horizontally |
+
+### Exact vs. approximate search
+
+Comparing a query with every stored vector — **exact** nearest-neighbor search — is perfectly accurate but slows down as the collection grows. Most vector databases build **approximate nearest neighbor (ANN)** indexes — graph-based structures such as HNSW are common — that find *almost* the closest results in a tiny fraction of the time. For retrieval, trading a sliver of accuracy for a large speed-up is almost always worth it.
+
+### The landscape
+
+| Option | Type |
+|---|---|
+| **Chroma** | Open-source; runs embedded in your app and persists to a local folder — used in this course |
+| **Pinecone** | Fully managed cloud service |
+| **Milvus**, **Weaviate**, **Qdrant** | Open-source vector databases built for scale; self-host or use managed versions |
+| **Faiss** | A similarity-search *library* rather than a database — fast building block, you handle storage |
+
+Vector search also powers recommendation systems, image and video similarity, semantic search engines, and anomaly detection — anywhere "find things like this" matters more than exact matching.
+
+<Pitfall title="Changing the Embedding Model Without Re-Indexing">
+
+**Common mistake:** upgrading to a better embedding model for queries while leaving the stored vectors as they were.
+
+The stored vectors were made by the old model; the query vector by the new one. They're in different spaces, so similarity scores become noise and retrieval quietly returns irrelevant passages — no error, just bad answers. When the embedding model changes, **re-embed and re-index everything**, and record which model built each index. Also remember that a vector database holds your data in another form: protect it with the same access controls as the source documents.
+
+</Pitfall>
+
+<Quiz questions={[
+  {
+    question: "What property makes embeddings useful for retrieval?",
+    options: [
+      "Each number corresponds to a specific word",
+      "Texts with similar meanings get nearby vectors, even with no words in common",
+      "They are always exactly 2 dimensions",
+      "They compress text losslessly"
+    ],
+    correctIndex: 1,
+    explanation: "Embedding models are trained so that distance reflects meaning, enabling semantic search."
+  },
+  {
+    question: "Why must documents and queries be embedded with the same model?",
+    options: [
+      "For speed",
+      "Different models produce vectors in different spaces, so cross-model comparisons are meaningless",
+      "Vector databases only accept one dimension size",
+      "It's a licensing requirement"
+    ],
+    correctIndex: 1,
+    explanation: "Distances only mean something within one model's space."
+  },
+  {
+    question: "What does an approximate nearest neighbor (ANN) index trade?",
+    options: [
+      "Storage for security",
+      "A tiny amount of accuracy for much faster search on large collections",
+      "Metadata for vectors",
+      "Embeddings for keywords"
+    ],
+    correctIndex: 1,
+    explanation: "ANN indexes find nearly the closest results far faster than comparing against every vector."
+  },
+  {
+    question: "Which item is a similarity-search library rather than a database?",
+    options: ["Chroma", "Pinecone", "Faiss", "Qdrant"],
+    correctIndex: 2,
+    explanation: "Faiss provides fast similarity search; storage, persistence, and serving are up to you."
+  }
+]} />
+
+---
+
+## Up Next
+
+With embeddings and a vector store in hand, the next lesson assembles the full RAG pipeline — loading, splitting, embedding, retrieving, prompting, and generating — and tests whether it actually stops the model from making things up.
