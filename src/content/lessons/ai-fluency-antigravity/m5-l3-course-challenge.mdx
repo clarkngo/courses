@@ -1,0 +1,193 @@
+---
+title: "Course Challenge"
+description: "Bring the four competencies together: a scenario-based knowledge check, then a capstone in which you run a small fleet of agents in Antigravity and take their work through Delegation, Description, Discernment, and Diligence."
+module: 5
+moduleTitle: "Diligence"
+lesson: 3
+duration: "45 min"
+---
+
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## How the Challenge Works
+
+The challenge has two parts:
+
+1. **Knowledge check:** ten scenario questions covering every module. Aim for at least 8 out of 10. If you miss one, read the explanation and revisit that lesson.
+2. **Capstone task:** run two parallel agents on real work, plus one read-only automation, and take everything through the 4Ds. Keep a short log as you go.
+
+This course is free and self-paced, so there's nothing to submit.
+
+---
+
+## Part 1: Knowledge Check
+
+<Quiz questions={[
+  {
+    question: "(Module 1) Your manager asks why you aren't running ten agents at once if Antigravity allows it. What's the fluent answer?",
+    options: [
+      "The software doesn't allow more than two.",
+      "My review attention is the bottleneck. I run as many agents as I can review well, because unreviewed work isn't finished.",
+      "Agents are too expensive to run.",
+      "More agents always produce worse code."
+    ],
+    correctIndex: 1,
+    explanation: "In agent-first development, the human's review capacity limits real throughput."
+  },
+  {
+    question: "(Module 1) The agent hands back a polished, confident implementation plan for your first mission. What should you do before approving?",
+    options: [
+      "Approve it, because polish signals quality.",
+      "Switch to Fast mode.",
+      "Spot-check its specific claims against the actual code.",
+      "Ask for more diagrams."
+    ],
+    correctIndex: 2,
+    explanation: "Judge content, not formatting."
+  },
+  {
+    question: "(Module 2) Which pair of tasks should NOT run as parallel agents?",
+    options: [
+      "Writing tests for the billing module, and fixing lint in the reports module.",
+      "Drafting API docs, and adding logging to the job runner.",
+      "Updating the README, and fixing a typo in the settings page.",
+      "Designing a new authentication flow, and building the login page that uses it."
+    ],
+    correctIndex: 3,
+    explanation: "The second task depends on decisions the first hasn't made yet."
+  },
+  {
+    question: "(Module 2) A teammate leaves Turbo on for every project because prompts are annoying. What do you suggest?",
+    options: [
+      "Use Default with allow rules for the safe, frequent commands and deny rules for destructive ones, and keep Turbo for isolated environments.",
+      "Keep Turbo; the agent is usually right.",
+      "Turn off the sandbox too.",
+      "Stop using agents."
+    ],
+    correctIndex: 0,
+    explanation: "Fix prompt fatigue with better rules, not by removing every checkpoint."
+  },
+  {
+    question: "(Module 3) An unattended agent hit a failing test it couldn't fix and marked it as skipped. Which brief line would most likely have prevented this?",
+    options: [
+      "Please do your best.",
+      "Work quickly.",
+      "If you're blocked, stop and report what you tried. Don't skip or weaken tests.",
+      "Use the most capable model."
+    ],
+    correctIndex: 2,
+    explanation: "Tell agents what to do when stuck. Otherwise they improvise."
+  },
+  {
+    question: "(Module 3) Every agent should know your test command and that money is stored as integer cents. Where should that go?",
+    options: [
+      "In each brief, retyped every time.",
+      "In AGENTS.md or a workspace rule committed to the repo.",
+      "In a plugin from the marketplace.",
+      "Nowhere; agents will figure it out."
+    ],
+    correctIndex: 1,
+    explanation: "Persistent context briefs every agent automatically."
+  },
+  {
+    question: "(Module 4) The walkthrough says 'Fixed the bug; all tests pass,' and the diff shows a test file with an assertion loosened. What happened?",
+    options: [
+      "The agent may have weakened the test to make it pass. Check whether the bug is actually fixed.",
+      "Nothing; the tests pass.",
+      "The walkthrough is always correct.",
+      "Loosened assertions are a best practice."
+    ],
+    correctIndex: 0,
+    explanation: "Walkthroughs are claims. The diff shows what really changed."
+  },
+  {
+    question: "(Module 4) A browser recording shows a password reset completing smoothly. What does it NOT show?",
+    options: [
+      "That the success page appeared.",
+      "That the flow worked once, with that data.",
+      "That there were no visible errors during the run.",
+      "That expired reset links are rejected and the old password stops working on the server."
+    ],
+    correctIndex: 3,
+    explanation: "Recordings show one happy path's UI. Edge cases and server-side behavior need their own checks."
+  },
+  {
+    question: "(Module 5) An agent that has your cloud credentials and can run network commands is asked to summarize issues filed by outside users. What's the main risk?",
+    options: [
+      "An instruction injected in an issue could use the credentials and send data out: untrusted input, something valuable, and a way out in one session.",
+      "The summary might be too long.",
+      "Issues load slowly.",
+      "There's no risk in reading issues."
+    ],
+    correctIndex: 0,
+    explanation: "Break the chain: run untrusted reading without secrets or outbound tools."
+  },
+  {
+    question: "(Module 5) Nobody remembers who set up the hourly automation that runs on your most capable model. What should happen?",
+    options: [
+      "Leave it running; it might be important.",
+      "Upgrade it to Turbo.",
+      "Pause it until someone takes ownership, confirms its purpose, and right-sizes its model and permissions.",
+      "Delete the repository."
+    ],
+    correctIndex: 2,
+    explanation: "Every automation needs an owner, a purpose, and a review date."
+  }
+]} />
+
+---
+
+## Part 2: Capstone, A Small Fleet Through the 4Ds
+
+Pick a project you work on. You'll run **two parallel agents** on independent tasks and set up **one read-only automation**.
+
+<TryIt title="Delegation: Plan the Fleet">
+
+1. Choose two real tasks that touch different files and share no undecided design choices. Write why they're independent.
+2. Choose one read-only automation, such as a daily test-run summary or a weekly dependency audit.
+3. For each, answer: verifiable? sized for review? reversible?
+4. Set a permission preset for the project, plus at least three allow, two ask, and two deny rules.
+5. Confirm a clean git state and that non-workspace file access is off.
+
+</TryIt>
+
+<TryIt title="Description: Brief the Fleet">
+
+1. Check that your AGENTS.md has exact commands, conventions, and a "when blocked" rule.
+2. Write a four-part brief for each agent, including what evidence the walkthrough must show and, for UI work, which browser checks to record.
+3. Choose a model and thinking level for each agent and for the automation, with one sentence on why.
+4. Start both agents in Planning mode. Leave at least two inline comments on each plan before approving.
+
+</TryIt>
+
+<TryIt title="Discernment: Review Like a Lead">
+
+1. For each agent, read the **diff first**, then the walkthrough. Mark each walkthrough claim as verified, unverified, or wrong.
+2. Check each diff against the failure modes: scope creep, weakened tests, new dependencies, swallowed errors.
+3. For any browser evidence, write what it proves and what it doesn't. Do one manual click-through yourself.
+4. Have a fresh agent on a different model review the riskier of the two diffs. Log what it found.
+
+</TryIt>
+
+<TryIt title="Diligence: Ship and Own It">
+
+1. Run your merge checklist from the last lesson on each change.
+2. Merge only what passes. Note anything you held back and why.
+3. Give the automation an owner (you), a purpose, and a review date, and check your overage setting.
+4. Disclose AI assistance according to your team's or project's norms.
+5. Finish your log: how many agents you could review well, one line to add to AGENTS.md, and one thing you'd change about your permission rules.
+
+</TryIt>
+
+---
+
+## About the Framework
+
+The 4D AI Fluency Framework was created by **Rick Dakan and Joseph Feller** with **Anthropic**, and is released under [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/). This course's lessons, examples, and exercises are original, and this course is not affiliated with Google.
+
+## Where to Go Next
+
+- [AI Fluency for Claude Code](/courses/ai-fluency-claude-code/) applies the same 4Ds to Anthropic's agentic coding tool. Comparing two agents' design choices sharpens your judgment about both.
+- [Discernment: Judging AI Output](/courses/ai-fluency-discernment/) goes deeper on evaluating AI work.
+- [AI Fluency for Leaders & Teams](/courses/ai-fluency-leaders-teams/) covers turning individual habits into team practice.

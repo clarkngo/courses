@@ -1,0 +1,148 @@
+---
+title: "Reviewing Artifacts, Then the Code"
+description: "Use Antigravity's artifacts well. Review implementation plans with inline comments, read walkthroughs as claims to check, choose a plan review policy, and always confirm the code itself."
+module: 4
+moduleTitle: "Discernment"
+lesson: 1
+duration: "30 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## Artifacts Are Reports, Not Proof
+
+Antigravity's documentation describes an artifact as "a structured deliverable created by the agent": implementation plans, code diffs, architecture diagrams, screenshots, walkthroughs, browser recordings. They exist so you can supervise agents **without watching every step.**
+
+That's a real advantage. It also hides a trap. An artifact is the agent's account of its own work. It's usually honest, and it's always incomplete. The agent can't report what it didn't notice.
+
+<ProcessFlow
+  label="Antigravity review flow: plan, work, walkthrough, code"
+  color="#1a73e8"
+  steps={[
+    { title: "Plan", detail: "Comment before code", badge: "1" },
+    { title: "Monitor", detail: "Check in; answer questions", badge: "2" },
+    { title: "Walkthrough", detail: "Read claims and evidence", badge: "3" },
+    { title: "Diff", detail: "Verify the actual code", badge: "4" },
+  ]}
+/>
+
+---
+
+## Stage 1: The Implementation Plan
+
+The plan is the cheapest point to catch a wrong turn. In Planning mode, Antigravity lets you leave **inline comments** on the plan, like comments in a shared document, before approving it. Use them:
+
+- **On the goal:** "This misreads the ticket. Users want *remember me*, not longer sessions for everyone."
+- **On scope:** "Don't touch the middleware. The bug is in the token refresh."
+- **On assumptions:** "You assumed Postgres 15. We're on 13. Check that `MERGE` is supported."
+- **On verification:** "Add a test that fails before the fix. Include its output in the walkthrough."
+- **On proportion:** "This is a two-line fix. Drop steps 3 through 6."
+
+### Plan Review Policy
+
+Antigravity's settings let you choose whether agents **stop for your approval** on plans or proceed on their own. (Typing `/plan` always makes the agent stop for approval.) For most work, keep the policy on asking for review. Letting plans proceed unreviewed makes sense only for small, low-risk, verifiable tasks, and even then you still review the diff.
+
+---
+
+## Stage 2: The Walkthrough
+
+When an agent finishes, it typically produces a **walkthrough**: what changed, why, and evidence such as test output or screenshots. Read every claim in it as something to check:
+
+| Walkthrough says | Ask |
+|---|---|
+| "Fixed the export timeout." | What measurement shows that? Before and after numbers? |
+| "All tests pass." | Which tests? Did any change? Does the changed code have coverage? |
+| "Verified in the browser." | Verified *what*? Which flow, which data, which edge cases? (Next lesson.) |
+| "No breaking changes." | What did it check to reach that conclusion? |
+| "Refactored for clarity." | Was that requested? Is it scope creep? |
+
+What the walkthrough *doesn't* mention matters as much as what it does. Unexpected files in the diff, deleted tests, and new dependencies often go unmentioned, because the agent didn't consider them important.
+
+---
+
+## Stage 3: The Code Itself
+
+Always look at the diff. Antigravity shows code diffs as artifacts, and you can also use `git diff` or your editor. Check for:
+
+- **Files you didn't expect**: scope creep.
+- **Changed or deleted tests**: the quickest way to turn a failing test green.
+- **New dependencies**: real, maintained, needed?
+- **Swallowed errors and hardcoded values**: symptoms hidden, causes untouched.
+- **Duplicated logic**: a new helper next to an existing one.
+
+For a big diff, get a second opinion from a **fresh agent on a different model**: "Review this diff skeptically. What's the riskiest change, and what would you test that wasn't tested?"
+
+<Pitfall title="Reviewing Five Walkthroughs, Zero Diffs">
+
+**Common mistake:** at the end of a day with five parallel agents, reading five tidy walkthroughs, feeling informed, and merging all five.
+
+You've reviewed five *reports*. The code is still unreviewed. If you don't have time to read five diffs, you ran too many agents for your review budget (module 2). Merge what you've actually checked; the rest can wait.
+
+</Pitfall>
+
+---
+
+## Matching Review Depth to Risk
+
+| Risk | Example | Review |
+|---|---|---|
+| Low | Docs, comments, formatting, test-only additions | Read the walkthrough, skim the diff, run the checks |
+| Medium | Features with good test coverage | Comment on the plan, read the full diff, confirm tests failed before the fix |
+| High | Auth, payments, data migrations, infrastructure | Line-by-line review, run it yourself, second human reviewer |
+
+Keep in mind **automation bias**: after ten good walkthroughs, the eleventh feels safe. Agent mistakes cluster in unusual code and unclear requirements, so review depth should follow the risk of the change, not the agent's recent track record.
+
+<TryIt title="Walkthrough Versus Diff">
+
+1. Give an agent a medium-sized task in Planning mode. Leave at least two inline comments on the plan before approving.
+2. When it finishes, read the **diff first**, before the walkthrough. Write your own three-sentence summary.
+3. Now read the walkthrough. List every claim, and mark each one *verified*, *unverified*, or *wrong*.
+4. Note anything in the diff the walkthrough didn't mention.
+5. Have a fresh agent on a different model review the diff. Did it find anything you missed?
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "What is the right way to treat an Antigravity walkthrough?",
+    options: [
+      "As proof the work is correct.",
+      "As something to skip.",
+      "As a replacement for code review.",
+      "As the agent's account of its work, with claims to check against the diff and evidence."
+    ],
+    correctIndex: 3,
+    explanation: "Artifacts make supervision practical, but they're reports, not proof."
+  },
+  {
+    question: "What makes inline comments on an implementation plan so valuable?",
+    options: [
+      "They correct the approach before any code is written, which is the cheapest point to fix a wrong turn.",
+      "They make the plan longer.",
+      "They replace the diff review.",
+      "They speed up the model."
+    ],
+    correctIndex: 0,
+    explanation: "Steering at the plan stage costs a comment. Steering after implementation costs a rewrite."
+  },
+  {
+    question: "You've read five walkthroughs from five parallel agents and have no time to read the diffs. What should you do?",
+    options: [
+      "Merge all five; the walkthroughs looked good.",
+      "Merge only what you've actually reviewed, and run fewer agents next time.",
+      "Ask each agent to confirm its own work again.",
+      "Merge the two with the longest walkthroughs."
+    ],
+    correctIndex: 1,
+    explanation: "Unreviewed code isn't done, however good the report sounds."
+  }
+]} />
+
+---
+
+## Up Next
+
+Antigravity agents can drive a browser to test what they build. Next: what browser screenshots and recordings **do** and **don't** prove.

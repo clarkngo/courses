@@ -1,0 +1,145 @@
+---
+title: "Owning Agent Work"
+description: "Many agents contributed, but one person merges. Practice the explain-it test, disclose AI assistance where it matters, manage costs and quotas responsibly, and set team norms for agent-first development."
+module: 5
+moduleTitle: "Diligence"
+lesson: 2
+duration: "25 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## Five Agents, One Name on the Merge
+
+At the end of an agent-first day, the work in your pull request may have come from a main agent, three subagents, and an overnight automation. None of them will be in the incident review if something breaks. **You will.**
+
+Foundations called this **deployment diligence**: taking responsibility for AI-assisted work once it leaves your hands. In Antigravity, the hard part is that so much of the work happened while you were looking at something else.
+
+---
+
+## The Explain-It Test
+
+Before merging, ask:
+
+> Could I explain this change to a reviewer, and defend its key decisions, without opening the agent's walkthrough?
+
+If not, choose one: study it until you can (ask an agent to walk you through it), cut it down to what you understand, or flag it for a reviewer who understands it. Scale this to risk. A generated fixture needs a glance; a permissions check needs mastery.
+
+---
+
+## Disclosure
+
+Norms vary by team, employer, open-source project, and school. The constant: **don't misrepresent how work was made when it matters to the people relying on it.**
+
+- **Team repos:** follow team policy. Many teams note substantial agent contributions in the PR description or with commit trailers.
+- **Open source:** read the project's contribution guidelines. Some require disclosure; some don't accept AI-generated code.
+- **School:** follow the course's AI policy exactly. When in doubt, disclose and ask.
+- **Client work:** check the contract and your organization's rules about AI tools, cloud processing, and client code.
+
+---
+
+## Costs Are Part of Diligence
+
+Agent-first development uses a lot of compute. With quotas and optional paid credits, responsible use includes:
+
+- **Knowing your overage setting.** Antigravity lets paid plans decide whether to buy extra AI credits when quota runs out. Choose deliberately, especially on a company account.
+- **Stopping runaway agents.** An agent stuck in a loop spends quota and produces nothing.
+- **Right-sizing models.** Use your most capable models where they change the outcome, and lighter models for routine work and automations.
+- **Watching automations.** A scheduled task that runs every hour on a heavy model can use more than all your interactive work combined.
+
+<Pitfall title="Nobody Owns the Automation">
+
+**Common mistake:** someone sets up a useful scheduled automation, moves to another project, and it keeps running for months: spending quota, opening summaries nobody reads, or, if it has write access, making changes nobody reviews.
+
+Every automation needs a named owner, a purpose, and a review date. If nobody can say why it's running, pause it.
+
+</Pitfall>
+
+---
+
+## Team Norms for Agent-First Work
+
+<ProcessFlow
+  label="A team workflow for agent-first development"
+  color="#1a73e8"
+  steps={[
+    { title: "Shared context", detail: "AGENTS.md and rules in git" },
+    { title: "Safe defaults", detail: "Agreed presets and deny lists" },
+    { title: "Small PRs", detail: "One concern each" },
+    { title: "Human review", detail: "Depth by risk" },
+    { title: "Owned automations", detail: "Owner, purpose, review date" },
+  ]}
+/>
+
+If you lead a team, agree on these together ([AI Fluency for Leaders & Teams](/courses/ai-fluency-leaders-teams/) covers the policy side):
+
+- **Committed, reviewed persistent context:** AGENTS.md, workspace rules, and approved skills in git, changed through pull requests.
+- **Default presets and deny lists per repo,** and a rule that Turbo runs only in isolated environments.
+- **An approved plugin list,** with an owner for each.
+- **PR size limits and author-first review:** the person who opens the PR has read every line.
+- **Clear lines for human decisions:** architecture, security, data handling, new dependencies.
+- **An automation registry:** what runs, on which model, with what permissions, owned by whom.
+
+---
+
+## Keep Your Own Skills
+
+The more you manage agents, the less you do certain work yourself. Decide which skills you want to keep strong, such as debugging, design, or reading unfamiliar code, and practice them regularly, with agents reviewing instead of doing.
+
+<TryIt title="Your Merge Checklist">
+
+Write a checklist to run before merging agent-produced work. Start with these and adapt:
+
+1. I read the diff, not just the walkthrough.
+2. I checked the evidence: the right tests, edge cases, and the server side, not just the happy-path recording.
+3. No tests were weakened, no secrets were added, and nothing unrelated slipped in.
+4. I pass the explain-it test for the risky parts.
+5. Disclosure matches my team's or project's rules.
+6. Any automations I created have an owner, a purpose, and a review date.
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "A PR combines work from a main agent, three subagents, and an automation. Who is accountable for it?",
+    options: [
+      "The model provider.",
+      "Each agent for its own part.",
+      "Nobody, since agents wrote it.",
+      "The person who reviews and merges it, and their team."
+    ],
+    correctIndex: 3,
+    explanation: "Agents don't attend incident reviews. Accountability stays with the people who ship."
+  },
+  {
+    question: "What does every scheduled automation need?",
+    options: [
+      "A named owner, a purpose, and a review date.",
+      "Turbo permissions.",
+      "The most capable model.",
+      "Nothing, once it's set up."
+    ],
+    correctIndex: 0,
+    explanation: "Unowned automations keep spending quota and, worse, can keep making unreviewed changes."
+  },
+  {
+    question: "Why is the AI credit overage setting a diligence issue?",
+    options: [
+      "It changes which model writes better code.",
+      "It decides whether usage beyond your quota is charged, which matters for budgets, especially on company accounts.",
+      "It turns off the sandbox.",
+      "It controls disclosure."
+    ],
+    correctIndex: 1,
+    explanation: "Responsible use includes cost. Set it deliberately rather than discovering it on an invoice."
+  }
+]} />
+
+---
+
+## Up Next
+
+One lesson left: a course challenge that takes a real task through all four Ds in Antigravity.

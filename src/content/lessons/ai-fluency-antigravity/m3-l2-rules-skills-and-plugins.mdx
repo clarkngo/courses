@@ -1,0 +1,168 @@
+---
+title: "Rules, Skills, and Plugins"
+description: "Make description last across every agent. Write AGENTS.md and rules with the right triggers, package repeat workflows as skills, and treat plugins as trusted code you chose to install."
+module: 3
+moduleTitle: "Description"
+lesson: 2
+duration: "30 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## Brief Every Agent at Once
+
+If you run five agents a day and each one needs to be told "we use `pnpm`" and "money is integer cents", you'll eventually forget to tell one. Antigravity gives you places to put that knowledge so **every agent reads it automatically**.
+
+<ProcessFlow
+  label="Layers of persistent description in Antigravity"
+  color="#1a73e8"
+  steps={[
+    { title: "AGENTS.md", detail: "Project-wide facts" },
+    { title: "Rules", detail: "Always, by file type, or when relevant" },
+    { title: "Skills", detail: "Workflows loaded on demand" },
+    { title: "Plugins", detail: "Bundles from others" },
+  ]}
+/>
+
+---
+
+## AGENTS.md and GEMINI.md
+
+Antigravity reads `AGENTS.md` and `GEMINI.md` files as rules. `AGENTS.md` is a cross-tool convention that other coding agents also read, which makes it a good home for project facts you want *any* agent to follow.
+
+A good one answers a new teammate's first-week questions:
+
+```markdown
+# Inventory Service
+
+## Commands
+- Install: `pnpm install`
+- Test: `pnpm test`. Run before reporting a task as done.
+- Lint and types: `pnpm check`
+
+## Architecture
+- `api/`: HTTP handlers, kept thin.
+- `core/`: business rules, pure and unit tested.
+- `db/`: the only module that touches Postgres.
+
+## Conventions
+- Quantities are integers. Never use floats for stock counts.
+- Every new endpoint gets an entry in `docs/api.md`.
+
+## Don't
+- Don't edit `generated/`. It's rebuilt by `pnpm codegen`.
+- Don't add dependencies without asking.
+- If blocked, stop and report. Never skip or weaken tests.
+```
+
+Keep it short, exact, and true. Every line uses context in every agent's session, and an outdated line ("tests use Jest" after you moved to Vitest) gets followed just as faithfully as a current one.
+
+---
+
+## Rules With Triggers
+
+Beyond AGENTS.md, Antigravity **rules** are Markdown files that can declare *when* they apply:
+
+| Trigger | When it applies | Example |
+|---|---|---|
+| Always on | Every conversation in scope | "Use British English in user-facing strings." |
+| By file pattern (glob) | When the agent works on matching files | For `**/*.sql`: "Every migration needs a matching down migration." |
+| Model decision | When the agent judges the rule relevant, based on a description you write | "Accessibility review checklist: use when building or changing UI components." |
+
+Triggers let you keep a large body of guidance without loading all of it into every conversation. They also add a failure mode: a model-decision rule with a vague description may not be picked up when you need it. Write its description as carefully as the rule itself.
+
+Rules can live at the user level (yours, everywhere) or the workspace level (this project, shared with your team in git).
+
+---
+
+## Skills: Workflows on Demand
+
+A **skill** is a folder with a `SKILL.md` file that has a name, a description, and instructions, plus optional scripts or reference files. The agent sees each skill's short description and loads the full instructions only when a task calls for it.
+
+Good skill candidates are workflows you repeat:
+
+- "Release notes: how we gather merged PRs, group them, and format the notes."
+- "New endpoint checklist: route, validation, tests, docs, changelog."
+- "Investigating a production error: which logs and dashboards to check, in what order."
+
+Antigravity has been moving older "workflows" toward skills, and Google publishes a migration guide. If you have saved workflows from the IDE, check whether they should become skills.
+
+Skills follow a format other agent tools also use, so a well-written skill is portable: the same `SKILL.md` can often serve teammates on different tools.
+
+<Pitfall title="Rules That Contradict Each Other">
+
+**Common mistake:** adding rules over months, until the user-level rule says "always write tests first", a workspace rule says "prototype quickly, tests later", and AGENTS.md says something else again.
+
+When instructions conflict, the agent has to pick one, and you won't know which until you read the diff. Review your rules together every so often. One clear source of truth per topic beats three partial ones.
+
+</Pitfall>
+
+---
+
+## Plugins: Description You Didn't Write
+
+Antigravity **plugins** bundle skills, agents, rules, commands, MCP servers, and hooks into one install. The plugin marketplace includes partner plugins from companies like Figma, Linear, Notion, Stripe, and Supabase.
+
+Plugins are convenient. They're also **someone else's instructions and code running inside your agents.** Before installing one:
+
+- **Who publishes it?** A known vendor, your own team, or an anonymous author?
+- **What does it add?** Read its rules and skills. Do any of them conflict with yours?
+- **What can it access?** An MCP server with write access to your issue tracker or payments account is powerful in the wrong hands, including the hands of an injected instruction.
+- **Does it run code?** Hooks and scripts run on your machine. Read them.
+
+Install fewer plugins than you're tempted to, and remove ones you don't use.
+
+<TryIt title="Build Your Persistent Context">
+
+1. Write or update an `AGENTS.md` for a project with exact commands, three conventions, and three "Don't" lines.
+2. Create one rule with a file-pattern trigger for a type of file with special rules (migrations, tests, styles).
+3. Turn one workflow you repeat weekly into a skill with a clear, specific description.
+4. List every plugin you have installed. For each one, note who publishes it and what it can access, and remove one you don't need.
+5. Start a fresh agent and give it a small task. Did it follow your AGENTS.md without being told?
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "Why is AGENTS.md a good place for project-wide facts?",
+    options: [
+      "Antigravity reads it as a rule automatically, and it's a cross-tool convention other agents also read.",
+      "It's encrypted.",
+      "It replaces your test suite.",
+      "Only Gemini models can read it."
+    ],
+    correctIndex: 0,
+    explanation: "One file briefs every agent, in Antigravity and in other tools that follow the convention."
+  },
+  {
+    question: "You need guidance that applies only when the agent edits SQL migration files. Which trigger fits best?",
+    options: [
+      "Always on.",
+      "Model decision with no description.",
+      "A file-pattern (glob) trigger matching your migration files.",
+      "A plugin from the marketplace."
+    ],
+    correctIndex: 2,
+    explanation: "Glob triggers apply rules exactly where they're relevant."
+  },
+  {
+    question: "What's the most important question before installing a plugin?",
+    options: [
+      "Does it have a nice icon?",
+      "Is it popular this week?",
+      "Does it make the agent faster?",
+      "Who publishes it, and what instructions, tools, and code is it adding to your agents?"
+    ],
+    correctIndex: 3,
+    explanation: "Plugins are trusted code and instructions. Vet them like a dependency."
+  }
+]} />
+
+---
+
+## Up Next
+
+Module 4 is **Discernment**: reviewing artifacts and the code behind them.

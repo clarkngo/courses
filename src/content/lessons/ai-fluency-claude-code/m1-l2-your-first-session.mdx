@@ -1,0 +1,144 @@
+---
+title: "Your First Session: Understand Before You Change"
+description: "Start Claude Code safely: a clean git state, a read-only first task, and a habit of watching what the agent reads and runs. Use the agent to learn a codebase before you let it change one."
+module: 1
+moduleTitle: "Meet the Agent"
+lesson: 2
+duration: "25 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## Start With a Question, Not a Change
+
+The safest and most useful first task for any agent is one that changes nothing: **ask it to explain the codebase.** You learn how the agent works (what it reads, how it searches, how it reports back) without risking a single file. You also get a map of the project that you can check against what you already know.
+
+That check is the point. If you know a codebase well, a read-only session tells you how far to trust the agent's understanding. If it gets your architecture wrong, you've learned something important before it touched anything.
+
+---
+
+## Set the Stage
+
+<ProcessFlow
+  label="Five steps to a safe first session"
+  color="#c2410c"
+  steps={[
+    { title: "Clean git", detail: "Commit or stash first" },
+    { title: "Right folder", detail: "Start in the project root" },
+    { title: "Default mode", detail: "Approve each change" },
+    { title: "Ask, don't tell", detail: "Read-only questions" },
+    { title: "Watch", detail: "Read the tool calls" },
+  ]}
+/>
+
+1. **Get to a clean git state.** Run `git status`. Commit or stash anything in progress. Git is your undo button. A clean starting point means `git diff` will show exactly what the agent did, and nothing else.
+2. **Start in the project root.** Claude Code's working directory is its default boundary. Starting in your home folder hands it far more than the project.
+3. **Stay in the default permission mode.** By default, Claude Code asks before it edits files or runs commands that aren't on an allow list. Keep that until you've watched it work. (Module 2 covers the other modes.)
+4. **Ask questions, don't give orders.** Start with prompts like the ones below.
+5. **Watch the tool calls.** The transcript shows every file read, every search, every command. Reading them is how you learn what the agent does when you aren't looking.
+
+```bash
+cd ~/code/my-project
+git status
+claude
+```
+
+---
+
+## Good First Prompts
+
+| Prompt | What you learn |
+|---|---|
+| "Give me a tour of this repo: main entry points, how a request flows through it, and where the tests live." | Whether its mental model matches yours. |
+| "How does authentication work here? Point me to the specific files and functions." | Whether it can find and cite real code rather than guessing. |
+| "What would I need to change to add a new field to the user profile? Don't make changes, just list the files and why." | How it plans, and whether its plan matches what a teammate would say. |
+| "What looks fragile or under-tested in this codebase?" | Its judgment, which you can compare with yours. |
+| "Explain the last five commits in plain language." | Whether it uses git history as context. |
+
+Notice the instruction in the third row: **"Don't make changes."** Stating the boundary in words is a habit worth building, even when the permission mode would also catch it.
+
+<Pitfall title="Trusting the Tour Without Checking It">
+
+**Common mistake:** reading the agent's confident summary of your architecture and accepting it as fact.
+
+Agents fill gaps. If it didn't open the file that holds the real routing logic, it may describe a reasonable-sounding design that isn't yours. Spot-check: open two or three files it cites and confirm they say what it claims. If it cites a function that doesn't exist, you've learned how much to trust its next summary.
+
+</Pitfall>
+
+---
+
+## Reading the Transcript
+
+Each tool call is a small piece of evidence about the agent's process. As you watch, ask:
+
+- **What did it read?** If it explained the payment flow after reading one file, that's thin.
+- **What did it skip?** Did it ignore the `docs/` folder or the config that changes everything?
+- **What did it run?** Even read-only questions can trigger commands like `ls`, `grep`, or `git log`. Those are normal. Anything that writes, installs, or touches the network deserves a closer look.
+- **What did it assume?** Phrases like "this likely" or "presumably" mark guesses. Ask it to confirm them by reading the code.
+
+This is **process discernment**, judging *how* the agent got its answer, not just the answer itself. You'll use it in every later module.
+
+---
+
+## Ending Cleanly
+
+When you're done, run `git status` again. After a read-only session, it should be unchanged. If it isn't, find out why before you continue. Something wrote to disk that you didn't expect, and that's worth understanding now, while the stakes are low.
+
+<TryIt title="The Read-Only Tour">
+
+Pick a repository you know well, ideally one you wrote or maintain.
+
+1. Get to a clean git state and start Claude Code in the project root.
+2. Ask for a repo tour and one "how does X work?" question about a feature you know deeply.
+3. While it works, jot down every file it reads and every command it runs.
+4. Score its answer: what did it get right, what did it get wrong, and what did it guess?
+5. Run `git status` at the end and confirm nothing changed.
+
+Keep your notes. Your score is a rough baseline for how much context this agent needs on this codebase, which you'll use when you write a CLAUDE.md in module 3.
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "Why start your first Claude Code session from a clean git state?",
+    options: [
+      "Claude Code refuses to start otherwise.",
+      "It makes the agent run faster.",
+      "It hides your work from the agent.",
+      "So that git diff shows exactly what the agent changed, and you can undo it easily."
+    ],
+    correctIndex: 3,
+    explanation: "Git is your safety net. A clean start makes the agent's changes easy to see and easy to undo."
+  },
+  {
+    question: "Why is a read-only codebase tour a good first task?",
+    options: [
+      "It risks nothing, and checking its answer against what you know shows how far to trust the agent on this codebase.",
+      "It's the only task Claude Code can do in default mode.",
+      "It trains the model on your code.",
+      "It is faster than any other task."
+    ],
+    correctIndex: 0,
+    explanation: "A read-only task lets you calibrate trust before anything is at stake."
+  },
+  {
+    question: "The agent explains your payment flow confidently after reading one file. What's the fluent response?",
+    options: [
+      "Accept it; the agent is usually right.",
+      "Restart the whole session.",
+      "Treat it as a thin process, spot-check the files it cites, and ask it to read the parts it skipped.",
+      "Switch to a different model."
+    ],
+    correctIndex: 2,
+    explanation: "Process discernment: an answer built on little reading deserves verification before you rely on it."
+  }
+]} />
+
+---
+
+## Up Next
+
+You've seen the agent work. Module 2 turns to **Delegation**: which tasks to hand off, and how much autonomy to grant.

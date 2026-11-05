@@ -1,0 +1,152 @@
+---
+title: "Delegating to a Fleet"
+description: "Decide what to run in parallel, what to hand to subagents, what to schedule as an automation, and what to keep. Learn the task traits that make parallel agents safe and the ones that make them collide."
+module: 2
+moduleTitle: "Delegation"
+lesson: 1
+duration: "30 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## More Agents, More Decisions
+
+Antigravity makes it easy to start another agent. That shifts delegation from one question ("should AI do this?") to several:
+
+- Should this task go to an agent at all?
+- Should it run **alongside** other agents, or alone?
+- Should one agent split it into **subagents**?
+- Should it run **unattended** on a schedule?
+- Should it run **locally**, or as a **remote** agent in the cloud?
+
+Each answer adds autonomy. Each one also adds work you'll have to review later.
+
+---
+
+## The Core Test: Verifiable, Sized, Reversible
+
+Before any parallel or unattended run, a task should pass three checks:
+
+<ProcessFlow
+  label="Three checks before delegating a task to an agent"
+  color="#1a73e8"
+  steps={[
+    { title: "Verifiable", detail: "Tests, types, or a visible result", badge: "1" },
+    { title: "Sized", detail: "A diff you'll actually read", badge: "2" },
+    { title: "Reversible", detail: "Undo is cheap if it's wrong", badge: "3" },
+  ]}
+/>
+
+- **Verifiable:** the agent and you can tell whether it worked, through tests, a type checker, a page that renders, or output you can compare.
+- **Sized for review:** the result fits your review capacity. "Rewrite the data layer" isn't a task; it's a project. Split it.
+- **Reversible:** a mistake costs a `git revert`, not a production outage, a sent email, or deleted data.
+
+---
+
+## When Parallel Agents Work and When They Collide
+
+Running agents in parallel works when tasks are **independent**:
+
+| Good parallel set | Why it works |
+|---|---|
+| Agent A: add tests to the `billing` module. Agent B: fix lint errors in `reports`. Agent C: draft API docs. | Different files, no shared decisions, each verifiable on its own. |
+
+| Bad parallel set | Why it collides |
+|---|---|
+| Agent A: rename the `User` model. Agent B: add a field to the `User` model. | Same files, conflicting edits, a painful merge. |
+| Agent A: design the new auth flow. Agent B: build the login page for it. | B depends on A's decisions, which don't exist yet. |
+
+Antigravity gives subagents their own **git worktrees**, separate working copies on their own branches, so their file edits don't overwrite each other while they work. Worktrees prevent agents from clobbering each other's files. They don't prevent **logical** conflicts: two branches that each work alone and break when merged. Independence is a property of the *tasks*, and that's your call.
+
+<Pitfall title="Parallelizing Faster Than You Can Review">
+
+**Common mistake:** starting six agents before lunch and coming back to six large diffs, six walkthroughs, and a merge conflict.
+
+Unreviewed work isn't finished work. It's a queue. If you can carefully review two agent diffs per hour, running six agents makes the queue longer, not your output higher. Start with two parallel agents. Add a third only when you're keeping up with review.
+
+</Pitfall>
+
+---
+
+## Subagents: Let One Agent Split the Work
+
+An agent can create **subagents** to handle parts of a task in parallel, for example one researching an API while another writes tests. You can see their status and message a subagent directly.
+
+Subagents are delegation inside delegation. The same rules apply: the parts should be independent and verifiable. When you approve a permission for a conversation, Antigravity applies it to the main agent **and its subagents**, so a broad approval reaches further than it looks.
+
+---
+
+## Automations: Delegation Without You Present
+
+Antigravity can run **automations**: scheduled or always-on agent tasks. "Every weekday at 7 a.m., run the test suite against main and summarize new failures." "Every Monday, check for dependency updates and open a summary."
+
+Unattended runs are the purest form of what Foundations called **agency**: the AI acting for you in situations you won't see as they happen. That raises the bar:
+
+| Good automation | Risky automation |
+|---|---|
+| Read-only reporting: test runs, dependency audits, summaries | Anything that pushes, deploys, sends messages, or deletes |
+| Output goes to you for review | Output goes straight to customers or production |
+| Narrow, stable task | Open-ended task that depends on judgment |
+
+Start every automation read-only, and only widen it after it has run correctly many times.
+
+---
+
+## Local or Remote?
+
+Remote agents run conversations in Google's cloud rather than on your machine. Google began rolling them out to some paid plans in November 2026. A remote agent can't touch your laptop's files or credentials, which helps safety, but your code and context now live in a cloud environment. Check what your organization allows before sending a client's or employer's code there.
+
+<TryIt title="Build a Parallel Plan">
+
+1. Take the task list you made in lesson 1.
+2. Mark each task: **parallel-safe**, **sequential** (depends on another), **keep for myself**, or **automation candidate**.
+3. For parallel-safe tasks, confirm they touch different files and share no undecided design choices.
+4. For automation candidates, write the read-only first version.
+5. Set your parallel limit, the number of agents whose work you can review well, and stick to it for a week.
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "Which pair of tasks is safest to run as parallel agents?",
+    options: [
+      "Renaming the User model and adding a field to the User model.",
+      "Designing a new API and building the client for it.",
+      "Adding tests to the billing module and fixing lint errors in the reports module.",
+      "Two agents both fixing the same bug."
+    ],
+    correctIndex: 2,
+    explanation: "Independent files and no shared decisions. The other pairs conflict or depend on each other."
+  },
+  {
+    question: "Subagents get their own git worktrees. What problem does that NOT solve?",
+    options: [
+      "Logical conflicts, where two branches each work alone but break when combined.",
+      "Agents overwriting each other's files while they work.",
+      "Keeping each agent's changes on a separate branch.",
+      "Isolating each agent's working copy."
+    ],
+    correctIndex: 0,
+    explanation: "Worktrees separate files. Whether tasks are logically independent is still your decision."
+  },
+  {
+    question: "What's the best first version of a new scheduled automation?",
+    options: [
+      "One that deploys to production nightly.",
+      "One that emails customers directly.",
+      "One with Turbo permissions so it never gets stuck.",
+      "A read-only task whose output comes to you for review."
+    ],
+    correctIndex: 3,
+    explanation: "Unattended agents should start with no power to cause harm and earn wider scope by running correctly."
+  }
+]} />
+
+---
+
+## Up Next
+
+You've decided what each agent does. Next: deciding **what each agent is allowed to do**, with permission presets and the sandbox.

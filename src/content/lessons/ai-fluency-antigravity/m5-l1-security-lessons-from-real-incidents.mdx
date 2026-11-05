@@ -1,0 +1,137 @@
+---
+title: "Security Lessons From Real Incidents"
+description: "Learn agent security from Antigravity's own history: malicious repositories, prompt injection, a file-search exploit that bypassed the strictest mode, and leaked tokens. Turn each into a habit that protects your machine, secrets, and data."
+module: 5
+moduleTitle: "Diligence"
+lesson: 1
+duration: "30 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## Why Study Incidents
+
+Every agent platform has security problems. What's useful about Antigravity's is that they're **public**: researchers disclosed them, Google patched them, and the press covered them. Each one teaches a habit that applies to any agent tool, not just this one.
+
+The descriptions below summarize public reports. They're not a complete list, and every issue described has since been addressed. The point isn't that Antigravity is unsafe. It's that **agents running as you on your machine need defenses in layers**, because any single layer can fail.
+
+---
+
+## Incident 1: The Malicious Repository (November 2025)
+
+Within days of launch, security researchers at Mindgard showed that opening a malicious repository could lead Antigravity to install a **persistent backdoor**, code that kept running and stayed on the machine after the session ended. Other researchers showed **indirect prompt injection** attacks, in which instructions hidden in content the agent read led it to exfiltrate data or run commands. Google said it took the reports seriously and began publishing known issues while it worked on fixes.
+
+**The habit:** treat a repo you didn't write as untrusted input. Open strangers' repos with the **Request Review** preset, the sandbox on, and non-workspace access off, or inside a disposable VM or container.
+
+## Incident 2: Turbo Mode and the Wiped Drive (December 2025)
+
+Covered in module 2: a user reported that an agent in Turbo mode, asked to clear a project cache, deleted the contents of a whole drive.
+
+**The habit:** autonomy belongs in isolated environments. Deny rules for destructive commands should hold no matter which preset is active.
+
+## Incident 3: The Exploit That Beat the Strictest Mode (disclosed April 2026)
+
+Pillar Security reported a prompt injection through the agent's **file-search tool** that allowed arbitrary code execution *even in Antigravity's most restrictive mode*. They reported it privately in January 2026, Google fixed it by the end of February, and the research was published in April with a bug bounty paid.
+
+**The habit:** no single setting is a guarantee. Strict modes, sandboxes, and approvals each reduce risk, and any of them can have a bug. That's why you also limit **what's reachable**: what secrets sit on the machine, what accounts are logged in, what networks are open.
+
+## Incident 4: Tokens Shared Across Users (fixed 2026)
+
+Antigravity's changelog records a fix for an issue in which OAuth tokens for a plugin's MCP server could be used by another user on the same computer account. Other changelog entries fix path-handling bugs in agent tools.
+
+**The habit:** the tools you plug into an agent are part of its attack surface. Fewer plugins, fewer stored tokens, and narrow scopes mean less to leak.
+
+---
+
+## The Risky Combination
+
+Most agent attacks need three things at once:
+
+<ProcessFlow
+  label="The three ingredients of most agent attacks"
+  color="#1a73e8"
+  steps={[
+    { title: "Untrusted input", detail: "Repos, pages, issues, tool output" },
+    { title: "Something valuable", detail: "Secrets, private code, accounts" },
+    { title: "A way out", detail: "Network, git push, messaging tools" },
+  ]}
+/>
+
+Remove any one and the attack mostly fails. Practical ways to break the chain:
+
+- **Separate untrusted work.** Review a stranger's repo in a VM or a remote agent that has no access to your credentials.
+- **Keep secrets out of reach.** Use deny rules on `.env` and key files, short-lived and narrowly scoped tokens, and no production credentials on the dev machine.
+- **Control the exits.** Ask rules on network commands and `git push`, browser allowlists, and MCP tools with read-only scopes.
+
+<Pitfall title="'I'm on the Strictest Setting, So I'm Safe'">
+
+**Common mistake:** treating one setting as the whole security plan.
+
+Incident 3 bypassed the most restrictive mode. Settings are one layer. The others are what's reachable from the machine, what's logged in, which tools are installed, and what you review before approving. Defense in depth means a single failure isn't a breach.
+
+</Pitfall>
+
+---
+
+## Data and Account Diligence
+
+Security also covers where your data goes:
+
+- **Know your plan's terms.** Consumer, business, and enterprise Google accounts have different data-handling terms and different features. Some settings, such as Auto mode, have been unavailable on business and enterprise accounts.
+- **Check before using remote agents or cloud features with client or employer code.** Your organization's policy decides, not the feature's availability.
+- **Use only supported access.** In early 2026 Google cut off accounts that connected an unsupported third-party agent to Antigravity's backend, citing malicious use. It later added a reinstatement process. Workarounds that break the terms put your account at risk.
+
+<TryIt title="Break the Chain on Your Setup">
+
+1. List what's reachable from the machine where you run Antigravity: secrets files, cloud CLIs, SSH keys, logged-in browser profiles.
+2. List every plugin and MCP server you've enabled, with its publisher and access scope.
+3. Identify one workflow where untrusted input, something valuable, and a way out meet.
+4. Add one change that breaks that chain: a deny rule, a separate VM or profile, a narrower token, or an ask rule on outbound commands.
+5. Decide where you'll open repos from strangers, and write it down.
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "What does the April 2026 file-search exploit teach?",
+    options: [
+      "File search should never be used.",
+      "No single setting is a guarantee, so you also need to limit what's reachable from the agent's environment.",
+      "Antigravity is permanently unsafe.",
+      "Only Turbo mode has vulnerabilities."
+    ],
+    correctIndex: 1,
+    explanation: "It bypassed the most restrictive mode. Defense in depth means other layers still protect you when one fails."
+  },
+  {
+    question: "Which three ingredients does most agent exploitation need at once?",
+    options: [
+      "A fast model, a big repo, and long prompts.",
+      "Planning mode, Fast mode, and Turbo mode.",
+      "Untrusted input, something valuable within reach, and a way to get data out.",
+      "A browser, a terminal, and an editor."
+    ],
+    correctIndex: 2,
+    explanation: "Break any one of the three and most attacks fail."
+  },
+  {
+    question: "You want to explore an unfamiliar open-source repo with an agent. What's the safest setup?",
+    options: [
+      "Request Review preset, sandbox on, and non-workspace access off, ideally in a VM, container, or remote agent without your credentials.",
+      "Turbo mode, so it finishes quickly.",
+      "Your main laptop with all your cloud CLIs logged in.",
+      "Any preset; reading code is harmless."
+    ],
+    correctIndex: 0,
+    explanation: "Untrusted repos were the first public attack vector. Isolate them from your secrets."
+  }
+]} />
+
+---
+
+## Up Next
+
+The final lesson covers **owning agent work**: accountability when many agents contributed, disclosure, and team practice.

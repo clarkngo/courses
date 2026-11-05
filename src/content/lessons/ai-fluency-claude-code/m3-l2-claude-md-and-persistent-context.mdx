@@ -1,0 +1,152 @@
+---
+title: "CLAUDE.md, Skills, and Persistent Context"
+description: "Make description last. Write a CLAUDE.md that briefs every session, keep it short and true, and package repeat workflows as slash commands, skills, and subagents."
+module: 3
+moduleTitle: "Description"
+lesson: 2
+duration: "30 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## Stop Repeating Yourself
+
+If you've told Claude Code three times that your project uses `pnpm`, not `npm`, the problem isn't the agent. It's that the fact lives in your head instead of somewhere the agent reads every time.
+
+**CLAUDE.md** is that place. It's a Markdown file Claude Code loads into context at the start of each session. Whatever you put there becomes part of every brief, automatically.
+
+---
+
+## Where CLAUDE.md Files Live
+
+| Location | Scope | Typical contents |
+|---|---|---|
+| `CLAUDE.md` in the project root (committed) | Everyone on the project | Build and test commands, architecture overview, conventions, known traps |
+| `CLAUDE.md` in a subfolder | That part of the codebase | Rules specific to, say, the `api/` or `mobile/` folder |
+| `~/.claude/CLAUDE.md` | You, across every project | Personal preferences: your editor, how you like summaries, your git habits |
+| A local, git-ignored file | You, in this project | Your local setup, ports, test accounts |
+
+Run `/init` in a new project and Claude Code drafts a CLAUDE.md from what it finds. Treat the draft as a first version: correct what it got wrong and add what only you know.
+
+---
+
+## What Belongs in It
+
+A good CLAUDE.md answers the questions a new teammate asks in their first week:
+
+```markdown
+# Project: Billing Service
+
+## Commands
+- Install: `pnpm install`
+- Test: `pnpm test` (single file: `pnpm test path/to/file`)
+- Lint and type check: `pnpm check`. Run before saying a task is done.
+
+## Architecture
+- `src/api/`: HTTP handlers. Thin; no business logic here.
+- `src/domain/`: business rules. Pure functions, fully unit tested.
+- `src/db/`: the only place that talks to Postgres.
+
+## Conventions
+- Money is always integer cents, never floats.
+- New endpoints need an entry in `docs/api.md`.
+
+## Don't
+- Don't edit files in `src/generated/`. They're rebuilt by `pnpm codegen`.
+- Don't add dependencies without asking.
+```
+
+Notice what makes it work:
+
+- **Commands are exact.** The agent can run them to verify its work.
+- **It explains the *why* behind rules,** so the agent can apply them to cases you didn't list.
+- **The "Don't" list records real traps,** usually ones an agent (or a person) already fell into.
+- **It's short.** Every line uses context in every session.
+
+<Pitfall title="The CLAUDE.md That Rots">
+
+**Common mistake:** writing a long CLAUDE.md once and never touching it again.
+
+Stale instructions are worse than none. If it says "tests run with Jest" after you moved to Vitest, the agent follows the outdated instruction confidently. Keep it short enough to re-read, update it when the project changes, and review edits to it in pull requests like any other code. When the agent makes the same mistake twice, that's a sign: add a line, or fix one that's wrong.
+
+</Pitfall>
+
+---
+
+## Beyond CLAUDE.md: Reusable Description
+
+CLAUDE.md holds facts that are always true. For workflows you repeat, Claude Code has other places to put description:
+
+<ProcessFlow
+  label="Layers of persistent description in Claude Code"
+  color="#c2410c"
+  steps={[
+    { title: "CLAUDE.md", detail: "Always-on project facts" },
+    { title: "Slash commands", detail: "Prompts you run by name" },
+    { title: "Skills", detail: "Instructions loaded when relevant" },
+    { title: "Subagents", detail: "Specialists with their own context" },
+  ]}
+/>
+
+- **Custom slash commands** turn a prompt you type often into a command. A `/review-pr` command might hold your team's full review checklist.
+- **Skills** are folders with a `SKILL.md` file of instructions, plus optional scripts or reference files. Claude reads a short description of each skill and loads the full instructions only when a task needs them, so you can have many without filling context.
+- **Subagents** are specialized helpers with their own instructions, tools, and separate context window. The main agent hands them a focused job, such as "review this diff for security issues", and gets back a summary.
+- **Hooks** are shell commands that run automatically at set points, for example a formatter after every file edit. They're deterministic, so they suit rules that must *always* happen (more in module 5).
+- **MCP servers** connect the agent to other systems, such as your issue tracker, database, or docs, so it can gather context you'd otherwise paste.
+
+The fluency question for each: **is this description that should happen every time, sometimes, or only when I ask?** Put always-on facts in CLAUDE.md, on-demand workflows in commands or skills, and must-happen rules in hooks.
+
+<TryIt title="Write and Test Your CLAUDE.md">
+
+1. In a project you know, run `/init` or start a CLAUDE.md from scratch.
+2. Add the exact commands to install, test, and lint, plus three conventions and three "Don't" items.
+3. Look back at your notes from the read-only tour in module 1. Add one line that would have prevented a mistake or guess you saw.
+4. Start a **new** session and ask it to do a small task. Did it follow the file without being reminded?
+5. Pick one prompt you type at least weekly and turn it into a slash command or a skill.
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "What is CLAUDE.md for?",
+    options: [
+      "Storing your API keys for the agent.",
+      "Logging what the agent did.",
+      "Replacing your README.",
+      "Holding project facts, commands, and conventions that Claude Code loads at the start of every session."
+    ],
+    correctIndex: 3,
+    explanation: "CLAUDE.md is persistent description: it briefs every session automatically. Never put secrets in it."
+  },
+  {
+    question: "Your agent keeps running npm instead of pnpm. What's the fluent fix?",
+    options: [
+      "Add the exact install and test commands to the project's CLAUDE.md.",
+      "Remind it in every prompt.",
+      "Switch to a different agent.",
+      "Uninstall npm."
+    ],
+    correctIndex: 0,
+    explanation: "Repeated corrections belong in persistent context, not in your memory."
+  },
+  {
+    question: "A formatter must run after every single file edit, with no exceptions. Where should that rule live?",
+    options: [
+      "In a skill, so it loads when relevant.",
+      "In CLAUDE.md, as a request.",
+      "In a hook, because hooks run deterministically instead of relying on the model to remember.",
+      "Nowhere; the agent will figure it out."
+    ],
+    correctIndex: 2,
+    explanation: "Instructions in CLAUDE.md or skills are guidance the model usually follows. Hooks are code that always runs."
+  }
+]} />
+
+---
+
+## Up Next
+
+Module 4 is **Discernment**: reviewing plans and diffs, and knowing when "done" isn't done.

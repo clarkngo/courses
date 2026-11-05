@@ -1,0 +1,139 @@
+---
+title: "Briefing Agents and Choosing Models"
+description: "Write mission briefs an agent can finish without you: goal, context, constraints, and done. Pick a model and thinking level for the task, and use your quota on purpose."
+module: 3
+moduleTitle: "Description"
+lesson: 1
+duration: "30 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## Brief It as if You'll Be Out of the Room
+
+With one agent beside you, a vague brief can be fixed in the next message. In Antigravity you're often running several agents and checking in occasionally, so **each brief has to stand on its own.** Whatever the agent can't find in the brief, the codebase, or its rules, it will guess.
+
+A useful test: if you handed this brief to a skilled contractor and then left for two hours, would they come back with what you wanted?
+
+---
+
+## The Four-Part Mission Brief
+
+<ProcessFlow
+  label="Four parts of a mission brief"
+  color="#1a73e8"
+  steps={[
+    { title: "Goal", detail: "Outcome and why" },
+    { title: "Context", detail: "Files, history, hunches" },
+    { title: "Constraints", detail: "Boundaries, conventions" },
+    { title: "Done", detail: "Checks and the report" },
+  ]}
+/>
+
+| Part | Example |
+|---|---|
+| **Goal** | "The export-to-CSV button times out for accounts with more than 10,000 rows. Exports should finish in under 10 seconds for 100,000 rows." |
+| **Context** | "The export handler is in `server/export.ts`. It loads everything into memory. Streaming is probably the fix. There's a load-test script in `scripts/bench-export.sh`." |
+| **Constraints** | "Keep the CSV format byte-for-byte identical. No new dependencies. Don't touch the UI." |
+| **Done** | "The benchmark shows under 10 seconds for 100k rows, existing export tests pass, and a new test covers a 100k-row export. In your walkthrough, include the before and after benchmark output." |
+
+Notice how the **Done** section asks for specific evidence in the walkthrough. In Antigravity, you can tell the agent which artifacts to produce and what they must show. That makes your later review faster and harder to fool.
+
+---
+
+## Techniques That Pay Off
+
+- **Use Planning mode, or `/plan`, for anything non-trivial.** Review the plan before the agent touches files. Using `/plan` makes the agent stop for your approval whatever your plan-review setting.
+- **Attach evidence.** Drag in the screenshot of the broken page, paste the stack trace, link the failing run. Concrete evidence beats a description of it.
+- **Invite questions.** "If anything is ambiguous, ask before you start." An agent that asks one question saves you from reviewing one wrong implementation.
+- **One mission per agent.** Don't bundle "fix the export, update the docs, and clean up utils" into one brief. Split it into separate agents and separate diffs.
+
+<Pitfall title="Briefing for the Happy Path Only">
+
+**Common mistake:** describing what should happen when everything works, and saying nothing about what the agent should do when it gets stuck.
+
+Unattended agents get stuck: a test needs credentials, a dependency won't install, the obvious fix breaks something else. Without guidance they improvise, sometimes by weakening a test or adding a workaround. Add a line like: "If you're blocked, stop and report what you tried. Don't work around failing tests or skip checks."
+
+</Pitfall>
+
+---
+
+## Choosing a Model
+
+Antigravity is multi-model. As of November 2026, its model menu includes Google's Gemini models (such as the Flash family and the newer, more capable Gemini 4 Argon), Anthropic's Claude models, and an open-weight GPT-OSS model, with **thinking levels** (Low, Medium, High) for deeper reasoning. Which models you see depends on your Google AI plan, and Google retires older models on announced dates, so check the Models page in the docs.
+
+Choosing a model is part of description: you're picking *who* gets the brief.
+
+| Task | Sensible choice | Why |
+|---|---|---|
+| Small, well-defined edits; quick questions | A fast model, low thinking | Speed matters; reasoning depth doesn't. |
+| Multi-file features, tricky bugs, design trade-offs | A most-capable model, higher thinking | Deeper reasoning pays for itself in fewer wrong turns. |
+| Scheduled reporting automations | A fast, cheap model | It runs often; keep quota for interactive work. |
+| A second opinion on another agent's work | A *different* model than the one that wrote it | A different model is less likely to share the first one's blind spots. |
+
+---
+
+## Quota Is a Budget
+
+Antigravity doesn't have a separate subscription. Your usage comes from your Google AI plan's quota, which refreshes on a schedule (weekly on the free tier, and every few hours up to a weekly cap on paid plans). Paid plans can add AI credits, with a setting that controls whether overages are ever charged.
+
+Fluent users spend quota deliberately:
+
+- Use high-capability models and high thinking levels where they change the outcome, not by default.
+- Keep automations on lighter models.
+- Kill runaway agents early. An agent looping on the same error burns quota and produces nothing.
+- Check the overage setting so a busy week doesn't become a surprise bill.
+
+<TryIt title="Brief, Pick, and Compare">
+
+1. Take a real task and write a four-part mission brief, including the evidence you want in the walkthrough and a "when blocked" instruction.
+2. Choose a model and thinking level, and write one sentence on why.
+3. Run it in Planning mode and review the plan.
+4. Optional: run the same brief with a different model in a separate agent. Compare the two plans. Where did they differ, and which assumptions did each make?
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "Why must Antigravity briefs stand on their own more than chat prompts?",
+    options: [
+      "Antigravity doesn't allow follow-up messages.",
+      "Longer prompts are always better.",
+      "Agents can't read code.",
+      "You're often running several agents and checking in occasionally, so anything missing from the brief, codebase, or rules gets guessed."
+    ],
+    correctIndex: 3,
+    explanation: "Less real-time supervision means the brief carries more of the weight."
+  },
+  {
+    question: "Which line best prevents an unattended agent from 'fixing' a blocker by weakening a test?",
+    options: [
+      "If you're blocked, stop and report what you tried. Don't work around failing tests or skip checks.",
+      "Please be careful.",
+      "Use your best judgment.",
+      "Work as fast as possible."
+    ],
+    correctIndex: 0,
+    explanation: "Tell the agent what to do when stuck. Otherwise it improvises."
+  },
+  {
+    question: "You want a second opinion on an implementation plan one agent wrote. What's a good choice?",
+    options: [
+      "Ask the same agent whether its plan is good.",
+      "Skip review; the plan looked fine.",
+      "Have a different model review it skeptically, since it's less likely to share the first model's blind spots.",
+      "Use the lowest thinking level available."
+    ],
+    correctIndex: 2,
+    explanation: "Model diversity is a cheap form of independent review."
+  }
+]} />
+
+---
+
+## Up Next
+
+A great brief helps one agent once. Next: **rules, skills, and AGENTS.md**, which brief every agent automatically.

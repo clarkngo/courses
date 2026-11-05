@@ -1,0 +1,134 @@
+---
+title: "Your First Mission"
+description: "Run a safe first task in Antigravity: open a workspace on a clean git state, choose Planning or Fast mode, keep the permission preset conservative, and learn to read the artifacts an agent hands back."
+module: 1
+moduleTitle: "Meet Antigravity"
+lesson: 2
+duration: "25 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## Start Small and Watch Closely
+
+Your first Antigravity mission should teach you how the agent works, not ship a feature. You'll watch one agent closely, which you won't be able to do once you're running several. Pay attention to what it reads, what it runs, and what it hands back.
+
+<ProcessFlow
+  label="Setting up a safe first mission in Antigravity"
+  color="#1a73e8"
+  steps={[
+    { title: "Clean git", detail: "Commit or stash first" },
+    { title: "Open workspace", detail: "The project folder only" },
+    { title: "Conservative preset", detail: "Default or Request Review" },
+    { title: "Planning mode", detail: "Plan before acting" },
+    { title: "Read artifacts", detail: "Then check the files" },
+  ]}
+/>
+
+---
+
+## Step 1: A Clean Starting Point
+
+Run `git status` in the project and commit or stash work in progress. Git is your undo button, and a clean state makes the agent's changes easy to see in a diff. Open the **project folder** as the workspace, not your home folder. The workspace is the agent's default boundary for file access.
+
+## Step 2: A Conservative Permission Preset
+
+Antigravity's desktop app offers permission presets that control how freely an agent runs terminal commands, reads files, and calls tools. For a first mission, use **Default** (it asks before sensitive operations) or **Request Review** (it asks before every command). Module 2 covers all the presets, including the high-autonomy ones you should *not* start with.
+
+## Step 3: Planning or Fast?
+
+Antigravity agents work in one of two styles:
+
+| Mode | What it does | Use it for |
+|---|---|---|
+| **Planning** | Thinks before acting, breaks work into task groups, and produces an **implementation plan** artifact you can review and comment on before it changes files. | Anything bigger than a small, local change, and every first mission. |
+| **Fast** | Executes directly, without a separate planning step. | Small, well-understood edits: rename this, fix that typo, run the formatter. |
+
+For a first mission, choose **Planning**. Reading and commenting on a plan is the core review skill in Antigravity.
+
+## Step 4: A Read-Mostly Task
+
+Good first missions:
+
+- "Explain this repo's architecture: entry points, main modules, and where the tests are. Don't modify any files."
+- "Find where user sessions are created and expired. Produce a plan for adding a 'remember me' option, but don't implement it yet."
+- "Run the test suite and summarize any failures with their likely causes. Don't fix anything."
+
+Saying "don't modify files" out loud is a good habit even when the preset would also catch it.
+
+---
+
+## Step 5: Reading What Comes Back
+
+When the agent finishes, you'll see a response plus any **artifacts** it created. Read them with two questions in mind:
+
+1. **What does this claim?** "Sessions are created in `auth/session.go` and expire after 24 hours."
+2. **How would I check it?** Open the file. Find the expiry constant. Does it say 24 hours?
+
+Check two or three claims yourself. If they hold up, you've learned something about how far to trust this agent on this codebase. If one doesn't, you've learned something more valuable, before anything was at stake.
+
+Then run `git status` again. After a read-only mission, nothing should have changed.
+
+<Pitfall title="Mistaking a Polished Artifact for a Correct One">
+
+**Common mistake:** an implementation plan with clean headings, a diagram, and a confident tone feels finished, so you approve it.
+
+Polish is about presentation, not accuracy. A beautifully formatted plan can still name the wrong file, miss a second place the logic lives, or rest on an assumption nobody checked. Judge the content, not the formatting.
+
+</Pitfall>
+
+<TryIt title="The First-Mission Scorecard">
+
+1. Choose a repo you know well and get to a clean git state.
+2. Open it in the Antigravity desktop app (or the IDE or CLI) with the **Default** or **Request Review** preset.
+3. In **Planning** mode, ask for an architecture explanation and a plan, not an implementation, for one small change.
+4. While it works, note the files it reads and the commands it asks to run.
+5. Score the result: three claims you checked, how many held up, and one thing it missed.
+6. Leave one inline comment on the plan correcting or questioning something, and see how it responds.
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "Why choose Planning mode for a first mission?",
+    options: [
+      "Fast mode doesn't work on first runs.",
+      "Planning mode uses no quota.",
+      "Planning mode never makes mistakes.",
+      "It produces an implementation plan you can review and comment on before files change, which is the core review skill in Antigravity."
+    ],
+    correctIndex: 3,
+    explanation: "Planning gives you a cheap checkpoint before any changes, and practice in reviewing artifacts."
+  },
+  {
+    question: "Which permission preset fits a first mission?",
+    options: [
+      "Default or Request Review.",
+      "Turbo, to see what it can do.",
+      "Whichever is fastest.",
+      "It doesn't matter for read-only tasks."
+    ],
+    correctIndex: 0,
+    explanation: "Start conservative. You'll widen autonomy once you've watched the agent work."
+  },
+  {
+    question: "The agent's plan is beautifully formatted and confident. What should you do?",
+    options: [
+      "Approve it; formatting signals quality.",
+      "Check a few of its specific claims against the actual code before approving.",
+      "Ask it to add more diagrams.",
+      "Switch to Fast mode."
+    ],
+    correctIndex: 1,
+    explanation: "Polish isn't accuracy. Spot-check claims against the code."
+  }
+]} />
+
+---
+
+## Up Next
+
+Module 2 is **Delegation**: deciding which tasks go to which agents, what runs in parallel, and what runs on its own.

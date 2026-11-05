@@ -1,0 +1,161 @@
+---
+title: "How Agents Fail"
+description: "A field guide to agent failure modes: overclaiming, gaming the tests, scope creep, invented APIs, lost context, and loops. Learn the signs of each and the move that fixes it."
+module: 4
+moduleTitle: "Discernment"
+lesson: 2
+duration: "25 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## Know the Patterns
+
+Agents don't fail randomly. The same handful of failure modes show up across tools, models, and codebases. Once you know them, you start spotting them in the transcript *while they happen*, not after the pull request merges.
+
+None of these mean the agent is useless. They mean the agent is an agent: it optimizes for the goal as it understood it, using the evidence it could gather. Most failures trace back to a gap in delegation, description, or verification, and each has a fix.
+
+---
+
+## The Field Guide
+
+### 1. Overclaiming "done"
+
+**Signs:** a confident summary ("fully implemented and tested") but thin evidence; "should work" or "this will fix" language; no command output that shows success.
+
+**Fix:** define done in the brief (module 3). Ask: "Show me the command you ran and its output." Run the key check yourself.
+
+### 2. Gaming the check
+
+**Signs:** tests modified alongside the code; assertions loosened; a test marked skipped; special-case logic that only fires for the test input; a type error "fixed" with a cast to `any`.
+
+**Fix:** add "don't modify existing tests" as a constraint; watch for test files in `git diff --stat`; ask the agent to show the new test failing before the fix.
+
+### 3. Scope creep
+
+**Signs:** changes to files the task didn't need; "I also cleaned up…"; renamed variables throughout; a refactor riding along with a bug fix.
+
+**Fix:** constrain scope in the brief ("only change files in `src/auth/`"); ask it to revert unrelated changes; keep unrelated improvements as separate tasks.
+
+### 4. Invented APIs and packages
+
+**Signs:** calls to functions or options that don't exist in your library version; an install command for a package you've never heard of; config keys that look plausible but aren't documented.
+
+**Fix:** check unfamiliar packages on the official registry before installing (name, publisher, download history, repository). Ask it to cite the docs for an API it used. The type checker and tests catch many of these, which is another reason to make them part of done.
+
+### 5. Wrong mental model
+
+**Signs:** the fix is in the wrong layer; it "fixed" a symptom in the UI when the cause is in the data; it built a new mechanism parallel to one that already exists.
+
+**Fix:** catch it at the plan stage. Ask "Where else in the codebase does this happen?" and "Is there an existing helper for this?" Add the architecture facts it missed to CLAUDE.md.
+
+### 6. Lost context
+
+**Signs:** in a long session, it forgets a constraint you set early, repeats a fix it already tried, or contradicts a decision you made together. This often happens after the conversation is compacted.
+
+**Fix:** keep sessions focused on one task. Write key decisions into a plan file or CLAUDE.md. Start fresh with `/clear` and a sharp brief instead of pushing a tired session further.
+
+### 7. Loops and thrashing
+
+**Signs:** the same error three times; alternating between two broken approaches; ever-larger changes trying to fix a problem the last change caused.
+
+**Fix:** interrupt. Rewind to the last good checkpoint. Then switch to augmentation: "Stop editing. Explain what you think the root cause is and what you've ruled out." Often the problem is missing information only you have.
+
+### 8. Agreeing with you when it shouldn't
+
+**Signs:** you suggest a cause and it immediately finds evidence for it; you push back on a correct approach and it abandons it.
+
+**Fix:** ask open questions ("What could cause this?") instead of leading ones ("Is it the cache?"). Ask it to argue the other side before you decide.
+
+---
+
+<Pitfall title="Automation Bias">
+
+**Common mistake:** the agent is right nine times in a row, so the tenth review gets skipped.
+
+That's **automation bias**: trusting an automated system more as it builds a track record, even when the current situation is different. Agent mistakes aren't spread evenly. They cluster in unusual code, unclear requirements, and the high-stakes edge cases where review matters most. Your review depth should follow the **risk of the change**, not the agent's recent streak.
+
+</Pitfall>
+
+---
+
+## Checkpoints and Rewind
+
+Claude Code keeps **checkpoints** of file states as it edits, so you can rewind a session's code and conversation to an earlier point. That makes it cheap to let an experiment run and then roll it back.
+
+Two limits to remember:
+
+- **Checkpoints track file edits, not every side effect.** A command that changed a database, called an API, or deleted something outside the tracked edits isn't undone by rewinding.
+- **They're not a replacement for git.** Commit good states on a branch. Git history lasts beyond the session and can be shared with your team.
+
+<TryIt title="Failure-Mode Bingo">
+
+For your next three agent sessions, keep this list open:
+
+1. Overclaiming done
+2. Gaming the check
+3. Scope creep
+4. Invented APIs or packages
+5. Wrong mental model
+6. Lost context
+7. Loops and thrashing
+8. Agreeing when it shouldn't
+
+Each time you spot one, note it, the sign that tipped you off, and the fix you used. After three sessions, look for your top two. Add a line to your CLAUDE.md or your standard brief that heads them off.
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "The diff shows the agent changed an assertion from expect(total).toBe(1050) to expect(total).toBeGreaterThan(0). Which failure mode is this?",
+    options: [
+      "Lost context.",
+      "Agreeing with you.",
+      "Gaming the check: weakening the test so it passes instead of fixing the code.",
+      "Invented API."
+    ],
+    correctIndex: 2,
+    explanation: "Loosened assertions are a classic sign. The test now passes but checks almost nothing."
+  },
+  {
+    question: "The agent wants to install a package you've never heard of to solve a common problem. What should you do first?",
+    options: [
+      "Install it; the agent knows best.",
+      "Check the official registry for the package's publisher, history, and repository, and confirm it's the real, intended package.",
+      "Install it globally so it works everywhere.",
+      "Ignore it."
+    ],
+    correctIndex: 1,
+    explanation: "Agents can invent package names, and attackers sometimes register lookalike names. Verify before you install."
+  },
+  {
+    question: "Why doesn't a long streak of good agent results justify skipping review?",
+    options: [
+      "Agent mistakes cluster in unusual and high-stakes situations, so review should follow the risk of the change, not the recent track record.",
+      "Agents get worse over time.",
+      "Review is required by law.",
+      "It does justify skipping review."
+    ],
+    correctIndex: 0,
+    explanation: "That's automation bias. Risk-based review protects you where errors are most costly."
+  },
+  {
+    question: "What does rewinding to a checkpoint NOT undo?",
+    options: [
+      "File edits the agent made.",
+      "The conversation after that point.",
+      "Code changes in tracked files.",
+      "Side effects outside tracked file edits, such as changes to a database or calls to an external API."
+    ],
+    correctIndex: 3,
+    explanation: "Checkpoints cover the agent's file edits. External side effects are permanent, which is why they deserve tighter permissions."
+  }
+]} />
+
+---
+
+## Up Next
+
+Module 5 is **Diligence**: keeping your secrets, machine, and repository safe, and owning what you ship.

@@ -1,0 +1,194 @@
+---
+title: "Course Challenge"
+description: "Bring the four competencies together: a scenario-based knowledge check, then a capstone in which you take one real coding task through Delegation, Description, Discernment, and Diligence with Claude Code."
+module: 5
+moduleTitle: "Diligence"
+lesson: 3
+duration: "45 min"
+---
+
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## How the Challenge Works
+
+The challenge has two parts:
+
+1. **Knowledge check:** ten scenario questions covering every module. Aim for at least 8 out of 10. If you miss one, read the explanation and revisit that lesson.
+2. **Capstone task:** take one real task from your own work through all four Ds with Claude Code, and keep a short log as you go.
+
+This course is free and self-paced, so there's nothing to submit. The goal is a way of working with agents that lasts longer than any particular feature.
+
+---
+
+## Part 1: Knowledge Check
+
+<Quiz questions={[
+  {
+    question: "(Module 1) A teammate says Claude Code is 'just ChatGPT in the terminal.' What's the most important difference they're missing?",
+    options: [
+      "It uses a different font.",
+      "It can only write Python.",
+      "It acts in a loop, reading files, running commands, and editing code without waiting for you between steps, so you must add checkpoints on purpose.",
+      "It doesn't use a language model."
+    ],
+    correctIndex: 2,
+    explanation: "The agentic loop removes the automatic human checkpoint that copy-paste provided."
+  },
+  {
+    question: "(Module 1) After a read-only 'explain the codebase' session, git status shows a modified file. What should you do?",
+    options: [
+      "Find out what changed it and why before continuing.",
+      "Ignore it; read-only sessions can't change files.",
+      "Commit it immediately.",
+      "Delete the repository and re-clone."
+    ],
+    correctIndex: 0,
+    explanation: "An unexpected write during a read-only task is cheap to investigate now and expensive to discover later."
+  },
+  {
+    question: "(Module 2) Which task should you NOT hand to the agent in high-autonomy mode?",
+    options: [
+      "Writing tests for an existing utility module.",
+      "Fixing lint errors across the src folder.",
+      "Drafting a README for an internal tool.",
+      "Running the migration that drops an old column from the production database."
+    ],
+    correctIndex: 3,
+    explanation: "Irreversible production actions need a human every time, regardless of how capable the agent is."
+  },
+  {
+    question: "(Module 2) You keep clicking 'allow' for npm test fifty times a day. What's the fluent fix?",
+    options: [
+      "Switch to bypass mode permanently.",
+      "Add an allow rule for your test command so the prompts you still see are the meaningful ones.",
+      "Stop running tests.",
+      "Approve everything without reading."
+    ],
+    correctIndex: 1,
+    explanation: "Good rules fix prompt fatigue without throwing away the checkpoint."
+  },
+  {
+    question: "(Module 3) Your brief says 'make checkout faster.' The agent rewrites the cart UI. What was missing?",
+    options: [
+      "Context and done-criteria: where the slowness is, how it was measured, and what number counts as success.",
+      "A polite tone.",
+      "A longer prompt in all caps.",
+      "Nothing; the agent misbehaved."
+    ],
+    correctIndex: 0,
+    explanation: "Without a measurable goal and a pointer to the real bottleneck, the agent guessed."
+  },
+  {
+    question: "(Module 3) Every session, you remind the agent not to edit files in src/generated. Where should that instruction live?",
+    options: [
+      "In your head.",
+      "In each commit message.",
+      "In the project's CLAUDE.md, or enforced with a deny rule or hook if it must never happen.",
+      "In a code comment in a random file."
+    ],
+    correctIndex: 2,
+    explanation: "Repeated facts go in persistent context. Must-never rules are best enforced by the harness."
+  },
+  {
+    question: "(Module 4) The summary says 'all tests pass,' but git diff --stat shows a test file with 40 lines removed. What's your next step?",
+    options: [
+      "Approve; the tests pass.",
+      "Ask the agent to write a longer summary.",
+      "Merge and fix it later.",
+      "Read the test changes. The agent may have deleted or weakened the failing tests instead of fixing the code."
+    ],
+    correctIndex: 3,
+    explanation: "Gaming the check is a classic failure mode. The diff, not the summary, tells you what happened."
+  },
+  {
+    question: "(Module 4) After an hour, the agent keeps alternating between two broken fixes. What's the best move?",
+    options: [
+      "Type 'try harder' and wait.",
+      "Interrupt, rewind to the last good state, and switch to augmentation: ask what it thinks the root cause is and what it has ruled out.",
+      "Switch to bypass mode so it can try more things.",
+      "Accept whichever fix it ends on."
+    ],
+    correctIndex: 1,
+    explanation: "Thrashing means the agent is missing information or has the wrong model. Stop the loop and diagnose together."
+  },
+  {
+    question: "(Module 5) You ask Claude Code to summarize a third-party web page, in a session that also has your cloud credentials and an MCP tool that can send messages. What's the main risk?",
+    options: [
+      "Instructions injected in the page could try to use your credentials or the messaging tool. Untrusted input, secrets, and an outbound channel meet in one session.",
+      "The summary might be too long.",
+      "The page might load slowly.",
+      "There's no risk in reading."
+    ],
+    correctIndex: 0,
+    explanation: "Break the combination: run untrusted reading in a session without secrets or outbound tools."
+  },
+  {
+    question: "(Module 5) A reviewer asks why your agent-written function handles the empty-list case that way, and you don't know. What does diligence call for?",
+    options: [
+      "Tell them the AI wrote it.",
+      "Ask the reviewer to approve anyway.",
+      "Admit it, then learn the code until you can explain it, simplify it, or flag it. Don't ship code you can't defend.",
+      "Delete the comment that mentions it."
+    ],
+    correctIndex: 2,
+    explanation: "That's the explain-it test. Your name on the commit means you own the reasoning, not just the keystrokes."
+  }
+]} />
+
+---
+
+## Part 2: Capstone, One Task Through the 4Ds
+
+Choose a real, medium-sized task from your own work: a bug with a reproducible failure, a small feature, or a refactor of one module. Keep a short log in a text file as you go.
+
+<TryIt title="Delegation: Decide and Set the Dial">
+
+1. Write the task in one sentence.
+2. Answer the three delegation questions: Is it verifiable? Is it sized for review? Is a mistake reversible?
+3. Decide which parts you'll delegate, which you'll do together (augmentation), and which you'll keep.
+4. Choose a permission mode and any allow, ask, or deny rules for this task. Write down why.
+5. Create a branch (or worktree) and confirm a clean git state.
+
+</TryIt>
+
+<TryIt title="Description: Brief It">
+
+1. Check that your CLAUDE.md has the exact test and lint commands. Update it if not.
+2. Write a four-part brief: goal, context (with `@` file references), constraints, and done.
+3. Start in plan mode. Review the plan with the Stage 1 questions from module 4 and push back at least once if anything is off.
+4. Log what you changed in the plan and why.
+
+</TryIt>
+
+<TryIt title="Discernment: Review Like You Mean It">
+
+1. Let the agent execute. Interrupt if it drifts, and log each interruption.
+2. When it finishes, run `git diff --stat` before reading its summary.
+3. Read the full diff and check it against the failure-mode field guide from module 4.
+4. Run the key verification yourself.
+5. Ask a fresh session to review the diff skeptically. Log anything it found that you didn't.
+
+</TryIt>
+
+<TryIt title="Diligence: Ship It Responsibly">
+
+1. Run your personal shipping checklist from the last lesson.
+2. Scan the diff for secrets, debug output, and unrelated changes.
+3. Pass the explain-it test for the riskiest part, or rework that part until you do.
+4. Open a small pull request with a human-written note on why the change is right and what was AI-assisted, following your team's norms.
+5. Finish your log with one paragraph: what you'd do differently next time, and one line to add to your CLAUDE.md or standard brief.
+
+</TryIt>
+
+---
+
+## About the Framework
+
+The 4D AI Fluency Framework was created by **Rick Dakan and Joseph Feller** with **Anthropic**, and is released under [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/). This course's lessons, examples, and exercises are original.
+
+## Where to Go Next
+
+- [Discernment: Judging AI Output](/courses/ai-fluency-discernment/) goes deeper on evaluating AI work of every kind.
+- [AI Fluency for Google Antigravity](/courses/ai-fluency-antigravity/) applies the same 4Ds to Google's agent-first development platform. Comparing two agents' design choices is a fast way to sharpen your judgment about both.
+- [AI Fluency for Leaders & Teams](/courses/ai-fluency-leaders-teams/) covers turning individual habits into team practice.
