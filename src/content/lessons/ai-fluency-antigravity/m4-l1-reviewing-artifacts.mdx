@@ -61,6 +61,28 @@ When an agent finishes, it typically produces a **walkthrough**: what changed, w
 
 What the walkthrough *doesn't* mention matters as much as what it does. Unexpected files in the diff, deleted tests, and new dependencies often go unmentioned, because the agent didn't consider them important.
 
+<svg viewBox="0 0 680 330" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="An iceberg. Above the waterline is the walkthrough: fixed the export timeout, all tests pass. Below the waterline is the full diff: the expected rewrite of the export handler, plus things the walkthrough did not mention: a loosened test assertion, a new dependency, an unrequested refactor of the utils folder, and an error path that now swallows exceptions.">
+  <g font-family="system-ui, -apple-system, sans-serif">
+    <rect x="0" y="110" width="680" height="220" fill="#e8f0fe"/>
+    <line x1="0" y1="110" x2="680" y2="110" stroke="#1a73e8" stroke-width="2"/>
+    <polygon points="250,110 300,46 370,34 420,110" fill="#fff" stroke="#174ea6" stroke-width="1.5"/>
+    <polygon points="250,110 420,110 560,170 600,240 500,318 190,318 90,240 130,170" fill="#fff" fill-opacity="0.85" stroke="#174ea6" stroke-width="1.5"/>
+    <text x="440" y="40" fill="#174ea6" font-size="13" font-weight="700">THE WALKTHROUGH</text>
+    <text x="440" y="60" fill="#1e293b" font-size="13">"Fixed the export timeout.</text>
+    <text x="440" y="78" fill="#1e293b" font-size="13">All tests pass."</text>
+    <text x="20" y="134" fill="#174ea6" font-size="13" font-weight="700">THE DIFF</text>
+    <g font-size="14" text-anchor="middle">
+      <text x="345" y="160" fill="#1e293b">server/export.ts rewritten to stream ✓</text>
+      <text x="345" y="196" fill="#991b1b">test assertion loosened ✗</text>
+      <text x="345" y="226" fill="#991b1b">new dependency added ✗</text>
+      <text x="345" y="256" fill="#991b1b">utils/ refactored, not requested ✗</text>
+      <text x="345" y="286" fill="#991b1b">one error path now swallows exceptions ✗</text>
+    </g>
+    <text x="20" y="152" fill="#991b1b" font-size="12">red: not in the</text>
+    <text x="20" y="168" fill="#991b1b" font-size="12">walkthrough</text>
+  </g>
+</svg>
+
 ---
 
 ## Stage 3: The Code Itself

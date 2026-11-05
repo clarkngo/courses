@@ -47,6 +47,63 @@ Antigravity agents work in one of two styles:
 | **Planning** | Thinks before acting, breaks work into task groups, and produces an **implementation plan** artifact you can review and comment on before it changes files. | Anything bigger than a small, local change, and every first mission. |
 | **Fast** | Executes directly, without a separate planning step. | Small, well-understood edits: rename this, fix that typo, run the formatter. |
 
+<svg viewBox="0 0 680 270" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Planning mode versus Fast mode. In Planning mode the steps are: your brief, the agent's plan, your comments, which can loop back to a revised plan, your approval, the agent's execution, and a walkthrough. In Fast mode the steps are: your brief, the agent's execution, and the result. Planning adds a human checkpoint before any file changes.">
+  <defs>
+    <marker id="ag-mode-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#475569"/>
+    </marker>
+  </defs>
+  <g font-family="system-ui, -apple-system, sans-serif">
+    <text x="20" y="24" fill="#174ea6" font-size="13" font-weight="700">PLANNING MODE</text>
+    <g fill="#fffbeb" stroke="#b45309" stroke-width="1.5">
+      <rect x="20" y="36" width="96" height="44" rx="8"/>
+      <rect x="236" y="36" width="96" height="44" rx="8"/>
+      <rect x="344" y="36" width="96" height="44" rx="8"/>
+    </g>
+    <g fill="#e8f0fe" stroke="#1a73e8" stroke-width="1.5">
+      <rect x="128" y="36" width="96" height="44" rx="8"/>
+      <rect x="452" y="36" width="96" height="44" rx="8"/>
+      <rect x="560" y="36" width="100" height="44" rx="8"/>
+    </g>
+    <g fill="#1e293b" font-size="13" text-anchor="middle">
+      <text x="68" y="63">Brief</text>
+      <text x="176" y="63">Plan</text>
+      <text x="284" y="63">Comments</text>
+      <text x="392" y="63">Approve</text>
+      <text x="500" y="63">Execute</text>
+      <text x="610" y="63">Walkthrough</text>
+    </g>
+    <g stroke="#475569" stroke-width="1.5">
+      <line x1="117" y1="58" x2="125" y2="58" marker-end="url(#ag-mode-arrow)"/>
+      <line x1="225" y1="58" x2="233" y2="58" marker-end="url(#ag-mode-arrow)"/>
+      <line x1="333" y1="58" x2="341" y2="58" marker-end="url(#ag-mode-arrow)"/>
+      <line x1="441" y1="58" x2="449" y2="58" marker-end="url(#ag-mode-arrow)"/>
+      <line x1="549" y1="58" x2="557" y2="58" marker-end="url(#ag-mode-arrow)"/>
+    </g>
+    <path d="M284,82 C284,118 176,118 176,86" fill="none" stroke="#b45309" stroke-width="1.5" stroke-dasharray="5 4" marker-end="url(#ag-mode-arrow)"/>
+    <text x="230" y="128" text-anchor="middle" fill="#92400e" font-size="12">revise until it's right</text>
+    <line x1="392" y1="90" x2="392" y2="128" stroke="#b45309" stroke-width="2"/>
+    <text x="400" y="114" fill="#92400e" font-size="12" font-weight="700">no files change before this</text>
+    <text x="20" y="166" fill="#174ea6" font-size="13" font-weight="700">FAST MODE</text>
+    <rect x="20" y="178" width="96" height="44" rx="8" fill="#fffbeb" stroke="#b45309" stroke-width="1.5"/>
+    <rect x="128" y="178" width="420" height="44" rx="8" fill="#e8f0fe" stroke="#1a73e8" stroke-width="1.5"/>
+    <rect x="560" y="178" width="100" height="44" rx="8" fill="#e8f0fe" stroke="#1a73e8" stroke-width="1.5"/>
+    <g fill="#1e293b" font-size="13" text-anchor="middle">
+      <text x="68" y="205">Brief</text>
+      <text x="338" y="205">Execute directly</text>
+      <text x="610" y="205">Result</text>
+    </g>
+    <g stroke="#475569" stroke-width="1.5">
+      <line x1="117" y1="200" x2="125" y2="200" marker-end="url(#ag-mode-arrow)"/>
+      <line x1="549" y1="200" x2="557" y2="200" marker-end="url(#ag-mode-arrow)"/>
+    </g>
+    <rect x="20" y="246" width="14" height="14" rx="3" fill="#fffbeb" stroke="#b45309" stroke-width="1.5"/>
+    <text x="40" y="258" fill="#475569" font-size="12">you</text>
+    <rect x="80" y="246" width="14" height="14" rx="3" fill="#e8f0fe" stroke="#1a73e8" stroke-width="1.5"/>
+    <text x="100" y="258" fill="#475569" font-size="12">the agent</text>
+  </g>
+</svg>
+
 For a first mission, choose **Planning**. Reading and commenting on a plan is the core review skill in Antigravity.
 
 ## Step 4: A Read-Mostly Task

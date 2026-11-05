@@ -74,6 +74,42 @@ Beyond AGENTS.md, Antigravity **rules** are Markdown files that can declare *whe
 
 Triggers let you keep a large body of guidance without loading all of it into every conversation. They also add a failure mode: a model-decision rule with a vague description may not be picked up when you need it. Write its description as carefully as the rule itself.
 
+Here's how that plays out over one conversation, where the task is to add an endpoint with a database migration and a form:
+
+<svg viewBox="0 0 680 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Which persistent context is active over one conversation. AGENTS.md and always-on rules are active from the start to the end. The new-endpoint skill loads near the start because the task matches its description. A glob rule for SQL files is active only while the agent works on the migration file. A model-decision rule about UI accessibility loads when the agent builds the form, but only if the agent judges it relevant. A vague description can mean it never loads.">
+  <g font-family="system-ui, -apple-system, sans-serif">
+    <g fill="#475569" font-size="12" font-weight="700" text-anchor="middle">
+      <text x="230" y="26">task starts</text>
+      <text x="390" y="26">edits a .sql file</text>
+      <text x="560" y="26">builds a UI form</text>
+    </g>
+    <g stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="4 4">
+      <line x1="230" y1="34" x2="230" y2="262"/>
+      <line x1="390" y1="34" x2="390" y2="262"/>
+      <line x1="560" y1="34" x2="560" y2="262"/>
+    </g>
+    <g fill="#1e293b" font-size="13">
+      <text x="20" y="74" font-weight="700">AGENTS.md and</text>
+      <text x="20" y="90" font-weight="700">always-on rules</text>
+      <text x="20" y="124" font-weight="700">Skill:</text>
+      <text x="20" y="140">new-endpoint</text>
+      <text x="20" y="174" font-weight="700">Glob rule:</text>
+      <text x="20" y="190">**/*.sql</text>
+      <text x="20" y="224" font-weight="700">Model-decision rule:</text>
+      <text x="20" y="240">UI accessibility</text>
+    </g>
+    <rect x="230" y="66" width="430" height="28" rx="6" fill="#1a73e8"/>
+    <text x="445" y="85" text-anchor="middle" fill="#fff" font-size="12">loaded the whole time</text>
+    <rect x="250" y="116" width="410" height="28" rx="6" fill="#aecbfa"/>
+    <text x="455" y="135" text-anchor="middle" fill="#174ea6" font-size="12">loads when the task matches its description</text>
+    <rect x="390" y="166" width="140" height="28" rx="6" fill="#aecbfa"/>
+    <text x="460" y="185" text-anchor="middle" fill="#174ea6" font-size="12">while on .sql files</text>
+    <rect x="560" y="216" width="100" height="28" rx="6" fill="#fff" stroke="#1a73e8" stroke-width="1.5" stroke-dasharray="5 4"/>
+    <text x="610" y="235" text-anchor="middle" fill="#174ea6" font-size="12">if picked</text>
+    <text x="340" y="288" text-anchor="middle" fill="#334155" font-size="13">A vague description on a model-decision rule can mean it never loads.</text>
+  </g>
+</svg>
+
 Rules can live at the user level (yours, everywhere) or the workspace level (this project, shared with your team in git).
 
 ---

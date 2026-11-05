@@ -44,6 +44,37 @@ Large tasks still work, when you break them up. Ask for a plan first, then have 
 
 Editing source code in a git repo is highly reversible. Running a database migration against production, sending an email, deleting cloud resources, or publishing a package isn't. The less reversible the action, the more human judgment it needs, and the less autonomy the agent should have when it gets there.
 
+Put the first and third questions together and you get a quick map:
+
+<svg viewBox="0 0 680 340" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A two-by-two map. The horizontal axis is how easy the result is to verify, from hard to easy. The vertical axis is the cost of a mistake, from low to high. Easy to verify and low cost: delegate freely. Hard to verify and low cost: delegate, then read closely. Easy to verify and high cost: delegate with gates, so a human approves the risky steps. Hard to verify and high cost: keep it, or use the agent only to advise.">
+  <g font-family="system-ui, -apple-system, sans-serif">
+    <rect x="110" y="30" width="270" height="120" fill="#fef2f2" stroke="#b91c1c" stroke-width="1.5"/>
+    <rect x="380" y="30" width="270" height="120" fill="#fffbeb" stroke="#b45309" stroke-width="1.5"/>
+    <rect x="110" y="150" width="270" height="120" fill="#fffbeb" stroke="#b45309" stroke-width="1.5"/>
+    <rect x="380" y="150" width="270" height="120" fill="#f0fdf4" stroke="#15803d" stroke-width="1.5"/>
+    <text x="245" y="72" text-anchor="middle" fill="#991b1b" font-size="16" font-weight="700">Keep it, or advise only</text>
+    <text x="245" y="98" text-anchor="middle" fill="#334155" font-size="13">architecture, auth logic,</text>
+    <text x="245" y="117" text-anchor="middle" fill="#334155" font-size="13">anything on production data</text>
+    <text x="515" y="72" text-anchor="middle" fill="#92400e" font-size="16" font-weight="700">Delegate with gates</text>
+    <text x="515" y="98" text-anchor="middle" fill="#334155" font-size="13">schema changes, CI config:</text>
+    <text x="515" y="117" text-anchor="middle" fill="#334155" font-size="13">you approve each risky step</text>
+    <text x="245" y="192" text-anchor="middle" fill="#92400e" font-size="16" font-weight="700">Delegate, then read closely</text>
+    <text x="245" y="218" text-anchor="middle" fill="#334155" font-size="13">untested refactors, docs drafts:</text>
+    <text x="245" y="237" text-anchor="middle" fill="#334155" font-size="13">your review is the only check</text>
+    <text x="515" y="192" text-anchor="middle" fill="#166534" font-size="16" font-weight="700">Delegate freely</text>
+    <text x="515" y="218" text-anchor="middle" fill="#334155" font-size="13">tests, lint and type fixes,</text>
+    <text x="515" y="237" text-anchor="middle" fill="#334155" font-size="13">a bug with a failing test</text>
+    <text x="40" y="150" text-anchor="middle" fill="#475569" font-size="13" font-weight="700" transform="rotate(-90 40 150)">COST OF A MISTAKE</text>
+    <text x="100" y="46" text-anchor="end" fill="#475569" font-size="13">high</text>
+    <text x="100" y="266" text-anchor="end" fill="#475569" font-size="13">low</text>
+    <text x="114" y="292" fill="#475569" font-size="13">hard</text>
+    <text x="646" y="292" text-anchor="end" fill="#475569" font-size="13">easy</text>
+    <text x="380" y="322" text-anchor="middle" fill="#475569" font-size="13" font-weight="700">HOW EASY IS IT TO VERIFY?</text>
+  </g>
+</svg>
+
+Size (the second question) cuts across all four boxes. Any of them can be split into smaller, reviewable steps.
+
 ---
 
 ## A Delegation Map
