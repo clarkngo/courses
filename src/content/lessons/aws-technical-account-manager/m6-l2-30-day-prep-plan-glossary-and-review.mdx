@@ -1,0 +1,149 @@
+---
+title: "Your 30-Day Prep Plan, Glossary, and Course Review"
+description: "A week-by-week preparation plan for a TAM interview, a glossary of the terms used in this course, and a final review quiz."
+module: 6
+moduleTitle: "The Interview and Your Plan"
+lesson: 2
+duration: "25 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## A 30-Day Plan
+
+Plan on about **1–2 hours a day**. Adjust it if your interview is sooner, or if one area is already strong.
+
+### Week 1: Role and Foundations
+- Read the **job posting** line by line; list every skill it names and rate yourself 1–5 on each
+- Read the current **AWS Support plans** page and the official **Leadership Principles** page
+- Review core services (Module 2); fill gaps with AWS documentation and the **Well-Architected Framework** whitepaper
+- Build your **LP map** (Module 5, Lesson 1)
+- Draft your **"why TAM, why AWS"** pitch
+
+### Week 2: Technical Depth
+- Whiteboard **three architectures** for resilience: a web app, a data pipeline, an event-driven system
+- Practice **five troubleshooting scenarios** out loud (Module 2, Lesson 2)
+- Pick **one deep area** you'll claim as a strength and study it until you can answer three levels of "why"
+- If you haven't already, work toward the **Solutions Architect – Associate** level of knowledge (the certification itself is optional)
+
+### Week 3: Stories and Customer Skills
+- Write **12–15 STAR stories**, including two failures
+- Practice each story aloud; trim each to 2–3 minutes
+- Rewrite one past incident as a **COE**, with 5 Whys and owned actions
+- Draft a one-slide **QBR** and a **cost review agenda** (Modules 3–4)
+
+### Week 4: Mock Interviews and Polish
+- Run at least **two full mock loops** with different people
+- Rehearse the **role-play** and **prioritization** scenarios (Module 6, Lesson 1)
+- Prepare **five questions** to ask your interviewers
+- Re-check anything time-sensitive: support plans, programs, recent AWS announcements
+- The day before: rest. Review your story list, not new material.
+
+<Pitfall title="Memorizing Scripts">
+
+**Common mistake:** a candidate memorizes stories word for word, then freezes when a follow-up breaks the script.
+
+Memorize the **structure and the numbers** of each story, not the sentences. You should be able to tell the same story in 90 seconds or 4 minutes, depending on the follow-ups.
+
+</Pitfall>
+
+---
+
+## Glossary
+
+| Term | Meaning |
+|---|---|
+| **TAM** | Technical Account Manager: the designated technical advocate for an Enterprise Support customer |
+| **Enterprise Support** | AWS Support plan that includes a designated TAM and 15-minute critical response |
+| **Business Support+** / **Unified Operations** | The paid AWS Support plans below and above Enterprise Support as of 2026 |
+| **Account team** | AM, SA, TAM, and others who jointly support a customer |
+| **AM** | Account Manager: owns the commercial relationship |
+| **SA** | Solutions Architect: leads design of new workloads |
+| **Severity** | The urgency level of a support case, which sets the response target |
+| **Trusted Advisor** | Automated checks across cost, performance, security, fault tolerance, service limits, and operational excellence |
+| **AWS Health** | Personalized notices about events and lifecycle changes affecting a customer's resources |
+| **Countdown** | AWS program for planned-event readiness; replaced IEM |
+| **Well-Architected** | AWS framework with six pillars and a review process that finds high- and medium-risk issues |
+| **RTO / RPO** | Recovery time objective (max downtime) / recovery point objective (max data loss) |
+| **Static stability** | Designing a system to keep working through a dependency failure without changes |
+| **Game day** | A planned exercise that simulates failure to test alarms, runbooks, and people |
+| **COE** | Correction of Errors: Amazon's blameless post-incident review |
+| **5 Whys** | Repeatedly asking "why" to reach the missing mechanism behind a failure |
+| **Mechanism** | A repeatable process or tool that produces a result without relying on good intentions |
+| **PFR** | Product feature request filed with an AWS service team on a customer's behalf |
+| **QBR** | Quarterly business review with customer leadership |
+| **Success plan** | The TAM's portion of the account plan: goals, risks, initiatives, cadence |
+| **Savings Plans / RIs** | Commitment-based discounts for steady usage |
+| **Leadership Principles (LPs)** | Amazon's 16 principles that guide hiring and behavior |
+| **STAR** | Situation, Task, Action, Result: the format for behavioral answers |
+| **Bar Raiser** | A trained interviewer from outside the hiring team who protects the hiring bar |
+| **Loop** | The set of interviews in the final round |
+
+---
+
+## Course Review
+
+**Module 1:** A TAM is the customer's **technical advocate** in Enterprise Support, splitting time between **reactive** incidents and **proactive** prevention, and judged on **outcomes**. Know the 2026 plans and the toolkit.
+
+**Module 2:** Interviewers test **breadth** and then **depth**. Frame answers with the **six pillars**, and troubleshoot by **scoping, checking changes and AWS Health, walking the layers, and mitigating first**.
+
+**Module 3:** In incidents, **escalate specifically and communicate on schedule**. Afterward, run a **blameless COE** that produces **mechanisms**. Proactively, run a **cadence**, prepare **launches**, track **lifecycle** events, and optimize **cost** with trade-offs stated.
+
+**Module 4:** Earn trust by knowing the **business and the people**, co-writing a **success plan**, and running **outcome-led QBRs**. Influence through **credibility, data, and relationships**.
+
+**Module 5:** Map your experience to the **16 LPs**, and build **12–15 STAR stories** told in first person with numbers.
+
+**Module 6:** Know the **process**, practice **scenarios** out loud, and follow a **30-day plan** that balances technical and behavioral prep.
+
+<TryIt title="Your Readiness Checklist">
+
+Before your loop, check that you can:
+
+- [ ] Explain the TAM role and your "why TAM" in 60 seconds
+- [ ] Name the current AWS Support plans and the main TAM programs
+- [ ] Whiteboard a Multi-AZ architecture and explain RTO/RPO and DR strategies
+- [ ] Talk through a troubleshooting scenario using a clear method
+- [ ] Write a strong escalation and an executive incident update
+- [ ] Explain a COE and the 5 Whys with your own example
+- [ ] Lead a cost review conversation with trade-offs
+- [ ] Tell 12+ STAR stories covering every LP, including two failures
+- [ ] Handle a role-play with an upset customer executive
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "Which pairing of TAM work modes is correct?",
+      options: ["Reactive: Well-Architected reviews; Proactive: incident bridges", "Reactive: incident escalation; Proactive: launch readiness and cost reviews", "Reactive: QBRs; Proactive: case handling", "Both modes are the same"],
+      correctIndex: 1,
+      explanation: "Incidents are reactive; readiness, reviews, and optimization are proactive."
+    },
+    {
+      question: "In a troubleshooting scenario, what comes before walking the infrastructure layers?",
+      options: ["Writing the COE", "Filing a feature request", "Buying Savings Plans", "Scoping the impact and checking what changed"],
+      correctIndex: 3,
+      explanation: "Scope and recent changes narrow the search before you inspect each layer."
+    },
+    {
+      question: "What makes a COE action item strong?",
+      options: ["It's a mechanism with an owner and a due date", "It names the person who made the mistake", "It asks people to be more careful", "It's discussed but not tracked"],
+      correctIndex: 0,
+      explanation: "Mechanisms with owners and dates prevent recurrence; intentions don't."
+    },
+    {
+      question: "What should you memorize for each STAR story?",
+      options: ["Every sentence, word for word", "Nothing; improvise entirely", "The structure and key numbers, so you can flex length for follow-ups", "Only the Situation"],
+      correctIndex: 2,
+      explanation: "Knowing structure and facts lets you adapt to follow-up questions without freezing."
+    },
+    {
+      question: "Which plan includes a designated TAM as of 2026?",
+      options: ["Basic", "Developer", "Business Support+", "Enterprise Support"],
+      correctIndex: 3,
+      explanation: "Enterprise Support (and Unified Operations) include a designated TAM."
+    }
+  ]}
+/>

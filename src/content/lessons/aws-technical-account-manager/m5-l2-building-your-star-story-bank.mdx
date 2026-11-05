@@ -1,0 +1,144 @@
+---
+title: "Building Your STAR Story Bank"
+description: "Writing interview stories in STAR format with first-person actions and measurable results, surviving follow-up questions, building a reusable story bank, and a worked example rewritten from weak to strong."
+module: 5
+moduleTitle: "Leadership Principles"
+lesson: 2
+duration: "30 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## The STAR Format
+
+Amazon interviewers expect behavioral answers in **STAR** form:
+
+<ProcessFlow
+  label="STAR: Situation (brief context), Task (your responsibility), Action (what you personally did, in detail), Result (measurable outcome and what you learned)."
+  color="#ea580c"
+  steps={[
+    { title: 'Situation', detail: 'Brief context: 2–3 sentences', badge: 'S' },
+    { title: 'Task', detail: 'What you owned, and the stakes', badge: 'T' },
+    { title: 'Action', detail: 'What YOU did, step by step', badge: 'A' },
+    { title: 'Result', detail: 'Numbers + what you learned', badge: 'R' },
+  ]}
+/>
+
+A good split of a 2–3 minute answer is about **10% Situation, 10% Task, 60% Action, 20% Result**. Most candidates spend too long on the situation and rush the action, which is the part interviewers actually assess.
+
+---
+
+## The Four Rules
+
+1. **"I," not "we."** The interviewer is hiring you. "We migrated the database" hides what you did. "I designed the cutover plan and ran the rehearsal" doesn't.
+2. **Specific, not general.** One real event, not "I usually..." or "I would..."
+3. **Numbers in the result.** Time, money, incidents, customers, percentages. If you don't have exact numbers, give honest estimates and say so.
+4. **Recent and relevant.** Prefer stories from the last few years, at a scope close to the role.
+
+<Pitfall title="The Hypothetical Answer">
+
+**Common mistake:** the interviewer asks "Tell me about a time you disagreed with a customer," and the candidate says "Well, I would first listen to their concerns, then..."
+
+That's not a story. It tells the interviewer you may not have the experience. Always answer with a **real event**. If you truly have none, say so and offer the closest real example.
+
+</Pitfall>
+
+---
+
+## Weak vs Strong: A Worked Example
+
+**Question:** *"Tell me about a time you went above and beyond for a customer."* (Customer Obsession)
+
+**Weak:**
+> "We had a customer whose app kept going down. Our team worked really hard on it, and we figured out it was a database issue. We fixed it and the customer was happy."
+
+**Strong:**
+> **S:** "At my last company I was the lead support engineer for our largest healthcare customer. They had three outages in six weeks, each about 40 minutes, and their CTO was reviewing the contract."
+>
+> **T:** "The cases had each been closed as 'resolved by restart.' I owned the relationship, and I wanted to find out why it kept happening."
+>
+> **A:** "I pulled six weeks of database metrics myself and lined them up with the outage times. All three started within two minutes of a nightly batch job that opened 900 connections against a pool limit of 1,000. I reproduced it in staging. Then I wrote a one-page proposal for their platform team: connection pooling through a proxy, and moving the batch to a read replica. They pushed back on the replica cost, so I modeled it: about $1,100 a month against roughly $60K of revenue lost per outage. I set up a weekly check-in until the change shipped, and added an alarm at 70% of the connection limit."
+>
+> **R:** "There were zero recurrences over the next nine months. The customer renewed for three years, and their CTO asked me to present the analysis to their engineering org. I learned to treat a repeated 'resolved by restart' as an open problem, and I added a repeat-incident check to our team's weekly review."
+
+Notice: **first person**, **specific evidence**, a **disagreement handled with data**, a **mechanism** added, **numbers**, and a **lesson** that changed how the team works.
+
+---
+
+## Surviving the Follow-Ups
+
+Interviewers dig into your stories with follow-up questions. Expect:
+
+- "What exactly did **you** do versus your team?"
+- "How did you know that was the cause? What else did you rule out?"
+- "What would you do differently?"
+- "What did the customer say? How did you measure that?"
+- "What was the hardest part?"
+
+**Only tell stories you know in detail.** If the details are fuzzy, the follow-ups will show it. And don't stretch the truth. Interviewers are trained to probe, and inconsistencies are obvious.
+
+---
+
+## Building the Bank
+
+Aim for **12–15 strong stories**. Most stories can serve **two or three LPs** if you shift the emphasis:
+
+| Story | Primary LPs | Can also show |
+|---|---|---|
+| Healthcare outage root cause | Customer Obsession, Dive Deep | Ownership, Earn Trust |
+| Pushed back on a launch date | Have Backbone | Customer Obsession, Are Right A Lot |
+| Missed a migration deadline | Deliver Results (failure) | Earn Trust, Learn and Be Curious |
+| Automated account health checks | Invent and Simplify | Frugality, Think Big |
+| Admitted a misconfiguration I caused | Earn Trust | Ownership, Insist on Highest Standards |
+
+Include at least **two failure stories**. "Tell me about a time you failed" is a common question, and the strongest answers own the mistake, explain the impact honestly, and describe the **mechanism** you put in place afterward.
+
+---
+
+## Key Takeaway
+
+Use **STAR**, spend most of your time on **Action**, speak in **first person**, and end with **numbers and a lesson**. Build **12–15 detailed, true stories**, each tagged to several LPs, including **failures**. Practice until you can survive three levels of follow-up questions.
+
+<TryIt title="Write Your First Three Stories">
+
+Using your LP map from the last lesson, write full STAR stories for:
+
+1. **Customer Obsession**: a time you solved a problem the customer didn't fully see
+2. **Earn Trust**: a mistake you made and how you handled it
+3. **Dive Deep**: your hardest technical problem
+
+For each, write the Result first, with numbers. If you can't quantify the result, choose a different story. Then read each one aloud and time it: 2 to 3 minutes each.
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "In a strong STAR answer, which part should take up most of the time?",
+      options: ["Situation", "Task", "Action", "Result"],
+      correctIndex: 2,
+      explanation: "About 60% of your time should go to what you personally did."
+    },
+    {
+      question: "Why should you say 'I' rather than 'we' in behavioral answers?",
+      options: ["The interviewer needs to assess your individual actions", "Teamwork isn't valued at Amazon", "It sounds more confident", "'We' is against interview rules"],
+      correctIndex: 0,
+      explanation: "Teamwork matters, but the interviewer is evaluating what you did."
+    },
+    {
+      question: "A candidate answers 'Tell me about a time you failed' with 'I would analyze what went wrong...'. What's the problem?",
+      options: ["It's too long", "It names no Leadership Principle", "It has no numbers", "It's hypothetical rather than a real event"],
+      correctIndex: 3,
+      explanation: "Behavioral questions need a real, specific past event."
+    },
+    {
+      question: "About how many stories should a strong story bank have?",
+      options: ["3", "12–15, each able to cover several LPs", "One per LP exactly, 16 in total, with no reuse", "50 or more"],
+      correctIndex: 1,
+      explanation: "12–15 detailed stories, each tagged to two or three LPs, covers a loop without spreading you thin."
+    }
+  ]}
+/>

@@ -1,0 +1,153 @@
+---
+title: "What an AWS TAM Actually Does"
+description: "The TAM's place in AWS Enterprise Support and the account team, the balance of proactive and reactive work, who TAMs work with, and how the job is measured."
+module: 1
+moduleTitle: "The TAM Role"
+lesson: 1
+duration: "20 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## The One-Sentence Version
+
+An AWS Technical Account Manager is the **designated technical point of contact** for an Enterprise Support customer. They help the customer run AWS **well, safely, and cost-effectively**, and they speak for that customer inside AWS.
+
+A TAM is not a support engineer working a queue. A TAM is not a salesperson with a quota. And a TAM is not a consultant who builds the customer's systems. They sit in between: deeply technical, but measured on the customer's **operational health and outcomes** rather than on tickets closed or revenue booked.
+
+---
+
+## Where the TAM Sits
+
+TAMs belong to **AWS Enterprise Support**, the part of AWS Support that serves customers on enterprise-level plans. Each customer has an **account team**, and the TAM works alongside these roles:
+
+| Role | Main focus | How the TAM works with them |
+|---|---|---|
+| **Account Manager (AM)** | Commercial relationship, growth, contracts | Shares account plan; TAM brings operational and health context |
+| **Solutions Architect (SA)** | Designing new workloads and migrations | SA designs *what to build*; TAM focuses on *running it well* |
+| **Customer Solutions Manager (CSM)** | Adoption programs and migration plans (on some accounts) | Coordinates programs and timelines |
+| **Support Engineers / Cloud Support Engineers** | Solving support cases | TAM escalates, adds context, and tracks critical cases |
+| **Specialist SAs and service teams** | Deep expertise in one service | TAM pulls them in and relays customer feedback |
+
+Inside the customer, the TAM usually works with platform and cloud center-of-excellence teams, SRE and operations leads, security, FinOps, and engineering leadership up to the CTO or CIO.
+
+<Pitfall title="Describing the TAM as 'Premium Support'">
+
+**Common mistake:** a candidate says a TAM is "the person who handles the customer's tickets faster."
+
+Case handling is part of the job, but interviewers want to hear that you understand the **proactive** side: preventing incidents, preparing for launches, improving architecture, and reducing cost. A TAM who only reacts is not doing the job.
+
+</Pitfall>
+
+---
+
+## Proactive and Reactive Work
+
+TAM work falls into two modes.
+
+**Reactive**: something is wrong right now.
+- Joining critical incidents and escalating cases to the right AWS teams
+- Keeping customer leaders informed during an event
+- Leading or supporting the post-incident review
+
+**Proactive**: preventing the next problem.
+- Operational and architecture reviews (often using the Well-Architected Framework)
+- Preparing for planned events like launches, migrations, and peak traffic
+- Cost-optimization and resilience recommendations
+- Reviewing Trusted Advisor checks and AWS Health notices
+- Workshops, enablement, and service roadmap briefings
+- Turning customer pain into **feature requests** for AWS service teams
+
+A healthy TAM engagement shifts time **from reactive to proactive** over the life of the account. If the same incidents keep repeating, the proactive work isn't landing.
+
+<ProcessFlow
+  label="The TAM operating loop: understand the customer's business and workloads, assess risk and health, recommend improvements, help execute, then measure results and repeat."
+  color="#ea580c"
+  loop="Each incident or review feeds new risks back into the assessment step."
+  steps={[
+    { title: 'Understand', detail: 'Business goals, critical workloads, people' },
+    { title: 'Assess', detail: 'Health, risk, cost, operational maturity' },
+    { title: 'Recommend', detail: 'Prioritized, business-framed actions' },
+    { title: 'Execute', detail: 'Mobilize AWS experts; track to done' },
+    { title: 'Measure', detail: 'Fewer incidents, lower cost, faster launches' },
+  ]}
+/>
+
+---
+
+## A Week in the Life (Typical, Not Universal)
+
+TAMs often support a handful of customers, or one very large customer. A week might include:
+
+- A **weekly or biweekly cadence call** with each customer: open cases, upcoming events, risks, action items
+- A deep-dive on a **production incident** from last week and a draft of the post-incident action list
+- Preparing a **launch-readiness** review for a retail customer's sale event
+- Working with a specialist SA on a **database migration** risk
+- Building the slides for a **quarterly business review** (QBR) with the customer's VP of Engineering
+- Filing and advocating for a **feature request** that three customers have raised
+
+Some TAMs are aligned to an industry (financial services, telecom, games) or a segment (enterprise, ISV, public sector). Some roles need regional language skills. Read the job posting carefully. It tells you which customers you'd serve.
+
+---
+
+## How TAMs Are Measured
+
+There is no single public scorecard. In general, a TAM's impact shows up as:
+
+- **Customer health**: fewer and shorter high-severity incidents, faster recovery
+- **Risk reduction**: critical risks found and fixed before they cause outages
+- **Cost efficiency**: savings delivered through right-sizing, commitments, and architecture changes
+- **Adoption and outcomes**: launches and migrations that land on time
+- **Customer sentiment**: whether the customer sees the TAM as a trusted advisor
+
+In interviews, **quantify your impact the same way**: "reduced Sev-2 incidents by 40% over two quarters," "saved $380K a year," "cut recovery time from 3 hours to 25 minutes."
+
+---
+
+## Key Takeaway
+
+A TAM is the customer's **designated technical advocate** in AWS Enterprise Support. They work with the AM, SA, and support engineers, split time between **reactive** incident work and **proactive** risk, cost, and readiness work, and are judged on the customer's **operational outcomes**, not ticket counts.
+
+<TryIt title="Write Your Role Pitch">
+
+Write a 60-second answer to "What do you think a TAM does, and why do you want to be one?" Include:
+
+1. One sentence on the role (advocate, proactive and reactive, outcomes)
+2. One example from your past work where you did TAM-like work, with a number
+3. One reason this role, at AWS, fits what you want next
+
+Say it out loud and time it. If it runs past 75 seconds, cut it.
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "Which statement best describes a TAM's primary focus?",
+      options: ["Closing support cases as quickly as possible", "The customer's operational health and outcomes on AWS, both proactive and reactive", "Selling additional AWS services", "Building the customer's applications"],
+      correctIndex: 1,
+      explanation: "A TAM is a technical advocate measured on operational outcomes, not tickets, revenue, or delivery of code."
+    },
+    {
+      question: "A customer wants help designing a brand-new data platform. Which account-team member usually leads the design?",
+      options: ["The Solutions Architect", "The TAM", "The Account Manager", "A Cloud Support Engineer"],
+      correctIndex: 0,
+      explanation: "SAs lead new designs; the TAM focuses on running workloads well and brings operational context."
+    },
+    {
+      question: "Over the life of a healthy TAM engagement, what should happen to the TAM's time?",
+      options: ["It should shift toward reactive case work", "It should stay evenly split forever", "It should shift from reactive firefighting toward proactive prevention", "It should move entirely to sales"],
+      correctIndex: 2,
+      explanation: "Proactive work that lands reduces repeat incidents, freeing time for more proactive work."
+    },
+    {
+      question: "Which is the strongest way to describe past impact in a TAM interview?",
+      options: ["\"We worked on a lot of incidents.\"", "\"I was responsible for operations.\"", "\"Our team was very customer-focused.\"", "\"I cut recovery time for our checkout service from 3 hours to 25 minutes.\""],
+      correctIndex: 3,
+      explanation: "Specific, first-person, quantified outcomes match how TAM impact is judged."
+    }
+  ]}
+/>

@@ -1,0 +1,142 @@
+---
+title: "Account Planning and Business Reviews"
+description: "Becoming a trusted advisor: mapping stakeholders, understanding the customer's business, building an account or success plan with the account team, and running quarterly business reviews that speak to executives."
+module: 4
+moduleTitle: "Customer Leadership"
+lesson: 1
+duration: "25 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## From Support Contact to Trusted Advisor
+
+A customer *trusts* a TAM when they call the TAM **before** making a big decision, not just after something breaks. That shift doesn't come from technical skill alone. It comes from understanding the customer's **business**, knowing their **people**, and consistently doing what you said you'd do.
+
+---
+
+## Know the Business First
+
+Before you can recommend anything, you need answers to:
+
+- How does this customer **make money**? Which workloads, if they went down, would stop that?
+- What are leadership's **goals this year**? Growth, cost cutting, a new market, a compliance deadline?
+- What does **"good" look like** to them? Uptime? Release speed? Unit cost per transaction?
+- Where are they in their **cloud journey**? Migrating, optimizing, modernizing?
+
+Read their annual report or investor materials if they're public. Ask the AM what the commercial relationship looks like. Then **tie every recommendation to one of these goals**.
+
+---
+
+## Map the Stakeholders
+
+| Stakeholder | Usually cares about | How the TAM helps |
+|---|---|---|
+| **CIO / CTO** | Strategy, risk, cost, speed | Outcome summaries; strategic risks |
+| **VP / Director of Engineering** | Delivery and reliability | Launch readiness; incident reduction |
+| **Platform / cloud team** | Landing zone, standards, tooling | Best practices; roadmap briefings |
+| **SRE / operations** | On-call load, observability | Case escalations; COEs; game days |
+| **Security / CISO** | Compliance, threat detection | Security reviews; Security Incident Response |
+| **FinOps / finance** | Predictable, lower spend | Cost reviews; commitment planning |
+| **Application teams** | Shipping features | Service guidance; workshops |
+
+Identify your **champion** (who advocates for your work internally), the **decision makers**, and anyone **skeptical** of AWS. A TAM who only knows the platform team will be surprised when the CFO cuts the support budget.
+
+---
+
+## The Account Plan
+
+The account team (AM, SA, TAM, and others) shares an **account plan**. The TAM usually owns the **operational and support** part of it, sometimes called a **success plan**:
+
+1. **Customer goals** for the year, in their own words
+2. **Critical workloads** and their owners
+3. **Top risks** (from Well-Architected reviews, Trusted Advisor, incidents, lifecycle events), ranked
+4. **Planned events** (launches, migrations, peaks)
+5. **Initiatives** with measurable targets: "Reduce Sev-1/2 incidents by 30%," "Upgrade all Aurora clusters before end of standard support," "Cut compute cost 15%"
+6. **Cadence**: who meets when
+
+Write it **with** the customer, not **for** them. A plan the customer agreed to gets done.
+
+---
+
+## The Quarterly Business Review (QBR)
+
+A QBR is a meeting with **customer leadership** to review the partnership. A strong QBR is short and outcome-focused:
+
+1. **Their goals** (recap): what we agreed to work on
+2. **Outcomes delivered**: numbers, not activities ("Sev-2 incidents down from 14 to 6," "$1.2M annualized savings")
+3. **Operational health**: case trends, incident summary, open high risks
+4. **What's next**: upcoming events, top recommendations, decisions needed from them
+5. **Asks**: of the customer, and of AWS
+
+<Pitfall title="The Activity Report">
+
+**Common mistake:** the QBR opens with "This quarter we held 12 cadence calls, ran 3 workshops, and handled 147 cases."
+
+Executives don't care how busy you were. They care what **changed for their business**. Lead with outcomes, then use activity only to explain how you got there. And keep the case-count chart to one slide.
+
+</Pitfall>
+
+---
+
+## Translating Technical to Business
+
+Practice turning technical findings into business language:
+
+| Technical | Business |
+|---|---|
+| "Your RDS instance is single-AZ." | "If one data center has a problem, checkout is down until we restore from backup, around 2 hours, roughly $400K at peak." |
+| "You have 340 gp2 volumes." | "Switching storage types saves about $90K a year with no downtime and no code changes." |
+| "EKS 1.28 reaches end of standard support in March." | "Without an upgrade by March, you'll either pay extended-support fees or run on an unsupported version that blocks security patches." |
+
+Each business version names the **impact**, the **size**, and the **choice**.
+
+---
+
+## Key Takeaway
+
+Trust comes from knowing the customer's **business goals and people**, not just their architecture. Map **stakeholders**, co-write a **success plan** with measurable targets, and run **QBRs that lead with outcomes**. Translate every technical risk into **impact, size, and the decision needed**.
+
+<TryIt title="Draft a One-Slide QBR Summary">
+
+Pick a real system you've supported (or invent one). Draft a single slide with:
+
+- **Goal**: one sentence in the customer's words
+- **Three outcomes** with numbers
+- **Top two risks**, each translated into business impact
+- **One decision** you need from leadership this quarter
+
+If an executive read only this slide, would they know what to do next?
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "What best signals a TAM has become a trusted advisor?",
+      options: ["The customer opens more support cases", "The customer consults the TAM before major decisions", "The TAM attends every meeting", "The customer buys more services"],
+      correctIndex: 1,
+      explanation: "Being consulted before decisions, not just after failures, is the mark of trust."
+    },
+    {
+      question: "What should a QBR lead with?",
+      options: ["Outcomes delivered against the customer's goals", "The number of cases handled", "A list of new AWS services", "The TAM's calendar"],
+      correctIndex: 0,
+      explanation: "Executives want business outcomes; activity only explains how they were achieved."
+    },
+    {
+      question: "Why should the success plan be written with the customer rather than for them?",
+      options: ["AWS policy requires a signature", "It's faster", "It removes the need for a QBR", "Plans the customer agrees to are more likely to be executed"],
+      correctIndex: 3,
+      explanation: "Shared ownership drives follow-through."
+    },
+    {
+      question: "Which translation of 'your database is single-AZ' is strongest for an executive?",
+      options: ["\"You should enable Multi-AZ.\"", "\"Your architecture is not best practice.\"", "\"A single data-center issue could take checkout down for about 2 hours, costing roughly $400K at peak.\"", "\"Single-AZ is a Reliability pillar risk.\""],
+      correctIndex: 2,
+      explanation: "It names the impact, the size, and implies the decision."
+    }
+  ]}
+/>
