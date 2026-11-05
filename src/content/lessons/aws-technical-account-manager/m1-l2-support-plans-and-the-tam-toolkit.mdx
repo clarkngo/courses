@@ -1,0 +1,137 @@
+---
+title: "Support Plans and the TAM Toolkit"
+description: "AWS Support plans as of 2026, case severity levels, and the programs and tools TAMs rely on: Trusted Advisor, AWS Health, Countdown, Well-Architected, Security Incident Response, and cost tools."
+module: 1
+moduleTitle: "The TAM Role"
+lesson: 2
+duration: "25 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Why You Need to Know the Plans
+
+A TAM is part of what an Enterprise customer pays for. In an interview you may be asked what customers get at each support level, or how you'd explain the value of Enterprise Support to a skeptical CFO. You don't need list prices memorized. You do need to know the **shape** of the offering.
+
+---
+
+## The 2026 Support Plan Lineup
+
+AWS reorganized its paid support plans in late 2025. The current paid plans are:
+
+| Plan | Who it fits | TAM? | Critical-case response target |
+|---|---|---|---|
+| **Business Support+** | Startups and smaller production workloads | No designated TAM | About 30 minutes (reported) |
+| **Enterprise Support** | Business-critical and enterprise workloads | **Designated TAM** | 15 minutes |
+| **Unified Operations** | Mission-critical workloads that need the deepest engagement | Designated TAM plus a dedicated operations team | About 5 minutes (reported) |
+
+The older **Developer**, **Business**, and **Enterprise On-Ramp** plans are being phased out. AWS has said they end on **January 1, 2027**, with Enterprise On-Ramp customers moving to Enterprise Support during 2026. **Basic Support** (free) still covers billing, account help, documentation, and a core set of Trusted Advisor checks.
+
+<Pitfall title="Quoting Old Plan Names as Current">
+
+**Common mistake:** a candidate builds an answer around Enterprise On-Ramp's "pool of TAMs." That plan is being retired.
+
+Plan names, prices, and response times change. Before your interview, read the current **AWS Support plans** page. It's a five-minute check that shows you did your homework, and Amazon interviewers notice homework.
+
+</Pitfall>
+
+---
+
+## Case Severity Levels
+
+When a customer opens a case, they choose a severity. Enterprise customers have historically used these five levels, with these **initial-response targets** (a first response from an engineer, not a resolution guarantee):
+
+| Severity | Meaning | Enterprise target |
+|---|---|---|
+| **Business-critical system down** | Business is significantly affected; critical functions unavailable | 15 minutes |
+| **Production system down** | Business is significantly impaired; no workaround | 1 hour |
+| **Production system impaired** | Important functions impaired or degraded | 4 hours |
+| **System impaired** | Non-critical functions behaving abnormally | 12 hours |
+| **General guidance** | How-to question or non-urgent request | 24 hours |
+
+A TAM's job during an event is **not** to change the severity to get a faster answer. It's to make sure the case has the **right severity, the right context, and the right people**. Coaching customers to choose severity accurately is part of the job. When everything is filed as "critical," nothing is.
+
+---
+
+## The TAM Toolkit
+
+These are the AWS programs and tools that come up most in TAM conversations.
+
+### AWS Trusted Advisor
+
+Automated checks across six categories: **cost optimization, performance, security, fault tolerance, service limits (quotas), and operational excellence**. Enterprise customers get the full set of checks. TAMs use Trusted Advisor (and the **Trusted Advisor Priority** view, which shows recommendations the account team has flagged) to start conversations about risk.
+
+### AWS Health
+
+Personalized notices about AWS events that affect **this customer's resources**: service issues, scheduled maintenance, and deprecations such as an end-of-life engine version. TAMs watch Health closely for **planned lifecycle events**, which are easy for customers to miss until they become outages.
+
+### AWS Countdown
+
+Help preparing for a **planned event**: a product launch, a large migration, a peak sale. Countdown replaced the older **Infrastructure Event Management (IEM)** program in late 2023. It covers architecture review, quota checks, scaling plans, and AWS engineers on standby. **Countdown Premium** is a paid tier with deeper engagement.
+
+### AWS Well-Architected
+
+A framework and review process built on six pillars (Module 2). A **Well-Architected review** is one of the most common proactive engagements a TAM runs or coordinates.
+
+### Security Incident Response and Incident Detection
+
+**AWS Security Incident Response** helps customers prepare for and respond to security events. AWS includes it with Enterprise Support. **AWS Incident Detection and Response** offers proactive monitoring and faster engagement for critical workloads. Check current plan details for what's included.
+
+### Cost tools
+
+**Cost Explorer**, **AWS Budgets**, the **Cost Optimization Hub**, **Compute Optimizer**, and **Savings Plans** and **Reserved Instance** recommendations. TAMs often lead a regular **cost review** with a customer's FinOps team.
+
+### Enablement
+
+Workshops, training, "immersion days," and **roadmap briefings** with service teams under NDA. Part of the TAM's value is knowing **who at AWS** can help.
+
+---
+
+## Key Takeaway
+
+As of 2026 the paid plans are **Business Support+, Enterprise Support, and Unified Operations**, and a **designated TAM** comes with Enterprise Support and above. Know the five **severity levels** and their purpose, and know the toolkit: **Trusted Advisor, AWS Health, Countdown, Well-Architected, Security Incident Response, and the cost tools**. Always confirm current details before an interview.
+
+<TryIt title="Match the Tool to the Problem">
+
+For each customer situation, name the first AWS tool or program you'd reach for:
+
+1. "Our Black Friday traffic will be 8× normal in six weeks."
+2. "Finance says our bill jumped 30% last month and nobody knows why."
+3. "We just learned our database engine version goes end-of-life next quarter."
+4. "We think someone is using leaked access keys in our account."
+5. "Leadership wants an independent review of our payments architecture."
+
+Suggested answers: **1** Countdown · **2** Cost Explorer (and Cost Anomaly Detection) · **3** AWS Health · **4** Security Incident Response (and open a high-severity case) · **5** Well-Architected review
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "As of 2026, which paid AWS Support plan is the entry point for a designated TAM?",
+      options: ["Developer", "Business Support+", "Enterprise Support", "Basic"],
+      correctIndex: 2,
+      explanation: "Enterprise Support (and Unified Operations above it) include a designated TAM."
+    },
+    {
+      question: "Which program replaced Infrastructure Event Management (IEM)?",
+      options: ["AWS Countdown", "AWS Health", "Trusted Advisor Priority", "AWS Budgets"],
+      correctIndex: 0,
+      explanation: "AWS Countdown replaced IEM in late 2023 and supports planned events like launches and migrations."
+    },
+    {
+      question: "What does a support response-time target guarantee?",
+      options: ["The issue will be resolved within that time", "A refund if the target is missed", "A TAM will join the call", "An initial response from an engineer within that time"],
+      correctIndex: 3,
+      explanation: "Targets cover initial response, not resolution."
+    },
+    {
+      question: "Why should a TAM coach customers to choose case severity accurately?",
+      options: ["Higher severity costs more", "Over-using critical severity dilutes urgency for real emergencies", "AWS closes cases with the wrong severity", "Severity sets the monthly bill"],
+      correctIndex: 1,
+      explanation: "Accurate severity keeps the fastest paths available for real business-critical events."
+    }
+  ]}
+/>

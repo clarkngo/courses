@@ -1,0 +1,139 @@
+---
+title: "The Hiring Process and Mock Scenarios"
+description: "What to expect from application to offer (the job posting, recruiter screen, phone screen, interview loop, and Bar Raiser), plus three mock scenarios that mirror common TAM interview questions."
+module: 6
+moduleTitle: "The Interview and Your Plan"
+lesson: 1
+duration: "30 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## The Process, Step by Step
+
+Amazon's hiring steps vary by team, level, and country, and they change over time. Ask your recruiter what to expect; they will usually tell you. A typical path looks like this:
+
+<ProcessFlow
+  label="A typical Amazon hiring path: application, recruiter screen, phone screen, interview loop with several interviewers including a Bar Raiser, then a debrief and decision."
+  color="#ea580c"
+  steps={[
+    { title: 'Apply', detail: 'Tailored resume for the posting' },
+    { title: 'Recruiter', detail: 'Background, motivation, logistics' },
+    { title: 'Phone screen', detail: 'Technical + 1–2 LP questions' },
+    { title: 'Loop', detail: 'Several interviews, ~1 hour each' },
+    { title: 'Debrief', detail: 'Interviewers + Bar Raiser decide' },
+  ]}
+/>
+
+### The job posting
+
+Read it closely. **Basic qualifications** are must-haves: they often include a number of years in a technical role and experience in customer-facing or support work. **Preferred qualifications** often list AWS certifications, specific technologies, or industry experience. The team description tells you which customers you'd serve (an industry, a segment, a region), which tells you what to study.
+
+### The recruiter screen
+
+A conversation about your background, why AWS, why TAM, location, and level. Have a crisp **"why TAM"** answer (Module 1) and know your work authorization and timing.
+
+### The phone screen
+
+Usually about an hour with a TAM or manager. Expect a mix of **technical questions** (services, a troubleshooting scenario) and **one or two LP questions**. Treat it like a short loop.
+
+### The loop
+
+Several back-to-back interviews, often virtual. Each interviewer covers **assigned LPs**, and some also cover **technical depth** or a **customer scenario**. One interviewer is usually a **Bar Raiser**: a trained interviewer from outside the hiring team whose job is to make sure every hire raises the bar. Some loops include a **role-play** or a **presentation**. Your recruiter will say if yours does.
+
+### The debrief
+
+The interviewers meet, share written feedback, and decide together. The Bar Raiser has a strong voice in that decision.
+
+<Pitfall title="Studying Only Technology">
+
+**Common mistake:** a candidate spends four weeks on AWS services and one evening on stories.
+
+Most loop time is behavioral. A strong technical candidate with vague stories often doesn't get an offer. Split your prep roughly **evenly** between technical depth and LP stories.
+
+</Pitfall>
+
+---
+
+## Interview-Day Habits
+
+- **Pause before answering.** "Let me think of the best example" is fine.
+- **Ask clarifying questions** in scenarios. TAMs ask before they act.
+- **Say what you don't know.** "I haven't used that service. Here's how I'd find out" beats bluffing, and it shows **Earn Trust**.
+- **Track the clock.** If a story runs long, the interviewer may not get to their second question.
+- **Take notes** on each interviewer's name and focus, for your thank-you notes and your own reflection.
+- **Ask good questions** at the end: "What does success look like for a TAM on this team in the first six months?" or "What's the biggest challenge your customers face right now?"
+
+---
+
+## Three Mock Scenarios
+
+Practice each one out loud, timed, before reading the notes.
+
+### Scenario 1: The Technical Deep-Dive (15 minutes)
+
+*"A media customer streams video to 2 million users. During a live event last night, about 30% of viewers in Europe saw buffering for 20 minutes. Walk me through how you'd investigate and what you'd recommend."*
+
+**What a strong answer covers:** scope questions (which Regions? all devices? did CloudFront error rates rise?), a layer-by-layer check (DNS, CloudFront, origin, origin shield, media services), checking AWS Health, a timeline against traffic, likely causes (origin overload on cache misses, regional edge capacity, a misconfigured TTL), and **proactive** recommendations: Countdown for the next live event, origin shield, load testing, real-user monitoring, and pre-event capacity planning.
+
+### Scenario 2: The Customer Role-Play (15 minutes)
+
+*"I'm the VP of Engineering at a fintech. We're on Enterprise Support, our bill grew 45% this year, and my CFO wants to know why we pay for support at all. Convince me."*
+
+**What a strong answer covers:** **ask questions first** (what's driving growth? which outcomes matter to the CFO?), acknowledge the concern, offer a **cost review** with specific levers, connect the value of support to **outcomes** (incidents avoided, launches supported, risks closed), propose measurable targets for the next quarter, and agree on a follow-up date. Avoid getting defensive or reciting a feature list.
+
+### Scenario 3: The Prioritization Problem (10 minutes)
+
+*"It's Monday. Customer A has a Sev-2 that's been open for four days. Customer B's launch is Thursday and their load test failed. Customer C's CIO wants a meeting today about their contract renewal. You can't do it all. Walk me through your day."*
+
+**What a strong answer covers:** a clear priority order with reasons (B's failed test before a fixed date is time-bound business risk; A needs an escalation, not your hands; C's meeting can be shared with the AM), **delegation and escalation** inside AWS, and **proactive communication** to every customer about when you'll engage.
+
+---
+
+## Key Takeaway
+
+Expect a **recruiter screen, a phone screen, and a loop** with several interviewers, including a **Bar Raiser**. Ask your recruiter about the format. Split prep **evenly** between technical and behavioral work, ask clarifying questions, say what you don't know, and practice **technical, role-play, and prioritization** scenarios out loud.
+
+<TryIt title="Run a Full Mock Loop">
+
+Ask a friend or colleague to run a 2-hour mock loop with you:
+
+- **30 min**: technical scenario (use Scenario 1 or one from Module 2)
+- **30 min**: customer role-play (Scenario 2)
+- **2 × 30 min**: LP questions, two interviewers each covering three LPs
+
+Give your mock interviewers this course's LP question list, and ask them to keep asking follow-ups. Afterward, write down every question where you hesitated. Those are your study list.
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "What is the Bar Raiser's role in an Amazon interview loop?",
+      options: ["The hiring manager who makes the final offer", "The recruiter who schedules interviews", "A trained interviewer from outside the hiring team who makes sure each hire raises the bar", "A technical expert who only asks coding questions"],
+      correctIndex: 2,
+      explanation: "Bar Raisers are independent of the team and have a strong voice in the debrief."
+    },
+    {
+      question: "In a customer role-play, what should you usually do first?",
+      options: ["Ask questions to understand the customer's situation and concern", "Present a list of Enterprise Support features", "Offer a discount", "Explain why the customer is wrong"],
+      correctIndex: 0,
+      explanation: "TAMs ask before they act; questions reveal what the customer actually needs."
+    },
+    {
+      question: "An interviewer asks about a service you've never used. What's the best response?",
+      options: ["Guess confidently", "Change the subject", "Say it's not important for TAMs", "Say you haven't used it and explain how you'd learn or find the answer"],
+      correctIndex: 3,
+      explanation: "Honesty shows Earn Trust; a clear learning approach shows Learn and Be Curious."
+    },
+    {
+      question: "How should a candidate generally split preparation time?",
+      options: ["Almost entirely on AWS services", "Roughly evenly between technical depth and Leadership Principle stories", "Almost entirely on LP stories", "Mostly on the company's history"],
+      correctIndex: 1,
+      explanation: "Loops weigh both heavily; most loop time is behavioral."
+    }
+  ]}
+/>

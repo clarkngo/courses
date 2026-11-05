@@ -1,0 +1,132 @@
+---
+title: "The Leadership Principles Through a TAM Lens"
+description: "All 16 Amazon Leadership Principles, what each looks like in TAM work, and the ones TAM interviews lean on most: Customer Obsession, Ownership, Dive Deep, Earn Trust, Bias for Action, Have Backbone, and Deliver Results."
+module: 5
+moduleTitle: "Leadership Principles"
+lesson: 1
+duration: "30 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Why the Principles Run the Interview
+
+Amazon's **Leadership Principles (LPs)** are how Amazon describes the behavior it hires for. In an interview loop, each interviewer is typically assigned **a few LPs** to assess, and most questions are **behavioral**: "Tell me about a time when..."
+
+Your technical answers still matter. But many candidates with strong technical skills don't get offers because they can't show the LPs with **specific, first-person stories**. Read the official list on Amazon's website before your interview. The wording below paraphrases each principle.
+
+---
+
+## All 16 Principles, in TAM Terms
+
+| Principle | Paraphrase | What it looks like for a TAM |
+|---|---|---|
+| **Customer Obsession** | Start with the customer and work backwards | Proactively finding a risk the customer didn't know about |
+| **Ownership** | Act for the long term; never say "that's not my job" | Driving a fix that crosses several teams, to completion |
+| **Invent and Simplify** | Find new, simpler ways | Automating a manual health check across 200 accounts |
+| **Are Right, A Lot** | Strong judgment; seek different views | Correctly calling which of three risks to fix first |
+| **Learn and Be Curious** | Always learning | Learning a new service deeply because a customer adopted it |
+| **Hire and Develop the Best** | Raise the bar; coach others | Mentoring a new TAM; building enablement for the customer |
+| **Insist on the Highest Standards** | Keep raising the bar | Refusing to close a COE with weak action items |
+| **Think Big** | Bold direction | Proposing a multi-year resilience program, not one-off fixes |
+| **Bias for Action** | Speed matters; many decisions are reversible | Escalating early during an incident instead of waiting |
+| **Frugality** | Do more with less | Cost optimization; reusing existing mechanisms |
+| **Earn Trust** | Listen, speak candidly, admit mistakes | Telling a customer AWS got something wrong, and what's next |
+| **Dive Deep** | Stay close to details; audit often | Reading the metrics yourself instead of relying on summaries |
+| **Have Backbone; Disagree and Commit** | Challenge respectfully, then commit | Pushing back on a risky launch date, then supporting the decision |
+| **Deliver Results** | Focus on key inputs; deliver on time | Hitting the incident-reduction target in the success plan |
+| **Strive to be Earth's Best Employer** | Safer, more productive, more inclusive work | Reducing on-call pain; supporting teammates |
+| **Success and Scale Bring Broad Responsibility** | Consider wider impact | Considering security, sustainability, and downstream effects |
+
+---
+
+## The Principles TAM Loops Tend to Emphasize
+
+Every loop is different, but TAM candidates commonly report questions around these. Prepare **at least two stories** for each.
+
+### Customer Obsession
+*"Tell me about a time you went above and beyond for a customer."* · *"Tell me about a time you had to balance what a customer wanted with what they needed."*
+
+### Ownership
+*"Tell me about a time you took on something outside your responsibility."* · *"Tell me about a time you saw a problem nobody else was fixing."*
+
+### Dive Deep
+*"Tell me about the most complex technical problem you've solved."* Expect **follow-ups that go several levels deep**. The interviewer will keep asking "how did you know?" until they reach the edge of your knowledge.
+
+### Earn Trust
+*"Tell me about a time you had to deliver bad news."* · *"Tell me about a mistake you made."*
+
+### Bias for Action
+*"Tell me about a time you made a decision without all the information."*
+
+### Have Backbone; Disagree and Commit
+*"Tell me about a time you disagreed with a customer or your manager."*
+
+### Deliver Results
+*"Tell me about a time you missed a deadline."* · *"Tell me about your proudest accomplishment."*
+
+<Pitfall title="Stories Without a Customer">
+
+**Common mistake:** every story is about internal tooling or a manager.
+
+A TAM is customer-facing. Make sure several of your stories involve an **external or internal customer**: someone whose outcome depended on you. If you've never had external customers, use internal ones: the teams your platform served, the users of your system.
+
+</Pitfall>
+
+---
+
+## Tensions Between Principles
+
+The best stories show you **balancing** principles that pull in different directions:
+
+- **Bias for Action vs Dive Deep**: you mitigated fast, then investigated thoroughly
+- **Customer Obsession vs Frugality**: you found a cheaper way to meet the customer's real need
+- **Have Backbone vs Earn Trust**: you disagreed openly and kept the relationship strong
+- **Ownership vs scope**: you took on a problem, and also knew when to hand it to the right owner
+
+Interviewers notice when a candidate can explain **why** they chose one over the other.
+
+---
+
+## Key Takeaway
+
+Amazon interviews are built on the **16 Leadership Principles**, with each interviewer usually assessing a few. For TAM roles, prepare deeply for **Customer Obsession, Ownership, Dive Deep, Earn Trust, Bias for Action, Have Backbone, and Deliver Results**. Use customer-centered stories, and show how you **balance principles that conflict**.
+
+<TryIt title="Map Your Experience to the Principles">
+
+Make a table with the 16 LPs as rows. For each, write the **one or two experiences** from your career that best show it, in a few words each.
+
+Then look for gaps. If you have nothing for **Earn Trust** or **Have Backbone**, think harder about times you admitted a mistake or pushed back. Those are the stories candidates most often lack.
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "How are Leadership Principles typically assessed in an Amazon interview loop?",
+      options: ["Through a written test", "Each interviewer is assigned a few LPs and asks behavioral questions about past experience", "Only the hiring manager asks about LPs", "Candidates recite them from memory"],
+      correctIndex: 1,
+      explanation: "Interviewers split the LPs and probe them with 'tell me about a time' questions."
+    },
+    {
+      question: "A TAM escalates early during a Sev-1 instead of waiting for more data. Which principle is most clearly shown?",
+      options: ["Frugality", "Think Big", "Hire and Develop the Best", "Bias for Action"],
+      correctIndex: 3,
+      explanation: "Acting quickly on a reversible decision under time pressure is Bias for Action."
+    },
+    {
+      question: "What should you expect after giving a Dive Deep answer?",
+      options: ["Several follow-ups that push into technical detail", "An immediate move to the next question", "A request for references", "A coding test"],
+      correctIndex: 0,
+      explanation: "Interviewers probe until they find the limits of your knowledge."
+    },
+    {
+      question: "You told a customer their launch date was too risky, they kept it, and you then fully supported the launch. Which principle is this?",
+      options: ["Invent and Simplify", "Learn and Be Curious", "Have Backbone; Disagree and Commit", "Frugality"],
+      correctIndex: 2,
+      explanation: "You disagreed respectfully, then committed once the decision was made."
+    }
+  ]}
+/>

@@ -1,0 +1,131 @@
+---
+title: "Influence Without Authority and Hard Conversations"
+description: "How TAMs get things done without owning the people or systems: prioritizing across customers, advocating with service teams through feature requests, delivering bad news, disagreeing with customers, and handling an angry executive."
+module: 4
+moduleTitle: "Customer Leadership"
+lesson: 2
+duration: "25 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## You Own Almost Nothing
+
+A TAM doesn't own the customer's engineers, the customer's systems, the AWS support engineers, or the AWS service teams. Yet the TAM is accountable for outcomes that need all of them. That's **influence without authority**, and interviewers will probe it directly: "Tell me about a time you got someone to do something they didn't have to do."
+
+Influence comes from three things:
+
+- **Credibility**: you're technically right, and you've been right before
+- **Data**: you bring evidence, not opinions
+- **Relationships**: people help you because you've helped them and you're easy to work with
+
+---
+
+## Advocating Inside AWS
+
+TAMs are the customer's voice inside AWS. When a customer needs something AWS doesn't do, the TAM files a **product feature request (PFR)** with the service team. Strong PFRs:
+
+- Describe the **customer problem**, not just the requested feature
+- Quantify **impact**: revenue at risk, workload size, how many customers ask for it
+- Include the **current workaround** and why it hurts
+- Get **aggregated** with other customers' requests, since service teams prioritize by demand
+
+Be honest with the customer: a PFR is **not a promise**. Set expectations, offer the best workaround now, and follow up.
+
+---
+
+## Prioritizing Across Customers
+
+TAMs often support several customers, and everything feels urgent. A simple order:
+
+1. **Active business-critical impact** (outage, security event)
+2. **Time-bound risk** (a launch next week, an end-of-life deadline)
+3. **High-value proactive work** (the review that prevents the next Sev-1)
+4. **Everything else**, scheduled and communicated
+
+When you can't do something, say so early, explain why, and offer an alternative or another person. Customers forgive "not this week, here's when." They don't forgive silence.
+
+---
+
+## Hard Conversations
+
+<ProcessFlow
+  label="A pattern for hard conversations: listen and acknowledge, state the facts with data, own what is yours, offer options with trade-offs, agree on next steps, and follow through."
+  color="#ea580c"
+  steps={[
+    { title: 'Listen', detail: 'Let them finish; acknowledge impact' },
+    { title: 'Facts', detail: 'What happened, with data' },
+    { title: 'Own it', detail: 'What AWS or you got wrong' },
+    { title: 'Options', detail: 'Paths forward + trade-offs' },
+    { title: 'Agree', detail: 'Owners, dates, next check-in' },
+    { title: 'Follow through', detail: 'Do exactly what you said' },
+  ]}
+/>
+
+### The angry executive after an AWS-side event
+
+Don't get defensive and don't minimize. Acknowledge the business impact in **their** terms. Share what you know, and commit to a detailed explanation by a specific time. Then turn it into resilience: "Here's how we can make sure a similar event in one AZ doesn't affect you next time."
+
+### Telling a customer their architecture is risky
+
+They may have built it themselves and be proud of it. Lead with their goal ("you told me checkout uptime is your top metric"), show the risk with data, offer options, and **respect their decision**. If they accept the risk, document it. That's **Have Backbone; Disagree and Commit**.
+
+### Saying no to the customer
+
+Sometimes the customer asks for something a TAM can't or shouldn't do: write their code, guarantee a feature date, bypass a security control. Say no clearly, explain why, and offer what you *can* do. A clear no keeps trust. A vague maybe destroys it.
+
+<Pitfall title="Siding Against Your Own Company to Win Favor">
+
+**Common mistake:** "I told the customer AWS support was terrible and I'd personally make sure it got fixed."
+
+Advocating for the customer doesn't mean trashing your colleagues. Own the problem ("We didn't meet the bar here"), fix it through the right channels, and keep both relationships intact. Interviewers listen for this balance.
+
+</Pitfall>
+
+---
+
+## Key Takeaway
+
+A TAM drives outcomes through **credibility, data, and relationships**, not authority. Advocate inside AWS with **quantified feature requests**, prioritize by **business impact and deadlines**, and handle hard conversations by **listening, stating facts, owning mistakes, offering options, and following through**. Say no clearly, and disagree with respect.
+
+<TryIt title="Role-Play the Angry Call">
+
+Have a friend play the customer's CTO, or write out both sides:
+
+*"Your Region had a networking event yesterday. Our app was down for 47 minutes during our biggest sales day of the year. I'm paying for Enterprise Support. Why didn't you warn us? Why should we stay on AWS?"*
+
+Respond in under 3 minutes. Check: Did you acknowledge the impact before explaining? Did you avoid making promises you can't keep? Did you end with a specific next step and time?
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "What makes a product feature request most likely to be prioritized?",
+      options: ["Marking it urgent", "Describing the customer problem with quantified impact, aggregated with similar requests", "Asking the customer to email the service team directly", "Promising the customer a delivery date"],
+      correctIndex: 1,
+      explanation: "Service teams prioritize by problem clarity and demand, so quantify and aggregate."
+    },
+    {
+      question: "A customer accepts a risk you advised against. What should you do?",
+      options: ["Document the decision and the risk, and support their choice", "Escalate to their CEO", "Refuse to support the workload", "Keep raising it every week"],
+      correctIndex: 0,
+      explanation: "Have Backbone; Disagree and Commit: state your case clearly, then commit once the owner decides."
+    },
+    {
+      question: "During a hard conversation with an upset executive, what should come first?",
+      options: ["Explaining that the issue was in their architecture", "Quoting the SLA", "Listening and acknowledging the business impact", "Offering service credits"],
+      correctIndex: 2,
+      explanation: "Acknowledging impact first lowers defensiveness and builds trust for what follows."
+    },
+    {
+      question: "Two customers need you at once: one has a launch in 3 weeks, the other has an active production outage. What comes first?",
+      options: ["The launch, because it's bigger", "Whoever called first", "Split time evenly", "The active outage, while letting the launch customer know when you'll follow up"],
+      correctIndex: 3,
+      explanation: "Active business-critical impact comes first; communicate clearly with the other customer."
+    }
+  ]}
+/>

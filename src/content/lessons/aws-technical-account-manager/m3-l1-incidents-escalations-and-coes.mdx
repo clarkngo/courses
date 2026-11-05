@@ -1,0 +1,142 @@
+---
+title: "Incidents, Escalations, and Correction of Errors"
+description: "The TAM's role during a high-severity event: escalation paths, incident communication, updates for executives, and running a blameless post-incident review using Amazon's Correction of Errors (COE) approach and the 5 Whys."
+module: 3
+moduleTitle: "Operational Excellence"
+lesson: 1
+duration: "25 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## The TAM During an Incident
+
+When a customer has a business-critical event, the TAM is usually **not** the one typing commands. The TAM is the **connector and communicator**:
+
+- Confirm a **case** is open at the right severity, with impact, timeline, and resource IDs
+- **Escalate** inside AWS so the right support and service-team engineers are engaged
+- Join the customer's **incident bridge** and keep AWS and the customer in sync
+- Send clear, regular **updates to executives** on both sides
+- Make sure the event ends in a **post-incident review** with real actions
+
+<ProcessFlow
+  label="Incident lifecycle from a TAM's view: detect, engage AWS, mitigate, communicate throughout, resolve, then review and track actions to completion."
+  color="#ea580c"
+  steps={[
+    { title: 'Detect', detail: 'Alarm, customer call, or AWS Health' },
+    { title: 'Engage', detail: 'Case + escalation + bridge' },
+    { title: 'Mitigate', detail: 'Restore service first' },
+    { title: 'Communicate', detail: 'Regular, timed updates' },
+    { title: 'Resolve', detail: 'Confirm recovery with data' },
+    { title: 'Review', detail: 'COE; actions with owners' },
+  ]}
+/>
+
+---
+
+## Escalating Well
+
+Escalation is a skill. A good escalation is **specific**:
+
+> "Customer X, Sev 1 case 1234567: checkout errors at 40% since 14:05 UTC in us-east-1, about $50K/hour revenue impact. Errors align with DynamoDB throttling on table `orders` even though consumed capacity is below provisioned. Need the DynamoDB team to check for a hot partition or a service-side issue. Next customer update at 14:45."
+
+That message contains **who, impact, timeline, evidence, the specific ask, and the next checkpoint**. Compare it with "Customer X is really upset, can someone look at their case?"
+
+**When to escalate:** when the response is too slow for the business impact, when the case needs a service team, when the customer's executives are involved, or when there's a pattern across several customers.
+
+**How often:** escalate **early** for real business-critical impact. A TAM who protects the customer by escalating early is showing **Customer Obsession** and **Bias for Action**. A TAM who escalates everything loses credibility.
+
+---
+
+## Communicating to Executives
+
+During an event, leaders want three things: **what's the impact, what's being done, and when will I hear next?** Use a consistent update format:
+
+| Field | Example |
+|---|---|
+| **Status** | Mitigating |
+| **Impact** | ~40% of checkout requests failing in us-east-1 since 14:05 UTC |
+| **Current actions** | Shifting writes to a new table partition key; DynamoDB team engaged |
+| **Next update** | 14:45 UTC, or sooner if status changes |
+
+Never guess at a root cause in an executive update. Say "**suspected**" or "**under investigation**" until it's confirmed. And never miss your **next update** time. If nothing changed, send the update anyway and say so.
+
+---
+
+## Correction of Errors (COE)
+
+Amazon's post-incident process is called **Correction of Errors (COE)**. TAMs are often asked to help customers run something similar, or to explain an AWS-side event to a customer. A COE typically covers:
+
+1. **What happened**: a factual summary
+2. **Customer impact**: who was affected, how badly, for how long, with data
+3. **Timeline**: detection, escalation, mitigation, resolution, with times
+4. **Metrics**: graphs that show the event
+5. **5 Whys**: asking "why?" repeatedly to get past the surface cause
+6. **Lessons learned**
+7. **Action items**: each with an **owner, a priority, and a due date**
+
+### The 5 Whys, in practice
+
+- *Why did checkout fail?* DynamoDB throttled writes.
+- *Why?* All writes went to one partition.
+- *Why?* The partition key was the **date**, so every order today shared a key.
+- *Why was that not caught?* The load test used random dates.
+- *Why?* There's no load-test standard that requires production-like key distribution.
+
+Action items now target the **mechanism** (the load-test standard), not just the symptom (the key).
+
+<Pitfall title="Blame in the Review">
+
+**Common mistake:** the review concludes "an engineer pushed a bad config" and the action item is "be more careful."
+
+COEs are **blameless**. People make mistakes; **mechanisms** should catch them. Good actions add a guardrail: automated config validation, a staged rollout, an alarm, a runbook. Amazon's phrase is "**good intentions don't work, mechanisms do**."
+
+</Pitfall>
+
+---
+
+## Key Takeaway
+
+In an incident, a TAM **engages the right AWS experts, escalates specifically, and communicates on a schedule**. Afterward, they drive a **blameless COE**: impact, timeline, **5 Whys** down to the missing mechanism, and **action items with owners and dates**, then track those actions to completion.
+
+<TryIt title="Rewrite a Weak Escalation">
+
+Rewrite this message so it would get fast, useful action:
+
+> "Hi team, my customer is having problems with their database again and they're pretty frustrated. Can someone take a look ASAP?"
+
+Include: customer, case number and severity, exact symptom, start time, business impact, evidence so far, the specific ask, and next update time. Make up realistic details if you need to.
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "Which element is most often missing from a weak escalation?",
+      options: ["The customer's name", "An emoji conveying urgency", "The specific ask and business impact", "The TAM's job title"],
+      correctIndex: 2,
+      explanation: "Strong escalations state impact, evidence, the specific request, and the next checkpoint."
+    },
+    {
+      question: "There's no new information at your promised update time. What should you do?",
+      options: ["Send the update anyway, saying there's no change and when the next update is", "Skip it until there's news", "Guess at the root cause to have something to say", "Ask the customer to check AWS Health instead"],
+      correctIndex: 0,
+      explanation: "Keeping the cadence builds trust, even when there's nothing new."
+    },
+    {
+      question: "What is the purpose of the 5 Whys in a COE?",
+      options: ["To identify who caused the outage", "To make the document longer", "To estimate financial impact", "To move past the surface cause to the missing mechanism"],
+      correctIndex: 3,
+      explanation: "Repeated 'why' questions reveal process and mechanism gaps behind the immediate cause."
+    },
+    {
+      question: "Which is the best COE action item?",
+      options: ["Engineers should be more careful with configs", "Add automated config validation to the deploy pipeline, owned by the platform team, due in 30 days", "Discuss the outage at the next all-hands", "Monitor the system more closely"],
+      correctIndex: 1,
+      explanation: "Good actions are mechanisms with an owner and a due date, not intentions."
+    }
+  ]}
+/>

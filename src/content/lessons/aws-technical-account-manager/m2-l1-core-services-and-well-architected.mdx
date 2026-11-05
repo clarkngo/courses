@@ -1,0 +1,121 @@
+---
+title: "Core Services and the Well-Architected Lens"
+description: "The breadth of AWS knowledge a TAM interview expects (compute, storage, networking, databases, security, and observability) organized around the six Well-Architected pillars and the resilience patterns customers ask about most."
+module: 2
+moduleTitle: "Technical Breadth"
+lesson: 1
+duration: "30 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Breadth Over Depth (But Some Depth)
+
+A TAM supports customers who use **dozens of services**. Interviewers usually probe **breadth**, then pick one area you claim as a strength and go **deep** to see where your knowledge ends. A common shape:
+
+- "Walk me through what happens when a user types our URL and gets a page." (networking, DNS, load balancing, compute)
+- "How would you make this architecture survive the loss of an Availability Zone?" (resilience)
+- "Tell me about the deepest technical problem you've solved." (depth, and the Dive Deep Leadership Principle)
+
+An AWS Solutions Architect – Associate certification is a good benchmark for breadth. Many postings list AWS certifications as **preferred**, not required.
+
+---
+
+## The Service Map You Should Know Cold
+
+| Area | Know well | Know what it's for |
+|---|---|---|
+| **Compute** | EC2 (instance families, Auto Scaling, purchase options), Lambda, ECS/EKS, Fargate | Batch, Elastic Beanstalk, App Runner |
+| **Storage** | S3 (storage classes, lifecycle, versioning), EBS (gp3, io2, snapshots), EFS | FSx family, Storage Gateway, Backup |
+| **Networking** | VPC, subnets, route tables, security groups vs NACLs, NAT, ELB (ALB/NLB), Route 53, CloudFront | Transit Gateway, Direct Connect, PrivateLink, Global Accelerator |
+| **Databases** | RDS and Aurora (Multi-AZ, read replicas, backups), DynamoDB (capacity modes, partition keys) | ElastiCache, Redshift, OpenSearch, DocumentDB |
+| **Security** | IAM (roles, policies, least privilege), KMS, Organizations and SCPs, CloudTrail | GuardDuty, Security Hub, WAF, Shield, Secrets Manager |
+| **Observability** | CloudWatch (metrics, logs, alarms), CloudTrail, VPC Flow Logs | X-Ray, Config, Systems Manager |
+| **Integration** | SQS, SNS, EventBridge | Step Functions, Kinesis, MSK |
+
+You don't need every feature. You need to explain **what each service is for, how it fails, and how a customer would know**.
+
+---
+
+## The Six Well-Architected Pillars
+
+The **AWS Well-Architected Framework** gives TAMs a shared vocabulary with customers. Know all six pillars and one or two practices for each:
+
+| Pillar | Core question | Example practices |
+|---|---|---|
+| **Operational Excellence** | Can you run and improve this workload? | Infrastructure as code, runbooks, small reversible changes, post-incident learning |
+| **Security** | Are data and systems protected? | Least privilege, encryption, traceability, automated detection |
+| **Reliability** | Does it recover and meet demand? | Multi-AZ, health checks, auto-recovery, tested backups, quota management |
+| **Performance Efficiency** | Are resources used efficiently as needs change? | Right instance types, caching, serverless, measure before optimizing |
+| **Cost Optimization** | Are you paying only for what you need? | Right-sizing, Savings Plans, lifecycle policies, cost allocation tags |
+| **Sustainability** | Are you minimizing environmental impact? | Higher utilization, efficient instance types (like Graviton), data lifecycle |
+
+A **Well-Architected review** walks a workload through these questions, records **high- and medium-risk issues**, and produces an **improvement plan**. TAMs often run these reviews or bring in an SA to run them. The TAM then tracks the improvement plan to done.
+
+<Pitfall title="Treating the Review as the Outcome">
+
+**Common mistake:** a candidate proudly describes running 20 Well-Architected reviews.
+
+The interviewer's follow-up will be: *how many high-risk issues got fixed?* A review that produces a list nobody acts on has no impact. Talk about **remediation**: how you prioritized the risks, got owners and dates, and followed up.
+
+</Pitfall>
+
+---
+
+## Resilience Patterns Customers Ask About
+
+Know these terms and be ready to whiteboard them:
+
+- **Availability Zones vs Regions.** Multi-AZ protects against a data-center-level failure. Multi-Region protects against a regional event, at much higher cost and complexity.
+- **RTO and RPO.** *Recovery time objective* is how long you can be down. *Recovery point objective* is how much data you can lose.
+- **DR strategies**, from cheapest and slowest to most expensive and fastest: **backup and restore → pilot light → warm standby → multi-site active/active**.
+- **Static stability.** Design so the system keeps working when a dependency fails, without needing to make changes during the failure (for example, pre-provisioning capacity across AZs instead of relying on scaling up during an outage).
+- **Blast radius.** Use cells, separate accounts, and shuffle sharding to limit how much one failure affects.
+- **Quotas.** Many launch-day outages are actually **service quota** limits nobody raised in time.
+
+---
+
+## Key Takeaway
+
+Interviewers test **breadth across compute, storage, networking, databases, security, and observability**, then go deep in one area. Frame your answers with the **six Well-Architected pillars**, know **RTO/RPO and the four DR strategies**, and remember that a review counts only when its **risks get fixed**.
+
+<TryIt title="Whiteboard Drill: Survive an AZ Failure">
+
+A customer runs a web app on **two EC2 instances in one AZ** behind an ALB, with a **single-AZ RDS MySQL** database and user uploads saved on the instances' **local EBS volumes**.
+
+List every single point of failure, then redesign it to survive the loss of an AZ. Name the services and settings you'd change.
+
+A strong answer covers: an Auto Scaling group spanning at least two AZs (with enough capacity in each to carry the load alone), ALB subnets in multiple AZs, **RDS Multi-AZ** (or Aurora), uploads moved to **S3**, health checks, and a backup and restore test. It also mentions the **cost** of the extra capacity and how to explain it to the customer.
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "Which Well-Architected pillar most directly covers Multi-AZ deployments and tested backups?",
+      options: ["Cost Optimization", "Performance Efficiency", "Sustainability", "Reliability"],
+      correctIndex: 3,
+      explanation: "Reliability covers recovering from failure and meeting demand."
+    },
+    {
+      question: "A customer can tolerate losing at most 5 minutes of data. Which metric is that?",
+      options: ["RPO", "RTO", "MTTR", "SLA"],
+      correctIndex: 0,
+      explanation: "Recovery point objective is how much data loss is acceptable."
+    },
+    {
+      question: "Which DR strategy keeps a scaled-down but fully functional copy of production running in another Region?",
+      options: ["Backup and restore", "Pilot light", "Warm standby", "Active/active"],
+      correctIndex: 2,
+      explanation: "Warm standby runs a smaller, working copy that can scale up; pilot light keeps only core pieces (like data) running."
+    },
+    {
+      question: "What should a TAM emphasize when describing Well-Architected reviews in an interview?",
+      options: ["The number of reviews completed", "How identified high-risk issues were prioritized and fixed", "The length of the review document", "Which pillars were skipped"],
+      correctIndex: 1,
+      explanation: "Impact comes from remediation, not from the review itself."
+    }
+  ]}
+/>

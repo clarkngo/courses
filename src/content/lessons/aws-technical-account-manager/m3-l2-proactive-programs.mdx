@@ -1,0 +1,142 @@
+---
+title: "Proactive Work: Launches, Resilience, and Cost"
+description: "How TAMs prevent problems: operational reviews and cadence calls, launch readiness with Countdown, lifecycle and quota management, game days, and cost-optimization reviews with Savings Plans, right-sizing, and storage tiering."
+module: 3
+moduleTitle: "Operational Excellence"
+lesson: 2
+duration: "30 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Proactive Work Is the Job
+
+The best incident is the one that never happens. Proactive work is where a TAM earns the customer's trust, and it's what interviewers want to hear about in your stories.
+
+---
+
+## The Operating Cadence
+
+Most TAMs run a regular rhythm with each customer:
+
+| Cadence | Purpose | Typical content |
+|---|---|---|
+| **Weekly or biweekly call** | Keep things moving | Open cases, upcoming events, AWS Health notices, action items |
+| **Monthly operational review** | Spot trends | Case trends, incident review, Trusted Advisor risks, cost trend |
+| **Quarterly business review (QBR)** | Align with leadership | Outcomes delivered, risks, plans for next quarter (Module 4) |
+
+The cadence should produce **action items with owners**. A meeting that ends with "great sync, talk next week" didn't do its job.
+
+---
+
+## Launch and Event Readiness
+
+When a customer plans a big event (a product launch, a migration cutover, a seasonal peak), the TAM leads readiness, often through **AWS Countdown**:
+
+<ProcessFlow
+  label="Launch readiness: define the event and success criteria, review architecture, check quotas and capacity, load test, prepare runbooks and escalation contacts, then run the event with AWS engineers on standby and review afterward."
+  color="#ea580c"
+  steps={[
+    { title: 'Define', detail: 'Date, expected peak, success criteria' },
+    { title: 'Review', detail: 'Architecture, single points of failure' },
+    { title: 'Quotas', detail: 'Limits, capacity, scaling plans' },
+    { title: 'Test', detail: 'Load test with real traffic shape' },
+    { title: 'Prepare', detail: 'Runbooks, alarms, contacts' },
+    { title: 'Run + review', detail: 'Standby support; lessons learned' },
+  ]}
+/>
+
+Questions a TAM asks before any launch:
+- What's the **expected peak**, and what happens at 2× that?
+- Have you checked **service quotas** for every service in the request path?
+- Do **Auto Scaling** policies react fast enough, or do you need to **pre-scale**?
+- What's the **rollback plan**? Who decides to use it?
+- Who's on call, and does AWS have the **escalation contacts**?
+
+---
+
+## Lifecycle and Risk Management
+
+Many outages come from things that were **announced months in advance**:
+
+- **End of standard support** for database engine versions (RDS, Aurora, ElastiCache), EKS Kubernetes versions, and Lambda runtimes
+- **Certificate expirations**
+- **Instance retirements** and scheduled maintenance
+
+A TAM watches **AWS Health** and keeps a **lifecycle tracker** for each customer: what's coming, which resources are affected, who owns the upgrade, and the deadline. It's unglamorous work, and it prevents a lot of outages.
+
+### Game days
+
+A **game day** is a planned exercise that simulates a failure in a controlled way: kill an AZ, fail over a database, throttle a dependency. Teams then check whether alarms fire, runbooks work, and people know their roles. **AWS Fault Injection Service** supports these experiments. TAMs often help customers plan their first game day.
+
+---
+
+## Cost Optimization
+
+Cost reviews are one of the most visible ways a TAM delivers value. The main levers:
+
+| Lever | What it is | Typical finding |
+|---|---|---|
+| **Right-sizing** | Match instance size to actual use | Instances averaging 8% CPU (check **Compute Optimizer**) |
+| **Commitments** | **Savings Plans** or **Reserved Instances** for steady usage | A steady baseline paid entirely at On-Demand rates |
+| **Spot** | Spare capacity at deep discount for interruptible work | Batch or CI jobs on On-Demand |
+| **Storage tiering** | S3 lifecycle rules, **Intelligent-Tiering**, gp2 → gp3 | Years of logs in S3 Standard |
+| **Waste** | Idle resources | Unattached EBS volumes, idle load balancers, old snapshots |
+| **Architecture** | Change how it's built | Data transfer costs from cross-AZ chatter, or NAT Gateway processing |
+| **Modern hardware** | Graviton instances | Better price-performance for compatible workloads |
+
+**Order matters:** right-size and remove waste **before** buying commitments. Otherwise the customer commits to paying for capacity they didn't need.
+
+<Pitfall title="Optimizing Cost at the Expense of Reliability">
+
+**Common mistake:** a candidate's story is "I cut the bill 40% by moving everything to Spot and removing the standby database."
+
+Cost is one pillar of six. A good TAM presents **trade-offs**: "This saves $200K a year but raises your RTO from 2 minutes to 30. Is that acceptable for this workload?" The customer decides, with full information.
+
+</Pitfall>
+
+---
+
+## Key Takeaway
+
+Proactive TAM work runs on a **cadence** that produces owned actions. It includes **launch readiness** (Countdown, quotas, load tests, rollback plans), **lifecycle tracking** through AWS Health, **game days** to test recovery, and **cost reviews**: right-size and remove waste first, then commit, and always state the **reliability trade-off**.
+
+<TryIt title="Build a Cost Review Agenda">
+
+A customer spends **$400K a month**: 60% EC2 (all On-Demand), 20% RDS, 10% S3, 10% data transfer and NAT Gateway. Usage has been steady for a year.
+
+Draft a 30-minute cost review agenda. For each item, say what data you'd bring, the likely savings lever, and any reliability trade-off. Order the items so the customer doesn't commit to waste.
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "Why should right-sizing come before buying Savings Plans?",
+      options: ["Savings Plans don't apply to right-sized instances", "AWS requires it", "Committing first can lock in spend for capacity the customer doesn't need", "Right-sizing is cheaper"],
+      correctIndex: 2,
+      explanation: "Remove waste first so the commitment matches real need."
+    },
+    {
+      question: "Where would a TAM track an upcoming database engine end-of-support date?",
+      options: ["AWS Health, plus a lifecycle tracker with owners and deadlines", "CloudFront logs", "The Savings Plans console", "VPC Flow Logs"],
+      correctIndex: 0,
+      explanation: "AWS Health surfaces lifecycle events; a tracker turns them into owned work."
+    },
+    {
+      question: "What is the main purpose of a game day?",
+      options: ["Celebrating a successful launch", "Testing whether alarms, runbooks, and people work during a simulated failure", "Benchmarking instance types", "Reviewing the bill"],
+      correctIndex: 1,
+      explanation: "Game days validate recovery mechanisms before a real failure tests them."
+    },
+    {
+      question: "Before a launch, which question helps prevent the most common launch-day surprise?",
+      options: ["What color is the landing page?", "Who is the press contact?", "Is the code reviewed?", "Have service quotas been checked for every service in the request path?"],
+      correctIndex: 3,
+      explanation: "Unraised quotas are a frequent cause of launch-day failures."
+    }
+  ]}
+/>
