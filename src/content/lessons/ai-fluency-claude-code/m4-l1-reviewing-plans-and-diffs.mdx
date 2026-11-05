@@ -1,0 +1,146 @@
+---
+title: "Reviewing Plans and Diffs"
+description: "Review agent work like a skeptical senior engineer. Check the plan before code, read the diff instead of the summary, and treat test results as evidence you check, not proof you accept."
+module: 4
+moduleTitle: "Discernment"
+lesson: 1
+duration: "30 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## The Summary Is Not the Work
+
+At the end of a run, Claude Code writes a tidy summary: what it changed, why, and that the tests pass. Summaries are useful. They are also **the agent describing its own work**, and the agent is the one participant that can't see its own blind spots.
+
+Discernment with an agent means reviewing three things in order: the **plan**, the **diff**, and the **evidence**. The summary is a guide to where to look, not a substitute for looking.
+
+<ProcessFlow
+  label="Three-stage review of agent work"
+  color="#c2410c"
+  steps={[
+    { title: "Plan", detail: "Is the approach right?", badge: "1" },
+    { title: "Diff", detail: "Does the code do it, and only it?", badge: "2" },
+    { title: "Evidence", detail: "Do the checks prove it?", badge: "3" },
+  ]}
+/>
+
+---
+
+## Stage 1: Review the Plan
+
+A plan is the cheapest point to catch a wrong turn. Ask:
+
+- **Did it understand the goal?** Restate the goal in your own words and compare.
+- **Did it find the right code?** Does the plan name the files you'd expect? Is anything obviously missing, like the migration, the config, or the second place the logic is duplicated?
+- **Is the approach proportionate?** A two-line bug fix shouldn't come with a plan to "refactor the session layer."
+- **What did it assume?** Look for "I'll assume…" and confirm or correct each assumption.
+- **What's the verification step?** If the plan doesn't say how it will prove the change works, add that before approving.
+
+Push back freely. "Simpler: just fix the expiry calculation; don't touch the middleware" is a perfectly good response to a plan.
+
+---
+
+## Stage 2: Read the Diff
+
+Read the actual changes with `git diff`, in your IDE's diff view, or in the desktop app's diff pane. Don't stop at "looks reasonable." Check:
+
+| Look for | Why it matters |
+|---|---|
+| **Files you didn't expect** | Scope creep: "while I was there" changes that nobody asked for and nobody will review carefully. |
+| **Deleted or weakened tests** | The fastest way to make a failing test pass is to change the test. |
+| **New dependencies** | Each one is code you now trust and maintain. Is it real, maintained, and needed? |
+| **Swallowed errors** | `try { ... } catch {}` makes symptoms disappear without fixing causes. |
+| **Hardcoded values** | Magic numbers, test-only branches, or special cases that make one input work. |
+| **Duplicated logic** | The agent wrote a new helper instead of finding the existing one. |
+| **Comments that don't match the code** | Often a sign that it changed its approach partway through. |
+
+For a large diff, ask the agent for help, but in a way that makes it argue *against* itself: "Review this diff as a skeptical reviewer. What's the riskiest change, and what would you test that I haven't?" A fresh session or a review subagent is better still, because it doesn't share the original session's assumptions.
+
+<Pitfall title="Reviewing the Summary Instead of the Diff">
+
+**Common mistake:** reading "Fixed the bug, all 142 tests pass" and approving.
+
+That summary might be true. It might also leave out that the agent deleted the test that was failing, so now 142 tests pass instead of 143. The only way to know is to look. A quick `git diff --stat` before anything else shows which files changed and how much, and often reveals the surprise in seconds.
+
+</Pitfall>
+
+---
+
+## Stage 3: Check the Evidence
+
+Tests passing is evidence, not proof. Ask what the evidence actually shows:
+
+- **Did the right tests run?** "All tests pass" means little if the changed code has no tests.
+- **Did the new test fail first?** A test written after the fix may pass for the wrong reason. Ask the agent to show it failing against the old code.
+- **Does it work outside the tests?** For UI, look at the page. For a CLI, run it. For an API, call it.
+- **Were the edge cases tried?** Empty input, very large input, the unhappy path, the concurrent case.
+
+Run the key check yourself, at least once, rather than trusting the transcript's report of it.
+
+---
+
+## Calibrating Review Depth
+
+Not every diff needs the same scrutiny. Match your review to the risk:
+
+| Risk | Example | Review depth |
+|---|---|---|
+| Low | Docs, comments, test-only changes, formatting | Skim the diff, run the checks |
+| Medium | Feature code with good test coverage | Read every line; check tests fail-then-pass |
+| High | Auth, payments, data migrations, concurrency, infra | Line by line, run it yourself, second human reviewer |
+
+<TryIt title="Find What the Summary Left Out">
+
+1. Give Claude Code a medium-sized task on a branch, such as a small feature or a bug fix with tests.
+2. When it finishes, **don't read its summary yet.** Run `git diff --stat`, then read the full diff.
+3. Write your own three-sentence summary of what changed.
+4. Now read the agent's summary. What did it mention that you missed? What did it leave out that you found?
+5. Ask a fresh session to review the diff skeptically. Did it find anything neither of you caught?
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "Why review the plan before the code?",
+    options: [
+      "A wrong approach is far cheaper to correct in a short plan than in a large diff built on it.",
+      "Plans are always correct.",
+      "Code can't be reviewed.",
+      "The plan replaces the need to read the diff."
+    ],
+    correctIndex: 0,
+    explanation: "The plan is the cheapest checkpoint. It doesn't replace the diff review; it makes it easier."
+  },
+  {
+    question: "The agent reports that all tests pass after fixing a bug. Which of these most needs checking?",
+    options: [
+      "Whether the summary is well formatted.",
+      "Whether the commit message is long enough.",
+      "Whether it used tabs or spaces.",
+      "Whether any tests were deleted or weakened, and whether the changed code is actually covered by tests."
+    ],
+    correctIndex: 3,
+    explanation: "Changing the test is the easiest way to make it pass. 'All tests pass' only means something if the right tests exist and are intact."
+  },
+  {
+    question: "What makes an AI-assisted second review most useful?",
+    options: [
+      "Asking the same session 'is this good?'",
+      "Using a fresh session or review subagent and asking it to argue against the change.",
+      "Skipping it for large diffs.",
+      "Only reviewing the summary."
+    ],
+    correctIndex: 1,
+    explanation: "A fresh context doesn't share the original session's assumptions, and a skeptical framing invites real criticism instead of agreement."
+  }
+]} />
+
+---
+
+## Up Next
+
+Now that you know how to review, the next lesson catalogs the **specific ways agents fail**, so you know what to look for.

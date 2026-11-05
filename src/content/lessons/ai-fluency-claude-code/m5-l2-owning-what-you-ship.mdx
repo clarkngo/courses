@@ -1,0 +1,142 @@
+---
+title: "Owning What You Ship"
+description: "Your name is on the commit. Practice the explain-it test, disclose AI assistance where it matters, keep reviews human, and build team habits for agent-written code."
+module: 5
+moduleTitle: "Diligence"
+lesson: 2
+duration: "25 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## "The Agent Wrote It" Is Not an Answer
+
+When a bug reaches production, nobody asks which tool typed the line. They ask who reviewed it, who approved it, and who can fix it. Foundations called this **deployment diligence**: taking responsibility for AI-assisted work once it leaves your hands.
+
+With an agent, that responsibility is easy to lose track of, because so much of the work happened while you weren't watching. This lesson is about keeping it.
+
+---
+
+## The Explain-It Test
+
+Before you commit agent-written code, ask yourself:
+
+> Could I explain this change, line by line, to a reviewer, and defend each decision without asking the agent?
+
+If yes, it's your code. If no, you have three honest options: learn it until you can (ask the agent to walk you through it), cut it down to what you understand, or mark it clearly for a reviewer who does understand it.
+
+The test scales with risk. A generated test fixture doesn't need line-by-line mastery. An authorization check does.
+
+---
+
+## Disclosure: Say What Matters
+
+Norms differ by team, employer, open-source project, and school. What doesn't vary: **don't misrepresent how the work was made when it matters to the people relying on it.**
+
+| Context | Common practice |
+|---|---|
+| Your team's repo | Follow team policy. Many teams use a `Co-Authored-By` trailer or a PR note for substantial agent contributions. |
+| Open-source projects | Read `CONTRIBUTING.md`. Some projects require disclosure; some don't accept AI-generated contributions at all. |
+| Coursework and assessments | Follow the course's AI policy exactly. When in doubt, disclose and ask. |
+| Client work | Check the contract and your organization's rules on AI tools and client code. |
+| Security fixes and incident work | Note what was AI-assisted in the write-up, so later reviewers know what to double-check. |
+
+Claude Code can add attribution to commits and pull requests it creates. Whether to keep it is a decision for you and your team, but make it on purpose.
+
+<Pitfall title="Rubber-Stamp Review of Agent PRs">
+
+**Common mistake:** a teammate opens a 1,200-line agent-written pull request, and the reviewer approves it after a skim because "the AI already checked it."
+
+Now nobody has really reviewed it: the author trusted the agent, and the reviewer trusted the author. Teams that use agents well keep pull requests small, require the author to have read every line first, and ask for a short human-written note on *why* the change is right, not just *what* changed.
+
+</Pitfall>
+
+---
+
+## Team Habits for Agent-Written Code
+
+<ProcessFlow
+  label="A team workflow for agent-assisted changes"
+  color="#c2410c"
+  steps={[
+    { title: "Branch", detail: "Agent works off main" },
+    { title: "Author review", detail: "Explain-it test passed" },
+    { title: "Small PR", detail: "One concern, clear note" },
+    { title: "CI", detail: "Tests, lint, secret scan" },
+    { title: "Human review", detail: "Risk-based depth" },
+  ]}
+/>
+
+If you lead a team, agree on these together. The [AI Fluency for Leaders & Teams](/courses/ai-fluency-leaders-teams/) course covers the policy side.
+
+- **A shared, committed CLAUDE.md and settings file**, reviewed like code.
+- **Agreed permission defaults** per repo: which modes are fine, which commands are always denied.
+- **A size limit for pull requests**, agent-assisted or not.
+- **Clear lines for "human decides"**: architecture, security, data handling, dependency additions.
+- **A way to share what works**: useful slash commands, skills, and briefs, plus a short log of agent mistakes and the fixes the team added.
+
+---
+
+## Keep Your Own Skills Sharp
+
+The last kind of diligence is toward yourself. If the agent always debugs, you stop learning to debug. That's fine for some skills and costly for others. Pick the skills you want to keep strong, and regularly do that work yourself, or with the agent only reviewing. Fluency includes knowing when *not* to delegate.
+
+<TryIt title="Write Your Personal Shipping Checklist">
+
+Write a short checklist you'll run before committing agent-assisted code. Start with these and adapt:
+
+1. I read the full diff, not just the summary.
+2. I ran the key check myself.
+3. No tests were deleted or weakened without a reason I agree with.
+4. No secrets, debug code, or unrelated changes are included.
+5. I pass the explain-it test for the risky parts.
+6. Attribution and disclosure match my team's or project's rules.
+
+Put it somewhere you'll see it, such as your personal `~/.claude/CLAUDE.md`, a PR template, or a sticky note.
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "What is the explain-it test?",
+    options: [
+      "Asking the agent to explain its code.",
+      "Writing a README.",
+      "Checking whether you could explain and defend the change to a reviewer without asking the agent.",
+      "Running the test suite."
+    ],
+    correctIndex: 2,
+    explanation: "If you can't explain it, you can't own it. Learn it, cut it, or flag it."
+  },
+  {
+    question: "A teammate's 1,200-line agent-written PR gets approved after a skim. What's the core problem?",
+    options: [
+      "The PR used the wrong branch name.",
+      "Each person trusted someone else to check it, so nobody actually reviewed it.",
+      "The agent should have written more code.",
+      "Nothing; the agent already checked it."
+    ],
+    correctIndex: 1,
+    explanation: "Layered trust without layered checking means no real review. Small PRs and author-first review fix this."
+  },
+  {
+    question: "You're contributing an agent-assisted fix to an open-source project. What should you do about disclosure?",
+    options: [
+      "Read the project's contributing guidelines and follow its AI policy.",
+      "Never mention AI.",
+      "Always remove all attribution.",
+      "Ask the agent whether to disclose."
+    ],
+    correctIndex: 0,
+    explanation: "Norms vary by project. Some require disclosure and some don't accept AI-generated code. The project's own rules decide."
+  }
+]} />
+
+---
+
+## Up Next
+
+One lesson left: a course challenge that puts all four Ds together in a single agent task.

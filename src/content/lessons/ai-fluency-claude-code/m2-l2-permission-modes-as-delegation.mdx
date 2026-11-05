@@ -1,0 +1,175 @@
+---
+title: "Permission Modes as Delegation Dials"
+description: "Match autonomy to risk. Learn Claude Code's permission modes, allow/ask/deny rules, and sandboxing, and how to choose a setting for each task instead of leaving one on all the time."
+module: 2
+moduleTitle: "Delegation"
+lesson: 2
+duration: "30 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## Delegation Has a Volume Knob
+
+In the last lesson you decided *what* to delegate. Claude Code also asks *how much*: may the agent edit files without asking? Run any command? Only the ones you've listed?
+
+Your answer is set by **permission modes** and **permission rules**. Fluent users treat them as a dial they turn for each task, not a setting they choose once and forget.
+
+---
+
+## The Modes
+
+As of late 2026, Claude Code offers these main modes. In the terminal, **Shift+Tab** cycles through the everyday ones. The desktop app and IDE extensions have a mode picker.
+
+<ProcessFlow
+  label="Claude Code permission modes, from most to least human control"
+  color="#c2410c"
+  steps={[
+    { title: "Plan", detail: "Research and propose; no edits" },
+    { title: "Default", detail: "Ask before edits and new commands" },
+    { title: "Accept edits", detail: "File edits auto-approved" },
+    { title: "Auto", detail: "A safety check approves or blocks" },
+    { title: "Bypass", detail: "No prompts at all" },
+  ]}
+/>
+
+| Mode | What the agent can do without asking | Good fit |
+|---|---|---|
+| **Plan mode** | Read, search, and think. It proposes a plan and makes no changes until you approve. | Unfamiliar code, big changes, anything where you want to agree on the approach first. |
+| **Default** | Read files. It asks before editing files and before running commands that aren't already allowed. | Learning the tool, sensitive repos, work you want to watch step by step. |
+| **Accept edits** | Edit files in the project without asking. It still asks before commands that aren't allowed. | You've agreed on a plan and will review the diff at the end. |
+| **Auto** | Most actions. A separate safety check reviews each action and blocks ones that look risky or off-task. | Longer runs where constant prompts would wear you down, on a repo where mistakes are recoverable. |
+| **Bypass permissions** | Everything, with no prompts. Started with a flag whose name says it all: `--dangerously-skip-permissions`. | Only inside an isolated container or VM with nothing valuable in reach. |
+
+The exact list and names change between versions, so check the docs for yours. The reasoning carries over: **each step to the right trades a human checkpoint for speed.** Make that trade on purpose.
+
+---
+
+## Rules: Fine-Grained Delegation
+
+Modes are broad. **Permission rules** let you be specific. In a settings file (for example, the project's `.claude/settings.json`), you list tools and commands as **allow**, **ask**, or **deny**:
+
+```json
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run test:*)",
+      "Bash(npm run lint)",
+      "Bash(git diff:*)"
+    ],
+    "ask": [
+      "Bash(git push:*)"
+    ],
+    "deny": [
+      "Read(./.env)",
+      "Read(./secrets/**)",
+      "Bash(curl:*)"
+    ]
+  }
+}
+```
+
+A few principles:
+
+- **Deny wins.** If a rule denies something, no other setting can allow it.
+- **Allow the boring, safe, frequent things.** Running tests and linters thousands of times shouldn't require thousands of clicks. Allowing them lets you keep default mode on without prompt fatigue.
+- **Deny reads of secrets.** Keeping `.env` files and credential folders out of the agent's reach is simpler than trusting yourself to notice.
+- **Share project rules with your team.** A committed `.claude/settings.json` gives everyone the same guardrails. Personal tweaks go in a local settings file that stays out of git.
+
+Run `/permissions` in a session to see and edit the active rules.
+
+---
+
+## Sandboxing: A Boundary That Doesn't Depend on Judgment
+
+Permission prompts depend on someone making the right call. A **sandbox** limits what commands *can* reach at the operating-system level: which folders they can write, which network hosts they can contact. Claude Code includes sandboxing for its shell commands (`/sandbox`), and you can also run the whole agent inside a container or VM.
+
+A sandbox is what makes higher-autonomy modes reasonable. Inside one, a mistaken command can damage the sandbox, but not your home folder, SSH keys, or cloud credentials.
+
+<Pitfall title="Prompt Fatigue → Bypass Everything">
+
+**Common mistake:** getting annoyed by approval prompts on day two and switching to bypass mode on your laptop, permanently.
+
+That swaps a small, constant cost (clicking "allow") for a rare, large one (an agent deleting files, pushing to the wrong branch, or running a command a malicious README suggested). The fix for fatigue is **better rules**: allow the safe, repetitive commands, so that the prompts you still see are the ones worth reading.
+
+</Pitfall>
+
+---
+
+## Choosing a Setting per Task
+
+| Task | Sensible setting | Why |
+|---|---|---|
+| Exploring an unfamiliar repo | Plan or default | Nothing should change yet. |
+| Implementing an approved plan in a feature branch | Accept edits, with test and lint commands allowed | You'll review the diff; edits are reversible. |
+| Overnight refactor in a disposable container | Auto or bypass, inside the sandbox | Isolation contains the blast radius. |
+| Touching deploy scripts or infrastructure config | Default, with `ask` rules on deploy commands | Irreversible actions need a human every time. |
+| A repo you just cloned from a stranger | Plan or default, sandbox on | You don't yet know what its files will tell the agent to do (more in module 5). |
+
+<TryIt title="Write Your Project's Rules">
+
+For a project you work on:
+
+1. List the five commands you run most (tests, lint, build, type check, dev server).
+2. List anything the agent should never read or run (secrets files, deploy commands, `rm -rf`, network tools).
+3. Draft a `.claude/settings.json` with `allow` and `deny` rules for them. Check the docs for the exact rule syntax your version supports.
+4. Start a session, run `/permissions`, and confirm your rules loaded.
+5. Ask the agent to do a small task and notice how many prompts disappear and which ones remain.
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "You've agreed on a plan and will review the full diff at the end. Which mode fits best?",
+    options: [
+      "Bypass permissions on your main laptop.",
+      "Plan mode.",
+      "Accept edits, with your test and lint commands allowed.",
+      "No agent at all."
+    ],
+    correctIndex: 2,
+    explanation: "Auto-accepting reversible edits keeps momentum, and command prompts and your final review stay in place."
+  },
+  {
+    question: "What's the best fix for prompt fatigue?",
+    options: [
+      "Allow the safe, repetitive commands so the prompts you still see are the ones that matter.",
+      "Switch permanently to bypass mode.",
+      "Approve every prompt without reading.",
+      "Stop using tests."
+    ],
+    correctIndex: 0,
+    explanation: "Good rules cut the noise and keep the human checkpoint where it counts."
+  },
+  {
+    question: "Why does sandboxing make higher-autonomy modes more reasonable?",
+    options: [
+      "It makes the model smarter.",
+      "It removes the need to review the diff.",
+      "It speeds up commands.",
+      "It limits what commands can reach at the OS level, so a mistake can't touch files or credentials outside the sandbox."
+    ],
+    correctIndex: 3,
+    explanation: "A sandbox is a boundary that doesn't depend on anyone making the right call in the moment."
+  },
+  {
+    question: "A deny rule blocks reading .env, and a broader allow rule permits reading all files. What happens?",
+    options: [
+      "The allow rule wins because it's broader.",
+      "The deny rule wins.",
+      "Claude Code picks at random.",
+      "The agent asks the model to decide."
+    ],
+    correctIndex: 1,
+    explanation: "Deny rules take precedence. That's what makes them reliable guardrails."
+  }
+]} />
+
+---
+
+## Up Next
+
+Module 3 turns to **Description**: how to brief an agent so it builds the right thing, and how to make that context last across sessions.

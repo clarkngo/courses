@@ -1,0 +1,136 @@
+---
+title: "Agent-First Development"
+description: "What Google Antigravity is, how its desktop app, IDE, CLI, and SDK fit together, and why its design moves you from writing code alongside an AI to managing agents that work in parallel."
+module: 1
+moduleTitle: "Meet Antigravity"
+lesson: 1
+duration: "20 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## From Copilot to Mission Control
+
+Most AI coding tools began as a helper inside your editor. You write, it suggests. Google Antigravity was designed around a different idea: **the agent does the work, and you manage it.**
+
+When it launched in November 2025, alongside Gemini 3, Antigravity had two views. The **Editor** was a familiar IDE with an agent side panel. The **Agent Manager** was a control room where several agents could work at once across different workspaces while you checked in on each one. The bet was that developers would spend more time directing and reviewing agents than typing code.
+
+In 2026 Google doubled down on that bet. Antigravity 2.0, announced at Google I/O in May, made the agent control room a standalone desktop app.
+
+---
+
+## The Product Family (as of November 2026)
+
+| Surface | What it is | Typical use |
+|---|---|---|
+| **Antigravity desktop app** | The main home for agents: run several conversations in parallel, with subagents, scheduled automations, a built-in browser, and artifact review. Successor to the Agent Manager. | Day-to-day agent work, especially parallel tasks. |
+| **Antigravity IDE** | The original editor experience, now a separate product. | People who want a full editor with the agent built in. |
+| **Antigravity CLI** (`agy`) | A terminal agent with interactive and headless modes. Google encourages Gemini CLI users to migrate to it. | Terminal workflows, scripts, servers. |
+| **Antigravity SDK** | Programmatic access to the same agent harness, for building and hosting your own agents. | Custom agents and automation. |
+| **Editor extensions** | Integrations for other editors, such as VS Code and JetBrains. | Using Antigravity agents from the editor you already have. |
+
+Two things to keep in mind:
+
+- **It's multi-model.** Antigravity runs Google's Gemini models and also offers models from other providers, such as Anthropic's Claude. Which ones you get depends on your Google AI plan. Module 3 covers choosing.
+- **It moves fast.** The desktop app ships new versions most weeks. Treat any specific setting name in this course as "true as of November 2026" and check the changelog.
+
+<Pitfall title="Learning the Buttons Instead of the Skills">
+
+**Common mistake:** memorizing which panel holds which setting, then feeling lost when the next release moves it.
+
+Antigravity's interface has already been restructured once, from Editor plus Agent Manager to a standalone app. The questions behind the buttons haven't changed: what to delegate, how to brief, how to judge, how to stay safe. Learn those, and any new layout is just a new map of the same territory.
+
+</Pitfall>
+
+---
+
+## The 4Ds When You Manage Many Agents
+
+You met the 4D framework in [AI Fluency: Foundations](/courses/ai-fluency-foundations/). Antigravity's agent-first design changes the questions:
+
+| Competency | One AI helper | A team of agents in Antigravity |
+|---|---|---|
+| **Delegation** | Should AI help with this? | Which tasks run **in parallel**, which run unattended on a schedule, and which **permission preset** does each get? |
+| **Description** | How do I phrase this? | What does each agent need: brief, **model**, **rules**, **skills**? |
+| **Discernment** | Is this answer right? | Do the **plan, walkthrough, screenshots, and recordings** actually prove the work is right, and did I check the code itself? |
+| **Diligence** | Am I using this responsibly? | Is my machine safe from what agents run and read? Who owns the output of five parallel agents? |
+
+The biggest shift is in **discernment**. With one agent, you can watch it work. With five, you can't. Antigravity's answer is **artifacts**: structured deliverables such as implementation plans, walkthroughs, screenshots, and browser recordings that summarize what an agent did so you don't have to watch every step. Artifacts make managing agents possible. They also create a new risk: reviewing the *report* instead of the *work*. Module 4 is about getting that balance right.
+
+---
+
+## Your Attention Is the Bottleneck
+
+<ProcessFlow
+  label="In agent-first development, the human's role shifts from doing to directing and reviewing"
+  color="#1a73e8"
+  steps={[
+    { title: "Direct", detail: "Pick tasks, set boundaries" },
+    { title: "Brief", detail: "Context, rules, model" },
+    { title: "Monitor", detail: "Check in; answer questions" },
+    { title: "Review", detail: "Artifacts, then the code" },
+    { title: "Own", detail: "Merge, ship, answer for it" },
+  ]}
+/>
+
+Agents scale easily. Your attention doesn't. Running five agents doesn't make you five times as productive if you can only review two agents' work carefully. Fluent Antigravity users run **as many agents as they can review well**, and no more.
+
+<TryIt title="Picture Your Week as a Manager of Agents">
+
+1. List the coding tasks on your plate this week.
+2. For each, ask: could an agent do this mostly alone, with me reviewing at the end?
+3. Count how many you'd realistically review *well* in a day. That's your parallel-agent budget.
+4. Note which tasks you'd still want to do yourself, and why.
+
+You'll refine this list in module 2.
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "What is the central design idea behind Google Antigravity?",
+    options: [
+      "Faster autocomplete inside a traditional editor.",
+      "A chatbot that answers coding questions.",
+      "Agent-first development: agents do the work, often in parallel, while you direct and review them.",
+      "A replacement for git."
+    ],
+    correctIndex: 2,
+    explanation: "Antigravity was built around managing agents, first with the Agent Manager and now with the standalone desktop app."
+  },
+  {
+    question: "Why does Antigravity rely so heavily on artifacts such as plans, walkthroughs, and recordings?",
+    options: [
+      "To use up your quota faster.",
+      "So you can review several agents' work without watching every step, though you still need to check the work itself.",
+      "Because agents can't edit code without them.",
+      "To replace version control."
+    ],
+    correctIndex: 1,
+    explanation: "Artifacts make supervising many agents practical. The risk is reviewing the report instead of the work."
+  },
+  {
+    question: "What usually limits how many agents you should run at once?",
+    options: [
+      "How many you can review well.",
+      "The number of CPU cores.",
+      "The length of your prompts.",
+      "Nothing; more agents is always better."
+    ],
+    correctIndex: 0,
+    explanation: "Your review attention is the bottleneck. Unreviewed parallel work is just parallel risk."
+  }
+]} />
+
+---
+
+## About the Framework
+
+The 4D AI Fluency Framework was created by **Rick Dakan and Joseph Feller** with **Anthropic**, and is released under [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/). This course's lessons, examples, and exercises are original, and this course is not affiliated with Google.
+
+## Up Next
+
+Before running a fleet, you'll run a single, safe first mission and learn to read what an agent hands back.

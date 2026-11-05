@@ -1,0 +1,135 @@
+---
+title: "From Chat to Agent"
+description: "What changes when AI can read your files, run commands, and edit code instead of just answering. The agentic loop, why the 4Ds matter more with an agent, and where Claude Code runs."
+module: 1
+moduleTitle: "Meet the Agent"
+lesson: 1
+duration: "20 min"
+---
+
+import LoopDiagram from '@components/LoopDiagram.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## The Day the Chatbot Got Hands
+
+With a chat assistant, you're the hands. It suggests code, you copy it into your editor, run it, notice the error, and paste the error back. Every action passes through you, so every action gets at least a glance.
+
+Claude Code is an **agent**. You describe a goal and it works toward it on its own. It searches your repository, reads the files it thinks matter, edits them, runs your tests, reads the failures, and tries again. A task that used to take twenty copy-paste trips can now run as one stretch of autonomous work.
+
+That's the appeal. It's also the whole reason this course exists. When the AI stops waiting for you between steps, **you lose the automatic checkpoint that copy-paste gave you.** You need to put checkpoints back on purpose, in the places where they matter.
+
+---
+
+## The Agentic Loop
+
+Under the hood, almost every agent session runs the same loop:
+
+<LoopDiagram
+  label="The agentic loop: gather context, take an action, check the result, and decide what to do next, repeating until the task is done or the agent stops to ask you"
+  colors={['#9a3412', '#c2410c', '#ea580c']}
+  steps={[
+    { title: "Gather", subtitle: "read, search" },
+    { title: "Act", subtitle: "edit, run" },
+    { title: "Check", subtitle: "tests, output" },
+    { title: "Decide", subtitle: "next step or stop" },
+  ]}
+/>
+
+Each trip around the loop is a set of **tool calls**: reading a file, running a shell command, editing a line, fetching a web page. Claude decides which tools to call. You decide which of those tools it may use freely, which need your approval, and which it can't use at all.
+
+The loop also explains the agent's typical failures. If the **Gather** step misses an important file, every later step builds on a wrong picture. If the **Check** step is weak (no tests, or tests that don't cover the change), the agent can honestly believe it succeeded when it didn't.
+
+---
+
+## The 4Ds, Raised to the Power of Autonomy
+
+You met the 4D framework in [AI Fluency: Foundations](/courses/ai-fluency-foundations/). With an agent, each competency gets new questions:
+
+| Competency | In a chat | With Claude Code |
+|---|---|---|
+| **Delegation** | Should AI help with this? | Which tasks should the agent do alone, and **what is it allowed to do** without asking me? |
+| **Description** | How do I phrase my request? | What does it need to know about the goal, the codebase, and the constraints, and **what should persist across sessions?** |
+| **Discernment** | Is this answer right? | Is the plan sound, does the diff do what I asked (and nothing else), and **is "done" actually done?** |
+| **Diligence** | Am I using this responsibly? | Is my repo, my machine, and my secrets safe, and **am I ready to put my name on this commit?** |
+
+The framework's three modes of interaction from Foundations still apply. In **augmentation** mode you work alongside Claude Code, asking questions and taking turns. In **agency** mode you hand it a goal and let it run. Most real sessions move between the two, and part of fluency is knowing which one you're in.
+
+---
+
+## Where Claude Code Runs
+
+Claude Code is one agent with several front doors. As of late 2026 they include:
+
+- **Terminal (CLI).** Run `claude` inside a project folder. This is the original and most complete surface.
+- **IDE extensions.** VS Code and JetBrains integrations show diffs inline and share your editor's open files and selection.
+- **Desktop app.** A graphical app with sessions, a diff view, and a built-in browser for previewing what it builds.
+- **Web and mobile.** Sessions that run in a cloud sandbox against a GitHub repository, so you can start work from a browser or phone.
+- **Automation.** A headless mode (`claude -p "..."`), GitHub Actions, and the Claude Agent SDK for building your own agents on the same harness.
+
+The surface changes the ergonomics. The habits in this course stay the same. Wherever you run it, the agent can only be as safe and useful as the permissions you grant and the review you do.
+
+<Pitfall title="Treating the Agent Like a Faster Chatbot">
+
+**Common mistake:** typing the same one-line requests you'd give a chatbot ("fix the login bug") and then approving everything it does because it *sounds* confident.
+
+A chatbot's bad answer costs you a few seconds of reading. An agent's bad run can touch thirty files, install a package, and rewrite your tests so they pass. The loop is faster, so the cost of a vague request and a lazy review grows with it.
+
+</Pitfall>
+
+<TryIt title="Map Your Current Checkpoints">
+
+Think about the last time you used AI for coding, in any tool.
+
+1. List every point where **you** were in the loop: copying code, running it, reading the error, deciding to accept.
+2. For each one, ask: if an agent did this step automatically, what could go wrong without me noticing?
+3. Circle the two checkpoints you'd most want to keep. You'll learn how to put them back deliberately in modules 2 and 4.
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "What is the biggest practical difference between a chat assistant and a coding agent like Claude Code?",
+    options: [
+      "The agent takes actions such as reading files, running commands, and editing code itself, so the human checkpoint between steps disappears unless you add it back.",
+      "The agent uses a different programming language.",
+      "The agent can't make mistakes because it runs tests.",
+      "The chat assistant has no access to a model."
+    ],
+    correctIndex: 0,
+    explanation: "Agents act in a loop without waiting for you between steps. That's the source of both their speed and their risk."
+  },
+  {
+    question: "In the agentic loop, why does a weak Check step matter so much?",
+    options: [
+      "It makes the agent run more slowly.",
+      "It uses more tokens.",
+      "Without good checks, such as tests that cover the change, the agent can believe it succeeded when it didn't, and so can you.",
+      "It stops the agent from reading files."
+    ],
+    correctIndex: 2,
+    explanation: "The agent judges success by the evidence it can gather. Weak evidence produces confident but wrong 'done' reports."
+  },
+  {
+    question: "Which question belongs to Delegation when working with Claude Code?",
+    options: [
+      "Is this function name clear?",
+      "What is the agent allowed to do without asking me first?",
+      "Did the tests pass?",
+      "Should I disclose AI use in my commit?"
+    ],
+    correctIndex: 1,
+    explanation: "With agents, delegation covers not only which tasks to hand off but also how much autonomy to grant while doing them."
+  }
+]} />
+
+---
+
+## About the Framework
+
+The 4D AI Fluency Framework was created by **Rick Dakan and Joseph Feller** with **Anthropic**, and is released under [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/). This course's lessons, examples, and exercises are original.
+
+## Up Next
+
+Before handing Claude Code real work, you'll run a first session that changes nothing: using the agent to understand a codebase.

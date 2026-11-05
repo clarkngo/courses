@@ -1,0 +1,132 @@
+---
+title: "What to Hand Off"
+description: "Choose tasks that suit an agent. Size the task, check that the result can be verified, weigh how bad a mistake would be, and know which work to keep for yourself."
+module: 2
+moduleTitle: "Delegation"
+lesson: 1
+duration: "25 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## Not "Can It?" but "Should It, Like This?"
+
+Claude Code can attempt almost any coding task. That makes "can it do this?" the wrong question. The useful question is: **is this a task where handing it to an agent produces a better result, and where I can tell whether it did?**
+
+Three questions settle most delegation decisions.
+
+<ProcessFlow
+  label="Three delegation questions for agentic coding"
+  color="#c2410c"
+  steps={[
+    { title: "Verifiable?", detail: "Can I tell if it worked?", badge: "1" },
+    { title: "Sized?", detail: "Small enough to review", badge: "2" },
+    { title: "Reversible?", detail: "How bad is a mistake?", badge: "3" },
+  ]}
+/>
+
+### 1. Can the result be verified?
+
+The best agent tasks come with a built-in judge: a failing test that should pass, a type checker that should go quiet, a page that should render, a script whose output you can compare. When the agent can check its own work, it iterates toward a real answer instead of a plausible one.
+
+When there's no judge, you are the judge. That's fine, but it means your review is the only quality check, and the delegation is only as good as that review.
+
+### 2. Is it sized for review?
+
+A useful rule: **delegate in units you're willing to review.** "Migrate the whole app to the new API" produces a diff nobody reads carefully. "Migrate the billing module, then stop and summarize" produces one you can.
+
+Large tasks still work, when you break them up. Ask for a plan first, then have the agent execute one step at a time with a checkpoint after each.
+
+### 3. How reversible is a mistake?
+
+Editing source code in a git repo is highly reversible. Running a database migration against production, sending an email, deleting cloud resources, or publishing a package isn't. The less reversible the action, the more human judgment it needs, and the less autonomy the agent should have when it gets there.
+
+---
+
+## A Delegation Map
+
+| Usually great to delegate | Delegate with close review | Keep for yourself, or do together |
+|---|---|---|
+| Exploring and explaining unfamiliar code | Features that touch many files | Architecture and product decisions |
+| Writing tests for existing behavior | Refactors of core modules | Security-sensitive logic (auth, crypto, permissions) |
+| Fixing a bug with a failing test to reproduce it | Dependency upgrades | Anything touching production data or infrastructure |
+| Boilerplate, scaffolding, and repetitive edits | Performance work (needs measurement) | Deciding *what* to build and *why* |
+| Lint, type, and build error cleanup | Database schema changes | Code you'll need to defend in an interview, exam, or audit without help |
+| Drafting docs, READMEs, and commit messages | Changes to CI and deploy config | Learning a concept you need to own |
+
+The right-hand column isn't "AI can't help." It's "the judgment is the work." Claude Code can still research options, draft a comparison, or poke holes in your design. The decision stays with you.
+
+<Pitfall title="Delegating the Learning">
+
+**Common mistake:** using the agent to skip the part of the task you were supposed to learn from.
+
+If you're new to a language, a framework, or a codebase, having Claude Code write everything means you can ship code you can't explain, debug, or extend. Fluent learners switch modes: they ask the agent to *explain* and *review* while they write, or have it write a first version and then rebuild it themselves. Decide on purpose whether this task is about the output or about you.
+
+</Pitfall>
+
+---
+
+## Augmentation or Agency?
+
+From Foundations, you know three modes: automation, augmentation, and agency. With Claude Code, the last two cover most work:
+
+- **Augmentation:** you stay in the loop turn by turn. "Show me three ways to structure this." "Review my function for edge cases." "Why is this test flaky?" Best when the judgment calls are frequent and yours to make.
+- **Agency:** you set a goal and boundaries, and let it run. "Make these five failing tests pass without changing the tests." Best when the goal is clear and the result is verifiable.
+
+A good session often starts in augmentation (explore, discuss, plan), then switches to agency for execution, then returns to augmentation for review.
+
+<TryIt title="Sort Your Backlog">
+
+Take five real tasks from your current backlog or issue tracker.
+
+1. For each, answer the three questions: verifiable? sized for review? reversible?
+2. Place each in a column of the delegation map.
+3. For any task in the middle column, write how you'd split it into reviewable chunks.
+4. For any task in the right column, write one way Claude Code could still help *without* making the decision.
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "Which task is the strongest candidate for handing to Claude Code in agency mode?",
+    options: [
+      "Choosing between two database vendors for next year.",
+      "Making six failing unit tests pass without modifying the tests.",
+      "Rotating production credentials.",
+      "Deciding which features to cut from the release."
+    ],
+    correctIndex: 1,
+    explanation: "Clear goal, built-in verification, reversible changes. The other options are judgment calls or irreversible actions."
+  },
+  {
+    question: "What does 'delegate in units you're willing to review' mean in practice?",
+    options: [
+      "Only delegate one-line changes.",
+      "Never review agent output.",
+      "Ask for a summary instead of a diff.",
+      "Break large tasks into steps with a checkpoint after each, so every diff is one you'll actually read."
+    ],
+    correctIndex: 3,
+    explanation: "A diff too big to review carefully is an unreviewed diff. Size the work to your review capacity."
+  },
+  {
+    question: "Why does reversibility matter for delegation?",
+    options: [
+      "Irreversible actions like production migrations or deleting cloud resources need more human judgment and less agent autonomy.",
+      "Reversible tasks are always more expensive.",
+      "Agents can't run irreversible commands.",
+      "Git makes every action reversible."
+    ],
+    correctIndex: 0,
+    explanation: "Git can undo code edits, but it can't unsend an email or undelete a production database."
+  }
+]} />
+
+---
+
+## Up Next
+
+You've decided *what* to hand off. Next: deciding *how much autonomy* the agent gets while doing it, with permission modes.

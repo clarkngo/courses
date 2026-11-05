@@ -1,0 +1,142 @@
+---
+title: "Briefing an Agent"
+description: "Write task prompts an agent can act on: goal, context, constraints, and a definition of done. Point it at the right files, ask for a plan before code, and steer mid-run without starting over."
+module: 3
+moduleTitle: "Description"
+lesson: 1
+duration: "30 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## Brief It Like a Capable New Teammate
+
+Imagine handing a ticket to a sharp engineer on their first day. They're fast and they know the language, but they don't know your codebase, your conventions, or why the ticket exists. "Fix the login bug" would get you a guess. A good brief would get you the fix.
+
+Claude Code is in that new teammate's position at the start of **every session**. It can search and read on its own, but it doesn't know what you know about the goal, the history, or the traps. Description is how you close that gap.
+
+---
+
+## The Four Parts of an Agent Brief
+
+<ProcessFlow
+  label="Four parts of a task brief for a coding agent"
+  color="#c2410c"
+  steps={[
+    { title: "Goal", detail: "What and why" },
+    { title: "Context", detail: "Where to look; what you know" },
+    { title: "Constraints", detail: "What not to do" },
+    { title: "Done", detail: "How we'll both know" },
+  ]}
+/>
+
+Foundations described three things you can describe: the **product** (what you want), the **process** (how to approach it), and the **performance** (how the AI should behave). An agent brief covers all three:
+
+| Part | Covers | Example |
+|---|---|---|
+| **Goal** | Product: the outcome and the reason for it | "Users who sign in with Google get logged out after five minutes. They should stay signed in for the full 30-day session." |
+| **Context** | Product and process: where to look, what you already know | "Session logic is in `src/auth/session.ts`. I suspect the refresh token isn't saved for OAuth users. The bug started after commit `a1b2c3`." |
+| **Constraints** | Process: boundaries and conventions | "Don't change the session table schema. Follow the existing error-handling pattern. No new dependencies." |
+| **Done** | Performance: verification and reporting | "Add a test that reproduces the bug and fails first, then make it pass. Run the full auth test suite. Summarize the root cause in two sentences." |
+
+The same request as a one-liner is "fix the Google login bug." The difference isn't politeness. It's the dozen wrong turns the agent never takes.
+
+---
+
+## Techniques That Pay Off
+
+### Point at files directly
+
+Reference files and folders with `@` (for example, `@src/auth/session.ts`) to put them straight into context. You save the agent a search, and you make sure it starts from the right place.
+
+### Show, don't just tell
+
+Paste the exact error message and stack trace. Drop in a screenshot of the broken UI. Link the failing CI run. Concrete evidence beats a description of evidence.
+
+### Ask for the plan first
+
+For anything bigger than a small fix, use **plan mode** or simply say: "Investigate and propose a plan. Don't change anything yet." Reviewing a ten-line plan is cheaper than reviewing a five-hundred-line diff built on a misunderstanding. When you approve the plan, you've agreed on the approach and the review is easier.
+
+### Invite questions
+
+Add: "If anything's ambiguous, ask me before you start." Agents tend to fill gaps with assumptions. This gives it permission to ask instead.
+
+### Name the definition of done
+
+"Done" is where agents most often overclaim. Spell it out: which tests must pass, what must not change, what the summary should include. A clear done-condition is also what lets the agent check its own work in the loop.
+
+<Pitfall title="The Kitchen-Sink Prompt">
+
+**Common mistake:** packing three unrelated tasks into one prompt ("fix the login bug, also update the README, and while you're at it clean up the utils folder").
+
+The agent has to juggle three goals, the diff mixes three concerns, and your review gets harder. One task per brief, ideally one per session or branch. If the tasks are independent, run them separately, even in parallel.
+
+</Pitfall>
+
+---
+
+## Steering Mid-Run
+
+You don't have to wait for the agent to finish to change course:
+
+- **Interrupt** (Esc in the terminal) when it heads somewhere wrong. Then redirect: "Stop. The bug isn't in the UI layer; look at the token refresh."
+- **Queue a message** while it works to add a detail you forgot.
+- **Rewind** to an earlier checkpoint (`/rewind`, or Esc twice) if a direction failed, so the failed attempt doesn't pile up in context.
+- **Start fresh** (`/clear`) when a session has filled up with dead ends. Bring a better brief built from what you learned. That's the description–discernment loop from Foundations, in agent form.
+
+Long sessions eventually hit the context limit, and Claude Code then **compacts** (summarizes) earlier history. Details can get lost when that happens. For long tasks, put important decisions in a file (a plan document, or your CLAUDE.md) rather than trusting them to survive in chat history.
+
+<TryIt title="Rewrite a Real Ticket">
+
+1. Pick a real issue or ticket, ideally one with a terse description.
+2. Rewrite it as an agent brief with all four parts: goal, context, constraints, done.
+3. Start Claude Code in plan mode and give it the brief. Compare its plan with what you'd do.
+4. Note one thing the agent asked or assumed that your brief could have answered. Add it to the brief.
+5. Optional: give the original terse ticket to a fresh session and compare the two plans.
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "Which part of an agent brief is most often missing and most often causes overclaimed results?",
+    options: [
+      "The goal.",
+      "A polite greeting.",
+      "The definition of done: which checks must pass and what the summary should include.",
+      "The programming language."
+    ],
+    correctIndex: 2,
+    explanation: "Without a clear done-condition, the agent decides for itself when it's finished, and its idea of finished may not be yours."
+  },
+  {
+    question: "Why ask for a plan before code on a larger task?",
+    options: [
+      "Plans use fewer tokens than code, so it's cheaper.",
+      "It's faster to correct a misunderstanding in a short plan than in a large diff built on it.",
+      "Claude Code can't write code without a plan.",
+      "It hides the code from reviewers."
+    ],
+    correctIndex: 1,
+    explanation: "Plans are cheap to review and correct. Agreeing on the approach first makes the diff review easier."
+  },
+  {
+    question: "A session has gone through several failed approaches and is drifting. What's the best move?",
+    options: [
+      "Rewind to a good checkpoint, or clear and start fresh with a better brief built from what you learned.",
+      "Keep typing 'try again' until it works.",
+      "Switch to bypass mode.",
+      "Delete the repository."
+    ],
+    correctIndex: 0,
+    explanation: "Failed attempts pile up in context and anchor the agent. A clean start with a sharper brief usually converges faster."
+  }
+]} />
+
+---
+
+## Up Next
+
+A great brief helps one session. Next: **CLAUDE.md, skills, and other persistent context** that brief every session automatically.

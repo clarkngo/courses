@@ -1,0 +1,119 @@
+---
+title: "Browser Evidence and Its Limits"
+description: "Antigravity agents can open a browser, click through your app, and record what they saw. Learn what screenshots and recordings prove, what they can't, and how to brief browser checks that test the things that matter."
+module: 4
+moduleTitle: "Discernment"
+lesson: 2
+duration: "25 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## The Agent Checked Its Own Work, in a Browser
+
+One of Antigravity's standout features is that agents can use a **browser**, a Chrome-based browser they control, to load the app they're building, click through it, and capture **screenshots** and **browser recordings** as artifacts. Instead of "I think the form works now," you get a video of the agent filling in the form and the success message appearing.
+
+That's real evidence, much better than an unchecked claim. But evidence of *what*, exactly?
+
+---
+
+## What a Recording Shows, and What It Doesn't
+
+| A recording **can** show | A recording **can't** show |
+|---|---|
+| The happy path worked once, with this data, in this browser | That other paths, inputs, or browsers work |
+| The UI looked a certain way at a certain size | That it's accessible to keyboard and screen-reader users |
+| A success message appeared | That the data was actually saved correctly on the server |
+| No visible errors during that run | That no errors were logged, or that it's secure |
+| How long it took on the agent's machine | How it performs under real load |
+
+The agent chose what to test. Agents tend to test the path they just built, with the data they expect, and stop when it works. That's exactly the path least likely to be broken.
+
+<Pitfall title="The Happy-Path Recording">
+
+**Common mistake:** watching a smooth recording of a sign-up flow and concluding the feature is done.
+
+It signed up `test@example.com` with a valid password once. What about a duplicate email? A 200-character name? An expired session halfway through? Pressing the back button? A phone-width screen? The recording proves one run, not the feature.
+
+</Pitfall>
+
+---
+
+## Briefing Browser Checks That Matter
+
+Treat browser verification as part of **description**: tell the agent *what* to verify, not just *to* verify.
+
+> In the walkthrough, include browser recordings of:
+> 1. The happy path: a new user signs up and lands on the dashboard.
+> 2. A duplicate email: the user sees the "already registered" message, and no second account is created.
+> 3. A password that's too short: the inline error appears and the form keeps the other fields filled in.
+> 4. The sign-up page at 375px width.
+> After the browser checks, query the users table and show the rows for these test accounts.
+
+The last line matters. It checks the **server side**, which the screenshots can't see.
+
+---
+
+## Do Your Own Spot Check
+
+For anything user-facing, click through it yourself at least once. You'll notice things no agent was asked to look for: a confusing label, a slow transition, a button that's hard to reach on a phone. The recordings tell you where to start. Your own use tells you whether it's good.
+
+---
+
+## Browser Safety, Briefly
+
+A browser-using agent also **reads** whatever pages it visits. If an agent browses beyond your local app, those pages can contain text designed to manipulate it (module 5). Antigravity provides browser allowlists and denylists and the option of a separate Chrome profile. Use them to keep agent browsing to your local dev server and the documentation sites you trust, and keep it away from your logged-in personal accounts.
+
+<TryIt title="Beyond the Happy Path">
+
+1. Pick a user-facing flow in a project: sign-up, checkout, search, or a settings form.
+2. Write a browser-verification brief with the happy path plus at least three edge cases, one narrow screen size, and one server-side check.
+3. Have an agent implement or test the flow with that brief.
+4. Watch the recordings. For each one, write what it proves and what it doesn't.
+5. Click through the flow yourself and note one thing none of the recordings showed.
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "An agent's recording shows a checkout completing successfully. What does it NOT prove?",
+    options: [
+      "That the checkout worked once with that data.",
+      "That the success page displayed.",
+      "That the order was saved correctly on the server and the edge cases work.",
+      "That there were no visible errors during that run."
+    ],
+    correctIndex: 2,
+    explanation: "A recording shows one run's UI. Server-side correctness and other paths need their own checks."
+  },
+  {
+    question: "What's the best way to get useful browser evidence from an agent?",
+    options: [
+      "Brief exactly what to verify: the happy path, edge cases, screen sizes, and a server-side check.",
+      "Say 'test it in the browser.'",
+      "Ask for longer recordings.",
+      "Ask for recordings only when something fails."
+    ],
+    correctIndex: 0,
+    explanation: "Agents test what they're asked to. Without guidance, that's usually only the happy path."
+  },
+  {
+    question: "Why restrict which sites a browser-using agent can visit?",
+    options: [
+      "To save bandwidth.",
+      "Pages are slower than local files.",
+      "Allowlists make recordings shorter.",
+      "Pages the agent reads can contain instructions designed to manipulate it, and a separate profile keeps it away from your logged-in accounts."
+    ],
+    correctIndex: 3,
+    explanation: "Browsing is reading, and reading untrusted content is how prompt injection gets in."
+  }
+]} />
+
+---
+
+## Up Next
+
+Module 5 is **Diligence**, starting with what Antigravity's real security incidents teach about running agents safely.

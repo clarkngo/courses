@@ -1,0 +1,157 @@
+---
+title: "Permission Presets and the Sandbox"
+description: "Match agent autonomy to risk with Antigravity's permission presets (Request Review, Default, Auto, Turbo), allow, ask, and deny rules, and the terminal sandbox, and learn from the Turbo-mode incident that wiped a user's drive."
+module: 2
+moduleTitle: "Delegation"
+lesson: 2
+duration: "30 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## A Cautionary Tale
+
+In December 2025, a user reported that Antigravity, running in **Turbo** mode, which ran terminal commands without asking, had erased an entire drive. They had asked the agent to clear a project's cache. The delete command targeted the root of the drive instead of the project folder, and it bypassed the Recycle Bin. The Register and other outlets covered the story.
+
+The agent made a mistake that a person could also make. What turned a mistake into a disaster was that **nothing stood between the mistaken command and the disk**: no approval prompt, no sandbox, no deny rule. That's a delegation failure, and it's the subject of this lesson.
+
+---
+
+## The Desktop App's Permission Presets
+
+As of November 2026, the Antigravity desktop app has four presets covering terminal commands, file access, MCP tools, and web page reads:
+
+<ProcessFlow
+  label="Antigravity permission presets, from most to least human control"
+  color="#1a73e8"
+  steps={[
+    { title: "Request Review", detail: "Every command needs approval" },
+    { title: "Default", detail: "Sandbox runs free; sensitive asks" },
+    { title: "Auto", detail: "Automatic check of risky steps" },
+    { title: "Turbo", detail: "No restrictions" },
+  ]}
+/>
+
+| Preset | How it behaves | Good fit |
+|---|---|---|
+| **Request Review** | Every command requires your approval. | Unfamiliar or untrusted repos; learning the tool; sensitive work. |
+| **Default** | Asks before sensitive operations. Commands that stay inside the terminal sandbox run without asking; anything that would leave the sandbox needs approval. | Most everyday work. |
+| **Auto** (in preview as of this writing) | Commands that would leave the sandbox are checked automatically: safe, reversible ones proceed and risky ones pause for you. | Longer runs on recoverable work, once you trust your rules. |
+| **Turbo** | Runs all commands without restrictions, with full filesystem access. | Only inside a disposable VM or container with nothing valuable in reach, if at all. |
+
+You can set a preset globally, per project, or from the picker in the message box. Business and enterprise accounts may see an older set of settings, such as "Terminal command auto execution", with options like Require Review, Proceed in Sandbox, and Always Proceed. The logic is the same.
+
+The CLI has its own equivalents: agent modes (such as `default`, `auto`, `accept-edits`, and `plan`) and a tool-permission setting. Its high-autonomy flag, `--dangerously-skip-permissions`, names the risk plainly.
+
+---
+
+## Rules on Top of Presets
+
+Presets set the overall level. **Allow, ask, and deny rules** let you be specific, and Antigravity's documentation says your rules always take precedence over the preset.
+
+- **Allow** the frequent, safe commands: your test runner, linter, and formatter. Fewer prompts means you'll actually read the ones that remain.
+- **Ask** for anything that leaves your machine or can't be undone: `git push`, deploy scripts, package publishing.
+- **Deny** anything that should never happen: recursive deletes outside the project, commands that touch credentials.
+
+A short deny list would have stopped the drive-wipe incident: no matter which preset was active, a recursive delete at a drive root would have been blocked.
+
+---
+
+## The Sandbox
+
+Antigravity's **terminal sandbox** limits what commands can reach at the operating-system level. In recent versions, for example, sandboxed commands can't read folders like `~/.docker` or `~/.kube` unless you grant access. Two related settings matter:
+
+- **Non-workspace file access** lets agents read and write outside the project folder. Google's docs say to enable it "with caution". Leave it off unless a task truly needs it.
+- **Browser allowlists and denylists** control which sites the agent's browser may visit. That matters for safety, as module 5 explains.
+
+The Default preset leans on the sandbox: commands run freely *because* they're contained. Turbo removes that containment.
+
+<Pitfall title="Turbo as a Comfort Setting">
+
+**Common mistake:** switching to Turbo because approval prompts are annoying, then leaving it on for every project.
+
+Prompts are annoying when they're about boring, safe commands. The fix is allow rules for those commands, not removing every checkpoint. Keep high-autonomy presets for isolated environments where the worst case is "rebuild the VM."
+
+</Pitfall>
+
+---
+
+## Choosing a Preset per Task
+
+| Task | Preset | Plus |
+|---|---|---|
+| Exploring a repo you just cloned from the internet | Request Review | Sandbox on, non-workspace access off |
+| Implementing an approved plan in your own repo | Default | Allow rules for test and lint |
+| A long refactor in a disposable dev container | Auto, or Turbo inside the container | Commit often; review the full diff |
+| Anything near deploy scripts or production config | Request Review | Ask rules on deploy commands |
+| A scheduled automation | Default or stricter | Read-only scope to start |
+
+Remember from the last lesson: approvals you grant in a conversation also apply to its subagents. A broad "always allow" reaches further than one agent.
+
+<TryIt title="Set Your Dials">
+
+For one project:
+
+1. Choose its default preset and write down why.
+2. Write five **allow** rules for safe, frequent commands.
+3. Write three **ask** rules for commands that leave your machine or can't be undone.
+4. Write three **deny** rules for commands that should never run, including a recursive delete outside the project.
+5. Confirm non-workspace file access is off, and check which preset your scheduled automations use.
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "In the reported December 2025 drive-wipe incident, what turned an agent's mistake into a disaster?",
+    options: [
+      "The model was too slow.",
+      "The project had no README.",
+      "Turbo mode ran the command with no approval, sandbox, or deny rule in the way.",
+      "The user had too many files."
+    ],
+    correctIndex: 2,
+    explanation: "Mistakes happen. Permission settings decide whether they're caught or carried out."
+  },
+  {
+    question: "In the Default preset, why can most commands run without asking?",
+    options: [
+      "They run inside the terminal sandbox, and anything that would leave it needs approval.",
+      "Default trusts every command.",
+      "Default only allows read commands.",
+      "Commands never need approval in Antigravity."
+    ],
+    correctIndex: 0,
+    explanation: "Default pairs freedom with containment. Turbo removes the containment."
+  },
+  {
+    question: "Your rules deny a command, but your preset is Turbo. What happens, according to Antigravity's docs?",
+    options: [
+      "Turbo wins; all commands run.",
+      "The agent asks the model to decide.",
+      "It depends on the time of day.",
+      "Your rules take precedence, so the command is blocked."
+    ],
+    correctIndex: 3,
+    explanation: "Rules layer on top of presets and win. That's what makes a deny list a dependable safety net."
+  },
+  {
+    question: "You approve 'always allow' for a command in a conversation that has subagents. What should you keep in mind?",
+    options: [
+      "The approval only applies to the next command.",
+      "The approval applies to the main agent and all its subagents.",
+      "Subagents can't run commands.",
+      "Approvals reset every minute."
+    ],
+    correctIndex: 1,
+    explanation: "Antigravity applies conversation approvals across subagents, so broad approvals reach further than they look."
+  }
+]} />
+
+---
+
+## Up Next
+
+Module 3 is **Description**: briefing agents, choosing models, and building lasting context with rules and skills.
