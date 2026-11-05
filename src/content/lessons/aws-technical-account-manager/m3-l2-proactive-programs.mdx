@@ -90,6 +90,43 @@ Cost reviews are one of the most visible ways a TAM delivers value. The main lev
 
 **Order matters:** right-size and remove waste **before** buying commitments. Otherwise the customer commits to paying for capacity they didn't need.
 
+<svg viewBox="0 0 720 330" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="An illustrative waterfall of a monthly bill starting at 100. Removing idle and unattached waste cuts 10. Right-sizing with Compute Optimizer cuts 12. Commitments such as Savings Plans or Reserved Instances then cut 18 from the smaller base, leaving an optimized bill of 60. Shrink usage first, then commit to what is left." style="max-width:100%;height:auto;margin:1.5rem auto;display:block;">
+  <g font-family="system-ui, -apple-system, sans-serif" text-anchor="middle">
+    <text x="360" y="26" fill="#0f172a" font-size="14" font-weight="700">Illustrative monthly bill: shrink usage first, then commit to what's left</text>
+    <rect x="60" y="70" width="110" height="200" fill="#94a3b8"/>
+    <rect x="190" y="70" width="110" height="20" fill="#fdba74"/>
+    <rect x="320" y="90" width="110" height="24" fill="#fb923c"/>
+    <rect x="450" y="114" width="110" height="36" fill="#ea580c"/>
+    <rect x="580" y="150" width="110" height="120" fill="#c2410c"/>
+    <g stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="4 3">
+      <line x1="170" y1="70" x2="190" y2="70"/>
+      <line x1="300" y1="90" x2="320" y2="90"/>
+      <line x1="430" y1="114" x2="450" y2="114"/>
+      <line x1="560" y1="150" x2="580" y2="150"/>
+    </g>
+    <g fill="#0f172a" font-size="14" font-weight="700">
+      <text x="115" y="62">100</text>
+      <text x="245" y="62">−10</text>
+      <text x="375" y="82">−12</text>
+      <text x="505" y="106">−18</text>
+      <text x="635" y="142">60</text>
+    </g>
+    <line x1="40" y1="270" x2="700" y2="270" stroke="#cbd5e1" stroke-width="1.5"/>
+    <g fill="#0f172a" font-size="13">
+      <text x="115" y="292">Starting bill</text>
+      <text x="245" y="292">Remove waste</text>
+      <text x="375" y="292">Right-size</text>
+      <text x="505" y="292">Commit</text>
+      <text x="635" y="292">Optimized bill</text>
+    </g>
+    <g fill="#64748b" font-size="12">
+      <text x="245" y="310">idle, unattached</text>
+      <text x="375" y="310">Compute Optimizer</text>
+      <text x="505" y="310">Savings Plans, RIs</text>
+    </g>
+  </g>
+</svg>
+
 <Pitfall title="Optimizing Cost at the Expense of Reliability">
 
 **Common mistake:** a candidate's story is "I cut the bill 40% by moving everything to Spot and removing the standby database."

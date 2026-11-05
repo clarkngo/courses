@@ -86,6 +86,34 @@ Amazon's post-incident process is called **Correction of Errors (COE)**. TAMs ar
 - *Why was that not caught?* The load test used random dates.
 - *Why?* There's no load-test standard that requires production-like key distribution.
 
+<svg viewBox="0 0 720 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The 5 Whys as a descending staircase. Symptom: checkout failed because DynamoDB throttled writes. Why? All writes went to one partition. Why? The partition key was the date. Why? The load test used random dates. Why? No standard requires production-like keys. The last step is the missing mechanism, and that is what to fix." style="max-width:100%;height:auto;margin:1.5rem auto;display:block;">
+  <defs>
+    <marker id="tam-why-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#94a3b8"/>
+    </marker>
+  </defs>
+  <g font-family="system-ui, -apple-system, sans-serif">
+    <g stroke="#94a3b8" stroke-width="2" marker-end="url(#tam-why-arrow)">
+      <line x1="50" y1="64" x2="104" y2="76"/>
+      <line x1="110" y1="122" x2="164" y2="134"/>
+      <line x1="170" y1="180" x2="224" y2="192"/>
+      <line x1="230" y1="238" x2="284" y2="250"/>
+    </g>
+    <rect x="20" y="20" width="440" height="44" rx="10" fill="#f1f5f9" stroke="#cbd5e1"/>
+    <text x="36" y="48" fill="#0f172a" font-size="14" font-weight="700">Checkout failed: DynamoDB throttled writes</text>
+    <rect x="80" y="78" width="440" height="44" rx="10" fill="#f8fafc" stroke="#cbd5e1"/>
+    <text x="96" y="106" fill="#1e293b" font-size="14"><tspan font-weight="700" fill="#c2410c">Why? </tspan>All writes went to one partition</text>
+    <rect x="140" y="136" width="440" height="44" rx="10" fill="#f8fafc" stroke="#cbd5e1"/>
+    <text x="156" y="164" fill="#1e293b" font-size="14"><tspan font-weight="700" fill="#c2410c">Why? </tspan>The partition key was the date</text>
+    <rect x="200" y="194" width="440" height="44" rx="10" fill="#fff7ed" stroke="#fdba74"/>
+    <text x="216" y="222" fill="#1e293b" font-size="14"><tspan font-weight="700" fill="#c2410c">Why? </tspan>The load test used random dates</text>
+    <rect x="260" y="252" width="440" height="44" rx="10" fill="#c2410c"/>
+    <text x="276" y="280" fill="#ffffff" font-size="14"><tspan font-weight="700">Why? </tspan>No standard requires production-like keys</text>
+    <text x="700" y="48" text-anchor="end" fill="#64748b" font-size="13" font-weight="700">Symptom</text>
+    <text x="245" y="280" text-anchor="end" fill="#c2410c" font-size="13" font-weight="700">Missing mechanism: fix this</text>
+  </g>
+</svg>
+
 Action items now target the **mechanism** (the load-test standard), not just the symptom (the key).
 
 <Pitfall title="Blame in the Review">

@@ -56,6 +56,62 @@ Many TAM interviews include a **troubleshooting scenario**: "A customer calls an
 | **Data** | Connections, CPU, storage, replica lag, throttling | RDS Performance Insights, DynamoDB metrics |
 | **Control plane** | Who changed what, and when? API errors? | CloudTrail, AWS Config |
 
+<svg viewBox="0 0 720 240" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A typical request path, checked outside-in: user, then Route 53 for DNS, CloudFront with WAF and TLS at the edge, the Application Load Balancer, EC2 instances in an Auto Scaling group for compute, and RDS for data. The load balancer, compute, and data layers sit inside the VPC network, checked with security groups, NACLs, routes, and Flow Logs. Under everything is the control plane: who changed what, checked with CloudTrail and AWS Config." style="max-width:100%;height:auto;margin:1.5rem auto;display:block;">
+  <defs>
+    <marker id="tam-path-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#94a3b8"/>
+    </marker>
+  </defs>
+  <g font-family="system-ui, -apple-system, sans-serif" text-anchor="middle">
+    <text x="360" y="20" fill="#0f172a" font-size="14" font-weight="700">Work outside-in, one layer at a time</text>
+    <g fill="#64748b" font-size="11" font-weight="700">
+      <text x="60" y="50">CLIENT</text>
+      <text x="180" y="50">DNS</text>
+      <text x="300" y="50">EDGE</text>
+      <text x="420" y="50">LOAD BALANCER</text>
+      <text x="540" y="50">COMPUTE</text>
+      <text x="660" y="50">DATA</text>
+    </g>
+    <g fill="#f8fafc" stroke="#cbd5e1">
+      <rect x="10" y="58" width="100" height="64" rx="10"/>
+      <rect x="130" y="58" width="100" height="64" rx="10"/>
+      <rect x="250" y="58" width="100" height="64" rx="10"/>
+    </g>
+    <g fill="#fff7ed" stroke="#fdba74">
+      <rect x="370" y="58" width="100" height="64" rx="10"/>
+      <rect x="490" y="58" width="100" height="64" rx="10"/>
+      <rect x="610" y="58" width="100" height="64" rx="10"/>
+    </g>
+    <g fill="#0f172a" font-size="14" font-weight="700">
+      <text x="60" y="86">User</text>
+      <text x="180" y="86">Route 53</text>
+      <text x="300" y="86">CloudFront</text>
+      <text x="420" y="86">ALB</text>
+      <text x="540" y="86">EC2 / ASG</text>
+      <text x="660" y="86">RDS</text>
+    </g>
+    <g fill="#475569" font-size="12">
+      <text x="60" y="106">browser or app</text>
+      <text x="180" y="106">resolves name</text>
+      <text x="300" y="106">WAF, TLS</text>
+      <text x="420" y="106">targets, 5xx</text>
+      <text x="540" y="106">OS and app</text>
+      <text x="660" y="106">conns, CPU</text>
+    </g>
+    <g stroke="#94a3b8" stroke-width="2" marker-end="url(#tam-path-arrow)">
+      <line x1="111" y1="90" x2="127" y2="90"/>
+      <line x1="231" y1="90" x2="247" y2="90"/>
+      <line x1="351" y1="90" x2="367" y2="90"/>
+      <line x1="471" y1="90" x2="487" y2="90"/>
+      <line x1="591" y1="90" x2="607" y2="90"/>
+    </g>
+    <rect x="370" y="138" width="340" height="36" rx="8" fill="#ecfeff" stroke="#a5f3fc"/>
+    <text x="540" y="161" fill="#155e75" font-size="13">VPC network: SGs, NACLs, routes · Flow Logs</text>
+    <rect x="10" y="188" width="700" height="36" rx="8" fill="#fff7ed" stroke="#fed7aa"/>
+    <text x="360" y="211" fill="#9a3412" font-size="13">Control plane: who changed what, and when? · CloudTrail, AWS Config</text>
+  </g>
+</svg>
+
 ---
 
 ## Worked Scenarios

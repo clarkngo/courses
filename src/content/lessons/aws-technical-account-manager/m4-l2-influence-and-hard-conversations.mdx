@@ -46,6 +46,59 @@ TAMs often support several customers, and everything feels urgent. A simple orde
 3. **High-value proactive work** (the review that prevents the next Sev-1)
 4. **Everything else**, scheduled and communicated
 
+<svg viewBox="0 0 720 330" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A prioritization grid. Columns show time until business impact: now, days to weeks, and months. Rows show high and lower business impact. High impact now is priority 1: an active outage or security event. High impact in days to weeks is priority 2: a launch next week or an end-of-life deadline. High impact in months is priority 3: the review that prevents the next Sev-1. Lower impact now: route it to the case or a teammate. Lower impact in days to weeks: batch it into the cadence call. Lower impact in months is priority 4: backlog it with a clear date." style="max-width:100%;height:auto;margin:1.5rem auto;display:block;">
+  <defs>
+    <marker id="tam-prio-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#64748b"/>
+    </marker>
+  </defs>
+  <g font-family="system-ui, -apple-system, sans-serif" text-anchor="middle">
+    <g fill="#334155" font-size="13" font-weight="700">
+      <text x="223" y="28">Now</text>
+      <text x="413" y="28">Days to weeks</text>
+      <text x="603" y="28">Months</text>
+    </g>
+    <g fill="#334155" font-size="13" font-weight="700" text-anchor="end">
+      <text x="118" y="94">High</text>
+      <text x="118" y="112">impact</text>
+      <text x="118" y="214">Lower</text>
+      <text x="118" y="232">impact</text>
+    </g>
+    <rect x="130" y="40" width="186" height="116" rx="10" fill="#c2410c"/>
+    <text x="223" y="78" fill="#ffffff" font-size="15" font-weight="700">Priority 1</text>
+    <text x="223" y="104" fill="#ffedd5" font-size="13">Active outage or</text>
+    <text x="223" y="124" fill="#ffedd5" font-size="13">security event</text>
+    <rect x="320" y="40" width="186" height="116" rx="10" fill="#fb923c"/>
+    <text x="413" y="78" fill="#431407" font-size="15" font-weight="700">Priority 2</text>
+    <text x="413" y="104" fill="#431407" font-size="13">Launch next week,</text>
+    <text x="413" y="124" fill="#431407" font-size="13">end-of-life deadline</text>
+    <rect x="510" y="40" width="186" height="116" rx="10" fill="#fed7aa"/>
+    <text x="603" y="78" fill="#7c2d12" font-size="15" font-weight="700">Priority 3</text>
+    <text x="603" y="104" fill="#7c2d12" font-size="13">Review that prevents</text>
+    <text x="603" y="124" fill="#7c2d12" font-size="13">the next Sev-1</text>
+    <g fill="#f1f5f9" stroke="#cbd5e1">
+      <rect x="130" y="160" width="186" height="116" rx="10"/>
+      <rect x="320" y="160" width="186" height="116" rx="10"/>
+      <rect x="510" y="160" width="186" height="116" rx="10"/>
+    </g>
+    <g fill="#1e293b" font-size="15" font-weight="700">
+      <text x="223" y="198">Route it</text>
+      <text x="413" y="198">Batch it</text>
+      <text x="603" y="198">Priority 4</text>
+    </g>
+    <g fill="#475569" font-size="13">
+      <text x="223" y="224">To the case owner</text>
+      <text x="223" y="244">or a teammate</text>
+      <text x="413" y="224">Into the next</text>
+      <text x="413" y="244">cadence call</text>
+      <text x="603" y="224">Backlog it with</text>
+      <text x="603" y="244">a clear "when"</text>
+    </g>
+    <line x1="130" y1="296" x2="694" y2="296" stroke="#64748b" stroke-width="2" marker-end="url(#tam-prio-arrow)"/>
+    <text x="413" y="320" fill="#334155" font-size="13" font-weight="700">Time until business impact</text>
+  </g>
+</svg>
+
 When you can't do something, say so early, explain why, and offer an alternative or another person. Customers forgive "not this week, here's when." They don't forgive silence.
 
 ---
