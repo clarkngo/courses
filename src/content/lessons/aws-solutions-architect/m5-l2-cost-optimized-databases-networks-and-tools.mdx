@@ -1,0 +1,176 @@
+---
+title: "Cost-Optimized Databases, Networks, and Cost Tools"
+description: "Design cost-optimized databases and networks: Aurora Serverless and DynamoDB capacity modes, data transfer pricing, NAT gateway and VPC endpoint trade-offs, CloudFront for egress, and the tools that find savings (Cost Explorer, Budgets, tags, Compute Optimizer, Trusted Advisor)."
+module: 5
+moduleTitle: "Design Cost-Optimized Architectures"
+lesson: 2
+duration: "30 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Cost-Optimized Databases
+
+| Situation | Cost-effective choice |
+|---|---|
+| Relational, steady load | RDS or Aurora with **Reserved Instances** for the database instances |
+| Relational, spiky or intermittent load | **Aurora Serverless v2**, which scales capacity in fine-grained steps with demand |
+| Key-value, unpredictable traffic | **DynamoDB on-demand**: pay per request, nothing to size |
+| Key-value, steady and predictable traffic | **DynamoDB provisioned** capacity with **auto scaling**, plus reserved capacity for the baseline |
+| Data that expires | **DynamoDB TTL** deletes items for free; S3 lifecycle expiration for objects |
+| Rarely read DynamoDB tables | **DynamoDB Standard-IA** table class for lower storage cost |
+| Read-heavy load hitting the database | A **cache** (ElastiCache, DAX) can be cheaper than scaling the database |
+| Dev and test databases | **Stop them** outside working hours, or use serverless options |
+
+Also check **backup retention**: snapshots kept forever are a slow, silent cost. Set retention to match the actual requirement.
+
+---
+
+## Where Data Transfer Costs Hide
+
+Data transfer is the most surprising line on many AWS bills. The rules that matter most for design (exact prices vary by Region and change over time):
+
+<svg viewBox="0 0 720 330" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Data transfer cost map. Data in from the internet is free. Data out to the internet is charged per GB. Traffic between Availability Zones is charged in each direction. Traffic within one AZ over private IPs is free. Private instances reaching S3 through a NAT gateway pay NAT processing charges per GB, while a gateway VPC endpoint for S3 has no charge. Serving content through CloudFront is often cheaper than direct egress, and transfer from AWS origins to CloudFront is free." style="max-width:100%;height:auto;margin:1.5rem auto;display:block;">
+  <defs>
+    <marker id="sa-dt-free" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#15803d"/>
+    </marker>
+    <marker id="sa-dt-paid" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#b91c1c"/>
+    </marker>
+  </defs>
+  <g font-family="system-ui, -apple-system, sans-serif" text-anchor="middle">
+    <rect x="10" y="20" width="110" height="60" rx="10" fill="#e2e8f0"/>
+    <text x="65" y="55" fill="#0f172a" font-size="13" font-weight="700">Internet</text>
+
+    <rect x="200" y="20" width="510" height="230" rx="12" fill="none" stroke="#0369a1" stroke-width="2" stroke-dasharray="6 4"/>
+    <text x="455" y="40" fill="#0369a1" font-size="12" font-weight="700">Region</text>
+
+    <rect x="220" y="55" width="150" height="120" rx="10" fill="#f0f9ff" stroke="#7dd3fc"/>
+    <text x="295" y="75" fill="#0c4a6e" font-size="12" font-weight="700">AZ A</text>
+    <rect x="235" y="85" width="55" height="36" rx="6" fill="#bae6fd"/>
+    <text x="262" y="108" fill="#0c4a6e" font-size="11" font-weight="700">EC2</text>
+    <rect x="300" y="85" width="55" height="36" rx="6" fill="#bae6fd"/>
+    <text x="327" y="108" fill="#0c4a6e" font-size="11" font-weight="700">EC2</text>
+    <text x="295" y="160" fill="#15803d" font-size="11" font-weight="700">same AZ, private IP: free</text>
+
+    <rect x="400" y="55" width="130" height="120" rx="10" fill="#f0f9ff" stroke="#7dd3fc"/>
+    <text x="465" y="75" fill="#0c4a6e" font-size="12" font-weight="700">AZ B</text>
+    <rect x="437" y="85" width="55" height="36" rx="6" fill="#bae6fd"/>
+    <text x="464" y="108" fill="#0c4a6e" font-size="11" font-weight="700">RDS</text>
+
+    <rect x="560" y="55" width="135" height="50" rx="10" fill="#fecaca"/>
+    <text x="627" y="78" fill="#7f1d1d" font-size="12" font-weight="700">NAT gateway</text>
+    <text x="627" y="95" fill="#7f1d1d" font-size="11">$/hour + $/GB</text>
+    <rect x="560" y="120" width="135" height="50" rx="10" fill="#bbf7d0"/>
+    <text x="627" y="143" fill="#14532d" font-size="12" font-weight="700">Gateway endpoint</text>
+    <text x="627" y="160" fill="#14532d" font-size="11">S3, DynamoDB: free</text>
+
+    <rect x="560" y="190" width="135" height="44" rx="10" fill="#0369a1"/>
+    <text x="627" y="217" fill="#ffffff" font-size="13" font-weight="700">Amazon S3</text>
+
+    <rect x="10" y="190" width="160" height="60" rx="10" fill="#0c4a6e"/>
+    <text x="90" y="215" fill="#ffffff" font-size="13" font-weight="700">CloudFront</text>
+    <text x="90" y="235" fill="#bae6fd" font-size="11">origin fetch from AWS: free</text>
+  </g>
+  <g font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="700">
+    <line x1="122" y1="40" x2="216" y2="70" stroke="#15803d" stroke-width="2.5" marker-end="url(#sa-dt-free)"/>
+    <text x="150" y="40" fill="#15803d">in: free</text>
+    <line x1="216" y1="100" x2="122" y2="70" stroke="#b91c1c" stroke-width="2.5" marker-end="url(#sa-dt-paid)"/>
+    <text x="128" y="100" fill="#b91c1c">out: $/GB</text>
+    <line x1="291" y1="103" x2="299" y2="103" stroke="#15803d" stroke-width="3"/>
+    <line x1="357" y1="103" x2="433" y2="103" stroke="#b91c1c" stroke-width="2.5" marker-start="url(#sa-dt-paid)" marker-end="url(#sa-dt-paid)"/>
+    <text x="395" y="196" fill="#b91c1c" text-anchor="middle">cross-AZ: $/GB each way</text>
+    <line x1="530" y1="80" x2="556" y2="80" stroke="#b91c1c" stroke-width="2" marker-end="url(#sa-dt-paid)"/>
+    <line x1="530" y1="145" x2="556" y2="145" stroke="#15803d" stroke-width="2" marker-end="url(#sa-dt-free)"/>
+    <line x1="627" y1="172" x2="627" y2="186" stroke="#15803d" stroke-width="2" marker-end="url(#sa-dt-free)"/>
+    <path d="M697 80 L704 80 L704 212 L701 212" fill="none" stroke="#b91c1c" stroke-width="2" marker-end="url(#sa-dt-paid)"/>
+    <line x1="220" y1="240" x2="174" y2="225" stroke="#15803d" stroke-width="2.5" marker-end="url(#sa-dt-free)"/>
+    <text x="20" y="285" fill="#334155" font-weight="400" font-size="12">Green: no transfer charge. Red: charged. Prices vary by Region; check the current pricing pages.</text>
+    <text x="20" y="305" fill="#334155" font-weight="400" font-size="12">CloudFront egress to users is usually cheaper than serving the same bytes directly from EC2 or S3.</text>
+  </g>
+</svg>
+
+Rules of thumb:
+
+- **Inbound** data from the internet is free; **outbound** to the internet is charged per GB.
+- Traffic **between AZs** is charged; traffic **within one AZ** over private IPs is free. Keep chatty components in the same AZ when it doesn't hurt availability.
+- Traffic **between Regions** is charged, which matters for cross-Region replication.
+- **NAT gateways** charge per hour **and** per GB processed. Sending S3 or DynamoDB traffic through a NAT gateway is a common, avoidable cost. Add **gateway endpoints**, which are free.
+- One NAT gateway per AZ costs more than one shared NAT gateway, but a shared one adds **cross-AZ charges** and a **single point of failure**. The exam usually expects one per AZ when availability matters.
+- **CloudFront** reduces egress cost and offloads the origin; data from AWS origins to CloudFront isn't charged.
+- For hybrid connections, **Direct Connect** has lower per-GB transfer-out rates than the internet, which pays off at high, steady volume.
+
+<Pitfall title="Optimizing Cost by Breaking a Requirement">
+
+**Common mistake:** choosing a single NAT gateway, a single-AZ database, or S3 One Zone-IA for critical data because it's the cheapest answer.
+
+If the question says the workload must be **highly available** or data must **survive an AZ failure**, those answers are wrong no matter how cheap they are. Cost-optimized means the cheapest design that **meets all the requirements**.
+
+</Pitfall>
+
+---
+
+## Tools That Find Savings
+
+| Tool | What it does |
+|---|---|
+| **AWS Cost Explorer** | Visualizes spend and usage over time, forecasts, and recommends Savings Plans and RIs |
+| **AWS Budgets** | Alerts (and optional actions) when cost, usage, or coverage crosses a threshold |
+| **Cost allocation tags** | Tag resources by team, project, or environment, then activate the tags to see cost by owner |
+| **AWS Cost Anomaly Detection** | Uses machine learning to flag unusual spend |
+| **AWS Data Exports (Cost and Usage Report)** | The most detailed billing data, delivered to S3 for analysis in Athena or BI tools |
+| **AWS Compute Optimizer** | Right-sizing recommendations for EC2, EBS, Lambda, ECS on Fargate, and more |
+| **AWS Trusted Advisor** | Checks for idle resources, underused instances, and other savings (full checks depend on support plan) |
+| **AWS Organizations** | Consolidated billing, so volume discounts and Savings Plans apply across accounts |
+
+---
+
+## Key Takeaway
+
+Use **Aurora Serverless v2** and **DynamoDB on-demand** for spiky databases, and reservations for steady ones. Watch **data transfer**: outbound, cross-AZ, cross-Region, and **NAT gateway** processing are charged, and **gateway endpoints** and **CloudFront** cut them. Track spend with **tags, Cost Explorer, and Budgets**, and never cut cost by breaking a stated requirement.
+
+<TryIt title="Find the Hidden Costs">
+
+A company's bill shows high **NAT gateway** and **data transfer** charges. Their architecture:
+
+- Private EC2 instances in two AZs download about 5 TB a month from S3 through a NAT gateway in AZ A only
+- The app tier in AZ A talks constantly to a cache cluster in AZ B
+- Product images are served directly from S3 to users worldwide
+
+List three changes that would reduce cost, and note any availability trade-off.
+
+Suggested answers: add an **S3 gateway endpoint** (removes NAT processing for S3 traffic); add a **NAT gateway in AZ B** for availability and to avoid cross-AZ hops; place cache nodes in **each AZ** and read locally; serve images through **CloudFront**.
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "A new app has unpredictable traffic that is idle for hours and then spikes. It needs a key-value database. What is the MOST cost-effective choice?",
+      options: ["DynamoDB provisioned capacity sized for the peak", "DynamoDB on-demand capacity", "RDS for MySQL on a large instance", "A self-managed Cassandra cluster on EC2"],
+      correctIndex: 1,
+      explanation: "On-demand capacity charges per request and needs no capacity planning, which suits unpredictable traffic."
+    },
+    {
+      question: "Private instances transfer large amounts of data to S3 through a NAT gateway. How can the company reduce cost with the LEAST effort?",
+      options: ["Move the instances to public subnets", "Replace the NAT gateway with a NAT instance", "Use S3 Transfer Acceleration", "Add an S3 gateway VPC endpoint and update the route tables"],
+      correctIndex: 3,
+      explanation: "Gateway endpoints carry S3 traffic privately with no endpoint charge, removing NAT gateway processing fees for that traffic."
+    },
+    {
+      question: "Finance wants to see AWS cost broken down by project. What should the architect set up?",
+      options: ["A separate VPC per project", "AWS Shield Advanced", "Cost allocation tags activated in the billing console", "S3 Intelligent-Tiering"],
+      correctIndex: 2,
+      explanation: "Activated cost allocation tags let Cost Explorer and billing reports group spend by tag value."
+    },
+    {
+      question: "Which of these data transfers is typically FREE?",
+      options: ["Data coming into AWS from the internet", "Data sent from EC2 to the internet", "Data between instances in different AZs", "Data replicated to another Region"],
+      correctIndex: 0,
+      explanation: "Inbound data transfer from the internet is not charged. Outbound, cross-AZ, and cross-Region transfers are."
+    }
+  ]}
+/>

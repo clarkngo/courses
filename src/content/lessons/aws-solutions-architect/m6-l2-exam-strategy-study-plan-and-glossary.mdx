@@ -1,0 +1,202 @@
+---
+title: "Exam Strategy, 30-Day Study Plan, and Glossary"
+description: "A week-by-week plan to prepare for SAA-C03, a keyword-to-service cheat sheet for scenario questions, exam-day tactics, a glossary of the terms used in this course, and a final review quiz."
+module: 6
+moduleTitle: "Putting It All Together"
+lesson: 2
+duration: "30 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## A 30-Day Plan
+
+Plan on **1–2 hours a day**, with more on weekends for labs. If you already work with AWS daily, compress weeks 1 and 2.
+
+<svg viewBox="0 0 720 230" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A four-week study plan. Week 1: security and the exam format, Modules 1 and 2. Week 2: resilience and performance, Modules 3 and 4. Week 3: cost and the case study, Modules 5 and 6, plus labs. Week 4: practice exams, review weak domains, and book the exam. A baseline practice test happens on day 1 and a full timed practice exam on days 22 and 27." style="max-width:100%;height:auto;margin:1.5rem auto;display:block;">
+  <g font-family="system-ui, -apple-system, sans-serif">
+    <rect x="20" y="40" width="165" height="120" rx="10" fill="#e0f2fe"/>
+    <text x="34" y="64" fill="#0c4a6e" font-size="14" font-weight="700">Week 1</text>
+    <text x="34" y="88" fill="#0c4a6e" font-size="12">Exam format</text>
+    <text x="34" y="106" fill="#0c4a6e" font-size="12">Secure architectures</text>
+    <text x="34" y="124" fill="#0c4a6e" font-size="12">IAM + VPC labs</text>
+    <text x="34" y="148" fill="#475569" font-size="11">Modules 1–2</text>
+
+    <rect x="195" y="40" width="165" height="120" rx="10" fill="#bae6fd"/>
+    <text x="209" y="64" fill="#0c4a6e" font-size="14" font-weight="700">Week 2</text>
+    <text x="209" y="88" fill="#0c4a6e" font-size="12">Resilient architectures</text>
+    <text x="209" y="106" fill="#0c4a6e" font-size="12">High-performing</text>
+    <text x="209" y="124" fill="#0c4a6e" font-size="12">SQS, RDS, S3 labs</text>
+    <text x="209" y="148" fill="#475569" font-size="11">Modules 3–4</text>
+
+    <rect x="370" y="40" width="165" height="120" rx="10" fill="#7dd3fc"/>
+    <text x="384" y="64" fill="#0c4a6e" font-size="14" font-weight="700">Week 3</text>
+    <text x="384" y="88" fill="#0c4a6e" font-size="12">Cost-optimized</text>
+    <text x="384" y="106" fill="#0c4a6e" font-size="12">Case study redesigns</text>
+    <text x="384" y="124" fill="#0c4a6e" font-size="12">Whitepaper skim</text>
+    <text x="384" y="148" fill="#0c4a6e" font-size="11">Modules 5–6</text>
+
+    <rect x="545" y="40" width="155" height="120" rx="10" fill="#0369a1"/>
+    <text x="559" y="64" fill="#ffffff" font-size="14" font-weight="700">Week 4</text>
+    <text x="559" y="88" fill="#e0f2fe" font-size="12">Timed practice exams</text>
+    <text x="559" y="106" fill="#e0f2fe" font-size="12">Fix weak domains</text>
+    <text x="559" y="124" fill="#e0f2fe" font-size="12">Rest the day before</text>
+    <text x="559" y="148" fill="#bae6fd" font-size="11">Review + exam</text>
+
+    <line x1="20" y1="190" x2="700" y2="190" stroke="#334155" stroke-width="1.5"/>
+    <circle cx="25" cy="190" r="6" fill="#0c4a6e"/>
+    <text x="20" y="215" fill="#334155" font-size="11">Day 1: baseline test</text>
+    <circle cx="518" cy="190" r="6" fill="#0c4a6e"/>
+    <text x="518" y="215" fill="#334155" font-size="11" text-anchor="middle">Day 22: practice exam</text>
+    <circle cx="632" cy="190" r="6" fill="#0c4a6e"/>
+    <text x="700" y="181" fill="#334155" font-size="11" text-anchor="end">Day 27: practice exam</text>
+  </g>
+</svg>
+
+### Week by week
+
+**Week 1: Format and security.** Take a short **baseline** practice set on day 1 so you know your weak domains. Read the official exam guide and its in-scope service list. Work through Modules 1–2 and do the IAM role and security group labs.
+
+**Week 2: Resilience and performance.** Modules 3–4. Build the SNS-to-SQS fan-out, create an RDS instance with Multi-AZ and a read replica, and run the Athena Parquet lab. For each service you meet, write one line: **what it's for, how it fails, what it costs**.
+
+**Week 3: Cost and design.** Modules 5–6. Price three designs in the Pricing Calculator. Redesign the ticketing case study for each changed requirement. Skim the **Well-Architected Framework** pillar summaries.
+
+**Week 4: Practice and review.** Take at least **two full, timed practice exams** (65 questions, 130 minutes). After each one, review **every** question, including the ones you got right, and note why each wrong option is wrong. Spend the remaining days on your weakest domain. Rest the day before.
+
+Good practice sources include the official **AWS Skill Builder** practice question set and practice exam, and the **AWS documentation** FAQs for core services.
+
+---
+
+## Keyword Cheat Sheet
+
+Scenario questions use recurring phrases. Each one strongly suggests a service or pattern:
+
+| If the question says… | Think… |
+|---|---|
+| "decouple," "buffer," "absorb spikes" | SQS |
+| "in order," "exactly once" | SQS FIFO |
+| "send to multiple systems" | SNS + SQS fan-out, or EventBridge |
+| "orchestrate steps with retries" | Step Functions |
+| "real-time stream," "replay" | Kinesis Data Streams |
+| "load streaming data into S3 with no code" | Amazon Data Firehose |
+| "ad hoc SQL on S3" | Athena (with Parquet and partitions) |
+| "shared file system for Linux" | EFS |
+| "SMB," "Windows," "Active Directory" | FSx for Windows File Server |
+| "HPC," "high-throughput file system with S3" | FSx for Lustre |
+| "microsecond reads from DynamoDB" | DAX |
+| "too many database connections from Lambda" | RDS Proxy |
+| "automatic failover in another AZ" | RDS Multi-AZ |
+| "scale reads" | Read replicas, Aurora replicas, caching |
+| "cross-Region DR with RPO of seconds" | Aurora Global Database or DynamoDB global tables |
+| "static IP," "UDP," "fast Regional failover" | Global Accelerator |
+| "cache content at the edge" | CloudFront |
+| "block SQL injection," "rate limit" | AWS WAF |
+| "block an IP at the subnet" | Network ACL |
+| "private access to S3 from a VPC" | Gateway VPC endpoint |
+| "rotate database credentials" | Secrets Manager |
+| "detect threats," "compromised instance" | GuardDuty |
+| "find PII in S3" | Macie |
+| "restrict what member accounts can do" | SCPs in AWS Organizations |
+| "sign in once to many accounts" | IAM Identity Center |
+| "interruptible," "fault-tolerant batch," "cheapest compute" | Spot Instances |
+| "unknown access pattern" (S3) | S3 Intelligent-Tiering |
+| "archive for years, rarely accessed" | S3 Glacier Deep Archive |
+
+Use these as **starting points**, not reflexes. Always check the answer against every requirement and the qualifier.
+
+---
+
+## Exam-Day Tactics
+
+- **Pace:** 130 minutes for 65 questions is 2 minutes each. If a question takes more than 3 minutes, pick your best answer, **flag it**, and move on.
+- **Read the last sentence first**, then the scenario, then the options (Module 1, Lesson 2).
+- **Eliminate first.** You can usually remove two options quickly; then compare the remaining two on the qualifier.
+- **Multiple response** questions tell you how many to choose. Every choice must be correct.
+- **Never leave one blank.** There's no penalty for guessing.
+- **Use the review pass** for flagged questions. Change an answer only if you find a specific reason, not a vague feeling.
+- **Online proctoring:** test your system in advance, clear your desk, and plan for check-in time.
+
+<Pitfall title="Memorizing Dumps Instead of Learning Designs">
+
+**Common mistake:** memorizing leaked or "brain dump" questions to pass.
+
+It violates the AWS Certification agreement and can get your certification revoked. It also fails you in practice: questions are reworded and refreshed, and an interviewer or customer will ask **why**. Learn the design reasons, and the questions become recognizable patterns.
+
+</Pitfall>
+
+---
+
+## Glossary
+
+| Term | Meaning |
+|---|---|
+| **AZ** | Availability Zone: one or more isolated data centers within a Region |
+| **Region** | A geographic area containing multiple AZs |
+| **Multi-AZ** | Running redundant resources in more than one AZ for high availability |
+| **RTO / RPO** | Recovery time objective (max downtime) / recovery point objective (max data loss) |
+| **Pilot light / warm standby** | DR strategies with minimal or scaled-down resources running in a recovery Region |
+| **IAM role** | An identity with temporary credentials, assumed by services, users, or other accounts |
+| **SCP** | Service control policy: an Organizations guardrail that limits permissions in member accounts |
+| **Permissions boundary** | The maximum permissions an identity-based policy can grant to a user or role |
+| **STS** | Security Token Service: issues temporary credentials |
+| **Security group** | Stateful, allow-only firewall attached to a network interface |
+| **Network ACL** | Stateless subnet firewall with allow and deny rules |
+| **VPC endpoint** | Private connection from a VPC to an AWS service (gateway or interface type) |
+| **KMS** | Key Management Service: creates and controls encryption keys |
+| **Loose coupling** | Connecting components through queues, topics, or events so each can fail and scale independently |
+| **Fan-out** | One message delivered to many consumers, typically SNS to multiple SQS queues |
+| **Visibility timeout** | How long an SQS message stays hidden after a consumer receives it |
+| **Dead-letter queue (DLQ)** | A queue that collects messages that repeatedly fail processing |
+| **Read replica** | An asynchronous, readable copy of a database used to scale reads |
+| **Placement group** | Controls how EC2 instances are placed on hardware (cluster, spread, partition) |
+| **Savings Plans** | A 1- or 3-year $/hour commitment in exchange for lower compute prices |
+| **Spot Instance** | Spare EC2 capacity at a deep discount that AWS can reclaim with 2 minutes' notice |
+| **Lifecycle policy** | Rules that move S3 objects to cheaper classes or delete them over time |
+| **Well-Architected Framework** | AWS's six-pillar framework for reviewing workload design |
+| **ADR** | Architecture decision record: a short note on why a design decision was made |
+
+---
+
+## Key Takeaway
+
+Follow a **four-week plan**: learn by domain, build small labs, then switch to **timed practice exams** and fix your weakest areas. Use the **keyword cheat sheet** as a starting point, but always check every requirement and the qualifier. Learn **why** designs work. That passes the exam and makes you useful as an architect.
+
+<TryIt title="Your Personal Plan">
+
+1. Take a short baseline practice set today. Score each domain separately.
+2. Book a tentative exam date **about 30 days out**. A date on the calendar beats "when I'm ready."
+3. Rewrite the 4-week plan above for your schedule, putting extra time on your two lowest-scoring domains.
+4. Pick **five labs** from this course to build, and add them to your calendar.
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "A web tier must hand off image processing jobs that take up to 5 minutes, scale workers independently, and not lose jobs if workers fail. What is the BEST design?",
+      options: ["An SQS queue with an Auto Scaling group of workers scaling on queue depth", "The web tier calls the workers directly over HTTP", "Write jobs to a file on an EBS volume", "Use Route 53 weighted routing to the workers"],
+      correctIndex: 0,
+      explanation: "SQS buffers jobs durably and decouples the tiers; workers scale on the backlog and messages reappear if a worker fails."
+    },
+    {
+      question: "A company needs a shared file system for Windows servers that integrates with Active Directory. Which service fits?",
+      options: ["Amazon EFS", "Amazon S3", "Amazon FSx for Windows File Server", "Amazon EBS Multi-Attach"],
+      correctIndex: 2,
+      explanation: "FSx for Windows File Server provides SMB file shares with Active Directory integration."
+    },
+    {
+      question: "Developers in member accounts must never be able to launch resources outside two approved Regions, even if their IAM policies allow it. What should you use?",
+      options: ["A permissions boundary on each developer", "An IAM group policy", "A bucket policy", "A service control policy on the organizational unit"],
+      correctIndex: 3,
+      explanation: "An SCP denying actions outside approved Regions applies to every principal in the member accounts, regardless of their IAM policies."
+    },
+    {
+      question: "A steady workload runs 24/7 on the same instance family for the next 3 years. Which purchase option gives the largest discount for it?",
+      options: ["On-Demand Instances", "EC2 Instance Savings Plans or Reserved Instances with a 3-year term", "Spot Instances", "Dedicated Hosts"],
+      correctIndex: 1,
+      explanation: "A 3-year commitment on a known family earns the deepest discount for steady usage. Spot is cheaper per hour but can be interrupted, which doesn't suit a steady production workload."
+    }
+  ]}
+/>

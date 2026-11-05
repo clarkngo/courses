@@ -1,0 +1,183 @@
+---
+title: "Loose Coupling and Scalability"
+description: "Design scalable, loosely coupled architectures: queues, topics, and events with SQS, SNS, and EventBridge; workflows with Step Functions; Auto Scaling and load balancers; serverless and container compute; and caching."
+module: 3
+moduleTitle: "Design Resilient Architectures"
+lesson: 1
+duration: "35 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Why Coupling Breaks Systems
+
+Two components are **tightly coupled** when one must be up, fast, and correctly sized for the other to work. If the web tier calls the image processor directly, a slow processor makes the website slow, and a crashed processor makes uploads fail.
+
+**Loose coupling** puts a buffer between them. The producer hands off work and moves on. The consumer works at its own pace and scales on its own. A failure on one side no longer cascades to the other.
+
+<svg viewBox="0 0 720 330" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Tight versus loose coupling. Top: a web tier calls a worker directly; if the worker is slow or down, requests fail. Bottom left: the web tier sends messages to an SQS queue, and an Auto Scaling group of workers polls the queue and scales on queue depth. Bottom right: fan-out, where one SNS topic delivers each order event to three SQS queues for billing, shipping, and analytics." style="max-width:100%;height:auto;margin:1.5rem auto;display:block;">
+  <defs>
+    <marker id="sa-cpl-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#0369a1"/>
+    </marker>
+    <marker id="sa-cpl-bad" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#b91c1c"/>
+    </marker>
+  </defs>
+  <g font-family="system-ui, -apple-system, sans-serif" text-anchor="middle">
+    <text x="20" y="24" fill="#b91c1c" font-size="13" font-weight="700" text-anchor="start">Tightly coupled</text>
+    <rect x="20" y="36" width="120" height="50" rx="8" fill="#e2e8f0"/>
+    <text x="80" y="66" fill="#0f172a" font-size="13" font-weight="700">Web tier</text>
+    <rect x="260" y="36" width="120" height="50" rx="8" fill="#e2e8f0"/>
+    <text x="320" y="66" fill="#0f172a" font-size="13" font-weight="700">Worker</text>
+    <line x1="142" y1="61" x2="256" y2="61" stroke="#b91c1c" stroke-width="2.5" marker-end="url(#sa-cpl-bad)"/>
+    <text x="200" y="52" fill="#b91c1c" font-size="11">sync call</text>
+    <text x="400" y="66" fill="#b91c1c" font-size="12" text-anchor="start">Worker slow or down → web requests fail</text>
+
+    <line x1="20" y1="110" x2="700" y2="110" stroke="#cbd5e1" stroke-width="1"/>
+
+    <text x="20" y="136" fill="#0369a1" font-size="13" font-weight="700" text-anchor="start">Queue (work distribution)</text>
+    <rect x="20" y="150" width="100" height="50" rx="8" fill="#e0f2fe"/>
+    <text x="70" y="180" fill="#0c4a6e" font-size="13" font-weight="700">Web tier</text>
+    <rect x="150" y="150" width="90" height="50" rx="8" fill="#0369a1"/>
+    <text x="195" y="180" fill="#ffffff" font-size="13" font-weight="700">SQS</text>
+    <rect x="270" y="140" width="110" height="70" rx="8" fill="#bae6fd"/>
+    <text x="325" y="168" fill="#0c4a6e" font-size="13" font-weight="700">Workers</text>
+    <text x="325" y="188" fill="#0c4a6e" font-size="11">ASG on queue depth</text>
+    <line x1="122" y1="175" x2="146" y2="175" stroke="#0369a1" stroke-width="2.5" marker-end="url(#sa-cpl-arrow)"/>
+    <line x1="242" y1="175" x2="266" y2="175" stroke="#0369a1" stroke-width="2.5" marker-end="url(#sa-cpl-arrow)"/>
+    <rect x="150" y="232" width="90" height="36" rx="8" fill="#fef3c7"/>
+    <text x="195" y="255" fill="#78350f" font-size="12" font-weight="700">DLQ</text>
+    <line x1="195" y1="202" x2="195" y2="228" stroke="#b45309" stroke-width="2" stroke-dasharray="4 3"/>
+    <text x="200" y="296" fill="#334155" font-size="11">Failed messages land in a dead-letter queue</text>
+
+    <text x="430" y="136" fill="#0369a1" font-size="13" font-weight="700" text-anchor="start">Fan-out (one event, many consumers)</text>
+    <rect x="430" y="185" width="80" height="50" rx="8" fill="#e0f2fe"/>
+    <text x="470" y="215" fill="#0c4a6e" font-size="13" font-weight="700">Order</text>
+    <rect x="540" y="185" width="60" height="50" rx="8" fill="#0369a1"/>
+    <text x="570" y="215" fill="#ffffff" font-size="13" font-weight="700">SNS</text>
+    <rect x="630" y="145" width="80" height="36" rx="8" fill="#bae6fd"/>
+    <text x="670" y="168" fill="#0c4a6e" font-size="12">Billing</text>
+    <rect x="630" y="192" width="80" height="36" rx="8" fill="#bae6fd"/>
+    <text x="670" y="215" fill="#0c4a6e" font-size="12">Shipping</text>
+    <rect x="630" y="239" width="80" height="36" rx="8" fill="#bae6fd"/>
+    <text x="670" y="262" fill="#0c4a6e" font-size="12">Analytics</text>
+    <line x1="512" y1="210" x2="536" y2="210" stroke="#0369a1" stroke-width="2.5" marker-end="url(#sa-cpl-arrow)"/>
+    <line x1="602" y1="200" x2="626" y2="165" stroke="#0369a1" stroke-width="2" marker-end="url(#sa-cpl-arrow)"/>
+    <line x1="602" y1="210" x2="626" y2="210" stroke="#0369a1" stroke-width="2" marker-end="url(#sa-cpl-arrow)"/>
+    <line x1="602" y1="220" x2="626" y2="255" stroke="#0369a1" stroke-width="2" marker-end="url(#sa-cpl-arrow)"/>
+    <text x="570" y="300" fill="#334155" font-size="11">Each consumer gets its own SQS queue</text>
+  </g>
+</svg>
+
+---
+
+## The Messaging Toolkit
+
+| Service | Pattern | Key facts |
+|---|---|---|
+| **Amazon SQS** | Queue: one message is processed by **one** consumer | Standard (very high throughput, at-least-once, best-effort order) or **FIFO** (strict order, exactly-once processing, lower throughput). Visibility timeout, dead-letter queues, long polling, retention up to 14 days |
+| **Amazon SNS** | Pub/sub topic: one message is pushed to **many** subscribers | Push to SQS, Lambda, HTTP, email, SMS. Combine with SQS for **fan-out** |
+| **Amazon EventBridge** | Event bus with **content-based routing rules** | Routes AWS service events, SaaS events, and your own events to targets; schedules; archive and replay |
+| **AWS Step Functions** | **Workflow** orchestration as a state machine | Retries, branching, parallel steps, waits, human approval; Standard (long-running) and Express (high-volume, short) |
+| **Amazon Kinesis Data Streams** | Ordered, replayable **stream** with multiple readers | Real-time analytics, clickstreams; covered in Module 4 |
+| **Amazon MQ** | Managed ActiveMQ or RabbitMQ | Migrating apps that already use JMS, AMQP, or MQTT with **minimal code changes** |
+
+### Choosing among them
+
+- "Decouple and buffer work between tiers" → **SQS**
+- "Messages must be processed in order, exactly once" → **SQS FIFO**
+- "Send the same event to several systems" → **SNS + SQS fan-out**, or **EventBridge** if routing depends on event content
+- "React to an AWS event, like an EC2 state change or an S3 upload" → **EventBridge** (or S3 event notifications)
+- "Coordinate a multi-step process with retries and error handling" → **Step Functions**
+
+<Pitfall title="Visibility Timeout Shorter Than the Job">
+
+**Common mistake:** processing a message takes 3 minutes, but the queue's **visibility timeout** is the 30-second default.
+
+After 30 seconds the message reappears and another worker picks it up, so the job runs twice (or many times). Set the visibility timeout **longer than your longest processing time**, make consumers **idempotent**, and add a **dead-letter queue** so a poison message doesn't loop forever.
+
+</Pitfall>
+
+---
+
+## Scaling the Compute
+
+### Auto Scaling and load balancing
+
+An **Auto Scaling group (ASG)** keeps the right number of EC2 instances running across multiple AZs, replaces unhealthy ones, and scales on demand.
+
+- **Target tracking:** "keep average CPU at 50%" or "keep 100 messages per instance in the queue." Usually the best default.
+- **Step scaling:** add or remove instances in steps as an alarm crosses thresholds.
+- **Scheduled scaling:** scale up before a known event, such as 8 a.m. on weekdays.
+- **Predictive scaling:** uses history to provision capacity ahead of a recurring pattern.
+
+A load balancer spreads traffic across healthy targets: **ALB** for HTTP/HTTPS with path and host routing, **NLB** for TCP/UDP with very high performance and static IPs, and **Gateway Load Balancer** for inserting third-party network appliances.
+
+### Serverless and containers
+
+- **AWS Lambda** runs functions in response to events and scales automatically. Max **15 minutes** per invocation. Great for event-driven and spiky workloads.
+- **Amazon API Gateway** is the managed front door for REST, HTTP, and WebSocket APIs, with throttling, auth, and caching.
+- **Amazon ECS** and **Amazon EKS** run containers; **AWS Fargate** runs them without managing servers.
+
+Design compute to be **stateless**: keep sessions in **ElastiCache** or **DynamoDB**, and files in **S3** or **EFS**, so any instance can serve any request and can be terminated safely.
+
+### Caching
+
+Caching absorbs load and lowers latency:
+
+- **CloudFront** at the edge for static and dynamic content
+- **ElastiCache** (Redis OSS, Valkey, or Memcached) in front of a database
+- **DynamoDB Accelerator (DAX)** for microsecond reads from DynamoDB
+- **API Gateway caching** for repeated API responses
+
+---
+
+## Key Takeaway
+
+Put a **queue, topic, or event bus** between components so each side can fail and scale on its own. Use **SQS** to distribute work, **SNS + SQS** to fan out, **EventBridge** to route events by content, and **Step Functions** to orchestrate. Keep compute **stateless**, scale it with **ASGs, Lambda, or Fargate**, and add **caches** to absorb load.
+
+<TryIt title="Build a Fan-Out in 15 Minutes">
+
+In a sandbox account:
+
+1. Create an SNS topic called `orders`.
+2. Create two SQS queues, `billing` and `shipping`, and subscribe both to the topic.
+3. Publish a message to the topic from the console.
+4. Poll each queue. Both received a copy.
+5. Add a **subscription filter policy** to `shipping` so it only receives messages with the attribute `type = physical`. Publish one physical and one digital order and confirm what each queue gets.
+
+Bonus: connect `billing` to a Lambda function and watch it process messages automatically. Delete everything when you're done.
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "An order system must process messages in the exact order they are sent, with no duplicates. Which service fits?",
+      options: ["SNS standard topic", "SQS standard queue", "SQS FIFO queue", "EventBridge default bus"],
+      correctIndex: 2,
+      explanation: "SQS FIFO queues preserve order and provide exactly-once processing."
+    },
+    {
+      question: "Each new order must be delivered to the billing, shipping, and analytics systems, which process it independently. What is the BEST design?",
+      options: ["One SQS queue read by all three systems", "Three separate API calls from the web tier", "A cron job that copies records between databases", "An SNS topic with an SQS queue for each system subscribed to it"],
+      correctIndex: 3,
+      explanation: "SNS fan-out delivers a copy to each queue, so each consumer processes independently and failures stay isolated."
+    },
+    {
+      question: "Workers sometimes process the same SQS message twice. Processing takes about 2 minutes. What is the MOST likely cause?",
+      options: ["The visibility timeout is shorter than the processing time", "Long polling is enabled", "The queue uses server-side encryption", "The message retention period is too long"],
+      correctIndex: 0,
+      explanation: "If the visibility timeout expires before a worker deletes the message, it becomes visible again and another worker picks it up."
+    },
+    {
+      question: "Which approach makes a web tier easiest to scale horizontally?",
+      options: ["Store user sessions in each instance's memory", "Keep the tier stateless and store sessions in ElastiCache or DynamoDB", "Use the largest instance type available", "Save uploaded files to each instance's EBS volume"],
+      correctIndex: 1,
+      explanation: "Stateless instances can be added or removed freely because no request depends on a particular instance."
+    }
+  ]}
+/>

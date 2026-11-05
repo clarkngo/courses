@@ -1,0 +1,182 @@
+---
+title: "Identity and Access: IAM, Roles, and Multi-Account Guardrails"
+description: "Design secure access to AWS resources: IAM users, roles, and policies, how AWS evaluates a request, temporary credentials with STS, IAM Identity Center, and multi-account guardrails with Organizations, SCPs, and Control Tower."
+module: 2
+moduleTitle: "Design Secure Architectures"
+lesson: 1
+duration: "35 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Who Can Do What, to Which Resource
+
+Every AWS API call answers three questions: **who** is calling (the principal), **what** they want to do (the action), and **to which resource**. IAM is how you control the answers.
+
+| Concept | What it is | Use it for |
+|---|---|---|
+| **Root user** | The account's original identity with full, unrestricted access | Almost nothing. Turn on MFA, don't create access keys, lock it away |
+| **IAM user** | A long-lived identity with a password and/or access keys | Rare today. Prefer federation for people and roles for workloads |
+| **IAM group** | A collection of users that share policies | Managing permissions for many users at once |
+| **IAM role** | An identity with **no long-term credentials**; anyone allowed to assume it gets temporary credentials | EC2 instances, Lambda functions, cross-account access, federated users |
+| **Policy** | A JSON document of Allow/Deny statements | Granting or limiting permissions |
+
+**Roles are the answer to most access questions on the exam.** An EC2 instance that needs to read S3 gets an **instance profile** with a role, never access keys stored on disk. A Lambda function gets an **execution role**. Another AWS account gets a role it can assume.
+
+### Policy types
+
+- **Identity-based policies** attach to a user, group, or role: "this role can read bucket X."
+- **Resource-based policies** attach to a resource: an S3 bucket policy, a KMS key policy, an SQS queue policy. They name **which principals** may act on the resource, including principals in other accounts.
+- **Permissions boundaries** set the **maximum** permissions an identity-based policy can grant to a user or role. Useful when you let developers create their own roles.
+- **Service control policies (SCPs)** and **resource control policies (RCPs)** in AWS Organizations set the maximum permissions for every principal or resource in an account.
+- **Session policies** narrow permissions further for a single assumed-role session.
+
+Boundaries, SCPs, RCPs, and session policies **never grant** anything. They only limit.
+
+---
+
+## How AWS Decides: Allow or Deny
+
+For a request inside a single account, AWS evaluates every policy that applies. The simplified logic:
+
+<svg viewBox="0 0 720 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Simplified IAM policy evaluation. Step 1: if any policy has an explicit Deny, the request is denied. Step 2: if an SCP, RCP, permissions boundary, or session policy does not allow the action, it is denied. Step 3: if an identity-based or resource-based policy allows the action, it is allowed. Otherwise the request is implicitly denied." style="max-width:100%;height:auto;margin:1.5rem auto;display:block;">
+  <defs>
+    <marker id="sa-iam-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#334155"/>
+    </marker>
+  </defs>
+  <g font-family="system-ui, -apple-system, sans-serif" text-anchor="middle">
+    <rect x="10" y="20" width="110" height="60" rx="10" fill="#0c4a6e"/>
+    <text x="65" y="47" fill="#ffffff" font-size="14" font-weight="700">Request</text>
+    <text x="65" y="66" fill="#bae6fd" font-size="12">(default: deny)</text>
+
+    <rect x="150" y="20" width="160" height="60" rx="10" fill="#e0f2fe"/>
+    <text x="230" y="44" fill="#0c4a6e" font-size="13" font-weight="700">1. Explicit Deny</text>
+    <text x="230" y="64" fill="#0c4a6e" font-size="12">in any policy?</text>
+
+    <rect x="340" y="20" width="180" height="60" rx="10" fill="#e0f2fe"/>
+    <text x="430" y="44" fill="#0c4a6e" font-size="13" font-weight="700">2. Guardrails allow?</text>
+    <text x="430" y="64" fill="#0c4a6e" font-size="12">SCP, RCP, boundary, session</text>
+
+    <rect x="550" y="20" width="160" height="60" rx="10" fill="#e0f2fe"/>
+    <text x="630" y="44" fill="#0c4a6e" font-size="13" font-weight="700">3. Any Allow?</text>
+    <text x="630" y="64" fill="#0c4a6e" font-size="12">identity or resource</text>
+
+    <rect x="150" y="180" width="160" height="56" rx="10" fill="#fecaca"/>
+    <text x="230" y="206" fill="#7f1d1d" font-size="14" font-weight="700">DENY</text>
+    <text x="230" y="224" fill="#7f1d1d" font-size="12">explicit deny always wins</text>
+
+    <rect x="340" y="180" width="180" height="56" rx="10" fill="#fecaca"/>
+    <text x="430" y="206" fill="#7f1d1d" font-size="14" font-weight="700">DENY</text>
+    <text x="430" y="224" fill="#7f1d1d" font-size="12">outside the guardrail</text>
+
+    <rect x="550" y="180" width="75" height="56" rx="10" fill="#bbf7d0"/>
+    <text x="587" y="206" fill="#14532d" font-size="14" font-weight="700">ALLOW</text>
+    <text x="587" y="224" fill="#14532d" font-size="11">yes</text>
+    <rect x="635" y="180" width="75" height="56" rx="10" fill="#fecaca"/>
+    <text x="672" y="206" fill="#7f1d1d" font-size="14" font-weight="700">DENY</text>
+    <text x="672" y="224" fill="#7f1d1d" font-size="11">implicit</text>
+  </g>
+  <g font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#334155" stroke="#334155" stroke-width="2">
+    <line x1="122" y1="50" x2="146" y2="50" marker-end="url(#sa-iam-arrow)"/>
+    <line x1="312" y1="50" x2="336" y2="50" marker-end="url(#sa-iam-arrow)"/>
+    <line x1="522" y1="50" x2="546" y2="50" marker-end="url(#sa-iam-arrow)"/>
+    <line x1="230" y1="82" x2="230" y2="176" marker-end="url(#sa-iam-arrow)"/>
+    <line x1="430" y1="82" x2="430" y2="176" marker-end="url(#sa-iam-arrow)"/>
+    <line x1="600" y1="82" x2="590" y2="176" marker-end="url(#sa-iam-arrow)"/>
+    <line x1="660" y1="82" x2="670" y2="176" marker-end="url(#sa-iam-arrow)"/>
+  </g>
+  <g font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#334155">
+    <text x="238" y="134">yes</text>
+    <text x="438" y="134">no</text>
+    <text x="560" y="134">yes</text>
+    <text x="672" y="134">no</text>
+    <text x="324" y="38" text-anchor="middle">no</text>
+    <text x="534" y="38" text-anchor="middle">yes</text>
+    <text x="20" y="280">Simplified for requests within one account. Cross-account access needs an Allow on both sides.</text>
+  </g>
+</svg>
+
+Three rules to memorize:
+
+1. **Everything starts denied** (implicit deny).
+2. **An explicit Deny anywhere wins**, no matter how many Allows exist.
+3. **Cross-account access needs both sides:** the caller's identity policy must allow the action, **and** the resource policy (or the role trust policy) in the other account must allow the caller.
+
+---
+
+## Temporary Credentials and Federation
+
+**AWS Security Token Service (STS)** issues short-lived credentials. You meet it through `AssumeRole` (for roles and cross-account access) and through federation.
+
+- **Cross-account access:** Account B creates a role whose **trust policy** names Account A. A principal in Account A with permission to call `sts:AssumeRole` on that role gets temporary credentials for Account B.
+- **Workforce access:** **IAM Identity Center** connects your identity provider (Microsoft Entra ID, Okta, or its own directory) to every account in your organization. People sign in once and pick a **permission set** for each account. This is the recommended way for humans to reach AWS.
+- **Application users:** **Amazon Cognito user pools** handle sign-up and sign-in for your app's customers. **Identity pools** exchange those identities for temporary AWS credentials, for example to upload directly to S3.
+
+---
+
+## Multi-Account Guardrails
+
+Large organizations use **many accounts**: separate accounts for production, development, security tooling, logging, and each team. An account is the strongest isolation boundary AWS offers; it limits blast radius, quotas, and billing.
+
+- **AWS Organizations** groups accounts into **organizational units (OUs)** with consolidated billing.
+- **SCPs** attached to an OU limit what any principal in those accounts can do. Classic examples: deny actions outside approved Regions, deny disabling CloudTrail, deny leaving the organization. SCPs don't apply to the management account, so keep workloads out of it.
+- **AWS Control Tower** sets up a well-architected multi-account **landing zone** for you: a log archive account, an audit account, guardrails (called controls), and **Account Factory** for creating new accounts that follow the rules.
+
+<Pitfall title="Thinking an SCP Grants Permission">
+
+**Common mistake:** an exam answer attaches an SCP that "allows S3 access" so developers can use S3.
+
+SCPs only set the **ceiling**. A developer still needs an identity-based policy that allows S3. If an answer relies on an SCP or a permissions boundary to **grant** access, it's wrong.
+
+</Pitfall>
+
+---
+
+## Key Takeaway
+
+Use **roles and temporary credentials** for workloads and cross-account access, **IAM Identity Center** for people, and **Cognito** for app users. Remember that **explicit deny wins**, guardrails (SCPs, RCPs, boundaries) only **limit**, and cross-account access needs an Allow **on both sides**. Use **Organizations, SCPs, and Control Tower** to govern many accounts.
+
+<TryIt title="Lock Down a Region and Read a Bucket With a Role">
+
+In a sandbox account:
+
+1. Create an S3 bucket and upload a file.
+2. Launch a small EC2 instance **without** a role. Run `aws s3 ls s3://your-bucket`. It fails: no credentials.
+3. Create an IAM role for EC2 with a policy allowing `s3:GetObject` and `s3:ListBucket` on **only that bucket**. Attach it to the instance as an instance profile. Run the command again. It works, and no keys are stored on the instance.
+4. Add an explicit `Deny` for `s3:GetObject` on one object prefix. Confirm that the deny wins.
+
+If you have an Organizations sandbox, write (don't attach to production) an SCP that denies all actions outside `us-east-1` and `us-west-2`, with exceptions for global services such as IAM. Clean up when you're done.
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "An application on EC2 needs to write to a DynamoDB table. What is the MOST secure way to give it access?",
+      options: ["Store an IAM user's access keys in the application config", "Put access keys in environment variables in the AMI", "Use the root user's access keys", "Attach an IAM role with a least-privilege policy to the instance"],
+      correctIndex: 3,
+      explanation: "An instance profile delivers temporary, automatically rotated credentials. No long-term keys are stored on the instance."
+    },
+    {
+      question: "An identity policy allows s3:DeleteObject, but an SCP on the account denies it. What happens?",
+      options: ["The delete succeeds because the identity policy allows it", "The delete is denied", "The delete succeeds only for the root user", "The result depends on which policy was created first"],
+      correctIndex: 1,
+      explanation: "An explicit deny in any applicable policy overrides any allow."
+    },
+    {
+      question: "A company wants employees to sign in once with their corporate identity provider and access many AWS accounts. Which service fits best?",
+      options: ["Amazon Cognito user pools", "IAM users in each account", "AWS IAM Identity Center", "AWS Secrets Manager"],
+      correctIndex: 2,
+      explanation: "IAM Identity Center federates your workforce identity provider to all accounts in the organization through permission sets."
+    },
+    {
+      question: "What do service control policies (SCPs) do?",
+      options: ["Set the maximum permissions available to principals in member accounts", "Grant permissions to IAM users in member accounts", "Encrypt data across all accounts", "Replace IAM roles in the management account"],
+      correctIndex: 0,
+      explanation: "SCPs are guardrails. They limit permissions but never grant them."
+    }
+  ]}
+/>

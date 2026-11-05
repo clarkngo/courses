@@ -1,0 +1,181 @@
+---
+title: "High Availability and Disaster Recovery"
+description: "Design highly available and fault-tolerant architectures: Availability Zones and Regions, Multi-AZ patterns, database replication options, Route 53 routing and failover, backups, and the four disaster recovery strategies."
+module: 3
+moduleTitle: "Design Resilient Architectures"
+lesson: 2
+duration: "35 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Availability Zones and Regions
+
+A **Region** is a geographic area (such as `us-east-1`). Each Region has multiple **Availability Zones (AZs)**: one or more data centers with independent power, cooling, and networking, connected by low-latency links.
+
+- **High availability (HA)** means the system keeps working when a component or an AZ fails. On AWS, that almost always means **Multi-AZ**.
+- **Fault tolerance** goes a step further: the failure causes **no** user-visible interruption, usually because redundant capacity is already running.
+- **Disaster recovery (DR)** is how you recover from a larger event, such as the loss of a whole Region, a bad deployment, or deleted data.
+
+Read the question carefully. If it says "highly available," Multi-AZ is usually enough. Multi-Region is the answer only when the question mentions **Regional outages**, **global users**, or a very low RTO/RPO across Regions.
+
+---
+
+## The Multi-AZ Pattern
+
+<svg viewBox="0 0 720 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A Multi-AZ web architecture in one Region. Route 53 sends traffic to an Application Load Balancer that spans two Availability Zones. Each AZ has a public subnet with a NAT gateway, a private subnet with EC2 instances in a shared Auto Scaling group, and a data subnet. RDS primary runs in AZ A with a synchronous standby in AZ B. Static content is in S3, which is regional and stored across multiple AZs." style="max-width:100%;height:auto;margin:1.5rem auto;display:block;">
+  <defs>
+    <marker id="sa-ha-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#0369a1"/>
+    </marker>
+  </defs>
+  <g font-family="system-ui, -apple-system, sans-serif" text-anchor="middle">
+    <rect x="280" y="8" width="160" height="36" rx="8" fill="#0c4a6e"/>
+    <text x="360" y="31" fill="#ffffff" font-size="13" font-weight="700">Route 53</text>
+
+    <rect x="20" y="58" width="680" height="292" rx="12" fill="none" stroke="#0369a1" stroke-width="2" stroke-dasharray="6 4"/>
+    <text x="40" y="78" fill="#0369a1" font-size="12" font-weight="700" text-anchor="start">Region</text>
+
+    <rect x="160" y="88" width="400" height="36" rx="8" fill="#0369a1"/>
+    <text x="360" y="111" fill="#ffffff" font-size="13" font-weight="700">Application Load Balancer (both AZs)</text>
+
+    <rect x="40" y="138" width="290" height="200" rx="10" fill="#f0f9ff" stroke="#7dd3fc"/>
+    <text x="185" y="158" fill="#0c4a6e" font-size="13" font-weight="700">Availability Zone A</text>
+    <rect x="390" y="138" width="290" height="200" rx="10" fill="#f0f9ff" stroke="#7dd3fc"/>
+    <text x="535" y="158" fill="#0c4a6e" font-size="13" font-weight="700">Availability Zone B</text>
+
+    <rect x="60" y="170" width="250" height="34" rx="6" fill="#e0f2fe"/>
+    <text x="185" y="192" fill="#0c4a6e" font-size="12">Public subnet: NAT gateway</text>
+    <rect x="410" y="170" width="250" height="34" rx="6" fill="#e0f2fe"/>
+    <text x="535" y="192" fill="#0c4a6e" font-size="12">Public subnet: NAT gateway</text>
+
+    <rect x="60" y="214" width="250" height="44" rx="6" fill="#bae6fd"/>
+    <text x="185" y="241" fill="#0c4a6e" font-size="12" font-weight="700">EC2 × 2 (Auto Scaling group)</text>
+    <rect x="410" y="214" width="250" height="44" rx="6" fill="#bae6fd"/>
+    <text x="535" y="241" fill="#0c4a6e" font-size="12" font-weight="700">EC2 × 2 (Auto Scaling group)</text>
+
+    <rect x="60" y="270" width="250" height="52" rx="6" fill="#0369a1"/>
+    <text x="185" y="293" fill="#ffffff" font-size="13" font-weight="700">RDS primary</text>
+    <text x="185" y="311" fill="#e0f2fe" font-size="11">reads + writes</text>
+    <rect x="410" y="270" width="250" height="52" rx="6" fill="#7dd3fc"/>
+    <text x="535" y="293" fill="#0c4a6e" font-size="13" font-weight="700">RDS standby</text>
+    <text x="535" y="311" fill="#0c4a6e" font-size="11">automatic failover target</text>
+
+    <text x="360" y="290" fill="#0369a1" font-size="11" font-weight="700">sync</text>
+    <text x="360" y="304" fill="#0369a1" font-size="11" font-weight="700">replication</text>
+  </g>
+  <g stroke="#0369a1" stroke-width="2.5">
+    <line x1="360" y1="46" x2="360" y2="84" marker-end="url(#sa-ha-arrow)"/>
+    <line x1="290" y1="126" x2="290" y2="210" marker-end="url(#sa-ha-arrow)"/>
+    <line x1="430" y1="126" x2="430" y2="210" marker-end="url(#sa-ha-arrow)"/>
+    <line x1="314" y1="312" x2="406" y2="312" marker-end="url(#sa-ha-arrow)"/>
+  </g>
+</svg>
+
+The pattern: spread every tier across **at least two AZs**, size each AZ so the others can carry the load if one fails, and use services that are already Multi-AZ (S3, DynamoDB, SQS, Lambda, EFS) wherever you can.
+
+---
+
+## Database Resilience Options
+
+| Option | What it does | Readable? | Use it for |
+|---|---|---|---|
+| **RDS Multi-AZ (instance)** | Synchronous standby in another AZ; automatic failover, usually in a minute or two | No, standby only | High availability |
+| **RDS Multi-AZ DB cluster** | One writer and **two readable standbys** in three AZs | Yes | HA plus read capacity, faster failover |
+| **RDS read replicas** | **Asynchronous** copies, in-Region or **cross-Region**; can be promoted | Yes | Scaling reads; cross-Region DR |
+| **Aurora** | Storage keeps **six copies across three AZs**; up to 15 low-lag replicas; fast failover | Yes | HA and read scaling with less to manage |
+| **Aurora Global Database** | Replicates to other Regions, typically with under a second of lag | Yes, in secondary Regions | Low-RPO cross-Region DR and local global reads |
+| **DynamoDB global tables** | Multi-Region, multi-active replication | Yes, read and write in every Region | Global apps that write in many Regions |
+
+Remember the difference: **Multi-AZ is for availability**, and **read replicas are for read scaling** (plus cross-Region DR). Exam answers that use a read replica for automatic failover, or a classic Multi-AZ standby to serve reads, are wrong.
+
+---
+
+## Route 53: Routing and Failover
+
+| Routing policy | Use it when |
+|---|---|
+| **Simple** | One resource, no health checks |
+| **Failover** | Active-passive: send traffic to the secondary when the primary's **health check** fails |
+| **Weighted** | Split traffic by percentage (canary or blue/green releases) |
+| **Latency** | Send users to the Region with the lowest latency for them |
+| **Geolocation** | Route by the user's country or continent (compliance, localized content) |
+| **Geoproximity** | Route by distance, with a bias to shift traffic between Regions |
+| **Multivalue answer** | Return several healthy IPs for simple client-side load spreading |
+| **IP-based** | Route by the client's IP range |
+
+**Alias records** point a domain name (including the zone apex, like `example.com`) at AWS resources such as an ALB, CloudFront distribution, or S3 website, at no query charge.
+
+---
+
+## Backups and the Four DR Strategies
+
+**AWS Backup** centralizes backup policies across EBS, RDS, Aurora, DynamoDB, EFS, FSx, S3, and more, including **cross-Region and cross-account copies**. Copies in a separate account protect you from someone deleting both the data and its backups.
+
+DR strategies, from cheapest and slowest to most expensive and fastest:
+
+| Strategy | What runs in the DR Region | RTO / RPO |
+|---|---|---|
+| **Backup and restore** | Nothing but backups | Hours |
+| **Pilot light** | Data is replicated and live; servers are off or minimal | Tens of minutes |
+| **Warm standby** | A scaled-down but fully working copy of production | Minutes |
+| **Multi-site active/active** | Full production in more than one Region, serving traffic | Near zero |
+
+Choose the **cheapest strategy that meets the RTO and RPO** in the question.
+
+<Pitfall title="Backups You Have Never Restored">
+
+**Common mistake:** the design says "nightly snapshots" and stops there.
+
+An untested backup is a hope, not a plan. Real DR plans include **restore tests**, documented runbooks, and the **service quotas** needed in the recovery Region. Exam questions also test the time dimension: a nightly backup can't meet a 15-minute RPO.
+
+</Pitfall>
+
+---
+
+## Key Takeaway
+
+**Multi-AZ** is the default for high availability; go **multi-Region** only when Regional failure or global users are part of the requirement. Know which database feature gives **failover** (Multi-AZ) and which gives **read scaling** (read replicas), how **Route 53 failover** works with health checks, and pick the **cheapest DR strategy** that meets the RTO and RPO.
+
+<TryIt title="Design for the RTO and RPO">
+
+For each scenario, pick a DR strategy and the main services. Then compare with the suggested answers.
+
+1. An internal reporting app. RTO 24 hours, RPO 24 hours.
+2. An e-commerce checkout. RTO 15 minutes, RPO 1 minute.
+3. A global trading platform. RTO and RPO near zero.
+
+Suggested answers: (1) backup and restore with AWS Backup cross-Region copies; (2) warm standby with Aurora Global Database and a scaled-down ASG plus Route 53 failover; (3) multi-site active/active with DynamoDB global tables or Aurora Global Database, latency-based routing, and full capacity in each Region.
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "A company needs its RDS for MySQL database to fail over automatically if an AZ fails. What should they enable?",
+      options: ["A read replica in the same AZ", "RDS Multi-AZ deployment", "Automated backups only", "An ElastiCache cluster"],
+      correctIndex: 1,
+      explanation: "Multi-AZ keeps a synchronous standby in another AZ and fails over automatically."
+    },
+    {
+      question: "Users report slow reads from an RDS database during reporting hours. Writes are fine. What is the MOST appropriate fix?",
+      options: ["Add read replicas and send reporting queries to them", "Enable Multi-AZ on the instance", "Move the database to a single larger AZ", "Turn off automated backups"],
+      correctIndex: 0,
+      explanation: "Read replicas add read capacity. A classic Multi-AZ standby does not serve reads."
+    },
+    {
+      question: "Which Route 53 routing policy sends all traffic to a primary site and switches to a secondary when a health check fails?",
+      options: ["Weighted", "Latency", "Geolocation", "Failover"],
+      correctIndex: 3,
+      explanation: "Failover routing implements active-passive with health checks."
+    },
+    {
+      question: "A workload needs an RTO of a few minutes after a Regional outage and the company wants to keep costs down. Which DR strategy fits BEST?",
+      options: ["Backup and restore", "Multi-site active/active", "Warm standby", "No DR; rely on Multi-AZ"],
+      correctIndex: 2,
+      explanation: "Warm standby runs a smaller working copy that can scale up in minutes, for less than active/active. Backup and restore takes hours."
+    }
+  ]}
+/>

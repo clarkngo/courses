@@ -1,0 +1,194 @@
+---
+title: "Securing Workloads and Data"
+description: "Design secure workloads and data protection on AWS: VPC layers, security groups vs network ACLs, edge protection with WAF and Shield, threat detection services, encryption with KMS, secrets management, and S3 data controls."
+module: 2
+moduleTitle: "Design Secure Architectures"
+lesson: 2
+duration: "35 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Defense in Layers
+
+A secure architecture doesn't depend on one control. An attacker who gets past one layer should hit another. A standard three-tier web app on AWS looks like this:
+
+<svg viewBox="0 0 720 330" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Layered security for a three-tier web app. Traffic from the internet passes through CloudFront with AWS WAF and Shield at the edge, then into a VPC. A public subnet holds the Application Load Balancer with a security group allowing HTTPS from anywhere. A private app subnet holds EC2 instances whose security group only allows traffic from the load balancer's security group. A private data subnet holds RDS, whose security group only allows traffic from the app security group. Network ACLs sit at each subnet boundary. KMS encrypts data at rest in RDS and S3." style="max-width:100%;height:auto;margin:1.5rem auto;display:block;">
+  <defs>
+    <marker id="sa-sec-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#0369a1"/>
+    </marker>
+  </defs>
+  <g font-family="system-ui, -apple-system, sans-serif" text-anchor="middle">
+    <rect x="10" y="110" width="90" height="60" rx="10" fill="#e2e8f0"/>
+    <text x="55" y="145" fill="#0f172a" font-size="13" font-weight="700">Internet</text>
+
+    <rect x="120" y="90" width="120" height="100" rx="10" fill="#0c4a6e"/>
+    <text x="180" y="122" fill="#ffffff" font-size="13" font-weight="700">Edge</text>
+    <text x="180" y="144" fill="#e0f2fe" font-size="12">CloudFront</text>
+    <text x="180" y="162" fill="#e0f2fe" font-size="12">WAF + Shield</text>
+
+    <rect x="260" y="20" width="450" height="270" rx="12" fill="none" stroke="#0369a1" stroke-width="2" stroke-dasharray="6 4"/>
+    <text x="485" y="40" fill="#0369a1" font-size="13" font-weight="700">VPC</text>
+
+    <rect x="275" y="55" width="130" height="160" rx="10" fill="#e0f2fe"/>
+    <text x="340" y="78" fill="#0c4a6e" font-size="12" font-weight="700">Public subnet</text>
+    <rect x="290" y="95" width="100" height="60" rx="8" fill="#ffffff" stroke="#0369a1"/>
+    <text x="340" y="121" fill="#0c4a6e" font-size="13" font-weight="700">ALB</text>
+    <text x="340" y="140" fill="#334155" font-size="11">SG: 443 from all</text>
+
+    <rect x="425" y="55" width="130" height="160" rx="10" fill="#bae6fd"/>
+    <text x="490" y="78" fill="#0c4a6e" font-size="12" font-weight="700">Private app</text>
+    <rect x="440" y="95" width="100" height="60" rx="8" fill="#ffffff" stroke="#0369a1"/>
+    <text x="490" y="121" fill="#0c4a6e" font-size="13" font-weight="700">EC2</text>
+    <text x="490" y="140" fill="#334155" font-size="11">SG: from ALB SG</text>
+
+    <rect x="575" y="55" width="125" height="160" rx="10" fill="#7dd3fc"/>
+    <text x="637" y="78" fill="#0c4a6e" font-size="12" font-weight="700">Private data</text>
+    <rect x="587" y="95" width="100" height="60" rx="8" fill="#ffffff" stroke="#0369a1"/>
+    <text x="637" y="121" fill="#0c4a6e" font-size="13" font-weight="700">RDS</text>
+    <text x="637" y="140" fill="#334155" font-size="11">SG: from app SG</text>
+
+    <text x="340" y="200" fill="#334155" font-size="11">NACL</text>
+    <text x="490" y="200" fill="#334155" font-size="11">NACL</text>
+    <text x="637" y="200" fill="#334155" font-size="11">NACL</text>
+
+    <rect x="425" y="232" width="275" height="44" rx="8" fill="#fef3c7"/>
+    <text x="562" y="259" fill="#78350f" font-size="12" font-weight="700">KMS: encryption at rest (RDS, EBS, S3)</text>
+    <rect x="275" y="232" width="130" height="44" rx="8" fill="#fef3c7"/>
+    <text x="340" y="259" fill="#78350f" font-size="12" font-weight="700">ACM: TLS certs</text>
+  </g>
+  <g stroke="#0369a1" stroke-width="2.5">
+    <line x1="102" y1="140" x2="116" y2="140" marker-end="url(#sa-sec-arrow)"/>
+    <line x1="242" y1="125" x2="286" y2="125" marker-end="url(#sa-sec-arrow)"/>
+    <line x1="392" y1="125" x2="436" y2="125" marker-end="url(#sa-sec-arrow)"/>
+    <line x1="542" y1="125" x2="583" y2="125" marker-end="url(#sa-sec-arrow)"/>
+  </g>
+  <text x="20" y="318" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#334155">Each tier only accepts traffic from the tier in front of it, by referencing that tier's security group.</text>
+</svg>
+
+### Security groups vs network ACLs
+
+| | Security group | Network ACL |
+|---|---|---|
+| **Attached to** | An ENI (instance, load balancer, database) | A subnet |
+| **State** | **Stateful**: return traffic is allowed automatically | **Stateless**: you must allow return traffic (ephemeral ports) explicitly |
+| **Rules** | Allow only | Allow **and** deny |
+| **Evaluation** | All rules evaluated together | Rules evaluated in number order; first match wins |
+| **Typical use** | Primary control; reference other security groups by ID | Coarse subnet-level blocks, such as denying a known bad IP range |
+
+If a question asks you to **block a specific IP address**, the answer is a network ACL (or AWS WAF for web traffic), because security groups can't deny.
+
+### Private connectivity
+
+- **NAT gateway** lets private instances reach the internet for updates without being reachable from it.
+- **VPC endpoints** let private resources reach AWS services without the internet. **Gateway endpoints** cover **S3 and DynamoDB** at no charge. **Interface endpoints** (AWS PrivateLink) cover most other services.
+- **Systems Manager Session Manager** gives shell access to instances with no open SSH port and no bastion host.
+
+---
+
+## Edge Protection and Threat Detection
+
+| Service | What it does | Exam cue |
+|---|---|---|
+| **AWS WAF** | Filters HTTP(S) requests: SQL injection, cross-site scripting, rate limits, geo blocking. Attaches to CloudFront, ALB, API Gateway, AppSync, Cognito | "block SQL injection," "rate-limit by IP" |
+| **AWS Shield Standard** | Automatic protection against common network and transport layer DDoS attacks, at no extra cost | Included for everyone |
+| **AWS Shield Advanced** | Paid: enhanced DDoS protection, 24/7 Shield Response Team, cost protection for scaling during an attack | "large DDoS," "response team" |
+| **Amazon GuardDuty** | Threat detection from CloudTrail, VPC Flow Logs, DNS logs, and more | "detect compromised instances," "crypto mining" |
+| **Amazon Inspector** | Vulnerability scanning for EC2, container images, and Lambda | "find CVEs" |
+| **Amazon Macie** | Finds sensitive data (PII) in S3 | "discover PII in buckets" |
+| **AWS Security Hub** | Aggregates findings and checks against security standards | "single view of security posture" |
+| **AWS Config** | Records resource configuration and evaluates compliance rules | "detect unencrypted volumes," "configuration history" |
+| **AWS CloudTrail** | Logs API calls across the account or organization | "who deleted this?", audit |
+
+---
+
+## Protecting Data
+
+### Encryption at rest with KMS
+
+**AWS Key Management Service (KMS)** creates and controls encryption keys, and most AWS services integrate with it.
+
+- **AWS managed keys** are created for you per service. Easy, but you can't manage their key policy.
+- **Customer managed keys** give you control over the **key policy**, rotation, and auditing, and you can share them across accounts.
+- **Envelope encryption:** KMS encrypts a small data key, and the data key encrypts your data, so large objects never travel to KMS.
+- **AWS CloudHSM** gives you dedicated, single-tenant hardware security modules when a regulation requires you to control the hardware.
+
+Encryption for RDS and EBS is chosen **at creation**. To encrypt an existing unencrypted database, snapshot it, **copy the snapshot with encryption on**, and restore from the copy.
+
+### Encryption in transit
+
+Use TLS everywhere. **AWS Certificate Manager (ACM)** issues and renews public certificates for free on CloudFront, ALB, and API Gateway. To force HTTPS for S3, add a bucket policy that denies requests where `aws:SecureTransport` is false.
+
+### Secrets
+
+| | AWS Secrets Manager | SSM Parameter Store |
+|---|---|---|
+| **Built-in rotation** | Yes (native for RDS, Aurora, Redshift, DocumentDB; Lambda for others) | No |
+| **Cost** | Per secret per month | Standard parameters are free |
+| **Best for** | Database credentials and API keys that must rotate | Configuration values and simple secrets |
+
+### S3 data controls
+
+- **Block Public Access**, on by default for new buckets, overrides any policy or ACL that would make data public.
+- **Default encryption** with SSE-S3 is applied to all new objects; choose **SSE-KMS** when you need key-level access control and audit.
+- **Versioning** protects against overwrites and deletes; **MFA Delete** adds a second factor for permanent deletes.
+- **S3 Object Lock** provides write-once-read-many (WORM) retention for compliance.
+- **Presigned URLs** give temporary access to a single object without making the bucket public.
+
+<Pitfall title="Opening the Database to the VPC CIDR">
+
+**Common mistake:** the database security group allows port 3306 from `10.0.0.0/16`, the whole VPC.
+
+Now any instance in the VPC can try to connect, including a compromised one in another tier. Reference the **app tier's security group** instead. When instances scale in and out, the rule still applies to exactly the right ones.
+
+</Pitfall>
+
+---
+
+## Key Takeaway
+
+Put each tier in its own subnet, chain **security groups by reference**, use **NACLs** when you need to deny, and keep traffic private with **NAT gateways and VPC endpoints**. Protect the edge with **WAF and Shield**, detect threats with **GuardDuty**, and encrypt with **KMS** (at rest) and **ACM/TLS** (in transit). Rotate credentials with **Secrets Manager**.
+
+<TryIt title="Chain Security Groups">
+
+In a sandbox VPC, create three security groups: `alb-sg`, `app-sg`, and `db-sg`.
+
+1. `alb-sg`: allow inbound 443 from `0.0.0.0/0`.
+2. `app-sg`: allow inbound 8080 **from `alb-sg`** (choose the security group as the source, not a CIDR).
+3. `db-sg`: allow inbound 5432 **from `app-sg`**.
+
+Now answer: what changes when the app tier scales from 2 to 20 instances? (Nothing. The rules follow the group.) What would you add to block one abusive IP address at the subnet level? (A NACL deny rule.) And at the HTTP layer? (A WAF IP set rule.)
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "A company must block traffic from a specific malicious IP range to a subnet. What should they use?",
+      options: ["A network ACL deny rule", "A security group deny rule", "An IAM policy", "A KMS key policy"],
+      correctIndex: 0,
+      explanation: "Network ACLs support deny rules. Security groups only support allow rules."
+    },
+    {
+      question: "Private EC2 instances need to read from S3 without traffic going over the internet, at the lowest cost. What should you add?",
+      options: ["A NAT gateway in each AZ", "An internet gateway", "A gateway VPC endpoint for S3", "An interface VPC endpoint for EC2"],
+      correctIndex: 2,
+      explanation: "Gateway endpoints keep S3 traffic on the AWS network and have no hourly or data processing charge."
+    },
+    {
+      question: "Which service automatically rotates RDS database credentials?",
+      options: ["SSM Parameter Store standard parameters", "AWS Secrets Manager", "AWS Certificate Manager", "Amazon Macie"],
+      correctIndex: 1,
+      explanation: "Secrets Manager has built-in rotation for RDS and other databases."
+    },
+    {
+      question: "An existing RDS instance was created without encryption. How do you encrypt it?",
+      options: ["Turn on encryption in the instance settings", "Attach a KMS key to the running instance", "Enable S3 default encryption", "Snapshot it, copy the snapshot with encryption enabled, and restore from the copy"],
+      correctIndex: 3,
+      explanation: "RDS encryption is set at creation. Encrypting a copy of a snapshot and restoring it is the supported path."
+    }
+  ]}
+/>

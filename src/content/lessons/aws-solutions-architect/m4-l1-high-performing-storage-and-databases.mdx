@@ -1,0 +1,181 @@
+---
+title: "High-Performing Storage and Databases"
+description: "Choose high-performing storage and database solutions: block, file, and object storage; EBS volume types; EFS and the FSx family; S3 performance features; and when to pick RDS, Aurora, DynamoDB, ElastiCache, Redshift, and purpose-built databases."
+module: 4
+moduleTitle: "Design High-Performing Architectures"
+lesson: 1
+duration: "35 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Block, File, or Object?
+
+The first storage question is always **what shape the data access takes**:
+
+| Type | AWS service | Accessed by | Think of it as |
+|---|---|---|---|
+| **Block** | **Amazon EBS** (and instance store) | One EC2 instance (or a few, with io2 Multi-Attach) | A hard drive attached to a server |
+| **File** | **Amazon EFS**, **Amazon FSx** | Many instances at once over NFS or SMB | A shared network drive |
+| **Object** | **Amazon S3** | Anything, over HTTPS APIs | Unlimited storage for whole files, addressed by key |
+
+### EBS volume types
+
+| Volume | Type | Use it for |
+|---|---|---|
+| **gp3** | General-purpose SSD | The default. Baseline 3,000 IOPS and 125 MB/s at any size; buy more IOPS or throughput separately |
+| **io2 Block Express** | Provisioned IOPS SSD | Latency-sensitive databases needing very high, consistent IOPS; supports Multi-Attach |
+| **st1** | Throughput-optimized HDD | Big sequential workloads: logs, data warehouses, streaming. Can't be a boot volume |
+| **sc1** | Cold HDD | Rarely accessed sequential data at the lowest cost. Can't be a boot volume |
+
+**Instance store** is physically attached to the host. It's the fastest disk you can get, but it's **ephemeral**: data is lost when the instance stops or the host fails. Use it for caches, buffers, and scratch data only.
+
+EBS volumes live in **one AZ**. To move a volume to another AZ, snapshot it and create a new volume from the snapshot.
+
+### File storage
+
+| Service | Protocol | Use it for |
+|---|---|---|
+| **Amazon EFS** | NFS (Linux) | Shared files for many Linux instances, containers, and Lambda; elastic size; Regional (Multi-AZ) by default |
+| **FSx for Windows File Server** | SMB, Active Directory | Windows apps and home directories needing SMB and AD integration |
+| **FSx for Lustre** | Lustre | High-performance computing, ML training; can link to an S3 bucket |
+| **FSx for NetApp ONTAP** | NFS, SMB, iSCSI | Migrating NetApp workloads; multiprotocol access |
+| **FSx for OpenZFS** | NFS | Migrating ZFS workloads with very low latency |
+
+### S3 performance
+
+- S3 scales automatically to at least **3,500 writes and 5,500 reads per second per prefix**, so spreading keys across prefixes multiplies throughput.
+- **Multipart upload** splits large files into parts uploaded in parallel (recommended above 100 MB).
+- **S3 Transfer Acceleration** speeds long-distance uploads through CloudFront edge locations.
+- **Byte-range fetches** download parts of a large object in parallel.
+- **S3 Express One Zone** gives single-digit-millisecond access in one AZ for the most latency-sensitive workloads.
+
+---
+
+## Choosing a Database
+
+<svg viewBox="0 0 720 330" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A database selection guide based on the data and access pattern. Relational transactions with joins lead to RDS, or Aurora for higher scale and availability. Key-value access at any scale with single-digit millisecond latency leads to DynamoDB, plus DAX for microsecond reads. Analytics over large data sets leads to Redshift. In-memory caching and sessions lead to ElastiCache. Relationships between entities lead to Neptune. JSON documents with MongoDB compatibility lead to DocumentDB. Time series leads to Timestream for InfluxDB." style="max-width:100%;height:auto;margin:1.5rem auto;display:block;">
+  <defs>
+    <marker id="sa-db-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#0369a1"/>
+    </marker>
+  </defs>
+  <g font-family="system-ui, -apple-system, sans-serif">
+    <rect x="20" y="10" width="340" height="32" rx="8" fill="#0c4a6e"/>
+    <text x="190" y="31" fill="#ffffff" font-size="13" font-weight="700" text-anchor="middle">Data and access pattern</text>
+    <rect x="440" y="10" width="260" height="32" rx="8" fill="#0c4a6e"/>
+    <text x="570" y="31" fill="#ffffff" font-size="13" font-weight="700" text-anchor="middle">Service</text>
+  </g>
+  <g font-family="system-ui, -apple-system, sans-serif" font-size="12">
+    <rect x="20" y="52" width="340" height="34" rx="6" fill="#e0f2fe"/>
+    <text x="32" y="74" fill="#0c4a6e">Relational, transactions, joins (SQL)</text>
+    <rect x="440" y="52" width="260" height="34" rx="6" fill="#bae6fd"/>
+    <text x="452" y="74" fill="#0c4a6e" font-weight="700">RDS · Aurora for scale + HA</text>
+
+    <rect x="20" y="92" width="340" height="34" rx="6" fill="#e0f2fe"/>
+    <text x="32" y="114" fill="#0c4a6e">Key-value, any scale, single-digit ms</text>
+    <rect x="440" y="92" width="260" height="34" rx="6" fill="#bae6fd"/>
+    <text x="452" y="114" fill="#0c4a6e" font-weight="700">DynamoDB · + DAX for µs reads</text>
+
+    <rect x="20" y="132" width="340" height="34" rx="6" fill="#e0f2fe"/>
+    <text x="32" y="154" fill="#0c4a6e">Analytics over large data sets (OLAP)</text>
+    <rect x="440" y="132" width="260" height="34" rx="6" fill="#bae6fd"/>
+    <text x="452" y="154" fill="#0c4a6e" font-weight="700">Redshift</text>
+
+    <rect x="20" y="172" width="340" height="34" rx="6" fill="#e0f2fe"/>
+    <text x="32" y="194" fill="#0c4a6e">In-memory cache, sessions, leaderboards</text>
+    <rect x="440" y="172" width="260" height="34" rx="6" fill="#bae6fd"/>
+    <text x="452" y="194" fill="#0c4a6e" font-weight="700">ElastiCache</text>
+
+    <rect x="20" y="212" width="340" height="34" rx="6" fill="#e0f2fe"/>
+    <text x="32" y="234" fill="#0c4a6e">Highly connected data (social, fraud rings)</text>
+    <rect x="440" y="212" width="260" height="34" rx="6" fill="#bae6fd"/>
+    <text x="452" y="234" fill="#0c4a6e" font-weight="700">Neptune (graph)</text>
+
+    <rect x="20" y="252" width="340" height="34" rx="6" fill="#e0f2fe"/>
+    <text x="32" y="274" fill="#0c4a6e">JSON documents, MongoDB-compatible</text>
+    <rect x="440" y="252" width="260" height="34" rx="6" fill="#bae6fd"/>
+    <text x="452" y="274" fill="#0c4a6e" font-weight="700">DocumentDB</text>
+
+    <rect x="20" y="292" width="340" height="34" rx="6" fill="#e0f2fe"/>
+    <text x="32" y="314" fill="#0c4a6e">Time series (IoT, metrics)</text>
+    <rect x="440" y="292" width="260" height="34" rx="6" fill="#bae6fd"/>
+    <text x="452" y="314" fill="#0c4a6e" font-weight="700">Timestream for InfluxDB</text>
+  </g>
+  <g stroke="#0369a1" stroke-width="2">
+    <line x1="364" y1="69" x2="436" y2="69" marker-end="url(#sa-db-arrow)"/>
+    <line x1="364" y1="109" x2="436" y2="109" marker-end="url(#sa-db-arrow)"/>
+    <line x1="364" y1="149" x2="436" y2="149" marker-end="url(#sa-db-arrow)"/>
+    <line x1="364" y1="189" x2="436" y2="189" marker-end="url(#sa-db-arrow)"/>
+    <line x1="364" y1="229" x2="436" y2="229" marker-end="url(#sa-db-arrow)"/>
+    <line x1="364" y1="269" x2="436" y2="269" marker-end="url(#sa-db-arrow)"/>
+    <line x1="364" y1="309" x2="436" y2="309" marker-end="url(#sa-db-arrow)"/>
+  </g>
+</svg>
+
+### Performance levers for each
+
+- **RDS / Aurora:** larger instance classes, Provisioned IOPS storage, **read replicas** for read-heavy load, **RDS Proxy** to pool connections (especially from Lambda, which can open thousands), and a cache in front.
+- **DynamoDB:** design the **partition key** for even distribution (a hot key throttles), use **on-demand** capacity for unpredictable traffic, **global secondary indexes** for other query patterns, and **DAX** for microsecond reads.
+- **ElastiCache:** **lazy loading** (cache on miss) or **write-through** (update cache on write), with a TTL to limit staleness.
+- **Redshift:** columnar storage for analytics; **Redshift Spectrum** queries data directly in S3.
+
+<Pitfall title="Using a Relational Database for Everything">
+
+**Common mistake:** a design stores user sessions, a product catalog with millions of reads per second, and clickstream events all in one RDS instance.
+
+Each of those has a better fit: sessions in **ElastiCache** or **DynamoDB**, hot catalog reads behind a **cache**, and clickstreams in **Kinesis** and **S3**. The exam rewards **purpose-built databases** matched to the access pattern.
+
+</Pitfall>
+
+---
+
+## Key Takeaway
+
+Pick **block, file, or object** first, then the right flavor: **gp3** by default, **io2** for demanding databases, **EFS** for shared Linux files, **FSx for Windows** for SMB, **FSx for Lustre** for HPC, and **S3** for objects at any scale. For databases, match the **access pattern**: relational to RDS or Aurora, key-value to DynamoDB, analytics to Redshift, caching to ElastiCache.
+
+<TryIt title="Match the Storage">
+
+Choose the storage or database for each requirement, then check your answers.
+
+1. 50 Linux web servers need the same shared folder of uploaded files.
+2. A Windows .NET app needs a shared drive joined to Active Directory.
+3. A shopping cart needs millisecond reads and writes for millions of users.
+4. Analysts run complex SQL over 20 TB of sales history.
+5. A Lambda function overwhelms an RDS database with connections.
+6. A genomics job needs a high-throughput file system backed by data in S3.
+
+Answers: (1) EFS, (2) FSx for Windows File Server, (3) DynamoDB, (4) Redshift, (5) RDS Proxy, (6) FSx for Lustre linked to S3.
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "A fleet of Linux EC2 instances in several AZs needs concurrent access to the same POSIX file system. Which service fits BEST?",
+      options: ["Amazon EBS gp3", "Instance store", "FSx for Windows File Server", "Amazon EFS"],
+      correctIndex: 3,
+      explanation: "EFS is a shared NFS file system that many Linux instances across AZs can mount at once."
+    },
+    {
+      question: "A DynamoDB-backed product page needs microsecond read latency for very popular items, with minimal code changes. What should you add?",
+      options: ["An RDS read replica", "A larger partition key", "DynamoDB Accelerator (DAX)", "S3 Transfer Acceleration"],
+      correctIndex: 2,
+      explanation: "DAX is an in-memory cache for DynamoDB that serves reads in microseconds through a DynamoDB-compatible API."
+    },
+    {
+      question: "Hundreds of concurrent Lambda functions are exhausting connections on an Aurora database. What is the BEST fix?",
+      options: ["Increase the Lambda timeout", "Put Amazon RDS Proxy between Lambda and Aurora", "Move the database to an EC2 instance", "Turn off Multi-AZ"],
+      correctIndex: 1,
+      explanation: "RDS Proxy pools and reuses database connections, protecting the database from connection storms."
+    },
+    {
+      question: "Which EBS volume type is the general-purpose default with a baseline of 3,000 IOPS regardless of size?",
+      options: ["gp3", "st1", "sc1", "io2 Block Express"],
+      correctIndex: 0,
+      explanation: "gp3 provides 3,000 IOPS and 125 MB/s baseline, and lets you add IOPS and throughput independently of size."
+    }
+  ]}
+/>
