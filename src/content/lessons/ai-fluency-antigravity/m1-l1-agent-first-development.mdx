@@ -32,6 +32,67 @@ In 2026 Google doubled down on that bet. Antigravity 2.0, announced at Google I/
 | **Antigravity SDK** | Programmatic access to the same agent harness, for building and hosting your own agents. | Custom agents and automation. |
 | **Editor extensions** | Integrations for other editors, such as VS Code and JetBrains. | Using Antigravity agents from the editor you already have. |
 
+<svg viewBox="0 0 680 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The Antigravity product family. Five surfaces, the desktop app, the IDE, the CLI called agy, the SDK, and editor extensions, all sit on one Antigravity agent harness, which handles planning, tools, subagents, artifacts, and permissions. The harness runs Gemini, Claude, and GPT-OSS models, depending on your Google AI plan. Agents can run locally or, on some paid plans, as remote agents in Google's cloud.">
+  <defs>
+    <marker id="ag-fam-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#174ea6"/>
+    </marker>
+  </defs>
+  <g font-family="system-ui, -apple-system, sans-serif">
+    <text x="20" y="22" fill="#475569" font-size="13" font-weight="700">WHERE YOU WORK</text>
+    <g fill="#e8f0fe" stroke="#1a73e8" stroke-width="1.5">
+      <rect x="20" y="34" width="120" height="54" rx="8"/>
+      <rect x="150" y="34" width="120" height="54" rx="8"/>
+      <rect x="280" y="34" width="120" height="54" rx="8"/>
+      <rect x="410" y="34" width="120" height="54" rx="8"/>
+      <rect x="540" y="34" width="120" height="54" rx="8"/>
+    </g>
+    <g text-anchor="middle">
+      <g fill="#1e293b" font-size="14" font-weight="700">
+        <text x="80" y="58">Desktop app</text>
+        <text x="210" y="58">IDE</text>
+        <text x="340" y="58">CLI (agy)</text>
+        <text x="470" y="58">SDK</text>
+        <text x="600" y="58">Extensions</text>
+      </g>
+      <g fill="#475569" font-size="12">
+        <text x="80" y="77">agents hub</text>
+        <text x="210" y="77">editor + agent</text>
+        <text x="340" y="77">terminal</text>
+        <text x="470" y="77">your own agents</text>
+        <text x="600" y="77">other editors</text>
+      </g>
+    </g>
+    <g stroke="#174ea6" stroke-width="1.5">
+      <line x1="80" y1="90" x2="80" y2="114" marker-end="url(#ag-fam-arrow)"/>
+      <line x1="210" y1="90" x2="210" y2="114" marker-end="url(#ag-fam-arrow)"/>
+      <line x1="340" y1="90" x2="340" y2="114" marker-end="url(#ag-fam-arrow)"/>
+      <line x1="470" y1="90" x2="470" y2="114" marker-end="url(#ag-fam-arrow)"/>
+      <line x1="600" y1="90" x2="600" y2="114" marker-end="url(#ag-fam-arrow)"/>
+    </g>
+    <rect x="20" y="118" width="640" height="60" rx="12" fill="#1a73e8"/>
+    <text x="340" y="144" text-anchor="middle" fill="#fff" font-size="17" font-weight="700">Antigravity agent harness</text>
+    <text x="340" y="166" text-anchor="middle" fill="#fff" font-size="13">planning · tools · subagents · artifacts · permissions</text>
+    <g stroke="#174ea6" stroke-width="1.5">
+      <line x1="170" y1="180" x2="170" y2="214" marker-end="url(#ag-fam-arrow)"/>
+      <line x1="430" y1="180" x2="430" y2="214" marker-end="url(#ag-fam-arrow)"/>
+      <line x1="600" y1="180" x2="600" y2="214" marker-end="url(#ag-fam-arrow)"/>
+    </g>
+    <text x="20" y="208" fill="#475569" font-size="13" font-weight="700">MODELS (BY PLAN)</text>
+    <g fill="#f8fafc" stroke="#64748b" stroke-width="1.5">
+      <rect x="20" y="218" width="300" height="44" rx="8"/>
+      <rect x="340" y="218" width="180" height="44" rx="8"/>
+      <rect x="540" y="218" width="120" height="44" rx="8"/>
+    </g>
+    <g fill="#1e293b" font-size="14" text-anchor="middle">
+      <text x="170" y="245">Gemini models</text>
+      <text x="430" y="245">Claude models</text>
+      <text x="600" y="245">GPT-OSS</text>
+    </g>
+    <text x="340" y="300" text-anchor="middle" fill="#334155" font-size="13">Agents run on your machine, or as remote agents in Google's cloud on some paid plans.</text>
+  </g>
+</svg>
+
 Two things to keep in mind:
 
 - **It's multi-model.** Antigravity runs Google's Gemini models and also offers models from other providers, such as Anthropic's Claude. Which ones you get depends on your Google AI plan. Module 3 covers choosing.

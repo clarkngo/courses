@@ -28,6 +28,34 @@ Discernment with an agent means reviewing three things in order: the **plan**, t
   ]}
 />
 
+The earlier you catch a wrong turn, the less it costs to fix:
+
+<svg viewBox="0 0 680 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="An illustrative bar chart of the effort needed to fix the same mistake depending on when it is caught. Caught in the plan, it costs a comment. In the diff review, a revision. In CI, a re-run and fix. After merge, a revert and a fix. In production, an incident. The bars grow taller at each stage.">
+  <g font-family="system-ui, -apple-system, sans-serif">
+    <line x1="40" y1="240" x2="660" y2="240" stroke="#334155" stroke-width="1.5"/>
+    <rect x="60" y="222" width="90" height="18" rx="3" fill="#fdba74"/>
+    <rect x="185" y="196" width="90" height="44" rx="3" fill="#fb923c"/>
+    <rect x="310" y="160" width="90" height="80" rx="3" fill="#f97316"/>
+    <rect x="435" y="106" width="90" height="134" rx="3" fill="#c2410c"/>
+    <rect x="560" y="36" width="90" height="204" rx="3" fill="#7c2d12"/>
+    <g font-size="13" fill="#7c2d12" text-anchor="middle" font-style="italic">
+      <text x="105" y="212">a comment</text>
+      <text x="230" y="186">a revision</text>
+      <text x="355" y="150">re-run and fix</text>
+      <text x="480" y="96">revert and fix</text>
+    </g>
+    <text x="605" y="140" text-anchor="middle" fill="#fff" font-size="13" font-style="italic">an incident</text>
+    <g font-size="14" fill="#1e293b" text-anchor="middle" font-weight="700">
+      <text x="105" y="262">Plan</text>
+      <text x="230" y="262">Diff review</text>
+      <text x="355" y="262">CI</text>
+      <text x="480" y="262">After merge</text>
+      <text x="605" y="262">Production</text>
+    </g>
+    <text x="350" y="290" text-anchor="middle" fill="#475569" font-size="13">Where the same mistake gets caught (illustrative, not to scale)</text>
+  </g>
+</svg>
+
 ---
 
 ## Stage 1: Review the Plan

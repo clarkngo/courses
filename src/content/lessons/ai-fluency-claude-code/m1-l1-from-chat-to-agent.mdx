@@ -68,6 +68,64 @@ Claude Code is one agent with several front doors. As of late 2026 they include:
 - **Web and mobile.** Sessions that run in a cloud sandbox against a GitHub repository, so you can start work from a browser or phone.
 - **Automation.** A headless mode (`claude -p "..."`), GitHub Actions, and the Claude Agent SDK for building your own agents on the same harness.
 
+<svg viewBox="0 0 680 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Five front doors (terminal, IDE extensions, desktop app, web and mobile, headless and SDK) all lead to the same Claude Code agent loop. Every action the agent takes passes through a permissions and sandbox layer before it reaches the tools: files, shell, web, and MCP tools.">
+  <defs>
+    <marker id="cc-surf-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#9a3412"/>
+    </marker>
+  </defs>
+  <g font-family="system-ui, -apple-system, sans-serif">
+    <text x="95" y="24" text-anchor="middle" fill="#475569" font-size="13" font-weight="700">FRONT DOORS</text>
+    <text x="325" y="24" text-anchor="middle" fill="#475569" font-size="13" font-weight="700">ONE AGENT</text>
+    <text x="585" y="24" text-anchor="middle" fill="#475569" font-size="13" font-weight="700">TOOLS</text>
+    <g fill="#fff7ed" stroke="#c2410c" stroke-width="1.5">
+      <rect x="20" y="40" width="150" height="36" rx="8"/>
+      <rect x="20" y="90" width="150" height="36" rx="8"/>
+      <rect x="20" y="140" width="150" height="36" rx="8"/>
+      <rect x="20" y="190" width="150" height="36" rx="8"/>
+      <rect x="20" y="240" width="150" height="36" rx="8"/>
+    </g>
+    <g fill="#1e293b" font-size="14" text-anchor="middle">
+      <text x="95" y="63">Terminal (CLI)</text>
+      <text x="95" y="113">IDE extensions</text>
+      <text x="95" y="163">Desktop app</text>
+      <text x="95" y="213">Web and mobile</text>
+      <text x="95" y="263">Headless and SDK</text>
+    </g>
+    <g stroke="#9a3412" stroke-width="1.5" fill="none">
+      <line x1="172" y1="58" x2="236" y2="140" marker-end="url(#cc-surf-arrow)"/>
+      <line x1="172" y1="108" x2="236" y2="150" marker-end="url(#cc-surf-arrow)"/>
+      <line x1="172" y1="158" x2="236" y2="158" marker-end="url(#cc-surf-arrow)"/>
+      <line x1="172" y1="208" x2="236" y2="166" marker-end="url(#cc-surf-arrow)"/>
+      <line x1="172" y1="258" x2="236" y2="176" marker-end="url(#cc-surf-arrow)"/>
+    </g>
+    <rect x="240" y="110" width="170" height="96" rx="12" fill="#c2410c"/>
+    <text x="325" y="148" text-anchor="middle" fill="#fff" font-size="16" font-weight="700">Claude Code</text>
+    <text x="325" y="172" text-anchor="middle" fill="#fff" font-size="13">gather · act · check</text>
+    <line x1="412" y1="158" x2="436" y2="158" stroke="#9a3412" stroke-width="2" marker-end="url(#cc-surf-arrow)"/>
+    <rect x="440" y="40" width="36" height="236" rx="6" fill="#fde68a" stroke="#b45309" stroke-width="1.5"/>
+    <text x="458" y="158" text-anchor="middle" fill="#78350f" font-size="12" font-weight="700" transform="rotate(-90 458 158)">PERMISSIONS + SANDBOX</text>
+    <g stroke="#9a3412" stroke-width="1.5">
+      <line x1="478" y1="68" x2="506" y2="68" marker-end="url(#cc-surf-arrow)"/>
+      <line x1="478" y1="128" x2="506" y2="128" marker-end="url(#cc-surf-arrow)"/>
+      <line x1="478" y1="188" x2="506" y2="188" marker-end="url(#cc-surf-arrow)"/>
+      <line x1="478" y1="248" x2="506" y2="248" marker-end="url(#cc-surf-arrow)"/>
+    </g>
+    <g fill="#f8fafc" stroke="#64748b" stroke-width="1.5">
+      <rect x="510" y="50" width="150" height="36" rx="8"/>
+      <rect x="510" y="110" width="150" height="36" rx="8"/>
+      <rect x="510" y="170" width="150" height="36" rx="8"/>
+      <rect x="510" y="230" width="150" height="36" rx="8"/>
+    </g>
+    <g fill="#1e293b" font-size="14" text-anchor="middle">
+      <text x="585" y="73">Read and edit files</text>
+      <text x="585" y="133">Shell commands</text>
+      <text x="585" y="193">Web fetch, search</text>
+      <text x="585" y="253">MCP tools</text>
+    </g>
+  </g>
+</svg>
+
 The surface changes the ergonomics. The habits in this course stay the same. Wherever you run it, the agent can only be as safe and useful as the permissions you grant and the review you do.
 
 <Pitfall title="Treating the Agent Like a Faster Chatbot">
