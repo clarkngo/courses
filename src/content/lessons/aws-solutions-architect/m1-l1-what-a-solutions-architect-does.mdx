@@ -1,0 +1,189 @@
+---
+title: "What a Solutions Architect Does"
+description: "The Solutions Architect role on AWS: working backwards from the business, turning requirements into design choices, weighing trade-offs, and writing decisions down."
+module: 1
+moduleTitle: "The Role and the Exam"
+lesson: 1
+duration: "25 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## The Job in One Sentence
+
+A Solutions Architect (SA) **decides how a system should be built** so that it meets the business's needs, and explains why. SAs rarely write most of the code. They decide which services to use, how the pieces connect, how the system fails and recovers, and what it will cost to run.
+
+The title shows up in three common places:
+
+| Where | Who the SA works for | Typical work |
+|---|---|---|
+| **AWS itself** | AWS customers, as part of the account team | Design reviews, proofs of concept, workshops, migration plans, Well-Architected reviews |
+| **AWS partners and consultancies** | Clients on a project | Design and often build a workload, then hand it over |
+| **In-house** | Their own company | Set standards, review designs from product teams, own the cloud architecture |
+
+The skills are the same in all three. You listen for requirements, translate them into an architecture, and defend the trade-offs.
+
+---
+
+## Working Backwards
+
+Amazon's habit of **working backwards** applies directly here. Start from what the customer needs, not from the service you'd like to use.
+
+<ProcessFlow
+  label="The Solutions Architect design loop: discover requirements, list constraints, generate options, decide and document, validate with a proof of concept, then hand off and iterate."
+  color="#0369a1"
+  loop="Validation results and production metrics send you back to the requirements step."
+  steps={[
+    { title: 'Discover', detail: 'Business goal, users, workloads' },
+    { title: 'Constrain', detail: 'Availability, RPO/RTO, compliance, budget' },
+    { title: 'Options', detail: 'Two or three designs, not one' },
+    { title: 'Decide', detail: 'Pick one; write down why' },
+    { title: 'Validate', detail: 'Proof of concept, load test, review' },
+    { title: 'Hand off', detail: 'Docs, runbooks, owners' },
+  ]}
+/>
+
+### Functional vs non-functional requirements
+
+**Functional requirements** say what the system does: "users can upload a photo and share a link." **Non-functional requirements** say how well it must do it, and they drive almost every architecture decision:
+
+- **Availability:** how much downtime is acceptable (99.9% allows about 8.8 hours a year; 99.99% allows about 53 minutes)
+- **Recovery:** RTO (how long you can be down) and RPO (how much data you can lose)
+- **Performance:** latency targets, peak requests per second, data volume
+- **Security and compliance:** data residency, encryption, audit requirements, who may access what
+- **Cost:** a monthly budget, or a target cost per transaction
+- **Operations:** the team's skills, and how much infrastructure they're willing to manage
+
+Each requirement pushes the design in a specific direction:
+
+<svg viewBox="0 0 720 330" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Five requirements mapped to the design choices they force. 99.9% availability leads to Multi-AZ deployment behind a load balancer. An RPO of 5 minutes leads to continuous backups or replication. Customer data must stay in the EU leads to choosing an EU Region and blocking others with an SCP. Traffic spikes 20 times at launch leads to Auto Scaling, queues, and caching. A small team with no ops staff leads to managed and serverless services." style="max-width:100%;height:auto;margin:1.5rem auto;display:block;">
+  <defs>
+    <marker id="sa-req-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#0369a1"/>
+    </marker>
+  </defs>
+  <g font-family="system-ui, -apple-system, sans-serif">
+    <rect x="20" y="10" width="290" height="34" rx="8" fill="#0c4a6e"/>
+    <text x="165" y="32" fill="#ffffff" font-size="14" font-weight="700" text-anchor="middle">Requirement</text>
+    <rect x="410" y="10" width="290" height="34" rx="8" fill="#0c4a6e"/>
+    <text x="555" y="32" fill="#ffffff" font-size="14" font-weight="700" text-anchor="middle">Design consequence</text>
+
+    <rect x="20" y="58" width="290" height="44" rx="8" fill="#e0f2fe"/>
+    <text x="36" y="85" fill="#0c4a6e" font-size="13">99.9% availability</text>
+    <rect x="410" y="58" width="290" height="44" rx="8" fill="#bae6fd"/>
+    <text x="426" y="85" fill="#0c4a6e" font-size="13">Multi-AZ behind a load balancer</text>
+    <line x1="314" y1="80" x2="404" y2="80" stroke="#0369a1" stroke-width="2.5" marker-end="url(#sa-req-arrow)"/>
+
+    <rect x="20" y="112" width="290" height="44" rx="8" fill="#e0f2fe"/>
+    <text x="36" y="139" fill="#0c4a6e" font-size="13">RPO of 5 minutes</text>
+    <rect x="410" y="112" width="290" height="44" rx="8" fill="#bae6fd"/>
+    <text x="426" y="139" fill="#0c4a6e" font-size="13">Continuous backups or replication</text>
+    <line x1="314" y1="134" x2="404" y2="134" stroke="#0369a1" stroke-width="2.5" marker-end="url(#sa-req-arrow)"/>
+
+    <rect x="20" y="166" width="290" height="44" rx="8" fill="#e0f2fe"/>
+    <text x="36" y="193" fill="#0c4a6e" font-size="13">Customer data must stay in the EU</text>
+    <rect x="410" y="166" width="290" height="44" rx="8" fill="#bae6fd"/>
+    <text x="426" y="193" fill="#0c4a6e" font-size="13">EU Region; SCP denies other Regions</text>
+    <line x1="314" y1="188" x2="404" y2="188" stroke="#0369a1" stroke-width="2.5" marker-end="url(#sa-req-arrow)"/>
+
+    <rect x="20" y="220" width="290" height="44" rx="8" fill="#e0f2fe"/>
+    <text x="36" y="247" fill="#0c4a6e" font-size="13">Traffic spikes 20× at launch</text>
+    <rect x="410" y="220" width="290" height="44" rx="8" fill="#bae6fd"/>
+    <text x="426" y="247" fill="#0c4a6e" font-size="13">Auto Scaling, queues, caching</text>
+    <line x1="314" y1="242" x2="404" y2="242" stroke="#0369a1" stroke-width="2.5" marker-end="url(#sa-req-arrow)"/>
+
+    <rect x="20" y="274" width="290" height="44" rx="8" fill="#e0f2fe"/>
+    <text x="36" y="301" fill="#0c4a6e" font-size="13">Small team, no ops staff</text>
+    <rect x="410" y="274" width="290" height="44" rx="8" fill="#bae6fd"/>
+    <text x="426" y="301" fill="#0c4a6e" font-size="13">Managed and serverless services</text>
+    <line x1="314" y1="296" x2="404" y2="296" stroke="#0369a1" stroke-width="2.5" marker-end="url(#sa-req-arrow)"/>
+  </g>
+</svg>
+
+---
+
+## Everything Is a Trade-Off
+
+There is almost never a single right architecture. There is the one that best fits **these** requirements. Common tensions:
+
+- **Availability vs cost.** Multi-Region active/active is very resilient and very expensive.
+- **Managed vs control.** Aurora removes database operations work; self-managed databases on EC2 give you every knob.
+- **Consistency vs latency.** Global users want local reads; strongly consistent writes need coordination.
+- **Speed of delivery vs long-term fit.** A quick lift-and-shift ships this quarter; a rearchitecture pays off later.
+
+The **AWS Well-Architected Framework** gives you a checklist for these conversations. It has six pillars: **Operational Excellence, Security, Reliability, Performance Efficiency, Cost Optimization, and Sustainability**. The SAA-C03 exam focuses on four of them: security, reliability (resilience), performance, and cost.
+
+### Write the decision down
+
+Good SAs record important choices in an **architecture decision record (ADR)**: a short note with the context, the options considered, the decision, and its consequences. Six months later, when someone asks "why didn't we use DynamoDB?", the answer is on the page.
+
+<Pitfall title="Starting From the Service">
+
+**Common mistake:** an architect opens with "let's use Kubernetes and DynamoDB" before asking how many users there are, what the data looks like, or who will run it.
+
+Service-first designs fit the architect's favorite tools, not the problem. Ask about requirements and constraints **first**. If you can't say which requirement a component satisfies, you probably don't need it.
+
+</Pitfall>
+
+---
+
+## What This Course Covers
+
+| Module | Topic | SAA-C03 domain |
+|---|---|---|
+| 1 | The role and the exam | — |
+| 2 | Secure architectures | Domain 1 (30%) |
+| 3 | Resilient architectures | Domain 2 (26%) |
+| 4 | High-performing architectures | Domain 3 (24%) |
+| 5 | Cost-optimized architectures | Domain 4 (20%) |
+| 6 | Case study and study plan | All four |
+
+You'll get the most out of it with an AWS account to experiment in. Use the **Free Tier**, set a **budget alert** on day one, and delete what you build when you're done.
+
+---
+
+## Key Takeaway
+
+A Solutions Architect turns **requirements into design choices** and can explain each one. Start from the business, pin down the **non-functional requirements** (availability, RPO/RTO, compliance, performance, cost, operations), compare options, and **write down why** you chose one.
+
+<TryIt title="Requirements Interview">
+
+A friend runs an online bakery. Today it's a single WordPress server on one EC2 instance. They want to "move it to the cloud properly."
+
+Write **eight questions** you'd ask before drawing anything. Cover availability, data loss, traffic patterns, compliance (they take card payments), budget, and who will maintain it.
+
+Then, for two of your questions, write how two different answers would change the design. For example: "If they can tolerate a day of downtime, a single instance with nightly backups is fine. If an outage during the holiday rush costs them $10,000 an hour, they need Multi-AZ."
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "Which of these is a non-functional requirement?",
+      options: ["Users can reset their password", "Admins can export orders to CSV", "The site must be available 99.9% of the time", "Customers can leave product reviews"],
+      correctIndex: 2,
+      explanation: "Availability describes how well the system must work, not what it does. Non-functional requirements drive most architecture decisions."
+    },
+    {
+      question: "A business says it can lose at most 15 minutes of data. Which value is that?",
+      options: ["RPO", "RTO", "SLA", "MTTR"],
+      correctIndex: 0,
+      explanation: "Recovery point objective is the maximum acceptable data loss, measured in time."
+    },
+    {
+      question: "What does 'working backwards' mean for an architect?",
+      options: ["Designing the database first", "Migrating the oldest systems first", "Reverse-engineering a competitor's architecture", "Starting from the customer's needs and deriving the design from them"],
+      correctIndex: 3,
+      explanation: "Working backwards starts from the customer outcome. Services are chosen to serve it, not the other way around."
+    },
+    {
+      question: "What is the purpose of an architecture decision record (ADR)?",
+      options: ["To list every AWS resource in the account", "To capture the context, options, decision, and consequences of an important choice", "To replace the Well-Architected review", "To estimate the monthly bill"],
+      correctIndex: 1,
+      explanation: "An ADR preserves why a decision was made, so future teams don't have to guess or re-argue it."
+    }
+  ]}
+/>

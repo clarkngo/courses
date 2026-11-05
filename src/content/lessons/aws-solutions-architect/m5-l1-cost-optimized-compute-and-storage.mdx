@@ -1,0 +1,165 @@
+---
+title: "Cost-Optimized Compute and Storage"
+description: "Design cost-optimized compute and storage: EC2 purchase options (On-Demand, Savings Plans, Reserved Instances, Spot), right-sizing and Graviton, serverless economics, S3 storage classes and lifecycle policies, and cheaper EBS choices."
+module: 5
+moduleTitle: "Design Cost-Optimized Architectures"
+lesson: 1
+duration: "30 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Cost Is a Design Requirement
+
+Cost isn't something you fix after launch. It's a requirement like availability. The cost-optimized answer on the exam is the **cheapest design that still meets every stated requirement**, not the cheapest design overall.
+
+The big levers, in rough order of impact:
+
+1. **Don't run what you don't need** (turn off dev environments at night, delete idle resources)
+2. **Right-size** what you do run
+3. **Pay less per unit** with commitments or Spot
+4. **Use the right storage tier** for how often data is accessed
+5. **Reduce data transfer** (covered in the next lesson)
+
+---
+
+## EC2 Purchase Options
+
+| Option | Discount vs On-Demand | Commitment | Best for |
+|---|---|---|---|
+| **On-Demand** | None | None | Short-term, unpredictable, or new workloads |
+| **Compute Savings Plans** | Up to 66% | $/hour for 1 or 3 years | Steady usage that may change instance family, Region, or move to Fargate or Lambda |
+| **EC2 Instance Savings Plans** | Up to 72% | $/hour for 1 or 3 years in one instance family and Region | Steady usage on a known family |
+| **Reserved Instances** | Up to 72% | A specific instance configuration for 1 or 3 years | Steady usage; also available for RDS, ElastiCache, Redshift, OpenSearch |
+| **Spot Instances** | Up to 90% | None, but AWS can reclaim them with a **2-minute warning** | Fault-tolerant, flexible work: batch, CI, rendering, stateless web tiers |
+| **Dedicated Hosts** | — | Optional | Licensing tied to physical cores or sockets, compliance |
+
+Discount figures are AWS's "up to" numbers. Actual savings depend on term, payment option, and instance.
+
+Most real workloads **layer** these options:
+
+<svg viewBox="0 0 720 290" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A day of compute demand split into three layers. The steady baseline that runs all day is covered by Savings Plans or Reserved Instances. The predictable daytime rise above the baseline runs on On-Demand instances with Auto Scaling. Short, flexible peaks and batch jobs on top run on Spot Instances." style="max-width:100%;height:auto;margin:1.5rem auto;display:block;">
+  <g font-family="system-ui, -apple-system, sans-serif">
+    <line x1="60" y1="240" x2="700" y2="240" stroke="#334155" stroke-width="1.5"/>
+    <line x1="60" y1="20" x2="60" y2="240" stroke="#334155" stroke-width="1.5"/>
+    <text x="54" y="30" fill="#334155" font-size="11" text-anchor="end">high</text>
+    <text x="54" y="238" fill="#334155" font-size="11" text-anchor="end">0</text>
+    <text x="60" y="260" fill="#334155" font-size="11">00:00</text>
+    <text x="370" y="260" fill="#334155" font-size="11" text-anchor="middle">12:00</text>
+    <text x="700" y="260" fill="#334155" font-size="11" text-anchor="end">24:00</text>
+    <text x="380" y="282" fill="#334155" font-size="12" text-anchor="middle" font-weight="700">Instances running over one day</text>
+
+    <path d="M265 102 C290 70 305 55 330 48 L360 58 L395 36 L425 55 C445 75 455 92 475 102 Z" fill="#7dd3fc"/>
+    <path d="M60 160 L170 160 C220 160 230 102 280 100 L460 100 C510 102 540 160 600 160 L700 160 Z" fill="#38bdf8"/>
+    <rect x="60" y="160" width="640" height="80" fill="#0369a1"/>
+
+    <text x="380" y="205" fill="#ffffff" font-size="14" font-weight="700" text-anchor="middle">Steady baseline → Savings Plans or Reserved Instances</text>
+    <text x="380" y="135" fill="#0c4a6e" font-size="13" font-weight="700" text-anchor="middle">Daytime rise → On-Demand + Auto Scaling</text>
+    <text x="380" y="28" fill="#0c4a6e" font-size="13" font-weight="700" text-anchor="middle">Flexible peaks, batch → Spot</text>
+  </g>
+</svg>
+
+### Right-sizing and Graviton
+
+- **AWS Compute Optimizer** analyzes utilization and recommends smaller or different instance types, EBS volumes, and Lambda memory settings.
+- **Graviton** (Arm) instances usually cost less than comparable x86 instances and often perform better, if your software runs on Arm.
+- **Auto Scaling** removes capacity when it isn't needed. A fleet sized for peak all day wastes money all night.
+
+### Serverless economics
+
+Lambda and Fargate charge for what runs, so **idle costs nothing** (Lambda) or very little. For spiky or low-volume workloads, serverless is often far cheaper than an always-on instance. For very high, steady load, well-utilized instances with Savings Plans can win. Compute Savings Plans cover Lambda and Fargate too.
+
+<Pitfall title="Spot for Work That Can't Be Interrupted">
+
+**Common mistake:** a design runs a single-instance production database or a long, non-checkpointed job on Spot "to save 90%."
+
+Spot capacity can be reclaimed with a **2-minute notice**. Use it only for work that is **stateless, checkpointed, or spread across many instances** that can absorb the loss of a few, and diversify across instance types and AZs.
+
+</Pitfall>
+
+---
+
+## S3 Storage Classes
+
+| Class | Access pattern | Retrieval | Minimum storage duration |
+|---|---|---|---|
+| **S3 Standard** | Frequent | Milliseconds | None |
+| **S3 Intelligent-Tiering** | Unknown or changing | Milliseconds (optional archive tiers are slower) | None; small monitoring fee per object |
+| **S3 Standard-IA** | Infrequent, but needs fast access | Milliseconds, per-GB retrieval fee | 30 days |
+| **S3 One Zone-IA** | Infrequent, re-creatable data | Milliseconds; stored in **one AZ** | 30 days |
+| **S3 Glacier Instant Retrieval** | Rare (about once a quarter), needs instant access | Milliseconds | 90 days |
+| **S3 Glacier Flexible Retrieval** | Archive | Minutes to hours | 90 days |
+| **S3 Glacier Deep Archive** | Long-term archive, rarely if ever read | Within 12 hours (standard) or 48 hours (bulk) | 180 days |
+
+**Lifecycle policies** move objects between classes and delete them automatically:
+
+<ProcessFlow
+  label="An example S3 lifecycle: objects start in S3 Standard, move to Standard-IA after 30 days, to Glacier Flexible Retrieval after 90 days, to Glacier Deep Archive after 1 year, and are deleted after 7 years."
+  color="#0369a1"
+  steps={[
+    { title: 'Standard', detail: 'Days 0–30: active use', badge: '0' },
+    { title: 'Standard-IA', detail: 'Day 30: occasional reads', badge: '30' },
+    { title: 'Glacier Flexible', detail: 'Day 90: archive', badge: '90' },
+    { title: 'Deep Archive', detail: 'Year 1: compliance hold', badge: '1y' },
+    { title: 'Expire', detail: 'Year 7: delete', badge: '7y' },
+  ]}
+/>
+
+Also add lifecycle rules that **delete old object versions** in versioned buckets and **abort incomplete multipart uploads**. Both quietly add up.
+
+### EBS and file storage savings
+
+- Move **gp2 to gp3**: usually about 20% cheaper per GB, with performance you can tune separately.
+- Use **st1 or sc1** for large sequential data that doesn't need SSD.
+- Delete **unattached volumes** and old **snapshots**; archive rarely needed snapshots with **EBS Snapshots Archive**.
+- Turn on **EFS lifecycle management** to move cold files to the Infrequent Access or Archive class.
+
+---
+
+## Key Takeaway
+
+Layer **Savings Plans or RIs** under the steady baseline, **On-Demand** for the predictable rise, and **Spot** for interruptible work. Right-size with **Compute Optimizer**, consider **Graviton**, and use **serverless** for spiky load. Match **S3 storage classes** to access patterns, automate moves with **lifecycle policies**, and move EBS to **gp3**.
+
+<TryIt title="Price Three Designs">
+
+Use the **AWS Pricing Calculator** to estimate a month of compute for an API that handles about 2 million requests a day, mostly during business hours:
+
+1. Two `m7i.large` On-Demand instances running 24/7 behind an ALB
+2. The same, but with a 1-year **Compute Savings Plan** for the baseline
+3. **Lambda + API Gateway**, assuming 200 ms average duration at 512 MB
+
+Compare the totals, then write one sentence on when each design would be the right choice. (Hint: think about steadiness of traffic and operational effort, not just price.)
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "A nightly batch job can be stopped and resumed from checkpoints at any time. Which purchase option is MOST cost-effective?",
+      options: ["On-Demand Instances", "Dedicated Hosts", "Spot Instances", "3-year Reserved Instances"],
+      correctIndex: 2,
+      explanation: "Spot gives the deepest discount and suits interruptible, checkpointed work."
+    },
+    {
+      question: "A company runs steady compute 24/7 but expects to change instance families and move some services to Fargate. Which option fits BEST?",
+      options: ["Compute Savings Plans", "EC2 Instance Savings Plans", "Standard Reserved Instances for the current family", "Spot Instances"],
+      correctIndex: 0,
+      explanation: "Compute Savings Plans apply across instance families, Regions, and to Fargate and Lambda."
+    },
+    {
+      question: "Log files are read often for 30 days, rarely for a year, and must be kept for 7 years for compliance. What is the MOST cost-effective approach?",
+      options: ["Keep everything in S3 Standard", "An S3 lifecycle policy that transitions objects to colder classes and then to Glacier Deep Archive", "Store logs on EBS io2 volumes", "Use S3 One Zone-IA for all logs from day one"],
+      correctIndex: 1,
+      explanation: "Lifecycle policies move data to cheaper classes as access drops, ending in Deep Archive for long-term retention."
+    },
+    {
+      question: "Access patterns for a data set are unknown and change often. Which S3 class lowers cost without you predicting access?",
+      options: ["S3 Glacier Deep Archive", "S3 One Zone-IA", "S3 Standard-IA", "S3 Intelligent-Tiering"],
+      correctIndex: 3,
+      explanation: "Intelligent-Tiering moves objects between access tiers automatically based on observed access, with no retrieval fees."
+    }
+  ]}
+/>

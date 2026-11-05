@@ -1,0 +1,169 @@
+---
+title: "The SAA-C03 Exam and How Scenario Questions Work"
+description: "Format, scoring, and domains of the AWS Certified Solutions Architect – Associate exam, plus a repeatable method for reading long scenario questions and eliminating distractors."
+module: 1
+moduleTitle: "The Role and the Exam"
+lesson: 2
+duration: "25 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## The Exam at a Glance
+
+These details come from the official AWS exam guide, checked in November 2026:
+
+| Item | Detail |
+|---|---|
+| **Exam code** | SAA-C03 |
+| **Questions** | 65 total: **50 scored** and **15 unscored** (you can't tell which are which) |
+| **Time** | 130 minutes |
+| **Passing score** | **720** on a scale of 100–1,000 |
+| **Question types** | Multiple choice (one correct answer out of four) and multiple response (two or more correct out of five or more) |
+| **Cost** | 150 USD |
+| **Delivery** | Pearson VUE test center or online proctored |
+| **Valid for** | 3 years |
+| **Recommended experience** | At least 1 year designing cloud solutions on AWS |
+
+Scoring is **compensatory**: you need to pass the exam overall, not each domain. Unanswered questions count as wrong and there is **no penalty for guessing**, so never leave one blank.
+
+<Pitfall title="Trusting a Third-Party Summary">
+
+**Common mistake:** relying on a blog post or forum thread for exam facts. Some still say "40 scored questions" or list old service names.
+
+AWS revises the exam guide (most recently in October 2026) and announces new exam versions ahead of time. Before you book, read the **current official exam guide**, including its in-scope and out-of-scope service lists.
+
+</Pitfall>
+
+---
+
+## The Four Domains
+
+The exam is organized into four domains. The weights tell you where to spend your study time:
+
+<svg viewBox="0 0 720 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A bar divided into the four SAA-C03 domains by weight: Design Secure Architectures 30%, Design Resilient Architectures 26%, Design High-Performing Architectures 24%, Design Cost-Optimized Architectures 20%." style="max-width:100%;height:auto;margin:1.5rem auto;display:block;">
+  <g font-family="system-ui, -apple-system, sans-serif" text-anchor="middle">
+    <rect x="20" y="30" width="204" height="70" fill="#0c4a6e"/>
+    <text x="122" y="62" fill="#ffffff" font-size="22" font-weight="700">30%</text>
+    <text x="122" y="86" fill="#e0f2fe" font-size="13">Secure</text>
+    <rect x="224" y="30" width="177" height="70" fill="#0369a1"/>
+    <text x="312" y="62" fill="#ffffff" font-size="22" font-weight="700">26%</text>
+    <text x="312" y="86" fill="#e0f2fe" font-size="13">Resilient</text>
+    <rect x="401" y="30" width="163" height="70" fill="#38bdf8"/>
+    <text x="482" y="62" fill="#0c4a6e" font-size="22" font-weight="700">24%</text>
+    <text x="482" y="86" fill="#0c4a6e" font-size="13">High-performing</text>
+    <rect x="564" y="30" width="136" height="70" fill="#bae6fd"/>
+    <text x="632" y="62" fill="#0c4a6e" font-size="22" font-weight="700">20%</text>
+    <text x="632" y="86" fill="#0c4a6e" font-size="13">Cost-optimized</text>
+  </g>
+  <g font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#334155">
+    <text x="20" y="130" font-weight="700">Domain 1: Design Secure Architectures</text>
+    <text x="20" y="150">Access, workloads, data protection</text>
+    <text x="380" y="130" font-weight="700">Domain 2: Design Resilient Architectures</text>
+    <text x="380" y="150">Loose coupling, HA, disaster recovery</text>
+    <text x="20" y="178" font-weight="700">Domain 3: Design High-Performing Architectures</text>
+    <text x="380" y="178" font-weight="700">Domain 4: Design Cost-Optimized Architectures</text>
+  </g>
+</svg>
+
+| Domain | Weight | Task statements | This course |
+|---|---|---|---|
+| **1. Secure** | 30% | Secure access to resources; secure workloads and applications; data security controls | Module 2 |
+| **2. Resilient** | 26% | Scalable, loosely coupled architectures; highly available and fault-tolerant architectures | Module 3 |
+| **3. High-performing** | 24% | Storage; compute; databases; network; data ingestion and transformation | Module 4 |
+| **4. Cost-optimized** | 20% | Storage; compute; databases; network | Module 5 |
+
+Security is the biggest domain, and it also appears inside questions from the other three. Almost every scenario has a least-privilege or encryption angle.
+
+---
+
+## Anatomy of a Scenario Question
+
+Most questions are a short story that ends with a requirement and a **qualifier**:
+
+> A company runs a web application on EC2 instances behind an Application Load Balancer. Users upload images that are processed by the same instances, and processing sometimes takes minutes, which slows the website. The company wants to **decouple** image processing from the web tier **with the least operational overhead**. What should a solutions architect do?
+
+The qualifier at the end decides between answers that would all technically work:
+
+| Qualifier | What it usually rewards |
+|---|---|
+| **Least operational overhead** | Managed or serverless services; no servers to patch; built-in features over custom code |
+| **Most cost-effective** | The cheapest option that still meets **every** stated requirement |
+| **Most secure** / **least privilege** | Roles over keys, private connectivity, encryption with KMS, narrow permissions |
+| **Highest availability** | Multi-AZ by default; multi-Region only if the question says Regional failure matters |
+| **Lowest latency** / **best performance** | Caching, edge services, the right storage or instance type |
+| **Minimal changes** to the application | Drop-in managed versions (RDS for MySQL, EFS for NFS, FSx for Windows) |
+
+For the example above: SQS with a separate group of workers, or SQS triggering Lambda, both decouple the tiers. "Least operational overhead" tips it toward the managed and serverless option, as long as each job fits in Lambda's 15-minute limit.
+
+### A repeatable method
+
+<ProcessFlow
+  label="Method for scenario questions: read the last sentence first, mark the requirements and qualifier, eliminate answers that break a requirement, compare the survivors on the qualifier, then answer and flag if unsure."
+  color="#0369a1"
+  loop="Flagged questions get a second pass after you finish the rest."
+  steps={[
+    { title: 'Last line first', detail: 'What is actually being asked?' },
+    { title: 'Mark constraints', detail: 'Requirements + the qualifier' },
+    { title: 'Eliminate', detail: 'Drop answers that break a requirement' },
+    { title: 'Compare', detail: 'Rank survivors on the qualifier' },
+    { title: 'Answer + flag', detail: 'Never leave it blank' },
+  ]}
+/>
+
+Distractors are usually wrong for one of these reasons:
+
+- **Wrong service for the job** (for example, using Kinesis where the question only needs a queue)
+- **Breaks a requirement** (a single-AZ answer when high availability is required)
+- **Works, but more effort** than another option (custom scripts on EC2 vs a managed feature)
+- **Not a real feature** (a setting or integration that doesn't exist)
+
+---
+
+## Key Takeaway
+
+SAA-C03 has **65 questions in 130 minutes**, a passing score of **720**, and four domains weighted **30 / 26 / 24 / 20**. Most questions are scenarios where several answers work. The **qualifier** (least overhead, most cost-effective, most secure) decides which one is best, so find it first.
+
+<TryIt title="Find the Qualifier">
+
+Take any five SAA-C03 sample questions from the official **AWS Skill Builder** practice question set. For each one, before reading the answers:
+
+1. Write the **requirement** in your own words.
+2. Circle the **qualifier**.
+3. Predict the kind of service that should win (managed, serverless, cached, Multi-AZ, cheapest storage class).
+
+Then read the options and check your prediction. Track how often the qualifier alone would have led you to the right answer.
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "How many of the 65 SAA-C03 questions count toward your score?",
+      options: ["40", "50", "60", "65"],
+      correctIndex: 1,
+      explanation: "50 questions are scored and 15 are unscored. The unscored ones are not identified."
+    },
+    {
+      question: "Which domain carries the most weight on SAA-C03?",
+      options: ["Design Resilient Architectures", "Design High-Performing Architectures", "Design Cost-Optimized Architectures", "Design Secure Architectures"],
+      correctIndex: 3,
+      explanation: "Design Secure Architectures is 30% of scored content."
+    },
+    {
+      question: "A question ends with 'with the LEAST operational overhead.' Which kind of answer does that usually favor?",
+      options: ["Managed or serverless services that remove servers to maintain", "Custom scripts on EC2 instances", "The option with the most components", "The option that gives the most configuration control"],
+      correctIndex: 0,
+      explanation: "Least operational overhead rewards solutions where AWS runs more of the stack for you."
+    },
+    {
+      question: "You're unsure of an answer and time is running out. What should you do?",
+      options: ["Leave it blank to avoid a penalty", "Skip it; unanswered questions are not counted", "Pick an answer and flag it for review", "End the exam early"],
+      correctIndex: 2,
+      explanation: "Unanswered questions count as incorrect and there is no penalty for guessing, so always answer."
+    }
+  ]}
+/>
