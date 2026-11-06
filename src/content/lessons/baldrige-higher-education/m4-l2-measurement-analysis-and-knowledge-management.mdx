@@ -1,0 +1,219 @@
+---
+title: "Measurement, Analysis, and Knowledge Management (Category 4)"
+description: "Build STC's scorecard of leading and lagging measures with comparisons, run a review cadence that leads to action, project future performance, and manage data quality, security, and knowledge, from shared measure definitions to master course shells and governed AI tools."
+module: 4
+moduleTitle: "Students, Stakeholders, and Knowledge"
+lesson: 2
+duration: "30 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## The Foundation of the System
+
+Category 4 (90 points) sits under everything else in the framework diagram. Without reliable measures, analysis, and knowledge, **management by fact** isn't possible.
+
+- **4.1 Measurement, Analysis, Review, and Improvement of Organizational Performance (45):** which **measures** you track, where your **comparative data** comes from, how you keep measures **agile**, how leaders **review** performance, how you **project** future performance, and how reviews lead to **improvement**.
+- **4.2 Information and Knowledge Management (45):** how you manage **knowledge** and share **best practices**, ensure **data quality, availability, and security** (including cybersecurity), and pursue **innovation**.
+
+---
+
+## From Data to Decisions
+
+<svg viewBox="0 0 720 390" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="How data becomes decisions at STC. On the left, six data sources: the student information system, the LMS, the admissions CRM, surveys, HR and adjunct records, and finance. These feed a governed data layer with shared definitions, quality checks, and FERPA-based access rules. That layer feeds the STC scorecard of leading and lagging measures with comparisons. The scorecard is reviewed on four cadences: weekly operations huddles, monthly leadership reviews, quarterly strategy reviews, and an annual review. Reviews lead to actions, and actions loop back to change what is measured." style="max-width:100%;height:auto;margin:1.5rem auto;display:block;">
+  <defs>
+    <marker id="bh-data-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+    </marker>
+  </defs>
+  <g font-family="system-ui, -apple-system, sans-serif">
+    <text x="80" y="26" text-anchor="middle" fill="#64748b" font-size="11" font-weight="700">SOURCES</text>
+    <g fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.2">
+      <rect x="16" y="38" width="128" height="40" rx="8"/>
+      <rect x="16" y="88" width="128" height="40" rx="8"/>
+      <rect x="16" y="138" width="128" height="40" rx="8"/>
+      <rect x="16" y="188" width="128" height="40" rx="8"/>
+      <rect x="16" y="238" width="128" height="40" rx="8"/>
+      <rect x="16" y="288" width="128" height="40" rx="8"/>
+    </g>
+    <g fill="#0f172a" font-size="12" text-anchor="middle">
+      <text x="80" y="62">Student info system</text>
+      <text x="80" y="112">LMS activity</text>
+      <text x="80" y="162">Admissions CRM</text>
+      <text x="80" y="212">Surveys</text>
+      <text x="80" y="262">HR and adjunct data</text>
+      <text x="80" y="312">Finance</text>
+    </g>
+
+    <g stroke="#94a3b8" stroke-width="1.5" fill="none">
+      <line x1="144" y1="58" x2="176" y2="183"/>
+      <line x1="144" y1="108" x2="176" y2="183"/>
+      <line x1="144" y1="158" x2="176" y2="183"/>
+      <line x1="144" y1="208" x2="176" y2="183"/>
+      <line x1="144" y1="258" x2="176" y2="183"/>
+      <line x1="144" y1="308" x2="176" y2="183"/>
+    </g>
+
+    <rect x="178" y="108" width="150" height="150" rx="12" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.5"/>
+    <text x="253" y="134" text-anchor="middle" fill="#0f172a" font-size="13" font-weight="700">Governed data</text>
+    <g fill="#334155" font-size="12" text-anchor="middle">
+      <text x="253" y="162">Shared definitions</text>
+      <text x="253" y="184">Quality checks</text>
+      <text x="253" y="206">FERPA access rules</text>
+      <text x="253" y="228">Security controls</text>
+    </g>
+
+    <rect x="362" y="108" width="140" height="150" rx="12" fill="#1e40af"/>
+    <text x="432" y="138" text-anchor="middle" fill="#ffffff" font-size="14" font-weight="700">STC scorecard</text>
+    <g fill="#dbeafe" font-size="12" text-anchor="middle">
+      <text x="432" y="166">Leading and</text>
+      <text x="432" y="184">lagging measures</text>
+      <text x="432" y="210">Targets and</text>
+      <text x="432" y="228">comparisons</text>
+    </g>
+
+    <g stroke="#64748b" stroke-width="2" fill="none" marker-end="url(#bh-data-arrow)">
+      <line x1="330" y1="183" x2="358" y2="183"/>
+      <line x1="504" y1="183" x2="532" y2="183"/>
+    </g>
+
+    <text x="620" y="26" text-anchor="middle" fill="#64748b" font-size="11" font-weight="700">REVIEW CADENCE</text>
+    <g>
+      <rect x="536" y="38" width="168" height="54" rx="8" fill="#eff6ff" stroke="#93c5fd" stroke-width="1.2"/>
+      <rect x="536" y="102" width="168" height="54" rx="8" fill="#eff6ff" stroke="#93c5fd" stroke-width="1.2"/>
+      <rect x="536" y="166" width="168" height="54" rx="8" fill="#eff6ff" stroke="#93c5fd" stroke-width="1.2"/>
+      <rect x="536" y="230" width="168" height="54" rx="8" fill="#eff6ff" stroke="#93c5fd" stroke-width="1.2"/>
+    </g>
+    <g font-size="12.5" font-weight="700" fill="#1e3a8a">
+      <text x="550" y="60">Weekly huddle</text>
+      <text x="550" y="124">Monthly leadership</text>
+      <text x="550" y="188">Quarterly strategy</text>
+      <text x="550" y="252">Annual review</text>
+    </g>
+    <g font-size="11" fill="#334155">
+      <text x="550" y="79">Alerts, enrollment, tickets</text>
+      <text x="550" y="143">Action-plan progress</text>
+      <text x="550" y="207">Objectives vs. projections</text>
+      <text x="550" y="271">Measures and system</text>
+    </g>
+
+    <rect x="362" y="316" width="342" height="44" rx="10" fill="#fff7ed" stroke="#fdba74" stroke-width="1.5"/>
+    <text x="533" y="343" text-anchor="middle" fill="#9a3412" font-size="13" font-weight="700">Actions: improve, reallocate, innovate</text>
+    <g stroke="#64748b" stroke-width="2" fill="none" marker-end="url(#bh-data-arrow)">
+      <line x1="620" y1="286" x2="620" y2="312"/>
+      <path d="M362,338 H253 V262"/>
+    </g>
+    <text x="300" y="356" text-anchor="middle" fill="#64748b" font-size="11">Change what you measure</text>
+  </g>
+</svg>
+
+---
+
+## Choosing Measures
+
+STC tracks about 20 key measures. A few from its scorecard:
+
+| Measure | Type | Frequency | Comparison | Linked to |
+|---|---|---|---|---|
+| Week-2 LMS login for new students | Leading | Weekly | Own trend | SO2 |
+| Gateway course DFW rate | Leading | Quarterly | Peer institutions via a shared consortium | SO2 |
+| First-year persistence, online | Lagging | Quarterly / annual | National Student Clearinghouse | SO2 |
+| Six-year completion, part-time transfer students | Lagging | Annual | IPEDS Outcome Measures | 7.1 |
+| Graduate employment in field within six months | Lagging | Annual | Labor-market data; peer programs | 7.1, SO1 |
+| Adjunct onboarding completion | Leading | Quarterly | Own target | SO4 |
+| Adjunct engagement index | Lagging | Annual | Pulse benchmark from survey vendor | SO4 |
+| Cost per credit hour | Lagging | Quarterly | Other schools in the university; instructional-cost benchmarking studies | SO5 |
+
+**Leading** measures give early warning that you can act on this quarter. **Lagging** measures confirm whether outcomes improved. A scorecard with only lagging measures tells you what went wrong a year too late.
+
+**Measurement agility** means you can add or change measures quickly. When STC launched AI tutoring, it added "tutor sessions per student" and "help-desk tickets on AI tools" in the same quarter.
+
+---
+
+## Reviews That Lead to Action
+
+4.1b asks how senior leaders **review** performance and capabilities, and **4.1c** asks how reviews lead to **improvement** and how you **project** future performance.
+
+At STC's monthly leadership review, each action-plan owner reports **status against projection** in one slide: *on track*, *at risk*, or *off track*. Only at-risk and off-track items get discussion time. Each review ends with a list of **decisions**: what changes, who owns it, and when it'll be checked.
+
+Projections connect measurement to strategy. In the quarterly review, the team compares actual persistence with the projection in the SO2 action plan. If the gap is growing, it adjusts the plan (2.2b) or reallocates resources.
+
+---
+
+## Managing Knowledge
+
+Knowledge at a school is easily lost, because so much lives in individual instructors' heads and course sections. STC manages it deliberately:
+
+- **Master course shells.** Every section is built from a shared master. Improvements made in one section are reviewed and added to the master, so the next 15 sections benefit.
+- **Teaching circles.** Full-time and adjunct faculty meet each quarter by course cluster to share what worked.
+- **Retirement handoffs.** Retiring faculty co-teach with their successor for a quarter and record walkthroughs of key labs.
+- **Best-practice transfer.** When one program's early-alert follow-up rate hit 95%, its process was documented and adopted by the other programs.
+
+---
+
+## Data Quality, Security, and AI Tools
+
+- **One definition per measure.** "Persistence" means the same thing in the dean's dashboard, the program review, and the NWCCU report. The definitions live in a shared data dictionary.
+- **Access by role**, following FERPA: instructors see their own sections, advisors see their caseload, and leaders see aggregates.
+- **Cybersecurity** of student and research data is managed with the university's IT security office and tested through regular phishing exercises and access reviews.
+- **AI tools** are reviewed before adoption: what data they use, where it's stored, whether vendors can train on it, and whether outputs are checked for bias across student segments.
+
+<Pitfall title="Dashboards Nobody Acts On">
+
+**Common mistake:** STC builds an impressive dashboard with 70 charts. Leaders look at it in meetings and say "interesting," and nothing changes.
+
+Measures earn their place by driving **decisions**. For each measure, ask: *Who reviews it, how often, against what target and comparison, and what do they do when it's off?* If no one can answer, drop the measure or fix the review.
+
+</Pitfall>
+
+---
+
+## Key Takeaway
+
+Category 4 is the **foundation**. Choose a small set of **leading and lagging** measures linked to objectives, each with a **comparison**. Review them on a **defined cadence** that ends in **decisions**, and **project** future performance. Manage **knowledge** through master shells, teaching circles, and handoffs. Keep data **accurate, consistently defined, secure, and governed**, including any AI tools that use student data.
+
+<TryIt title="Build a Ten-Measure Scorecard">
+
+For your school, list **ten** key measures. For each, fill in:
+
+| Measure | Leading or lagging | Frequency | Comparison source | Who reviews it | Linked objective |
+|---|---|---|---|---|---|
+
+Check the result:
+
+- Do you have **at least three leading** measures?
+- Does every measure have a **comparison** other than your own past performance?
+- Does every **strategic objective** have at least one measure?
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "Which is a leading measure for first-year persistence?",
+      options: ["Week-2 LMS login rate for new students", "Six-year completion rate", "Alumni giving rate", "Annual IPEDS graduation rate"],
+      correctIndex: 0,
+      explanation: "Early LMS engagement gives a warning you can act on in the current quarter. The others are lagging."
+    },
+    {
+      question: "What does 'measurement agility' mean?",
+      options: ["Measuring as many things as possible", "Changing measure definitions every quarter", "Being able to add or change measures quickly when circumstances change", "Using agile software development"],
+      correctIndex: 2,
+      explanation: "Measurement agility is the ability to respond to rapid or unexpected change with new or adjusted measures, as STC did for AI tutoring."
+    },
+    {
+      question: "Why do master course shells support knowledge management?",
+      options: ["They cut the number of courses", "Improvements found in one section are captured and spread to all sections", "They replace faculty", "They are required by FERPA"],
+      correctIndex: 1,
+      explanation: "A shared master captures improvements and best practices so knowledge isn't trapped in individual sections."
+    },
+    {
+      question: "STC has a 70-chart dashboard that leads to no changes. What is the core fix?",
+      options: ["Add more charts", "Switch dashboard vendors", "Review it less often", "Tie each measure to an owner, a review cadence, a target and comparison, and a decision"],
+      correctIndex: 3,
+      explanation: "Measures matter only when someone reviews them against targets and acts on what they show."
+    }
+  ]}
+/>

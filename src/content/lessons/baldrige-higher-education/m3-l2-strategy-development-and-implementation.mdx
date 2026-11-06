@@ -1,0 +1,227 @@
+---
+title: "Strategy Development and Implementation (Category 2)"
+description: "Turn STC's strategic challenges into a few measurable strategic objectives, deploy them through action plans with owners, resources, and projections, and change course when conditions shift, using a challenge-to-measure cascade and an alignment matrix."
+module: 3
+moduleTitle: "Leadership and Strategy"
+lesson: 2
+duration: "30 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Quiz from '@components/Quiz.astro';
+
+## What Category 2 Asks
+
+Category 2 (90 points) is split evenly:
+
+- **2.1 Strategy Development (45):** your **strategic planning process**, how it stimulates **innovation**, how you collect and analyze data for planning, how you decide which work is done in-house and which by partners, and your **key strategic objectives** with timetables.
+- **2.2 Strategy Implementation (45):** how you turn objectives into **action plans**, deploy them, allocate **resources**, plan for **workforce** needs, set **measures and projections**, and **modify** plans when circumstances change.
+
+The 2023–2024 edition moved five points into 2.2 to stress that a plan only matters if it's carried out.
+
+---
+
+## STC's Planning Process
+
+STC plans on a three-year horizon with an annual refresh, timed to land before the university's budget cycle:
+
+<ProcessFlow
+  label="STC's annual strategic planning cycle"
+  color="#1e40af"
+  steps={[
+    { title: "Scan · Apr", detail: "Update the Organizational Profile, labor-market data, enrollment trends, and policy changes" },
+    { title: "Analyze · May", detail: "Strategic challenges, advantages, risks, and opportunities with faculty council and advisory board" },
+    { title: "Decide · Jun", detail: "Confirm or revise 3–5 strategic objectives with targets" },
+    { title: "Plan · Jul", detail: "Action plans with owners, resources, and projections" },
+    { title: "Fund · Aug", detail: "Submit to the university budget process" },
+    { title: "Deploy · Sep", detail: "Launch, then review progress monthly and quarterly" },
+  ]}
+  loop="Quarterly reviews can change action plans mid-year (2.2b)"
+/>
+
+Two things make this a *process* rather than an annual retreat. Inputs are defined (the Organizational Profile, data sources, stakeholder input), and the steps happen at the same time each year, so the plan arrives before the budget is set.
+
+**Innovation** is built in at the Analyze step. Each year the team reviews the strategic *opportunities* from P.2b and decides which ones to pursue as **intelligent risks**: bets with a real chance of failure, sized so a failure wouldn't hurt the school.
+
+---
+
+## Strategic Objectives That Answer the Challenges
+
+A strategic objective is an **outcome you commit to**, with a target and a date. It isn't an activity. STC has five, each tied to a strategic challenge from P.2b:
+
+| Objective | Target | Addresses |
+|---|---|---|
+| **SO1 AI-ready graduates** | Every program assesses responsible AI use in at least two courses by fall 2027 | Challenge 1: curriculum currency |
+| **SO2 First-year success** | Online first-year persistence from 68% to 78% by fall 2029 | Challenge 2: retaining online adults |
+| **SO3 Balanced graduate enrollment** | Domestic and employer-sponsored share of graduate students from 40% to 55% by 2029 | Challenge 3: international volatility; Opportunity 1: employer cohorts |
+| **SO4 Adjunct excellence** | 100% of new adjuncts complete onboarding; adjunct engagement index at 80% or higher | Challenge 4: adjunct consistency |
+| **SO5 Stackable value** | Three certificates that stack into degrees; cost per credit hour flat in real terms | Challenge 5: price pressure; Opportunity 2: stackable credentials |
+
+Check alignment with a simple matrix. Every challenge should have at least one objective, and every objective should address a challenge or use an advantage:
+
+| | SO1 | SO2 | SO3 | SO4 | SO5 |
+|---|---|---|---|---|---|
+| **C1 Curriculum currency (AI)** | ● | | | ○ | |
+| **C2 Online first-year retention** | | ● | | ○ | |
+| **C3 International volatility** | | | ● | | ○ |
+| **C4 Adjunct consistency** | ○ | ○ | | ● | |
+| **C5 Price pressure** | | | ○ | | ● |
+| **Uses advantage: practitioner faculty** | ● | | | ● | |
+| **Uses advantage: employer network** | ● | | ● | | ● |
+
+● = primary · ○ = contributes
+
+---
+
+## From Objective to Action Plan to Measure
+
+Here is one objective cascaded all the way down:
+
+<svg viewBox="0 0 720 380" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A strategy cascade for one objective. The strategic challenge, retaining online working adults through year one, leads to strategic objective SO2: online first-year persistence from 68 percent to 78 percent by fall 2029. SO2 branches into three action plans: A, a success coach for every new online student, measured by coach contact by week 3; B, redesign three high-DFW gateway courses, measured by gateway DFW rate; and C, early alerts from LMS data in week 2, measured by alert follow-up within 48 hours. Every action plan has an owner, resources, a timeline, and projected performance." style="max-width:100%;height:auto;margin:1.5rem auto;display:block;">
+  <defs>
+    <marker id="bh-cas-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+    </marker>
+  </defs>
+  <g font-family="system-ui, -apple-system, sans-serif">
+    <g stroke="#64748b" stroke-width="2" fill="none" marker-end="url(#bh-cas-arrow)">
+      <line x1="164" y1="190" x2="192" y2="190"/>
+      <path d="M352,190 C368,190 366,80 380,80"/>
+      <line x1="352" y1="190" x2="380" y2="190"/>
+      <path d="M352,190 C368,190 366,300 380,300"/>
+      <line x1="554" y1="80" x2="580" y2="80"/>
+      <line x1="554" y1="190" x2="580" y2="190"/>
+      <line x1="554" y1="300" x2="580" y2="300"/>
+    </g>
+
+    <rect x="16" y="130" width="148" height="120" rx="10" fill="#f5f3ff" stroke="#c4b5fd" stroke-width="1.5"/>
+    <text x="90" y="156" text-anchor="middle" fill="#5b21b6" font-size="11" font-weight="700">CHALLENGE</text>
+    <g fill="#0f172a" font-size="13" text-anchor="middle">
+      <text x="90" y="182">Retaining online</text>
+      <text x="90" y="200">working adults</text>
+      <text x="90" y="218">through year one</text>
+    </g>
+
+    <rect x="196" y="116" width="156" height="148" rx="10" fill="#1e40af"/>
+    <text x="274" y="142" text-anchor="middle" fill="#bfdbfe" font-size="11" font-weight="700">OBJECTIVE SO2</text>
+    <g fill="#ffffff" font-size="13" text-anchor="middle">
+      <text x="274" y="168">Online first-year</text>
+      <text x="274" y="186">persistence</text>
+      <text x="274" y="212" font-size="16" font-weight="700">68% → 78%</text>
+      <text x="274" y="236">by fall 2029</text>
+    </g>
+
+    <g>
+      <rect x="384" y="40" width="170" height="80" rx="10" fill="#eff6ff" stroke="#93c5fd" stroke-width="1.5"/>
+      <rect x="384" y="150" width="170" height="80" rx="10" fill="#eff6ff" stroke="#93c5fd" stroke-width="1.5"/>
+      <rect x="384" y="260" width="170" height="80" rx="10" fill="#eff6ff" stroke="#93c5fd" stroke-width="1.5"/>
+      <g fill="#1e3a8a" font-size="11" font-weight="700" text-anchor="middle">
+        <text x="469" y="62">ACTION PLAN A</text>
+        <text x="469" y="172">ACTION PLAN B</text>
+        <text x="469" y="282">ACTION PLAN C</text>
+      </g>
+      <g fill="#0f172a" font-size="12" text-anchor="middle">
+        <text x="469" y="84">Success coach for every</text>
+        <text x="469" y="101">new online student</text>
+        <text x="469" y="194">Redesign three high-DFW</text>
+        <text x="469" y="211">gateway courses</text>
+        <text x="469" y="304">Early alerts from LMS</text>
+        <text x="469" y="321">data in week 2</text>
+      </g>
+    </g>
+
+    <g>
+      <rect x="584" y="40" width="124" height="80" rx="10" fill="#fff7ed" stroke="#fdba74" stroke-width="1.5"/>
+      <rect x="584" y="150" width="124" height="80" rx="10" fill="#fff7ed" stroke="#fdba74" stroke-width="1.5"/>
+      <rect x="584" y="260" width="124" height="80" rx="10" fill="#fff7ed" stroke="#fdba74" stroke-width="1.5"/>
+      <g fill="#9a3412" font-size="11" font-weight="700" text-anchor="middle">
+        <text x="646" y="62">MEASURE</text>
+        <text x="646" y="172">MEASURE</text>
+        <text x="646" y="282">MEASURE</text>
+      </g>
+      <g fill="#0f172a" font-size="12" text-anchor="middle">
+        <text x="646" y="84">Coach contact</text>
+        <text x="646" y="101">by week 3</text>
+        <text x="646" y="194">Gateway</text>
+        <text x="646" y="211">DFW rate</text>
+        <text x="646" y="304">Follow-up</text>
+        <text x="646" y="321">within 48 hours</text>
+      </g>
+    </g>
+    <text x="360" y="368" text-anchor="middle" fill="#64748b" font-size="12">Every action plan has an owner, resources, a timeline, and projected performance.</text>
+  </g>
+</svg>
+
+Each action plan needs the pieces 2.2 asks about:
+
+| Action plan | Owner | Resources | Workforce plan | Projection |
+|---|---|---|---|---|
+| **A Success coaches** | Director of student success | Two new coach positions (reallocated from print marketing) | Hire and train by August; coaching caseload of 150 students or fewer | 90% of new online students contacted by week 3 |
+| **B Gateway course redesign** | Associate dean | Course-release time for three faculty; instructional designer | Train adjuncts on the new shells before launch | DFW rate from 31% to 20% in two years |
+| **C Early alerts** | Program directors | LMS analytics add-on | Two-hour training for all instructors | 85% of alerts followed up within 48 hours |
+
+**Projections** should also be compared with something outside STC. For example, STC compares its 78% persistence target with the persistence rate the National Student Clearinghouse reports for similar students, so leaders know whether the target is ambitious or merely average.
+
+---
+
+## Changing Course (2.2b)
+
+Plans meet reality. In STC's second year, a visa-policy change cut new international graduate enrollment by a third in one quarter. Because SO3 already aimed to rebalance graduate enrollment, the leadership team **sped up** that action plan. It moved recruiting money to employer-sponsored cohorts, launched two cohorts in six months, and recorded the change and the reason in the plan.
+
+That's what 2.2b looks for: a **defined way to recognize** when a plan needs to change, and a way to change it **quickly** without losing alignment.
+
+<Pitfall title="Objectives That Are Really Activities">
+
+**Common mistake:** STC's first draft listed 19 strategic objectives, including "Form an AI task force," "Update the website," and "Hold a faculty retreat."
+
+Those are **activities**, and 19 is far too many to fund or track. A strategic objective names an **outcome**, a **target**, and a **date**, and there should be only a few. "Form an AI task force" might be one *action* under SO1. It isn't a strategic objective.
+
+</Pitfall>
+
+---
+
+## Key Takeaway
+
+Strategy development is a **repeatable process** with defined inputs and timing, built to **stimulate innovation**. It produces **a few outcome-based objectives** that answer your **strategic challenges** and use your **advantages**. Implementation turns each objective into **action plans** with owners, resources, workforce plans, measures, and **projections compared with peers**. It also includes a way to **change plans quickly** when conditions shift.
+
+<TryIt title="Build an Alignment Matrix">
+
+1. List your school's **strategic challenges** from your P.2 draft as rows.
+2. List your current **strategic objectives** (or what leaders say the priorities are) as columns.
+3. Mark ● for primary and ○ for contributing.
+4. Look for **empty rows** (a challenge with no objective) and **empty columns** (an objective that addresses no challenge).
+
+Then pick one objective and cascade it as in the diagram: **two or three action plans**, each with an **owner**, a **measure**, and a **projection**.
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "Which of these is a well-formed strategic objective?",
+      options: ["Form an AI task force", "Hold a faculty retreat each fall", "Raise online first-year persistence from 68% to 78% by fall 2029", "Update the school website"],
+      correctIndex: 2,
+      explanation: "A strategic objective names an outcome, a target, and a date. The others are activities."
+    },
+    {
+      question: "In an alignment matrix, what does an empty row mean?",
+      options: ["A strategic challenge that no objective addresses", "An objective that is fully complete", "A measure with no data", "An action plan with no owner"],
+      correctIndex: 0,
+      explanation: "Rows are challenges. An empty row means a key challenge has no strategic response, which is a gap."
+    },
+    {
+      question: "What does 2.2 ask you to compare your performance projections against?",
+      options: ["Last year's projections only", "The dean's personal goals", "Nothing; projections are internal", "Competitors, peers, or benchmarks"],
+      correctIndex: 3,
+      explanation: "Comparing projections with peers or benchmarks shows whether targets are ambitious enough."
+    },
+    {
+      question: "A visa-policy change cuts international enrollment mid-year. What does 2.2b look for?",
+      options: ["Waiting for next year's planning cycle", "A defined way to recognize the need and modify action plans quickly", "Dropping all strategic objectives", "Asking the board to set new objectives"],
+      correctIndex: 1,
+      explanation: "2.2b asks how you recognize and respond when circumstances require a shift in plans, and how you change them quickly."
+    }
+  ]}
+/>

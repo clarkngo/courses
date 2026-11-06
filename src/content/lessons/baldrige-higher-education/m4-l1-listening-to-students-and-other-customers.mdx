@@ -1,0 +1,197 @@
+---
+title: "Listening to Students and Other Customers (Category 3)"
+description: "Build listening posts across the whole student lifecycle and with employers, use segmentation to decide which programs and services to offer, manage relationships and complaints, ensure fair treatment, and measure dissatisfaction as well as satisfaction."
+module: 4
+moduleTitle: "Students, Stakeholders, and Knowledge"
+lesson: 1
+duration: "30 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Quiz from '@components/Quiz.astro';
+
+## What Category 3 Asks
+
+Category 3 (85 points) is about the people you serve:
+
+- **3.1 Customer Expectations (40):** how you **listen** to current and potential students and other customers, how you **segment** them, and how you decide which **educational programs and services** to offer.
+- **3.2 Customer Engagement (45):** how you build **relationships**, provide **access and support**, manage **complaints**, ensure **fair treatment**, and determine **satisfaction, dissatisfaction, and engagement**.
+
+At STC, "other customers" are mainly **employers**: those who hire graduates and those who pay for employees to study.
+
+---
+
+## Listening Across the Lifecycle
+
+A course evaluation at the end of the quarter is one listening post. Baldrige expects many, spread across the whole relationship, and including people who **aren't** your students yet or **no longer** are.
+
+<svg viewBox="0 0 720 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="STC's listening posts across the student lifecycle. Six stages run left to right. Inquire: inquiry questions, admissions calls, lost-applicant survey. Enroll: onboarding survey, transfer-credit tickets. First term: week-3 check-in, early alerts, course feedback. Persist: course evaluations, advising notes, stop-out interviews. Graduate: exit survey, capstone sponsor rating. Career: six-month outcomes, alumni survey. A band along the bottom shows employer listening: advisory board, internship supervisor ratings, hiring-manager interviews, and sponsored-employee reports. Potential and former students are included at both ends." style="max-width:100%;height:auto;margin:1.5rem auto;display:block;">
+  <g font-family="system-ui, -apple-system, sans-serif">
+    <g font-size="13" font-weight="700" fill="#ffffff" text-anchor="middle">
+      <path d="M12,40 H112 L124,62 L112,84 H12 Z" fill="#1e40af"/>
+      <text x="64" y="67">Inquire</text>
+      <path d="M128,40 H228 L240,62 L228,84 H128 L140,62 Z" fill="#1e40af"/>
+      <text x="186" y="67">Enroll</text>
+      <path d="M244,40 H344 L356,62 L344,84 H244 L256,62 Z" fill="#2563eb"/>
+      <text x="302" y="67">First term</text>
+      <path d="M360,40 H460 L472,62 L460,84 H360 L372,62 Z" fill="#2563eb"/>
+      <text x="418" y="67">Persist</text>
+      <path d="M476,40 H576 L588,62 L576,84 H476 L488,62 Z" fill="#3b82f6"/>
+      <text x="534" y="67">Graduate</text>
+      <path d="M592,40 H708 L708,84 H592 L604,62 Z" fill="#3b82f6"/>
+      <text x="654" y="67">Career</text>
+    </g>
+    <text x="64" y="28" text-anchor="middle" fill="#64748b" font-size="11" font-weight="700">POTENTIAL</text>
+    <text x="418" y="28" text-anchor="middle" fill="#64748b" font-size="11" font-weight="700">CURRENT</text>
+    <text x="654" y="28" text-anchor="middle" fill="#64748b" font-size="11" font-weight="700">FORMER</text>
+
+    <g fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.2">
+      <rect x="12" y="100" width="108" height="140" rx="8"/>
+      <rect x="128" y="100" width="108" height="140" rx="8"/>
+      <rect x="244" y="100" width="108" height="140" rx="8"/>
+      <rect x="360" y="100" width="108" height="140" rx="8"/>
+      <rect x="476" y="100" width="108" height="140" rx="8"/>
+      <rect x="592" y="100" width="116" height="140" rx="8"/>
+    </g>
+    <g fill="#0f172a" font-size="11.5" text-anchor="middle">
+      <text x="66" y="128">Inquiry</text><text x="66" y="143">questions</text>
+      <text x="66" y="170">Admissions</text><text x="66" y="185">calls</text>
+      <text x="66" y="212">Lost-applicant</text><text x="66" y="227">survey</text>
+
+      <text x="182" y="128">Onboarding</text><text x="182" y="143">survey</text>
+      <text x="182" y="170">Transfer-credit</text><text x="182" y="185">tickets</text>
+
+      <text x="298" y="128">Week-3</text><text x="298" y="143">check-in</text>
+      <text x="298" y="170">Early alerts</text>
+      <text x="298" y="212">Course</text><text x="298" y="227">feedback</text>
+
+      <text x="414" y="128">Course</text><text x="414" y="143">evaluations</text>
+      <text x="414" y="170">Advising</text><text x="414" y="185">notes</text>
+      <text x="414" y="212">Stop-out</text><text x="414" y="227">interviews</text>
+
+      <text x="530" y="128">Exit survey</text>
+      <text x="530" y="170">Capstone</text><text x="530" y="185">sponsor rating</text>
+
+      <text x="650" y="128">Six-month</text><text x="650" y="143">outcomes</text>
+      <text x="650" y="170">Alumni</text><text x="650" y="185">survey</text>
+    </g>
+
+    <rect x="12" y="260" width="696" height="76" rx="10" fill="#ecfdf5" stroke="#6ee7b7" stroke-width="1.5"/>
+    <text x="32" y="286" fill="#065f46" font-size="13" font-weight="700">Employers (other customers)</text>
+    <text x="32" y="312" fill="#0f172a" font-size="12">Advisory board · internship supervisor ratings · hiring-manager interviews · sponsored-employee progress reports</text>
+  </g>
+</svg>
+
+Three details make this a strong approach:
+
+- **Potential customers** are included: inquiry questions and a short survey of admitted students who didn't enroll ("lost applicants") show why people choose a competitor.
+- **Former customers** are included: stop-out interviews with students who left are one of the best sources of insight.
+- **Listening varies by segment.** International graduate students get an in-person check-in, because online surveys under-represent them. Military-connected students get a benefits-specific check-in in their first term.
+
+Also listen through **social media and review sites**. Tag comments by theme, the same way you tag complaints.
+
+---
+
+## Segmentation and Program Offerings (3.1b)
+
+STC segments students by **program level**, **modality**, **entry path** (new, transfer, international), and **military affiliation**. Each segment's requirements, as written in P.1b(2), drive decisions about programs and services.
+
+New offerings follow a defined path:
+
+<ProcessFlow
+  label="STC's process for deciding on new educational programs and services"
+  color="#1e40af"
+  steps={[
+    { title: "Signal", detail: "Labor-market data, advisory board, student requests, competitor moves" },
+    { title: "Validate", detail: "Demand estimate by segment; fit with mission and core competencies" },
+    { title: "Co-design", detail: "Outcomes and course map built with two or more employers" },
+    { title: "Approve", detail: "Faculty council, university, and accreditor review if required" },
+    { title: "Launch and review", detail: "Pilot cohort; enrollment, completion, and employer ratings after year one" },
+  ]}
+  loop="Programs that miss their year-one targets go back to Validate"
+/>
+
+STC's applied AI engineering certificate went through this path. The advisory board raised it, and job-posting data confirmed demand. Two employers co-designed the outcomes. The faculty council approved it as a certificate that stacks into the MS CS.
+
+---
+
+## Relationships, Support, and Complaints (3.2a)
+
+| Requirement | STC's approach |
+|---|---|
+| **Relationship management** | A named success coach for every new student through the first year; a program director "welcome session" each quarter |
+| **Access and support** | Evening and weekend virtual advising; a single help portal that routes to advising, IT, financial aid, or the registrar; service-level targets for each |
+| **Complaint management** | One intake form for all complaints; acknowledgment within one business day; resolution target of five business days; quarterly **root-cause review** of all complaints by theme |
+| **Fair treatment** | Results for every approach are reviewed **by segment**; course shells meet accessibility standards; international and online students get equal access to tutoring and career services |
+
+Root-cause review is what turns complaints into improvement. When STC grouped a year of complaints, a third were about **transfer-credit evaluation taking too long**. The fix was a process change, not an apology: evaluations are now done before the first term starts.
+
+---
+
+## Satisfaction, Dissatisfaction, and Engagement (3.2b)
+
+These are three different things, and Baldrige asks about each:
+
+- **Satisfaction:** did we meet expectations? (course and service surveys)
+- **Dissatisfaction:** what drives people away? It's **not** just low satisfaction scores. Determine it separately, through stop-out interviews, complaint themes, and lost-applicant surveys.
+- **Engagement:** would they recommend us, come back for another credential, or hire our graduates again? (net-promoter-style questions, return rates, employer repeat hiring)
+
+Also get satisfaction **relative to competitors**. STC uses an adult-student survey with peer benchmarks and asks lost applicants which school they chose and why.
+
+<Pitfall title="Averages That Hide the Students You're Losing">
+
+**Common mistake:** STC reports overall course satisfaction of 4.3 out of 5 and concludes students are happy.
+
+Split by segment, online first-year students rate it 3.6, and they're also the group with the lowest persistence. The average was carried by graduate students in hybrid courses. And survey response rates are lowest among the students most likely to leave. Always **segment** results, check **who didn't respond**, and determine **dissatisfaction** directly rather than inferring it from averages.
+
+</Pitfall>
+
+---
+
+## Key Takeaway
+
+Category 3 asks how you **listen** to current, potential, and former students and to employers across the **whole lifecycle**, how **segmentation** drives which **programs and services** you offer, and how you build **relationships**, provide **support**, resolve **complaints** with root-cause analysis, and ensure **fair treatment**. Measure **satisfaction, dissatisfaction, and engagement** separately, by segment, and compared with competitors.
+
+<TryIt title="Audit Your Listening Posts">
+
+Draw the six lifecycle stages for your school. Under each, list every way you currently hear from students. Then answer:
+
+1. Which stage has **no** listening post?
+2. How do you hear from **potential** students who chose someone else, and from **former** students who left?
+3. Which **segment** is least likely to respond to your current methods, and what method would reach them?
+4. What do you hear from **employers**, and how often?
+
+Pick one gap and design a listening post for it: method, timing, owner, and what you'll do with the information.
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "Why does STC survey admitted students who didn't enroll?",
+      options: ["To fill out IPEDS forms", "To re-admit them automatically", "Accreditors require it", "To learn why potential customers choose competitors"],
+      correctIndex: 3,
+      explanation: "3.1 asks about listening to potential customers. Lost-applicant surveys show why people choose another school."
+    },
+    {
+      question: "How should a school determine student dissatisfaction?",
+      options: ["By looking only at the lowest satisfaction scores", "Separately, through methods like stop-out interviews and complaint themes", "It can't be measured", "By counting total complaints only"],
+      correctIndex: 1,
+      explanation: "The Criteria note that dissatisfaction is more than low satisfaction scores and should be determined independently to find root causes."
+    },
+    {
+      question: "A third of complaints concern slow transfer-credit evaluation. What does strong complaint management do next?",
+      options: ["Fix the root cause by changing the process", "Send each student an apology", "Close the complaints faster", "Stop accepting transfer students"],
+      correctIndex: 0,
+      explanation: "Complaint management should analyze complaints and change processes to prevent recurrence, not just resolve individual cases."
+    },
+    {
+      question: "Overall course satisfaction is 4.3/5, but online first-year students rate it 3.6. What's the lesson?",
+      options: ["The average is fine, so no action is needed", "Online students should be surveyed less", "Segment results; averages can hide the students you're losing", "Only graduate students' ratings count"],
+      correctIndex: 2,
+      explanation: "Baldrige expects results by segment. The lowest-rated group is often the one most at risk of leaving."
+    }
+  ]}
+/>

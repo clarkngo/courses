@@ -1,0 +1,195 @@
+---
+title: "What Baldrige Is and Why It Fits Higher Ed"
+description: "The Baldrige Excellence Framework in one lesson: where it came from, its three parts, the systems view of the seven categories, how points are weighted, how it differs from accreditation, and which colleges have used it to win the national award."
+module: 1
+moduleTitle: "Why Baldrige in Higher Education"
+lesson: 1
+duration: "25 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## A Framework of Questions, Not a Checklist
+
+The **Baldrige Excellence Framework** is a set of questions about how an organization is led and run, plus a way to score the answers. It doesn't tell a school *what* to do. It never says "use this LMS" or "run advising this way." It asks **how** you do the things that matter and **how you know** they work.
+
+That makes it useful for a school of technology and computing. Most schools already have many good practices: an advisory board, program review, course evaluations, an assessment plan for accreditation. Usually these were built at different times by different people. Baldrige asks whether they work together as **one system** that delivers on the mission and keeps improving.
+
+---
+
+## Where It Came From
+
+| Year | What happened |
+|---|---|
+| **1987** | Congress passes the Malcolm Baldrige National Quality Improvement Act, named for the late Secretary of Commerce, to strengthen U.S. competitiveness. |
+| **1999** | Education and health care organizations become eligible for the award. |
+| **2001** | First education recipients, including **University of Wisconsin–Stout**, the first higher education institution to win. |
+| **2004** | **Kenneth W. Monfort College of Business** (University of Northern Colorado), a business school *inside* a university, wins. |
+| **2005** | **Richland College** (now Dallas College Richland Campus) becomes the first community college to win. |
+| **2018, 2024** | **Alamo Colleges District** (San Antonio) wins twice, the first higher education institution to do so. |
+| **2026** | Most award operations move from NIST to the Baldrige Foundation and the Alliance for Performance Excellence. NIST and the Department of Commerce keep oversight. |
+
+Monfort is worth noticing. It was a single **school within a university** that used Baldrige to run itself, which is exactly the situation of a school of technology and computing. You don't need the whole university on board to start.
+
+---
+
+## The Three Parts of the Framework
+
+1. **The Criteria**: the questions, grouped into an **Organizational Profile** plus **seven categories**. The Education version speaks the language of schools: *students and other customers*, *educational programs and services*, *faculty and staff*.
+2. **Core values and concepts**: eleven beliefs that the Criteria are built on (Lesson 1.2).
+3. **Scoring guidelines**: how examiners judge the maturity of processes (**ADLI**) and the strength of results (**LeTCI**) (Lesson 6.1).
+
+---
+
+## The Systems View
+
+<svg viewBox="0 0 720 425" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The Baldrige Education Criteria as a system. The Organizational Profile sits across the top and sets the context for everything below it. On the left, the leadership triad: 1 Leadership, 115 points; 2 Strategy, 90 points; 3 Customers, 85 points. A two-way arrow connects it to the results triad on the right: 5 Workforce, 85 points, and 6 Operations, 85 points, both feeding 7 Results, 450 points. Along the bottom, 4 Measurement, Analysis, and Knowledge Management, 90 points, is the foundation that supports both triads. Core values and concepts underpin the whole framework." style="max-width:100%;height:auto;margin:1.5rem auto;display:block;">
+  <defs>
+    <marker id="bh-sys-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+    </marker>
+  </defs>
+  <g font-family="system-ui, -apple-system, sans-serif">
+    <rect x="40" y="16" width="640" height="46" rx="10" fill="#eff6ff" stroke="#93c5fd" stroke-width="1.5"/>
+    <text x="360" y="37" text-anchor="middle" fill="#1e3a8a" font-size="14" font-weight="700">Organizational Profile</text>
+    <text x="360" y="54" text-anchor="middle" fill="#334155" font-size="12">Environment, relationships, and strategic situation: the context for every answer</text>
+
+    <rect x="40" y="80" width="192" height="244" rx="12" fill="none" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="5 4"/>
+    <text x="136" y="98" text-anchor="middle" fill="#64748b" font-size="11" font-weight="700">LEADERSHIP TRIAD</text>
+    <rect x="300" y="80" width="380" height="244" rx="12" fill="none" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="5 4"/>
+    <text x="490" y="98" text-anchor="middle" fill="#64748b" font-size="11" font-weight="700">RESULTS TRIAD</text>
+
+    <g font-size="13">
+      <rect x="54" y="108" width="164" height="58" rx="8" fill="#1e40af"/>
+      <text x="136" y="133" text-anchor="middle" fill="#ffffff" font-weight="700">1 Leadership</text>
+      <text x="136" y="152" text-anchor="middle" fill="#dbeafe" font-size="12">115 pts</text>
+      <rect x="54" y="178" width="164" height="58" rx="8" fill="#1e40af"/>
+      <text x="136" y="203" text-anchor="middle" fill="#ffffff" font-weight="700">2 Strategy</text>
+      <text x="136" y="222" text-anchor="middle" fill="#dbeafe" font-size="12">90 pts</text>
+      <rect x="54" y="248" width="164" height="58" rx="8" fill="#1e40af"/>
+      <text x="136" y="273" text-anchor="middle" fill="#ffffff" font-weight="700">3 Customers</text>
+      <text x="136" y="292" text-anchor="middle" fill="#dbeafe" font-size="12">85 pts</text>
+
+      <rect x="314" y="138" width="160" height="58" rx="8" fill="#2563eb"/>
+      <text x="394" y="163" text-anchor="middle" fill="#ffffff" font-weight="700">5 Workforce</text>
+      <text x="394" y="182" text-anchor="middle" fill="#dbeafe" font-size="12">85 pts</text>
+      <rect x="314" y="218" width="160" height="58" rx="8" fill="#2563eb"/>
+      <text x="394" y="243" text-anchor="middle" fill="#ffffff" font-weight="700">6 Operations</text>
+      <text x="394" y="262" text-anchor="middle" fill="#dbeafe" font-size="12">85 pts</text>
+
+      <rect x="530" y="138" width="136" height="138" rx="8" fill="#c2410c"/>
+      <text x="598" y="200" text-anchor="middle" fill="#ffffff" font-weight="700" font-size="15">7 Results</text>
+      <text x="598" y="220" text-anchor="middle" fill="#ffedd5" font-size="12">450 pts</text>
+    </g>
+
+    <g stroke="#64748b" stroke-width="2" fill="none">
+      <line x1="236" y1="207" x2="296" y2="207" marker-start="url(#bh-sys-arrow)" marker-end="url(#bh-sys-arrow)"/>
+      <line x1="476" y1="167" x2="526" y2="167" marker-end="url(#bh-sys-arrow)"/>
+      <line x1="476" y1="247" x2="526" y2="247" marker-end="url(#bh-sys-arrow)"/>
+      <line x1="136" y1="64" x2="136" y2="78" marker-end="url(#bh-sys-arrow)"/>
+      <line x1="490" y1="64" x2="490" y2="78" marker-end="url(#bh-sys-arrow)"/>
+      <line x1="136" y1="346" x2="136" y2="328" marker-end="url(#bh-sys-arrow)"/>
+      <line x1="490" y1="346" x2="490" y2="328" marker-end="url(#bh-sys-arrow)"/>
+    </g>
+
+    <rect x="40" y="348" width="640" height="40" rx="10" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="1.5"/>
+    <text x="360" y="373" text-anchor="middle" fill="#0f172a" font-size="13" font-weight="700">4 Measurement, Analysis, and Knowledge Management · 90 pts · the foundation</text>
+    <text x="360" y="412" text-anchor="middle" fill="#64748b" font-size="12">Core values and concepts underpin every category</text>
+  </g>
+</svg>
+
+Read it from top to bottom:
+
+- The **Organizational Profile** comes first. It describes who you are and what you face, so every later answer can be judged *in your context*. A small online computing school isn't held to the same approach as a large research university.
+- The **leadership triad** (Leadership, Strategy, Customers) is about setting direction: leaders, the plan, and the students and stakeholders the plan serves.
+- The **results triad** (Workforce, Operations, Results) is about getting the work done. Faculty and staff run the key processes, and those processes produce results.
+- **Measurement, Analysis, and Knowledge Management** is the foundation. Without good data, nothing above it can be managed by fact.
+
+---
+
+## How the 1,000 Points Are Weighted
+
+Points come from the 2023–2024 Education edition. The Organizational Profile isn't scored.
+
+| Category | Items | Points |
+|---|---|---|
+| **1 Leadership** | 1.1 Senior Leadership (65) · 1.2 Governance and Societal Contributions (50) | **115** |
+| **2 Strategy** | 2.1 Strategy Development (45) · 2.2 Strategy Implementation (45) | **90** |
+| **3 Customers** | 3.1 Customer Expectations (40) · 3.2 Customer Engagement (45) | **85** |
+| **4 Measurement, Analysis, and Knowledge Management** | 4.1 Measurement, Analysis, Review, and Improvement of Organizational Performance (45) · 4.2 Information and Knowledge Management (45) | **90** |
+| **5 Workforce** | 5.1 Workforce Environment (40) · 5.2 Workforce Engagement (45) | **85** |
+| **6 Operations** | 6.1 Work Processes (40) · 6.2 Operational Effectiveness (45) | **85** |
+| **7 Results** | 7.1 Student Learning and Process Results (120) · 7.2 Customer Results (80) · 7.3 Workforce Results (80) · 7.4 Leadership and Governance Results (80) · 7.5 Budgetary, Financial, Marketplace, and Strategy Results (90) | **450** |
+
+Two things stand out. **Results carry 45% of the points.** Good processes only count if they produce results. And **7.1 Student Learning and Process Results** is the single largest item. In an education framework, learning is the main thing you're judged on.
+
+---
+
+## Baldrige and Accreditation Are Different Tools
+
+| | Accreditation (e.g., NWCCU, ABET) | Baldrige |
+|---|---|---|
+| **Main question** | Do you meet the standard? | How mature and integrated is your system, and is it improving? |
+| **Outcome** | Pass/fail, with recommendations | A score and a feedback report of strengths and opportunities for improvement (OFIs) |
+| **Scope** | Defined by the accreditor's standards | Every part of the organization, including finances and workforce |
+| **Who participates** | Required for federal financial aid (institutional) or for professional standing (programs) | Voluntary |
+| **Comparison** | Mostly against the standard | Against peers, competitors, and best performers |
+
+They work well together. Accreditation sets the floor, and Baldrige shows you how to rise above it. In Lesson 6.2 you'll see how a Baldrige self-assessment produces much of the evidence an NWCCU *Evaluation of Institutional Effectiveness* needs.
+
+<Pitfall title="Treating Baldrige as Another Compliance Report">
+
+**Common mistake:** the provost asks for "a Baldrige document." A staff member writes 50 pages describing everything the school does, files it, and nothing changes.
+
+The value of Baldrige is the **feedback** and the **improvement it drives**, not the document. A three-page Organizational Profile that leads to two real improvement projects beats a polished 50-page application nobody acts on. Start small, act on what you find, and keep the document a working tool.
+
+</Pitfall>
+
+---
+
+## Key Takeaway
+
+Baldrige is a set of **"how" and "how do you know" questions**, not a prescription. It has three parts: **Criteria, core values, and scoring**. The Organizational Profile sets the context. The leadership triad sets direction, and the results triad does the work, all on a foundation of **measurement and knowledge management**. **Results are 450 of 1,000 points**, and student learning is the biggest item. Accreditation sets the floor; Baldrige helps you go past it. A single school within a university can use it, as Monfort College of Business showed.
+
+<TryIt title="Find Your School's Starting Point">
+
+Take 15 minutes and list, for your school (or the STC case):
+
+1. **Three practices you already have** that fit Baldrige categories. For example, an industry advisory board (Category 3), program review (Category 6), or an assessment plan (Category 4 or 7).
+2. **For each one, one honest "how do you know it works?"** answer. If you don't have one, note that.
+3. **One gap** where you have *no* practice at all, such as a way to check that adjunct faculty are engaged.
+
+Keep this list. You'll use it in Module 2 to start your Organizational Profile.
+
+</TryIt>
+
+<Quiz
+  questions={[
+    {
+      question: "What does the Baldrige framework primarily give a school?",
+      options: ["A required list of best practices to adopt", "Questions about how work is done and how the school knows it works, plus a scoring method", "A replacement for regional accreditation", "A ranking of universities by prestige"],
+      correctIndex: 1,
+      explanation: "Baldrige is non-prescriptive. It asks how you do things and how you know they work, then scores the maturity of your answers."
+    },
+    {
+      question: "In the 2023–2024 Education Criteria, which item carries the most points?",
+      options: ["7.1 Student Learning and Process Results", "1.1 Senior Leadership", "7.5 Budgetary, Financial, Marketplace, and Strategy Results", "2.1 Strategy Development"],
+      correctIndex: 0,
+      explanation: "7.1 is worth 120 of the 1,000 points, the largest single item. In an education framework, learning is the main thing you're judged on."
+    },
+    {
+      question: "Why does the Kenneth W. Monfort College of Business matter to a school of technology and computing?",
+      options: ["It was the first community college to win", "It won the award twice", "It invented the ADLI scoring method", "It was a single school within a university that won the award"],
+      correctIndex: 3,
+      explanation: "Monfort won in 2004 as a business school inside the University of Northern Colorado, showing a school can use Baldrige without waiting for the whole university."
+    },
+    {
+      question: "How do Baldrige and accreditation best relate?",
+      options: ["Baldrige replaces accreditation for award winners", "Accreditation is voluntary and Baldrige is required", "Accreditation sets a floor; Baldrige helps a school mature and improve beyond it", "They measure exactly the same things"],
+      correctIndex: 2,
+      explanation: "Accreditation confirms you meet standards. Baldrige assesses system maturity and improvement, and its work can feed accreditation evidence."
+    }
+  ]}
+/>
