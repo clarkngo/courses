@@ -1,0 +1,159 @@
+---
+title: "Data Models and Query Languages"
+description: "Compare relational, document, and graph data models; understand schema-on-write versus schema-on-read; and see why declarative query languages let databases optimize for you."
+module: 1
+moduleTitle: "Foundations"
+lesson: 2
+duration: "30 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## The Model Shapes the Thinking
+
+A data model isn't just a storage format. It shapes how you think about the problem, which queries are easy, and which are painful. Most applications layer models on top of each other: objects in your code, rows or documents in the database, bytes on disk. Each layer hides the complexity of the one below.
+
+Three models dominate.
+
+---
+
+## Relational
+
+Data lives in **tables** of rows, related by keys. You query with SQL.
+
+```sql
+SELECT u.name, o.total
+FROM users u
+JOIN orders o ON o.user_id = u.id
+WHERE o.created_at > now() - interval '7 days';
+```
+
+Strengths:
+
+- **Joins** make many-to-one and many-to-many relationships natural. Store a city once, reference it from many users.
+- **Normalization** avoids duplicated data that can drift out of sync.
+- A mature ecosystem of **transactions, constraints, and query optimizers**.
+
+Friction: application objects often don't map neatly onto tables (the "impedance mismatch"), and deeply nested data needs several tables and joins.
+
+---
+
+## Document
+
+Data lives in self-contained **documents**, usually JSON-like, often one per entity.
+
+```json
+{
+  "user_id": 251,
+  "name": "Ada",
+  "addresses": [
+    { "type": "home", "city": "Seattle" },
+    { "type": "work", "city": "Bellevue" }
+  ]
+}
+```
+
+Strengths:
+
+- **Locality:** everything about one entity is stored together, so loading it is one read.
+- **Natural fit for tree-shaped data** with one-to-many relationships.
+- **Flexible schema**, handy when records vary in structure.
+
+Friction: many-to-many relationships and references between documents are awkward. If two documents need the same data, you either duplicate it (and keep copies in sync) or join in application code.
+
+<Pitfall title="Choosing Documents for Data That Isn't a Tree">
+
+**Common mistake:** modeling highly connected data (users, teams, projects, permissions) as nested documents because the first screen looks like a tree.
+
+As features grow, you'll need to query across documents: "which projects does this team have access to?" You end up duplicating data and writing joins in application code. Ask whether your data is mostly a **tree** (documents fit) or a **web** (relational or graph fit).
+
+</Pitfall>
+
+---
+
+## Graph
+
+When relationships are the main point (social networks, fraud rings, recommendation, network topology, knowledge graphs), a **graph** model treats them as first-class.
+
+- **Vertices** (nodes) are entities; **edges** are relationships, each with a type and properties.
+- Queries follow paths of variable length: "friends of friends who live in Seattle," "all accounts within four transfers of this one."
+
+Path queries like these are painful in SQL (recursive common table expressions) and nearly impossible in pure document stores. Graph query languages such as Cypher, or the standardized GQL, express them directly.
+
+---
+
+## Schema-on-Write vs. Schema-on-Read
+
+"Schemaless" is misleading. Every application assumes some structure. The question is **where** it's enforced:
+
+- **Schema-on-write** (typical relational): the database checks structure when data is written. Changing the schema means a migration.
+- **Schema-on-read** (typical document): structure is interpreted when data is read. Old and new shapes can coexist; the application handles both.
+
+Neither is free. Schema-on-write catches errors early. Schema-on-read makes heterogeneous or evolving data easier but moves validation into every reader.
+
+Many relational databases now support JSON columns, and many document databases support joins and schema validation, so the line is blurring. Choose by **access patterns**, not by marketing category.
+
+---
+
+## Declarative Beats Imperative
+
+SQL is **declarative**: you say *what* you want, not *how* to get it.
+
+- The database's **query optimizer** chooses indexes, join order, and algorithms, and can change its choice as data grows.
+- The database can **parallelize** declarative queries without you rewriting them.
+- Improvements to the engine speed up your queries automatically.
+
+Imperative data access (loops over records in application code) locks in one strategy. This is why declarative query languages keep winning, even in systems that started without them.
+
+<TryIt title="Model One Domain Three Ways">
+
+Take a small domain, such as a course platform with students, courses, lessons, enrollments, and prerequisites:
+
+1. Sketch it as relational tables.
+2. Sketch it as documents. What did you nest, and what did you reference?
+3. Sketch the prerequisite chains as a graph.
+4. Write the query "all lessons a student must complete before course X" in the model where it's easiest. Which model was that?
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "Which kind of data fits the document model best?",
+    options: [
+      "Highly connected data with many many-to-many relationships",
+      "Self-contained, tree-shaped data usually loaded all at once",
+      "Data that changes every millisecond",
+      "Data with no structure at all"
+    ],
+    correctIndex: 1,
+    explanation: "Documents give locality for tree-shaped data. Connected data fits relational or graph models better."
+  },
+  {
+    question: "What does schema-on-read mean?",
+    options: [
+      "There is no schema anywhere.",
+      "Structure is interpreted by the reader rather than enforced when writing.",
+      "The database refuses unknown fields.",
+      "Schemas are stored in a separate file."
+    ],
+    correctIndex: 1,
+    explanation: "The application still assumes a structure; it's just enforced at read time."
+  },
+  {
+    question: "Why can a declarative query get faster without being rewritten?",
+    options: [
+      "Declarative queries cache everything.",
+      "The optimizer can choose new strategies, indexes, or parallelism as the engine and data change.",
+      "They skip indexes.",
+      "They run in the browser."
+    ],
+    correctIndex: 1,
+    explanation: "Saying what, not how, lets the database decide the best how."
+  }
+]} />
+
+## Up Next
+
+Module 2 opens up the database: how storage engines actually put data on disk and find it again.

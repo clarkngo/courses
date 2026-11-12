@@ -1,0 +1,152 @@
+---
+title: "Replication"
+description: "Keep copies of data on several machines with single-leader, multi-leader, and leaderless replication; understand synchronous versus asynchronous trade-offs; and handle replication-lag anomalies users actually notice."
+module: 3
+moduleTitle: "Distributing Data"
+lesson: 1
+duration: "35 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## Why Replicate?
+
+**Replication** keeps a copy of the same data on several machines. Reasons:
+
+- **Availability:** keep working when a machine or data center fails.
+- **Read scaling:** spread read traffic across copies.
+- **Latency:** keep data geographically close to users.
+
+If data never changed, replication would be trivial. All the difficulty is in **handling changes**.
+
+---
+
+## Single-Leader Replication
+
+One replica is the **leader**. All writes go to it. It sends a stream of changes (its replication log) to **followers**, which apply them in the same order. Reads can go to the leader or followers.
+
+This is the default in PostgreSQL, MySQL, and many other systems, and it's the easiest model to reason about.
+
+### Synchronous or asynchronous?
+
+- **Synchronous:** the leader waits for a follower to confirm before acknowledging the write. The follower is guaranteed up to date, but if it's slow or down, writes stall.
+- **Asynchronous:** the leader acknowledges immediately. Fast and resilient to slow followers, but if the leader fails, **recent acknowledged writes may be lost**.
+
+A common compromise is **semi-synchronous**: one follower is synchronous, the rest asynchronous.
+
+### Failover
+
+When the leader dies, a follower must be promoted. Failover is full of traps:
+
+- **How long before declaring the leader dead?** Too short causes needless failovers under load; too long extends outages.
+- **Lost writes:** with asynchronous replication, the new leader may be missing writes the old leader acknowledged. If the old leader comes back, its extra writes conflict.
+- **Split brain:** two nodes both believe they're leader and accept writes. Data diverges. Systems need a way to **fence off** the old leader (Lesson 4.2).
+
+<Pitfall title="Assuming Failover Is Lossless">
+
+**Common mistake:** treating automatic failover as invisible.
+
+With asynchronous replication, failover can discard recent writes. One well-known class of incident: an outdated follower is promoted, reuses primary-key values the old leader had already handed out, and those keys collide with data in another system such as a cache. Know your replication mode, and test failover deliberately.
+
+</Pitfall>
+
+---
+
+## Replication Lag and What Users See
+
+With asynchronous followers, reads from a follower may be **stale**. Usually the lag is milliseconds; under load or network trouble it can be seconds or minutes. Three anomalies matter:
+
+### Reading your own writes
+
+A user updates their profile, refreshes, and sees the old version because the read went to a lagging follower. Fixes:
+
+- Read data the user may have just changed (their own profile) from the leader.
+- Track the time or log position of the user's last write, and only read from followers that have caught up to it.
+
+### Monotonic reads
+
+A user refreshes twice and sees a comment appear, then disappear, because the two reads hit followers with different lag. Fix: route each user's reads to the **same replica** (for example, by hashing the user ID).
+
+### Consistent prefix reads
+
+An observer sees an answer before the question, because the two writes reached them through different partitions with different lag. Fix: make sure causally related writes go to the same partition, or track causal dependencies.
+
+**Eventual consistency** only promises that replicas converge *if writes stop*. It says nothing about how stale reads can be in the meantime. Design for the lag you'll actually have.
+
+---
+
+## Multi-Leader Replication
+
+Several nodes accept writes, each replicating to the others. Useful for:
+
+- **Multiple data centers**, each with a local leader, so writes don't cross oceans.
+- **Offline clients** (a calendar app on a phone acts as a local leader and syncs later).
+- **Collaborative editing.**
+
+The price is **write conflicts**: two leaders change the same record concurrently. Strategies:
+
+- **Avoid conflicts** by routing all writes for a given record to one leader.
+- **Last write wins (LWW)**: keep the write with the highest timestamp. Simple, but silently discards data, and clocks are unreliable (Lesson 4.2).
+- **Merge**: combine values, as in collaborative editors using **CRDTs** (conflict-free replicated data types) or operational transformation.
+- **Keep both** and let the application or user resolve.
+
+---
+
+## Leaderless Replication
+
+Any replica accepts writes directly from clients. Used by Dynamo-style systems such as Cassandra and Riak.
+
+With **n** replicas, a write is sent to all and considered successful when **w** confirm; a read queries several and waits for **r** responses, using version numbers to pick the newest value.
+
+If **w + r > n**, the set of nodes written to and the set read from must overlap, so at least one read response has the latest value. A common setting is n = 3, w = 2, r = 2.
+
+Stale replicas are repaired by:
+
+- **Read repair:** a client that sees a stale value writes the newer one back.
+- **Anti-entropy:** a background process compares replicas and copies missing data.
+
+Quorums aren't magic. Concurrent writes, failed writes that partially succeeded, and **sloppy quorums** (writes accepted by nodes outside the usual set during outages) can still produce stale or conflicting reads.
+
+<TryIt title="Catch Replication Lag">
+
+If you can run a database with a replica locally (for example, PostgreSQL streaming replication in containers):
+
+1. Write a row to the leader and immediately read it from the follower in a tight loop. How many reads return stale data?
+2. Pause the follower's network for 10 seconds and repeat.
+3. Design a "read your own writes" rule for a profile page in your own system.
+
+If you can't run it, sketch what a user would see in each of the three anomalies for an app you know.
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "What's the main risk of asynchronous replication during failover?",
+    options: [
+      "Reads become slower",
+      "Recently acknowledged writes may be lost",
+      "The leader can't accept writes",
+      "Followers can't serve reads"
+    ],
+    correctIndex: 1,
+    explanation: "The promoted follower may not have received the latest writes the old leader acknowledged."
+  },
+  {
+    question: "A user edits a post, refreshes, and sees the old version. Which guarantee was violated?",
+    options: ["Monotonic reads", "Read-your-writes", "Consistent prefix reads", "Linearizability of the leader"],
+    correctIndex: 1,
+    explanation: "Users should see their own changes. Route their reads of data they just changed to an up-to-date replica."
+  },
+  {
+    question: "With n = 3 replicas, which settings guarantee read and write quorums overlap?",
+    options: ["w = 1, r = 1", "w = 2, r = 1", "w = 2, r = 2", "w = 1, r = 2"],
+    correctIndex: 2,
+    explanation: "w + r must be greater than n. 2 + 2 = 4 > 3."
+  }
+]} />
+
+## Up Next
+
+Replication copies all the data. The next lesson splits data across machines so no single node holds it all.

@@ -1,0 +1,145 @@
+---
+title: "Partitioning"
+description: "Split data across nodes by key range or hash, avoid hot spots, handle secondary indexes across partitions, rebalance as the cluster grows, and route requests to the right node."
+module: 3
+moduleTitle: "Distributing Data"
+lesson: 2
+duration: "30 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## When One Machine Isn't Enough
+
+When the data or write load is too large for one node, split it into **partitions** (also called shards, regions, tablets, or vnodes). Each record belongs to exactly one partition; each partition is a small database of its own. Partitioning is usually combined with replication, so each partition has copies on several nodes.
+
+The goal: spread data and load **evenly**. If one partition gets far more traffic than others, it's a **hot spot**, and your cluster is only as fast as that node.
+
+---
+
+## Two Ways to Assign Keys
+
+### By key range
+
+Assign contiguous ranges of keys to each partition, like volumes of an encyclopedia (A–C, D–F, ...).
+
+- **Pro:** range queries are efficient. "All sensor readings for March" lives in one or a few partitions.
+- **Con:** certain access patterns create hot spots. If the key is a timestamp, **all of today's writes land in one partition**.
+- **Fix:** prefix the key with something that spreads writes, such as the sensor ID, then the timestamp. Range queries now need one query per sensor.
+
+### By hash of key
+
+Apply a hash function to each key and assign ranges of **hash values** to partitions.
+
+- **Pro:** spreads keys evenly, even if the keys themselves are skewed.
+- **Con:** range queries over the original keys must hit every partition.
+- **Compromise:** a **compound key** that hashes the first part and sorts by the rest. For example, partition by hash of `user_id`, sort by `timestamp` within it: all of one user's events are together and in order.
+
+<Pitfall title="The Celebrity Problem">
+
+**Common mistake:** assuming hashing eliminates hot spots.
+
+Hashing spreads *different keys* evenly, but if one key is extremely popular (a celebrity account, a viral product), all its traffic still lands on one partition. Applications may need to split hot keys deliberately, for example by appending a small random suffix to spread writes, at the cost of reading all suffixes back.
+
+</Pitfall>
+
+---
+
+## Secondary Indexes Across Partitions
+
+Partitioning by primary key is straightforward. Secondary indexes ("find all red cars") don't line up with partitions. Two approaches:
+
+### Local (document-partitioned) index
+
+Each partition indexes only its own records.
+
+- **Writes** touch one partition. Simple.
+- **Reads** by secondary key must query **every** partition and combine results (**scatter/gather**). Tail latency suffers as partitions multiply (recall fan-out from Lesson 1.1).
+
+### Global (term-partitioned) index
+
+The index itself is partitioned, by the indexed value. All "color = red" entries live in one index partition.
+
+- **Reads** go to one index partition.
+- **Writes** may touch several partitions (the record's and the index's), so global indexes are often updated **asynchronously** and can lag behind the data.
+
+---
+
+## Rebalancing
+
+Clusters change: more data, more load, failed nodes replaced. Moving partitions between nodes is **rebalancing**. Goals: keep load even, keep serving during the move, and move no more data than necessary.
+
+Approaches:
+
+- **Not `hash mod N`.** If you assign keys to nodes with `hash(key) mod N`, changing N moves almost every key.
+- **Fixed number of partitions:** create many more partitions than nodes up front (say 1,000 for 10 nodes). Adding a node means moving whole partitions to it. Simple, but you must choose the count well in advance.
+- **Dynamic partitioning:** split a partition when it grows too large, merge when it shrinks. Adapts to data volume; common with key-range partitioning.
+- **Partitions proportional to nodes:** each node holds a fixed number of partitions; new nodes split existing ones.
+
+Automatic rebalancing is convenient but can be dangerous: a node that's slow, not dead, may trigger a rebalance that adds load and makes things worse. Many operators prefer a human to approve rebalancing.
+
+---
+
+## Request Routing
+
+How does a client know which node holds key K? Options:
+
+1. Clients contact **any node**, which forwards the request if needed.
+2. A **routing tier** knows the partition map and forwards requests.
+3. **Clients** know the map themselves.
+
+The partition map must be kept consistent as it changes. Many systems store it in a **coordination service** such as ZooKeeper or etcd (Lesson 5.2); others spread it with a gossip protocol.
+
+<TryIt title="Choose a Partition Key">
+
+For each workload, pick a partition key and say what queries become expensive:
+
+1. An IoT platform storing readings from 2 million sensors, queried by sensor and time range.
+2. A chat app storing messages, queried by conversation in time order.
+3. An e-commerce order table queried by customer and, sometimes, by product.
+
+For each, identify the most likely hot spot.
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "Why is partitioning by raw timestamp risky for a write-heavy workload?",
+    options: [
+      "Timestamps can't be indexed.",
+      "All current writes land in the same partition, creating a hot spot.",
+      "Timestamps are always unique.",
+      "It makes range queries impossible."
+    ],
+    correctIndex: 1,
+    explanation: "Key-range partitioning by time sends today's writes to one partition."
+  },
+  {
+    question: "What is the trade-off of a local (document-partitioned) secondary index?",
+    options: [
+      "Writes touch every partition.",
+      "Reads by secondary key must scatter to every partition and gather results.",
+      "It can't be updated.",
+      "It only works with hashing."
+    ],
+    correctIndex: 1,
+    explanation: "Each partition indexes only its own data, so secondary-key reads query all of them."
+  },
+  {
+    question: "Why avoid assigning keys to nodes with hash(key) mod N?",
+    options: [
+      "Hash functions are slow.",
+      "Changing the number of nodes moves almost every key.",
+      "It creates too few partitions.",
+      "It prevents replication."
+    ],
+    correctIndex: 1,
+    explanation: "Rebalancing should move as little data as possible; mod N moves nearly everything."
+  }
+]} />
+
+## Up Next
+
+Module 4 asks what guarantees you get when many clients read and write at once: transactions.

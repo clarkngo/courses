@@ -1,0 +1,161 @@
+---
+title: "Batch and Stream Processing"
+description: "Distinguish systems of record from derived data, process bounded data in batch dataflows, process unbounded event streams with logs, change data capture, and event sourcing, and reason about time windows and exactly-once claims."
+module: 6
+moduleTitle: "Derived Data"
+lesson: 1
+duration: "40 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## Systems of Record and Derived Data
+
+Real applications store the same information in several forms. Separate two roles:
+
+- A **system of record** (source of truth) holds the authoritative version. When there's a disagreement, it wins.
+- **Derived data** is computed from it: caches, search indexes, materialized views, recommendation models, analytics tables. If you lose derived data, you can **rebuild** it from the source.
+
+Making this distinction explicit clarifies most data-architecture debates. Much of this module is about keeping derived data correct as the source changes.
+
+---
+
+## Batch Processing
+
+A **batch job** takes a bounded, fixed input, such as yesterday's logs, and produces output. It runs to completion, and its key metric is **throughput**.
+
+The Unix philosophy is a surprisingly good model:
+
+```bash
+cat access.log | awk '{print $7}' | sort | uniq -c | sort -rn | head -5
+```
+
+Small tools, each doing one thing, connected by a uniform interface. Distributed batch frameworks scale the same idea:
+
+- **MapReduce** popularized splitting work into a **map** phase (extract keys and values from each record), a **shuffle** that brings all values for a key together, and a **reduce** phase.
+- **Dataflow engines** such as Spark and Flink generalize this into graphs of operators, keep intermediate data in memory where possible, and handle **joins** (sort-merge, broadcast, partitioned hash) across huge datasets.
+
+Two properties make batch jobs pleasant to operate:
+
+- **Immutable inputs:** the job doesn't change its input, so you can rerun it.
+- **Deterministic, all-or-nothing output:** if a job fails, discard partial output and run it again. Buggy code? Fix it, rerun, replace the output. This **human fault tolerance** is underrated.
+
+---
+
+## Stream Processing
+
+A **stream** is unbounded: events keep arriving forever. Stream processing is like batch processing with the input never finished, and its key metric is **latency**.
+
+### Logs as message brokers
+
+Traditional message queues delete a message once a consumer acknowledges it. **Log-based brokers** such as Kafka keep an **append-only, partitioned log** instead:
+
+- Producers append events to a partition.
+- Each consumer tracks its **offset** (position) in each partition.
+- Events are retained for a configured period, so new consumers can start from the beginning and old ones can **replay** after a bug fix.
+- Order is guaranteed **within a partition**, so related events (all events for one order) should share a partition key.
+
+### Change data capture
+
+**Change data capture (CDC)** turns a database's writes into a stream, usually by reading its replication log. Downstream systems (search indexes, caches, warehouses) subscribe and stay in sync **in the same order** as the database, without the application writing to each one.
+
+<ProcessFlow
+  label="Change data capture keeping derived systems in sync"
+  color="#155e75"
+  steps={[
+    { title: "Database", detail: "System of record" },
+    { title: "Change log", detail: "Read replication log" },
+    { title: "Event log", detail: "Ordered, retained" },
+    { title: "Consumers", detail: "Search, cache, warehouse" },
+  ]}
+/>
+
+### Event sourcing
+
+**Event sourcing** goes further: the application stores **immutable events** that describe what happened ("item added to cart") as its source of truth, and derives current state by replaying them. This gives a full history, makes auditing natural, and lets you build new views from old events. It also makes deleting data (for privacy law) harder, since events are immutable, so plan for that.
+
+<Pitfall title="Dual Writes">
+
+**Common mistake:** having application code write to the database **and** separately update the search index or cache.
+
+If one write fails, or two concurrent requests interleave differently on the two systems, they drift apart permanently, and nothing notices. Write to one system of record and derive the others from its change log, in order.
+
+</Pitfall>
+
+---
+
+## Time in Streams
+
+Stream processors often compute over **windows**: counts per minute, averages per hour. But which time?
+
+- **Event time:** when the event actually happened, according to the device.
+- **Processing time:** when the processor saw it.
+
+They can differ wildly: a phone offline for an hour uploads a batch of events late. Windowing by processing time is simple but wrong for many analyses. Windowing by event time is correct but raises a question: when is a window **complete**? Systems use **watermarks** (estimates that "events older than this have probably arrived") and must decide how to handle **stragglers** that arrive later.
+
+Window types: **tumbling** (fixed, non-overlapping), **hopping** (fixed, overlapping), **sliding**, and **session** windows (grouped by bursts of activity).
+
+---
+
+## "Exactly Once" Means "Effectively Once"
+
+Failures make processors retry, so some events are processed twice. No system can prevent the underlying retries. What systems mean by **exactly-once** is that the **visible effect** is as if each event were processed once. Techniques:
+
+- **Idempotent writes:** applying the same event twice has the same effect as once, for example by recording the offset or event ID with the result.
+- **Atomic commit of output and offset**, inside the processing framework, often with checkpoints.
+
+Whenever output leaves the framework (sends an email, calls an API), you need idempotency at that boundary too.
+
+<TryIt title="Design a CDC Pipeline">
+
+You run an orders database and need a search index and a daily sales dashboard to stay in sync.
+
+1. Identify the system of record and each piece of derived data.
+2. Sketch the pipeline from database to each consumer. What partition key keeps one order's events in order?
+3. The search indexer had a bug for two days. How do you rebuild the index?
+4. Which time, event or processing, should the dashboard use, and how will you handle late events?
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "What distinguishes derived data from a system of record?",
+    options: [
+      "Derived data is always smaller.",
+      "Derived data can be rebuilt from the source of truth if lost.",
+      "Derived data is never queried.",
+      "Systems of record are always caches."
+    ],
+    correctIndex: 1,
+    explanation: "The source of truth is authoritative; derived data is computed from it."
+  },
+  {
+    question: "Why are dual writes from application code risky?",
+    options: [
+      "They're slower.",
+      "Partial failures and interleaving can make the systems drift apart permanently.",
+      "They require Kafka.",
+      "Databases forbid them."
+    ],
+    correctIndex: 1,
+    explanation: "Derive secondary systems from one ordered change log instead."
+  },
+  {
+    question: "What does 'exactly-once' processing realistically mean?",
+    options: [
+      "Events are never retried.",
+      "The visible effect is as if each event were processed once, typically via idempotence or atomic commits.",
+      "Only one consumer exists.",
+      "Events can't be replayed."
+    ],
+    correctIndex: 1,
+    explanation: "Retries still happen; the system makes them harmless."
+  }
+]} />
+
+## Up Next
+
+The final lesson combines everything into designing a whole data system, with a capstone exercise.

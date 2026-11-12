@@ -1,0 +1,134 @@
+---
+title: "Consensus and Coordination"
+description: "See how consensus algorithms like Raft elect leaders and agree on a log, why two-phase commit blocks, and how coordination services such as etcd and ZooKeeper put consensus to work."
+module: 5
+moduleTitle: "Consistency and Consensus"
+lesson: 2
+duration: "35 min"
+---
+
+import LoopDiagram from '@components/LoopDiagram.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## Getting Nodes to Agree
+
+**Consensus** means getting several nodes to agree on a value, such that:
+
+- **Uniform agreement:** no two nodes decide differently.
+- **Integrity:** no node decides twice.
+- **Validity:** the decided value was actually proposed by someone.
+- **Termination:** every node that doesn't crash eventually decides.
+
+Termination is the hard part. A famous result (the FLP impossibility result) shows that in a fully asynchronous model where a node may crash, no deterministic algorithm can always guarantee termination. Practical algorithms escape this by using **timeouts** to suspect failures: they stay safe always, and make progress whenever the network behaves reasonably.
+
+---
+
+## Two-Phase Commit: Atomic, but Not Consensus
+
+Before looking at real consensus, consider the protocol many people first meet: **two-phase commit (2PC)**, used to commit a transaction atomically across several databases or partitions.
+
+1. **Prepare:** the coordinator asks every participant, "Can you commit?" Each participant makes sure it **can** commit no matter what (writes data durably, checks constraints) and votes yes or no.
+2. **Commit or abort:** if all vote yes, the coordinator records its decision durably and tells everyone to commit; otherwise, abort.
+
+The crucial weakness: once a participant has voted yes, it **must wait** for the coordinator's decision. If the coordinator crashes at that moment, participants are stuck **in doubt**, holding locks, possibly for a long time. 2PC is **blocking**.
+
+It also tends to perform poorly, and heterogeneous distributed transactions (such as XA across different vendors' databases) amplify operational problems, because one failing component can hold locks in all the others.
+
+<Pitfall title="Reaching for Distributed Transactions by Default">
+
+**Common mistake:** using 2PC across microservices to keep their databases in sync.
+
+It couples the availability of every service to the slowest and least reliable one, and a coordinator failure can lock up data across the system. Often a better design is a single source of truth plus **asynchronous, idempotent propagation** of changes, covered in Module 6.
+
+</Pitfall>
+
+---
+
+## How Raft Works (Simplified)
+
+Raft is a consensus algorithm designed to be understandable. Paxos, Zab (used by ZooKeeper), and Viewstamped Replication are close relatives. Raft's job is to keep a **replicated log** identical on a cluster of nodes, usually three or five.
+
+<LoopDiagram
+  label="The Raft cycle of terms, elections, and log replication"
+  colors={['#155e75', '#0e7490', '#0891b2', '#164e63']}
+  steps={[
+    { title: "Term", subtitle: "a numbered epoch" },
+    { title: "Election", subtitle: "majority vote" },
+    { title: "Replicate", subtitle: "leader appends entries" },
+    { title: "Commit", subtitle: "majority has stored it" },
+  ]}
+/>
+
+1. **Terms.** Time is divided into numbered **terms**. Each term has at most one leader.
+2. **Elections.** If a follower hears nothing from a leader within a randomized timeout, it becomes a **candidate**, increments the term, and asks for votes. A node votes for at most one candidate per term, and only for a candidate whose log is at least as up to date as its own. A candidate with votes from a **majority** becomes leader.
+3. **Log replication.** Clients send commands to the leader, which appends them to its log and sends them to followers.
+4. **Commit.** Once a **majority** has stored an entry, it's committed; the leader applies it and tells followers to apply it.
+5. **Stale leaders are harmless.** If an old leader returns from a pause, any message it sends carries an older term number, and nodes reject it. This is the same idea as a fencing token.
+
+Why majorities? Any two majorities overlap in at least one node, so a new leader's majority always includes someone who has every committed entry. With five nodes, the cluster tolerates two failures. With three, it tolerates one.
+
+Costs: every write needs a majority round trip; a cluster can't make progress without a majority; and frequent elections, caused by timeouts that are too aggressive or by network trouble, hurt availability.
+
+---
+
+## Coordination Services
+
+Most applications don't implement consensus themselves. They use a **coordination service** built on it, such as **etcd** (Raft) or **ZooKeeper** (Zab). These hold small amounts of critical data in memory, replicated by consensus, and offer:
+
+- **Linearizable key-value operations** and compare-and-set.
+- **Leases and locks**, with fencing via increasing version or transaction numbers.
+- **Leader election** for other systems.
+- **Membership and failure detection:** which nodes are alive.
+- **Change notifications:** clients can watch keys and react.
+
+Typical uses: deciding which node is the leader of each partition, storing partition maps (Lesson 3.2), and holding cluster configuration. Kubernetes stores its cluster state in etcd, for example.
+
+Keep these services for **slow-changing coordination data**, not application data. They're built for correctness, not throughput.
+
+<TryIt title="Watch an Election">
+
+If you can run containers, start a three-node etcd cluster (or use a Raft visualization online):
+
+1. Find the current leader and term.
+2. Stop the leader. How long until a new one is elected, and what's the new term?
+3. Stop a second node. Can the remaining node accept writes? Why not?
+4. Restart both. What happens to the term and to any writes you attempted?
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "Why is two-phase commit called a blocking protocol?",
+    options: [
+      "It blocks all reads.",
+      "Participants that voted yes must wait for the coordinator's decision and can be stuck if it crashes.",
+      "It requires one CPU core.",
+      "It blocks network partitions."
+    ],
+    correctIndex: 1,
+    explanation: "In-doubt participants can't decide on their own once they've promised to commit."
+  },
+  {
+    question: "How many node failures can a five-node Raft cluster tolerate while still making progress?",
+    options: ["One", "Two", "Three", "Four"],
+    correctIndex: 1,
+    explanation: "A majority of three must remain, so up to two nodes can fail."
+  },
+  {
+    question: "What is a coordination service like etcd best used for?",
+    options: [
+      "Storing large volumes of application data",
+      "Small, critical, slow-changing data such as leader election, locks, and configuration",
+      "Analytics queries",
+      "Video streaming"
+    ],
+    correctIndex: 1,
+    explanation: "Coordination services trade throughput for strong guarantees on small amounts of data."
+  }
+]} />
+
+## Up Next
+
+Module 6 turns to derived data: batch and stream processing, and building systems from logs.

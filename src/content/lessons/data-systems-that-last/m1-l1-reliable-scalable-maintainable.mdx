@@ -1,0 +1,151 @@
+---
+title: "Reliable, Scalable, Maintainable"
+description: "Define the three goals every data system is judged by, describe load with the right parameters, measure performance with percentiles instead of averages, and see why tail latency dominates at scale."
+module: 1
+moduleTitle: "Foundations"
+lesson: 1
+duration: "30 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## Data-Intensive, Not Compute-Intensive
+
+Most applications today aren't limited by CPU. They're limited by **data**: how much of it there is, how fast it changes, and how many places it has to be stored, indexed, cached, and moved. A typical backend combines several systems, each good at one job:
+
+- A **database** to store data durably.
+- A **cache** to make expensive reads fast.
+- A **search index** to query by keyword.
+- A **message queue or log** to pass events between services.
+- **Batch and stream processors** to compute derived data.
+
+When you wire these together, you're designing a data system, whether you call it that or not. The rest of this course is about the ideas inside those building blocks and the trade-offs in combining them.
+
+Three goals frame every design decision.
+
+---
+
+## Reliability: Working Correctly When Things Go Wrong
+
+A reliable system keeps doing the right thing even when parts of it fail. Distinguish two words:
+
+- A **fault** is one component deviating from its spec: a disk dies, a process crashes, a network link drops packets.
+- A **failure** is the system as a whole stopping providing the service users expect.
+
+You can't prevent all faults, so the goal is **fault tolerance**: stopping faults from becoming failures.
+
+Faults come in three families:
+
+1. **Hardware faults.** Disks, memory, power, and networks fail regularly at scale. Large fleets see machine failures every day. Redundancy and the ability to lose whole machines handle these.
+2. **Software faults.** Bugs that hit many machines at once: a bad config pushed everywhere, a leap-second bug, a runaway process exhausting a shared resource. These are often worse than hardware faults because they're correlated.
+3. **Human errors.** Operators misconfigure things. Studies of large services have repeatedly found configuration errors among the leading causes of outages. Good defaults, staged rollouts, easy rollback, and sandboxes reduce them.
+
+<Pitfall title="Assuming Faults Are Independent">
+
+**Common mistake:** "We have three replicas, each 99.9% available, so we're effectively never down."
+
+That math assumes failures are independent. A bad deploy, a shared dependency, or a region-wide outage can take down all three at once. Ask what your replicas **share**: code, config, power, network, operators.
+
+</Pitfall>
+
+---
+
+## Scalability: Coping with Growth
+
+"Is it scalable?" is meaningless on its own. The useful question is: **if load grows in a particular way, what happens to performance, and what can we do about it?**
+
+### Describe load with load parameters
+
+Pick the numbers that actually drive your system's work:
+
+- Requests per second, split by type (reads vs. writes).
+- Ratio of reads to writes.
+- Number of concurrent active users.
+- Data volume, and how fast it grows.
+- **Fan-out**: how many downstream operations one request triggers.
+
+Fan-out often matters most. Consider a social feed. When a user posts, you can either:
+
+- **Write-time fan-out:** push the post into each follower's precomputed feed. Reads are cheap; writes are expensive for accounts with millions of followers.
+- **Read-time fan-out:** store the post once and assemble feeds when users open the app. Writes are cheap; reads are expensive.
+
+Many real systems use a **hybrid**: push for most accounts, pull for the few with huge follower counts. The right answer depends on your load parameters, not on a general rule.
+
+### Describe performance with percentiles
+
+Response times vary. Averages hide that. Use **percentiles**:
+
+- **p50 (median):** half of requests are faster than this. The typical experience.
+- **p95, p99, p99.9:** the slow tail. One in a hundred requests is slower than p99.
+
+Tail latencies matter because:
+
+- The slowest requests often belong to your **most valuable users**, who have the most data.
+- **Tail latency amplification:** if one user action calls 10 backends in parallel and waits for all of them, the action is as slow as the slowest call. Even if each backend is slow only 1% of the time, about 1 in 10 actions will hit at least one slow call.
+
+Service level objectives are usually written in percentiles: "p99 under 300 ms, measured over 5 minutes."
+
+### Scaling up and out
+
+- **Scale up (vertical):** a bigger machine. Simple, eventually limited and expensive.
+- **Scale out (horizontal):** more machines. Adds the complexity of distributing data, which Modules 3–5 cover.
+
+Stateless services scale out easily. Stateful data systems are where the hard problems live.
+
+---
+
+## Maintainability: Working Well for Years
+
+Most software cost comes **after** launch: operating, debugging, adapting, and extending. Three principles help:
+
+- **Operability:** make it easy for operators to monitor, deploy, recover, and understand the system.
+- **Simplicity:** reduce accidental complexity with good abstractions that hide detail without hiding behavior you need to reason about.
+- **Evolvability:** make it easy to change data models, schemas, and behavior as requirements change. Lesson 2.2 returns to this for data formats.
+
+<TryIt title="Write Down Your Load Parameters">
+
+Pick a system you work on (or a familiar app):
+
+1. List its three most important load parameters, with rough current numbers.
+2. Find, or estimate, its p50 and p99 latency for the most important request.
+3. Identify one place where a request fans out to several backends. What happens to tail latency there?
+4. Name one shared dependency that could make "independent" replicas fail together.
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "What's the difference between a fault and a failure?",
+    options: [
+      "They're the same thing.",
+      "A fault is one component misbehaving; a failure is the whole system not providing its service.",
+      "A failure is always a hardware problem.",
+      "A fault only happens in software."
+    ],
+    correctIndex: 1,
+    explanation: "Fault tolerance is about stopping component faults from becoming system failures."
+  },
+  {
+    question: "A page calls 10 backends in parallel and waits for all of them. Each backend is slow 1% of the time. Roughly how often is the page slow?",
+    options: ["About 0.1% of the time", "About 1% of the time", "About 10% of the time", "Never"],
+    correctIndex: 2,
+    explanation: "1 − 0.99¹⁰ ≈ 9.6%. Fan-out amplifies tail latency."
+  },
+  {
+    question: "Why report p99 latency rather than the average?",
+    options: [
+      "Averages are hard to compute.",
+      "Averages hide the slow tail that real users, often important ones, experience.",
+      "p99 is always lower.",
+      "Percentiles are required by law."
+    ],
+    correctIndex: 1,
+    explanation: "Percentiles show the distribution; the tail is where user pain and amplification live."
+  }
+]} />
+
+## Up Next
+
+Before storing data, you choose how to model it. The next lesson compares relational, document, and graph models.

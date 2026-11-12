@@ -1,0 +1,161 @@
+---
+title: "Designing the Whole System"
+description: "Compose databases, logs, and derived views into one coherent system: the outbox pattern, end-to-end idempotency, enforcing constraints with ordered logs, auditing derived data, and a capstone design exercise."
+module: 6
+moduleTitle: "Derived Data"
+lesson: 2
+duration: "45 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## No Single Tool Does Everything
+
+Every data system is good at some access patterns and bad at others. A realistic application combines an OLTP database, a cache, a search index, a warehouse, and stream processors. The design question isn't "which database?" but **"how do these pieces stay correct together?"**
+
+A useful mental model: think of your whole architecture as one big database, **unbundled**. The OLTP store is the system of record; indexes, caches, and views are derived data maintained by dataflow, just as a database maintains its own indexes internally. The log is the glue.
+
+---
+
+## The Outbox Pattern
+
+Services often need to update their database **and** publish an event. Doing both directly is a dual write (Lesson 6.1). The **transactional outbox** fixes it:
+
+<ProcessFlow
+  label="The transactional outbox pattern"
+  color="#155e75"
+  loop="Relay crashes → resumes from the last published row; consumers dedupe by event ID"
+  steps={[
+    { title: "One transaction", detail: "Write data + outbox row" },
+    { title: "Commit", detail: "Both or neither" },
+    { title: "Relay", detail: "Read outbox or CDC" },
+    { title: "Publish", detail: "Append to event log" },
+    { title: "Consume", detail: "Idempotent handlers" },
+  ]}
+/>
+
+1. In **one local transaction**, write the business change and an event row to an `outbox` table.
+2. A relay process (or CDC on the outbox table) publishes outbox rows to the event log.
+3. The relay may publish an event more than once after a crash, so **consumers must be idempotent**, keyed by event ID.
+
+The event is published if and only if the change committed. No distributed transaction required.
+
+---
+
+## End-to-End Idempotency
+
+Retries happen at every layer: the user double-clicks, the browser retries, the load balancer retries, the service retries, the stream processor replays. Deduplicating at one layer doesn't protect the others.
+
+The robust approach is an **end-to-end request ID**:
+
+- The client generates a unique ID for each logical operation (for example, when the checkout page loads).
+- Every layer passes it through.
+- The system of record stores it with a **uniqueness constraint**, so a repeated request is detected and returns the original result.
+
+This is the **end-to-end argument**: some guarantees can only be implemented correctly by the endpoints of a system, not by the layers in between.
+
+<Pitfall title="Trusting a Lower Layer to Deduplicate">
+
+**Common mistake:** relying on TCP, the message broker, or the framework's exactly-once feature to prevent duplicate payments.
+
+Each covers only its own hop. A user double-click or a client retry after a timeout creates a new request those layers can't recognize. Only an end-to-end operation ID checked at the source of truth closes the gap.
+
+</Pitfall>
+
+---
+
+## Enforcing Constraints with Logs
+
+How do you enforce "usernames are unique" or "don't oversell inventory" across a partitioned, asynchronous system without distributed transactions?
+
+- **Partition by the constrained value.** Route all requests for username "ada" (or for SKU 123) to the same log partition.
+- **Process the partition's log sequentially.** A single consumer sees requests in order and decides deterministically: the first claim wins, later ones are rejected.
+- **Report the outcome** back to the requester through another event or a response channel.
+
+This uses total order broadcast (Lesson 5.1) within a partition, and it scales by partitioning.
+
+Many constraints can also be **relaxed and compensated**. Airlines overbook and apologize; warehouses backorder. Asking "how bad is a rare violation, and can we fix it afterward?" often gives a simpler, faster design than strict prevention.
+
+---
+
+## Timeliness vs. Integrity
+
+"Consistency" usually bundles two different properties:
+
+- **Timeliness:** users see up-to-date state. Violations are temporary: wait and it resolves.
+- **Integrity:** no data is lost, corrupted, or contradictory. Violations are permanent until someone fixes them.
+
+Integrity matters far more. Asynchronous, log-based designs can trade some timeliness (derived views lag a little) while preserving integrity through ordering, idempotency, and deterministic processing. That trade is usually worth making.
+
+---
+
+## Trust, but Verify
+
+Hardware and software corrupt data more often than we assume: bad disks, bugs in replication, botched migrations. Build in checks:
+
+- **Audit derived data** by periodically recomputing a sample from the source and comparing.
+- **Checksums** on stored and transmitted data.
+- **Keep the immutable log** long enough to rebuild derived state.
+- **Test restores** and rebuilds, not just backups.
+
+And remember the people in the data: collect only what you need, honor deletion requests across every derived copy, and be deliberate about what you log.
+
+<TryIt title="Capstone: Design a Ticketing Platform">
+
+Design the data architecture for a concert ticketing site: browse events, search by artist and city, hold seats for 10 minutes, pay, receive tickets, and show organizers a live sales dashboard. Peak traffic is huge when popular shows go on sale.
+
+Write one page covering:
+
+1. **Data models** for events, seats, holds, orders, and tickets. Which is the system of record for each?
+2. **Partitioning** for seats and holds. How do you avoid a hot spot on the most popular show?
+3. **Preventing double-selling** a seat: transaction isolation, a sequential log per show, or both?
+4. **Payments:** the end-to-end idempotency key, and how you avoid double charges on retry.
+5. **Derived data:** search index, dashboard, email notifications. Use the outbox pattern or CDC, and state how each handles replays.
+6. **Failures:** what happens if the payment provider times out, the leader database fails over, or the dashboard consumer falls an hour behind?
+
+Compare your design with a classmate's. Where did you choose differently, and what did each choice cost?
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "What problem does the transactional outbox pattern solve?",
+    options: [
+      "Slow queries",
+      "Publishing an event if and only if the database change committed, without a distributed transaction",
+      "Schema evolution",
+      "Clock skew"
+    ],
+    correctIndex: 1,
+    explanation: "Writing the event in the same local transaction ties publication to the commit."
+  },
+  {
+    question: "Why does preventing duplicate payments require an end-to-end request ID?",
+    options: [
+      "Brokers can't store IDs.",
+      "Each lower layer only deduplicates its own hop, so client retries and double-clicks get through.",
+      "IDs make requests faster.",
+      "Databases require them."
+    ],
+    correctIndex: 1,
+    explanation: "Only the endpoints can recognize the same logical operation across all layers."
+  },
+  {
+    question: "Which property is usually more important to preserve: timeliness or integrity?",
+    options: [
+      "Timeliness, because users want speed",
+      "Integrity, because its violations are permanent until fixed",
+      "Neither matters",
+      "They're the same thing"
+    ],
+    correctIndex: 1,
+    explanation: "Stale views heal over time; lost or corrupted data doesn't."
+  }
+]} />
+
+## Course Complete
+
+You've traced data from bytes on disk to replicated, partitioned, transactional, and streaming systems. The specific products will change; the trade-offs won't. When you meet a new data system, ask the questions from this course: how does it store data, what does it replicate and how, how is it partitioned, what isolation does it provide, what happens during partial failure, and how is derived data kept correct? Then read its documentation looking for the answers.

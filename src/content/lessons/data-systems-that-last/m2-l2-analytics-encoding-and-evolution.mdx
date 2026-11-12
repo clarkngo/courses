@@ -1,0 +1,143 @@
+---
+title: "Analytics, Encoding, and Schema Evolution"
+description: "Separate transactional from analytical workloads, see why column-oriented storage makes analytics fast, and encode data so old and new code can keep talking during rolling upgrades."
+module: 2
+moduleTitle: "Storage and Encoding"
+lesson: 2
+duration: "35 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## Two Very Different Workloads
+
+| | OLTP (transaction processing) | OLAP (analytics) |
+|---|---|---|
+| **Typical query** | Fetch or update a few rows by key | Scan millions of rows, aggregate a few columns |
+| **Who runs it** | The application, on behalf of users | Analysts, dashboards, data science |
+| **Data** | Current state | History, often years of it |
+| **Bottleneck** | Seek latency, concurrency | Disk and memory bandwidth |
+
+Running heavy analytics on the production OLTP database slows it down for users. So analytical data is usually copied into a separate **data warehouse** or lakehouse, through **ETL** (extract, transform, load) or **ELT** pipelines, often modeled as a **star schema**: a large **fact table** of events (sales, clicks) surrounded by **dimension tables** (product, store, date).
+
+---
+
+## Column-Oriented Storage
+
+A fact table may have hundreds of columns, but a typical analytical query touches four or five. Row-oriented storage must read every column of every row to get them.
+
+**Column-oriented storage** stores each column in its own file, in the same row order.
+
+- A query reads only the columns it needs.
+- Values in a column are similar, so they **compress** very well. A column with a few distinct values can be stored as bitmaps or run-length encoded.
+- Compressed column chunks fit in CPU cache, allowing **vectorized** processing of many values per instruction.
+
+Writes are harder: inserting one row touches every column file. Column stores therefore buffer writes in memory (much like an LSM memtable) and merge them in bulk. Formats such as Parquet and engines such as most cloud warehouses use this approach.
+
+<Pitfall title="Using the Warehouse as an App Database">
+
+**Common mistake:** serving an interactive app feature directly from a column-oriented warehouse because "the data's already there."
+
+Warehouses are optimized for large scans, not thousands of small key lookups per second, and they're often loaded in batches, so data may be minutes or hours old. Serve user-facing reads from an OLTP store or a purpose-built serving layer, and feed it from the warehouse if needed.
+
+</Pitfall>
+
+---
+
+## Encoding: Turning Objects into Bytes
+
+Whenever data leaves a process (written to disk, sent over a network, put on a queue), it must be **encoded** (serialized) into bytes and later **decoded**.
+
+Options:
+
+- **Language-specific formats** (Java serialization, Python pickle): convenient, but tie you to one language, often have security problems when decoding untrusted input, and handle versioning poorly. Avoid them for anything that outlives a process.
+- **Text formats** (JSON, XML, CSV): human-readable and universal, but verbose, ambiguous about numbers (large integers lose precision in some parsers), and lacking schemas by default.
+- **Binary formats with schemas** (Protocol Buffers, Thrift, Avro): compact, fast, and with explicit rules for evolving the schema.
+
+---
+
+## Schema Evolution: Old and New Code Together
+
+In real systems, you never upgrade everything at once:
+
+- Servers are upgraded in a **rolling** fashion, so old and new versions run side by side.
+- Mobile app users update whenever they like, if ever.
+- Data written years ago is still in the database.
+
+So you need compatibility in **both directions**:
+
+- **Backward compatibility:** new code can read data written by old code.
+- **Forward compatibility:** old code can read data written by new code (usually by ignoring what it doesn't understand).
+
+### How schema-based formats manage it
+
+- **Protocol Buffers and Thrift** identify each field by a numeric **tag**. Rules: never reuse or change a tag; new fields must be optional or have defaults; old code skips unknown tags.
+- **Avro** has no tags. The **writer's schema** and **reader's schema** are resolved against each other by field name; fields missing on one side use defaults. The writer's schema must be available to the reader, for example via a schema registry or a file header.
+
+<Pitfall title="The Field That Vanished in Transit">
+
+**Common mistake:** old code reads a record, decodes it into an object that doesn't know about a newly added field, then writes it back. The new field is silently lost.
+
+Make sure code that round-trips data preserves unknown fields, or avoid read-modify-write paths through old versions during a rollout.
+
+</Pitfall>
+
+---
+
+## Where Encoded Data Flows
+
+- **Through databases:** data outlives code. "Data outlives code" means a value written today may be read by code written years from now.
+- **Through services (REST, gRPC):** the server is usually upgraded before clients, so servers must accept old requests and clients must tolerate new response fields. Public APIs may need to support old versions for years.
+- **Through asynchronous messages (queues, logs):** the sender doesn't know who will read a message or when. Schema registries help keep producers and consumers compatible.
+
+<TryIt title="Plan a Safe Field Change">
+
+You need to rename a field `phone` to `mobile_phone` in a message read by three services, deployed independently.
+
+1. Write the sequence of deploys that never breaks old or new readers. (Hint: add before you remove.)
+2. In Protocol Buffers, what happens to the field tag?
+3. How long must you support the old field, given that some data on disk is three years old?
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "Why are column-oriented stores fast for analytics?",
+    options: [
+      "They keep everything in one file.",
+      "Queries read only the columns they need, and similar values compress well.",
+      "They don't use disks.",
+      "They avoid aggregation."
+    ],
+    correctIndex: 1,
+    explanation: "Column layout reduces I/O and enables compression and vectorized processing."
+  },
+  {
+    question: "What is forward compatibility?",
+    options: [
+      "New code can read old data.",
+      "Old code can read data written by new code.",
+      "Data is encrypted in transit.",
+      "Data is stored in the future."
+    ],
+    correctIndex: 1,
+    explanation: "Forward compatibility usually means old code ignores fields it doesn't understand."
+  },
+  {
+    question: "In Protocol Buffers, what must you never do when evolving a schema?",
+    options: [
+      "Add an optional field",
+      "Reuse or change an existing field's tag number",
+      "Add a default value",
+      "Remove a field that is no longer used and reserve its tag"
+    ],
+    correctIndex: 1,
+    explanation: "Tags identify fields on the wire. Reusing one makes old and new data mean different things."
+  }
+]} />
+
+## Up Next
+
+Module 3 moves from one machine to many: replication and partitioning.

@@ -1,0 +1,171 @@
+---
+title: "Storage Engines: Logs, LSM-Trees, and B-Trees"
+description: "Build intuition for how databases store and find data, from an append-only log with a hash index to LSM-trees and B-trees, and weigh their trade-offs in write amplification, read cost, and crash safety."
+module: 2
+moduleTitle: "Storage and Encoding"
+lesson: 1
+duration: "35 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## The Simplest Database
+
+Here's a working key-value store in two shell functions:
+
+```bash
+db_set () { echo "$1,$2" >> database; }
+db_get () { grep "^$1," database | sed -e "s/^$1,//" | tail -n 1; }
+```
+
+Writes are fast: appending to a file is about the cheapest disk operation there is. Reads are terrible: every lookup scans the whole file. Real storage engines are mostly clever answers to one question: **how do we keep writes cheap while making reads fast?**
+
+The answer is an **index**: extra structure derived from the data that speeds up reads. Every index speeds up some reads and slows down writes, because it must be updated too. That's the fundamental trade-off.
+
+---
+
+## Step 1: Append-Only Log + Hash Index
+
+Keep appending records to a log file, and keep an in-memory **hash map** from each key to the byte offset of its latest value.
+
+- **Write:** append to the file, update the offset in the map.
+- **Read:** look up the offset, seek, read one record.
+
+Problems to solve:
+
+- **The file grows forever.** Split the log into **segments**, and periodically **compact** them: rewrite each segment keeping only the latest value per key, then merge segments.
+- **Deletes:** append a special **tombstone** record; compaction drops the key.
+- **Crashes:** rebuild the hash map by scanning segments on restart (or snapshot it).
+- **Limits:** all keys must fit in memory, and range queries ("all keys between A and F") need a full scan.
+
+Append-only design is fast because sequential writes beat random writes, and it makes crash recovery simpler because old data is never overwritten in place.
+
+---
+
+## Step 2: Sorted Segments and LSM-Trees
+
+Now require each segment to be **sorted by key**. A sorted segment is often called an **SSTable** (sorted string table). Sorting buys a lot:
+
+- **Merging** segments is an efficient merge-sort pass.
+- The in-memory index can be **sparse**: one entry every few kilobytes, since you can scan forward from the nearest known key.
+- **Range queries** become efficient.
+
+But writes arrive in random order. How do you produce sorted files? Buffer writes in a sorted in-memory structure first:
+
+<ProcessFlow
+  label="Write path in a log-structured merge (LSM) storage engine"
+  color="#155e75"
+  steps={[
+    { title: "WAL", detail: "Append for crash safety" },
+    { title: "Memtable", detail: "Sorted, in memory" },
+    { title: "Flush", detail: "Write as sorted SSTable" },
+    { title: "Compact", detail: "Merge, drop old values" },
+  ]}
+/>
+
+1. Every write is appended to a **write-ahead log** (so it survives a crash) and inserted into the **memtable**, a sorted in-memory tree.
+2. When the memtable gets big, it's written to disk as a new SSTable.
+3. **Reads** check the memtable, then the newest SSTable, then older ones.
+4. Background **compaction** merges SSTables and discards overwritten and deleted values.
+
+This is the **log-structured merge-tree (LSM-tree)** design used by engines such as RocksDB, LevelDB, Cassandra, and HBase. To avoid checking many files for keys that don't exist, LSM engines use **Bloom filters**: compact probabilistic structures that can say "definitely not here."
+
+---
+
+## Step 3: B-Trees
+
+The other major family, and the default in most relational databases, is the **B-tree**. It's been the standard index structure since the 1970s.
+
+- Data is organized into fixed-size **pages** (often 4–16 KB) on disk.
+- Pages form a tree. Each page holds sorted keys and pointers to child pages covering key ranges. Leaf pages hold values or references to rows.
+- A lookup walks from the root to a leaf: with a branching factor of a few hundred, a few levels cover billions of keys.
+- **Updates happen in place**: find the leaf page, overwrite it. If a page fills up, split it into two and update the parent.
+
+Because a page split modifies several pages, a crash mid-update could corrupt the tree. B-trees also use a **write-ahead log** so that every change is first recorded durably and can be replayed after a crash.
+
+---
+
+## LSM vs. B-Tree
+
+| | LSM-tree | B-tree |
+|---|---|---|
+| **Writes** | Sequential appends; typically higher write throughput | Random in-place page writes |
+| **Reads** | May check several files; Bloom filters help | Predictable: one path root to leaf |
+| **Write amplification** | Data rewritten repeatedly during compaction | Whole pages rewritten for small changes, plus the WAL |
+| **Space** | Compresses well; fragmentation removed by compaction | Some unused space in pages |
+| **Latency spikes** | Compaction can compete with foreground work | Generally steadier |
+| **Transactions and locking** | Possible, more varied | Natural: each key lives in one place |
+
+**Write amplification** (one logical write causing several physical writes) matters for both throughput and SSD wear. Neither design wins everywhere. Measure with your workload.
+
+<Pitfall title="Ignoring Compaction Until Production">
+
+**Common mistake:** benchmarking an LSM-based database for an hour, seeing great write throughput, and going live.
+
+Under sustained load, compaction may fall behind. Unmerged files pile up, reads slow down, and disk usage climbs. Benchmark long enough for compaction to reach a steady state, and monitor pending compaction in production.
+
+</Pitfall>
+
+---
+
+## Other Index Ideas in Brief
+
+- **Secondary indexes** map a non-key column to the rows that have it; values may repeat.
+- **Clustered indexes** store rows inside the index itself; **covering indexes** include extra columns so some queries never touch the table.
+- **Multi-column and spatial indexes** handle queries over several dimensions, such as latitude and longitude.
+- **In-memory databases** are fast not only because RAM is fast, but because they avoid encoding data for disk.
+
+<TryIt title="Build a Tiny Log-Structured Store">
+
+In any language, in under 100 lines:
+
+1. Append `key,value` lines to a file and keep a hash map from key to byte offset.
+2. Implement `get` with a seek instead of a scan.
+3. Add tombstones for deletes.
+4. Write a compaction function that rewrites the file keeping only the latest value per key.
+5. Kill the process mid-write. What does recovery need to handle?
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "What's the core trade-off of adding an index?",
+    options: [
+      "Faster writes, slower reads",
+      "Faster reads for some queries, slower writes",
+      "Less disk space",
+      "No trade-off"
+    ],
+    correctIndex: 1,
+    explanation: "Every index must be maintained on write. It pays off only for the reads it speeds up."
+  },
+  {
+    question: "In an LSM engine, what is the memtable?",
+    options: [
+      "A sorted in-memory structure that buffers recent writes before they're flushed as an SSTable",
+      "A cache of query results",
+      "The final on-disk file",
+      "A list of deleted keys only"
+    ],
+    correctIndex: 0,
+    explanation: "Writes go to the WAL and memtable; full memtables are flushed as sorted files."
+  },
+  {
+    question: "Why do B-trees also use a write-ahead log?",
+    options: [
+      "To make reads faster",
+      "Because in-place page updates and splits could leave the tree corrupted after a crash",
+      "To store Bloom filters",
+      "To replace the tree entirely"
+    ],
+    correctIndex: 1,
+    explanation: "The WAL lets the database replay or roll back changes and restore a consistent tree."
+  }
+]} />
+
+## Up Next
+
+The next lesson covers analytical storage and how data is encoded so systems can evolve without breaking each other.
