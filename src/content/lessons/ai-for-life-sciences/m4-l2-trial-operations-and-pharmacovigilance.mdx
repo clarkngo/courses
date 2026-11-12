@@ -33,6 +33,35 @@ Models learn from history. In trials, history includes the under-representation 
 - A patient-finding tool that relies on structured EHR data will miss people whose care is fragmented across systems, or who are seen at clinics with less complete records.
 - Eligibility screening can encode criteria that exclude groups more than the science requires.
 
+<svg viewBox="0 0 720 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A feedback loop. Historical trials under-represent many groups. A model is trained on that history. It favors the same sites and patients. The new trial is unrepresentative too, which becomes the next round of history. The loop repeats unless someone checks representativeness." style="max-width:100%;height:auto;margin:1.5rem auto;display:block;">
+  <defs>
+    <marker id="ls-arrow-8" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#b45309"/>
+    </marker>
+  </defs>
+  <g font-family="system-ui, -apple-system, sans-serif">
+    <path d="M 472 52 Q 580 52 588 118" fill="none" stroke="#b45309" stroke-width="2.5" marker-end="url(#ls-arrow-8)"/>
+    <path d="M 588 182 Q 580 250 476 250" fill="none" stroke="#b45309" stroke-width="2.5" marker-end="url(#ls-arrow-8)"/>
+    <path d="M 244 250 Q 140 250 132 182" fill="none" stroke="#b45309" stroke-width="2.5" marker-end="url(#ls-arrow-8)"/>
+    <path d="M 132 118 Q 140 50 244 52" fill="none" stroke="#b45309" stroke-width="2.5" marker-end="url(#ls-arrow-8)"/>
+    <rect x="250" y="22" width="220" height="56" rx="10" fill="#fff7ed" stroke="#fdba74"/>
+    <text x="360" y="46" text-anchor="middle" fill="#7c2d12" font-size="14" font-weight="700">Historical trials</text>
+    <text x="360" y="66" text-anchor="middle" fill="#7c2d12" font-size="13">under-represent many groups</text>
+    <rect x="480" y="122" width="220" height="56" rx="10" fill="#fff7ed" stroke="#fdba74"/>
+    <text x="590" y="146" text-anchor="middle" fill="#7c2d12" font-size="14" font-weight="700">Model is trained</text>
+    <text x="590" y="166" text-anchor="middle" fill="#7c2d12" font-size="13">on that history</text>
+    <rect x="250" y="222" width="220" height="56" rx="10" fill="#fff7ed" stroke="#fdba74"/>
+    <text x="360" y="246" text-anchor="middle" fill="#7c2d12" font-size="14" font-weight="700">It favors the same</text>
+    <text x="360" y="266" text-anchor="middle" fill="#7c2d12" font-size="13">sites and patients</text>
+    <rect x="20" y="122" width="220" height="56" rx="10" fill="#fff7ed" stroke="#fdba74"/>
+    <text x="130" y="146" text-anchor="middle" fill="#7c2d12" font-size="14" font-weight="700">The new trial is</text>
+    <text x="130" y="166" text-anchor="middle" fill="#7c2d12" font-size="13">unrepresentative too</text>
+    <text x="360" y="140" text-anchor="middle" fill="#b91c1c" font-size="14" font-weight="700">The loop repeats</text>
+    <text x="360" y="160" text-anchor="middle" fill="#334155" font-size="13">unless someone checks</text>
+    <text x="360" y="178" text-anchor="middle" fill="#334155" font-size="13">representativeness</text>
+  </g>
+</svg>
+
 Regulators expect sponsors to plan for representative enrollment. In the U.S., FDORA (2022) requires diversity action plans for certain trials, and FDA has issued guidance on them. Check the current status, since timing and guidance have shifted. An AI tool that optimizes speed without checking representativeness can work against those plans.
 
 **Ask vendors:** what data trained the model, and how does its performance and selection vary by demographic group and site type?
