@@ -46,6 +46,40 @@ A simple question sorts most tasks: **does this output become part of a GxP reco
 - **Non-GxP** (most discovery, internal communication, general learning): your organization's acceptable-use policy and approved-tool list apply. Discernment is your main control.
 - **GxP** (manufacturing records, clinical trial data, pharmacovigilance cases, quality investigations, submission content): data-integrity rules, validation, audit trails, and SOPs apply. Using an unvalidated chatbot to create or change GxP content is generally not acceptable without a defined, approved process. Module 5 covers this in depth.
 
+<svg viewBox="0 0 720 296" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Decision diagram. Ask: will the output become part of a GxP record, or support a GxP decision? If no, it is non-GxP: the acceptable-use policy and approved-tool list apply, and your discernment is the main control. If yes, it is GxP: data integrity (ALCOA+), validation and audit trail, and SOPs apply, with quality-unit approval before any AI use." style="max-width:100%;height:auto;margin:1.5rem auto;display:block;">
+  <defs>
+    <marker id="ls-arrow-3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#047857"/>
+    </marker>
+  </defs>
+  <defs>
+    <marker id="ls-arrow-3b" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#b45309"/>
+    </marker>
+  </defs>
+  <g font-family="system-ui, -apple-system, sans-serif">
+    <rect x="150" y="16" width="420" height="66" rx="12" fill="#065f46"/>
+    <text x="360" y="44" text-anchor="middle" fill="#ffffff" font-size="15" font-weight="700">Will the output become part of a GxP record,</text>
+    <text x="360" y="66" text-anchor="middle" fill="#ffffff" font-size="15" font-weight="700">or support a GxP decision?</text>
+    <line x1="300" y1="84" x2="190" y2="136" stroke="#047857" stroke-width="2" marker-end="url(#ls-arrow-3)"/>
+    <line x1="420" y1="84" x2="530" y2="136" stroke="#b45309" stroke-width="2" marker-end="url(#ls-arrow-3b)"/>
+    <text x="228" y="112" text-anchor="middle" fill="#047857" font-size="14" font-weight="700">No</text>
+    <text x="492" y="112" text-anchor="middle" fill="#b45309" font-size="14" font-weight="700">Yes</text>
+    <rect x="30" y="140" width="300" height="140" rx="12" fill="#ecfdf5" stroke="#6ee7b7"/>
+    <text x="180" y="170" text-anchor="middle" fill="#065f46" font-size="17" font-weight="700">Non-GxP</text>
+    <text x="180" y="198" text-anchor="middle" fill="#1e293b" font-size="13">Acceptable-use policy</text>
+    <text x="180" y="220" text-anchor="middle" fill="#1e293b" font-size="13">Approved-tool list</text>
+    <text x="180" y="242" text-anchor="middle" fill="#1e293b" font-size="13">Your discernment is the</text>
+    <text x="180" y="262" text-anchor="middle" fill="#1e293b" font-size="13">main control</text>
+    <rect x="390" y="140" width="300" height="140" rx="12" fill="#fffbeb" stroke="#fcd34d"/>
+    <text x="540" y="170" text-anchor="middle" fill="#92400e" font-size="17" font-weight="700">GxP</text>
+    <text x="540" y="198" text-anchor="middle" fill="#1e293b" font-size="13">Data integrity (ALCOA+)</text>
+    <text x="540" y="220" text-anchor="middle" fill="#1e293b" font-size="13">Validation and audit trail</text>
+    <text x="540" y="242" text-anchor="middle" fill="#1e293b" font-size="13">SOPs, and quality-unit</text>
+    <text x="540" y="262" text-anchor="middle" fill="#1e293b" font-size="13">approval before AI use</text>
+  </g>
+</svg>
+
 Grey areas are common. A deviation-investigation narrative drafted with AI and then edited is still a GxP record. When unsure, ask your quality unit **before** you use AI, not after.
 
 <Pitfall title="Delegating by Default Because the Tool Is Open">
