@@ -1,0 +1,164 @@
+---
+title: "The Regulatory Landscape"
+description: "Know what the EU AI Act asks of providers and deployers, how U.S. federal, state, and city rules apply, why existing laws already cover AI, and how to keep a regulatory watch without chasing every headline."
+module: 4
+moduleTitle: "Governance and Risk"
+lesson: 2
+duration: "30 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## Existing Law Already Applies
+
+Before any AI-specific law, remember that AI doesn't get an exemption from the laws you already follow: anti-discrimination, consumer protection, privacy, product liability, employment, sector rules in finance and health, and contract law.
+
+A frequently cited example: in *Moffatt v. Air Canada* (2024), a Canadian tribunal held the airline responsible for incorrect refund information given by its website chatbot. The airline argued the chatbot was responsible for its own statements; the tribunal disagreed. **Your AI's statements are your statements.**
+
+---
+
+## The EU AI Act
+
+The EU AI Act is the most comprehensive AI law so far. It applies to organizations that place AI systems on the EU market or whose AI outputs are used in the EU, so it reaches many non-EU companies.
+
+### Risk categories
+
+- **Prohibited practices**, such as social scoring by public authorities, manipulative techniques that cause significant harm, and emotion recognition in workplaces and schools (with narrow exceptions).
+- **High-risk systems**, including AI used in hiring and worker management, credit scoring, access to essential services, education, critical infrastructure, and safety components of regulated products.
+- **Transparency obligations** for certain systems, such as telling people they're interacting with a chatbot and labeling AI-generated content.
+- **General-purpose AI models**, with obligations mostly on the model providers.
+
+### Provider or deployer?
+
+Your obligations depend on your role:
+
+- **Provider:** develops an AI system (or has it developed) and places it on the market under its own name. Carries the heaviest obligations for high-risk systems: risk management, data governance, technical documentation, conformity assessment.
+- **Deployer:** uses an AI system in its own operations. For high-risk systems, deployers must use them according to instructions, assign competent human oversight, monitor operation, keep logs, and inform affected workers. Some deployers, including public bodies, must carry out a fundamental-rights impact assessment.
+
+<svg viewBox="0 0 720 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="EU AI Act obligations for high-risk systems, simplified. Provider, who builds and markets the system: risk management system, data governance, technical documentation, conformity assessment, and post-market monitoring. Deployer, who uses it in its own operations: use per the instructions, competent human oversight, monitor and keep logs, inform affected workers, and for some deployers a fundamental-rights impact assessment. A deployer that substantially modifies a high-risk system can become a provider." style="max-width:100%;height:auto;margin:1.5rem auto;display:block;">
+  <defs>
+    <marker id="caio-arrow-8" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#b45309"/>
+    </marker>
+  </defs>
+  <g font-family="system-ui, -apple-system, sans-serif">
+    <rect x="20" y="16" width="300" height="250" rx="12" fill="#eef2ff" stroke="#c7d2fe"/>
+    <rect x="20" y="16" width="300" height="66" rx="12" fill="#312e81"/>
+    <text x="170" y="44" text-anchor="middle" fill="#ffffff" font-size="17" font-weight="700">Provider</text>
+    <text x="170" y="66" text-anchor="middle" fill="#e0e7ff" font-size="12">Builds and markets the system</text>
+    <text x="44" y="112" text-anchor="start" fill="#1e293b" font-size="13">• Risk management system</text>
+    <text x="44" y="144" text-anchor="start" fill="#1e293b" font-size="13">• Data governance</text>
+    <text x="44" y="176" text-anchor="start" fill="#1e293b" font-size="13">• Technical documentation</text>
+    <text x="44" y="208" text-anchor="start" fill="#1e293b" font-size="13">• Conformity assessment</text>
+    <text x="44" y="240" text-anchor="start" fill="#1e293b" font-size="13">• Post-market monitoring</text>
+    <rect x="400" y="16" width="300" height="250" rx="12" fill="#eef2ff" stroke="#c7d2fe"/>
+    <rect x="400" y="16" width="300" height="66" rx="12" fill="#4f46e5"/>
+    <text x="550" y="44" text-anchor="middle" fill="#ffffff" font-size="17" font-weight="700">Deployer</text>
+    <text x="550" y="66" text-anchor="middle" fill="#e0e7ff" font-size="12">Uses it in its own operations</text>
+    <text x="424" y="112" text-anchor="start" fill="#1e293b" font-size="13">• Use per the instructions</text>
+    <text x="424" y="144" text-anchor="start" fill="#1e293b" font-size="13">• Competent human oversight</text>
+    <text x="424" y="176" text-anchor="start" fill="#1e293b" font-size="13">• Monitor and keep logs</text>
+    <text x="424" y="208" text-anchor="start" fill="#1e293b" font-size="13">• Inform affected workers</text>
+    <text x="424" y="240" text-anchor="start" fill="#1e293b" font-size="13">• Rights impact assessment (some)</text>
+    <line x1="396" y1="160" x2="326" y2="160" stroke="#b45309" stroke-width="2.5" marker-end="url(#caio-arrow-8)"/>
+    <text x="360" y="130" text-anchor="middle" fill="#92400e" font-size="11" font-weight="700">Substantial</text>
+    <text x="360" y="145" text-anchor="middle" fill="#92400e" font-size="11" font-weight="700">modification</text>
+    <text x="360" y="290" text-anchor="middle" fill="#64748b" font-size="12">Obligations for high-risk systems under the EU AI Act, simplified.</text>
+  </g>
+</svg>
+
+Most enterprises are **deployers** for most AI, and **providers** when they build AI into products they sell. Substantially modifying a high-risk system can make a deployer into a provider.
+
+### Timeline
+
+<ProcessFlow
+  label="EU AI Act application timeline"
+  color="#312e81"
+  steps={[
+    { title: "Aug 2024", detail: "Entry into force" },
+    { title: "Feb 2025", detail: "Prohibitions and AI literacy duty" },
+    { title: "Aug 2025", detail: "General-purpose AI model rules" },
+    { title: "2026–2027", detail: "High-risk obligations phase in" },
+  ]}
+/>
+
+The **AI literacy** duty (Article 4), in effect since February 2025, requires providers and deployers to take measures to ensure sufficient AI literacy among staff who operate or use AI systems. That's a CAIO responsibility in most organizations. In late 2025 the European Commission proposed changes that would delay some high-risk deadlines, so check the current timetable.
+
+Penalties for the most serious violations can reach €35 million or 7% of worldwide annual turnover, whichever is higher.
+
+---
+
+## The United States
+
+There's no comprehensive federal AI law. Instead, a mix of sources:
+
+- **Federal agencies** enforce existing law against AI misuse (for example, consumer protection, fair lending, and employment discrimination). Federal policy has shifted between administrations, so check current guidance.
+- **Federal government use** is governed by OMB memoranda. M-25-21 (April 2025) requires agencies to have CAIOs and apply minimum risk-management practices to "high-impact" AI.
+- **State laws** are multiplying. Colorado's AI Act targets algorithmic discrimination in consequential decisions, though its effective date has been pushed back (to mid-2026 at the time of writing). Other states regulate specific uses such as deepfakes, chatbot disclosure, or AI in insurance.
+- **Cities:** New York City's Local Law 144 requires bias audits and notices for automated employment decision tools used in hiring and promotion.
+
+Sector regulators in finance, health, and insurance often have their own AI expectations, such as model risk management guidance in banking.
+
+<Pitfall title="Chasing Every Headline">
+
+**Common mistake:** rewriting AI policy every time a new law is proposed, or ignoring regulation until a deadline is weeks away.
+
+Build governance on stable principles (inventory, risk tiering, impact assessment, human oversight, transparency, documentation) that most laws share. Then map specific obligations onto that base as laws take effect. A good governance system absorbs new rules with modest changes.
+
+</Pitfall>
+
+---
+
+## Running a Regulatory Watch
+
+- **Assign ownership.** Usually a partnership between the CAIO's governance lead and legal.
+- **Track by jurisdiction and use.** Which laws apply where you operate, and to which of your AI uses?
+- **Review quarterly.** Summarize changes for the AI review board and adjust risk tiers or controls.
+- **Push obligations into contracts.** Vendors supplying high-risk AI should provide the documentation and cooperation you'll need as a deployer.
+
+<TryIt title="Map Your Obligations">
+
+1. List the jurisdictions where you operate or where your AI outputs are used.
+2. For your three highest-risk AI uses, decide whether you're a provider or deployer under the EU AI Act (if it applies).
+3. Note which U.S. state or city rules might apply, especially in hiring and lending.
+4. Write who owns the regulatory watch and how often it reports.
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "What did the Moffatt v. Air Canada decision illustrate?",
+    options: [
+      "Chatbots are legally separate entities.",
+      "A company can be held responsible for what its chatbot tells customers.",
+      "AI-generated content can't be regulated.",
+      "Refund policies don't apply online."
+    ],
+    correctIndex: 1,
+    explanation: "The tribunal rejected the idea that the chatbot was responsible for its own statements."
+  },
+  {
+    question: "A company uses a vendor's AI tool to screen job applicants in the EU. Under the AI Act, what is the company most likely to be?",
+    options: ["A provider", "A deployer", "Exempt", "A notified body"],
+    correctIndex: 1,
+    explanation: "Using an AI system in your own operations makes you a deployer. Hiring is a high-risk area, so deployer obligations apply."
+  },
+  {
+    question: "Which EU AI Act obligation has applied to deployers since February 2025?",
+    options: [
+      "Conformity assessment for all AI",
+      "Ensuring sufficient AI literacy among staff using AI",
+      "Registering every chatbot",
+      "Banning generative AI"
+    ],
+    correctIndex: 1,
+    explanation: "Article 4's AI literacy duty applies to both providers and deployers."
+  }
+]} />
+
+## Up Next
+
+Module 5 turns to people: workforce strategy, AI literacy, and leading adoption.

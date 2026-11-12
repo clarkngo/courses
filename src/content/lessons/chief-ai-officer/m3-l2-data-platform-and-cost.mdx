@@ -1,0 +1,194 @@
+---
+title: "Data, Platform, and Cost"
+description: "Assess data readiness, design a shared AI platform with a model gateway and evaluation, avoid lock-in in a fast-moving market, and manage AI costs before they surprise the CFO."
+module: 3
+moduleTitle: "Operating Model and Platform"
+lesson: 2
+duration: "30 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## Data Is Still the Bottleneck
+
+Modern AI models arrive pre-trained, so it's tempting to think data matters less than it used to. It doesn't. The model brings general capability; **your data brings the value**: the policies a support assistant cites, the contracts a review tool reads, the history a forecasting model learns from.
+
+Ask four questions about the data behind any priority use case:
+
+1. **Does it exist?** Is the knowledge written down, or does it live in people's heads?
+2. **Can we reach it?** Is it in systems AI can connect to, with usable access controls?
+3. **Is it good enough?** Current, consistent, and correct, or full of outdated versions and contradictions?
+4. **Are we allowed to use it?** Do privacy law, contracts, consent, or confidentiality limit this use?
+
+For generative AI, "data readiness" often means **content readiness**: cleaning up document libraries, removing outdated policies, and fixing permissions so the AI doesn't surface what users shouldn't see. That last point is a common failure: an AI search tool that respects file permissions will still expose files that were shared too broadly years ago.
+
+---
+
+## A Shared AI Platform
+
+Without a platform, every team builds its own connections to models, its own logging, and its own guardrails. A shared platform gives you consistency and lets you change things once.
+
+<ProcessFlow
+  label="Layers of a shared enterprise AI platform"
+  color="#312e81"
+  steps={[
+    { title: "Apps and agents", detail: "Business-unit solutions" },
+    { title: "Guardrails", detail: "Content filters, data rules" },
+    { title: "Gateway", detail: "One door to many models" },
+    { title: "Models", detail: "Several providers and sizes" },
+    { title: "Data and retrieval", detail: "Governed, permission-aware" },
+    { title: "Evaluation and logs", detail: "Quality, cost, audit" },
+  ]}
+/>
+
+Key components:
+
+- **A model gateway.** All applications call models through one layer that handles authentication, routing, logging, cost tracking, and policy. It also lets you switch providers without rewriting every application.
+- **Approved models.** A small menu of models for different needs (large and capable, small and cheap, specialized), reviewed for security and contract terms.
+- **Retrieval and data access.** Standard, permission-aware ways to connect AI to enterprise content.
+- **Guardrails.** Controls on sensitive data, harmful content, and, for agents, which actions they can take.
+- **Evaluation.** Test sets and automated checks so teams can measure quality before release and detect regressions after model updates.
+- **Observability.** Logs of inputs, outputs, and actions sufficient for debugging, audit, and incident investigation, retained according to policy.
+
+---
+
+## Avoiding Lock-In
+
+The AI market changes every few months: new models, price cuts, new capabilities. Protect your ability to change:
+
+- Route through a gateway rather than calling providers directly from every application.
+- Keep **prompts, evaluation sets, and retrieval pipelines** as your own assets, portable across models.
+- Prefer shorter commitments or flexible terms for fast-moving technology, and negotiate data-use, retention, and exit terms carefully.
+- Re-evaluate model choices on a regular cadence, using your own evaluation sets rather than vendor benchmarks.
+
+<svg viewBox="0 0 720 270" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Two ways to connect applications to AI models. Without a gateway, each of three apps connects directly to each of three models, creating nine separate connections. With a gateway, all three apps connect to one gateway, which connects to the three models, giving one place for logging, cost tracking, policy, and switching providers." style="max-width:100%;height:auto;margin:1.5rem auto;display:block;">
+  <g font-family="system-ui, -apple-system, sans-serif">
+    <rect x="20" y="16" width="330" height="240" rx="12" fill="#fef2f2" stroke="#fecaca"/>
+    <rect x="370" y="16" width="330" height="240" rx="12" fill="#eef2ff" stroke="#c7d2fe"/>
+    <text x="185" y="42" text-anchor="middle" fill="#991b1b" font-size="15" font-weight="700">Without a gateway</text>
+    <text x="535" y="42" text-anchor="middle" fill="#312e81" font-size="15" font-weight="700">With a gateway</text>
+    <line x1="130" y1="84" x2="240" y2="84" stroke="#f87171" stroke-width="1.5"/>
+    <line x1="130" y1="84" x2="240" y2="144" stroke="#f87171" stroke-width="1.5"/>
+    <line x1="130" y1="84" x2="240" y2="204" stroke="#f87171" stroke-width="1.5"/>
+    <line x1="130" y1="144" x2="240" y2="84" stroke="#f87171" stroke-width="1.5"/>
+    <line x1="130" y1="144" x2="240" y2="144" stroke="#f87171" stroke-width="1.5"/>
+    <line x1="130" y1="144" x2="240" y2="204" stroke="#f87171" stroke-width="1.5"/>
+    <line x1="130" y1="204" x2="240" y2="84" stroke="#f87171" stroke-width="1.5"/>
+    <line x1="130" y1="204" x2="240" y2="144" stroke="#f87171" stroke-width="1.5"/>
+    <line x1="130" y1="204" x2="240" y2="204" stroke="#f87171" stroke-width="1.5"/>
+    <rect x="40" y="66" width="90" height="36" rx="8" fill="#ffffff" stroke="#fca5a5"/>
+    <text x="85" y="89" text-anchor="middle" fill="#7f1d1d" font-size="13" font-weight="700">App 1</text>
+    <rect x="240" y="66" width="90" height="36" rx="8" fill="#ffffff" stroke="#fca5a5"/>
+    <text x="285" y="89" text-anchor="middle" fill="#7f1d1d" font-size="13" font-weight="700">Model A</text>
+    <rect x="40" y="126" width="90" height="36" rx="8" fill="#ffffff" stroke="#fca5a5"/>
+    <text x="85" y="149" text-anchor="middle" fill="#7f1d1d" font-size="13" font-weight="700">App 2</text>
+    <rect x="240" y="126" width="90" height="36" rx="8" fill="#ffffff" stroke="#fca5a5"/>
+    <text x="285" y="149" text-anchor="middle" fill="#7f1d1d" font-size="13" font-weight="700">Model B</text>
+    <rect x="40" y="186" width="90" height="36" rx="8" fill="#ffffff" stroke="#fca5a5"/>
+    <text x="85" y="209" text-anchor="middle" fill="#7f1d1d" font-size="13" font-weight="700">App 3</text>
+    <rect x="240" y="186" width="90" height="36" rx="8" fill="#ffffff" stroke="#fca5a5"/>
+    <text x="285" y="209" text-anchor="middle" fill="#7f1d1d" font-size="13" font-weight="700">Model C</text>
+    <line x1="480" y1="84" x2="500" y2="144" stroke="#6366f1" stroke-width="2"/>
+    <line x1="560" y1="144" x2="590" y2="84" stroke="#6366f1" stroke-width="2"/>
+    <line x1="480" y1="144" x2="500" y2="144" stroke="#6366f1" stroke-width="2"/>
+    <line x1="560" y1="144" x2="590" y2="144" stroke="#6366f1" stroke-width="2"/>
+    <line x1="480" y1="204" x2="500" y2="144" stroke="#6366f1" stroke-width="2"/>
+    <line x1="560" y1="144" x2="590" y2="204" stroke="#6366f1" stroke-width="2"/>
+    <rect x="500" y="66" width="60" height="156" rx="8" fill="#312e81"/>
+    <text x="530" y="149" text-anchor="middle" fill="#ffffff" font-size="11" font-weight="700">Gateway</text>
+    <rect x="390" y="66" width="90" height="36" rx="8" fill="#ffffff" stroke="#a5b4fc"/>
+    <text x="435" y="89" text-anchor="middle" fill="#312e81" font-size="13" font-weight="700">App 1</text>
+    <rect x="590" y="66" width="90" height="36" rx="8" fill="#ffffff" stroke="#a5b4fc"/>
+    <text x="635" y="89" text-anchor="middle" fill="#312e81" font-size="13" font-weight="700">Model A</text>
+    <rect x="390" y="126" width="90" height="36" rx="8" fill="#ffffff" stroke="#a5b4fc"/>
+    <text x="435" y="149" text-anchor="middle" fill="#312e81" font-size="13" font-weight="700">App 2</text>
+    <rect x="590" y="126" width="90" height="36" rx="8" fill="#ffffff" stroke="#a5b4fc"/>
+    <text x="635" y="149" text-anchor="middle" fill="#312e81" font-size="13" font-weight="700">Model B</text>
+    <rect x="390" y="186" width="90" height="36" rx="8" fill="#ffffff" stroke="#a5b4fc"/>
+    <text x="435" y="209" text-anchor="middle" fill="#312e81" font-size="13" font-weight="700">App 3</text>
+    <rect x="590" y="186" width="90" height="36" rx="8" fill="#ffffff" stroke="#a5b4fc"/>
+    <text x="635" y="209" text-anchor="middle" fill="#312e81" font-size="13" font-weight="700">Model C</text>
+    <text x="185" y="244" text-anchor="middle" fill="#7f1d1d" font-size="12">Every app wires itself to every provider</text>
+    <text x="535" y="244" text-anchor="middle" fill="#312e81" font-size="12">One place for logs, cost, policy, switching</text>
+  </g>
+</svg>
+
+<Pitfall title="Every Team Picks Its Own Model and Vendor">
+
+**Common mistake:** letting each business unit sign its own AI contracts and connect directly to providers.
+
+The result is fragmented spend, inconsistent data protection terms, no shared logs, and painful migrations when a better or cheaper model appears. Central contracts and a common gateway don't slow teams down; they free them from repeating security and legal reviews.
+
+</Pitfall>
+
+---
+
+## Managing AI Cost
+
+AI spending behaves differently from traditional software:
+
+- **Usage-based pricing** means costs scale with adoption, and a popular tool can blow through its budget.
+- **Agents and long documents** can use far more tokens per task than simple chat.
+- **Seat licenses** for AI assistants are often bought broadly and used narrowly.
+
+Practical controls, borrowed from cloud FinOps:
+
+- **Show cost per use case and per unit of work** (cost per resolved ticket, per document reviewed), not just a total bill.
+- **Right-size models.** Use smaller, cheaper models where they meet quality needs; reserve the largest models for tasks that need them.
+- **Cache and reuse** where possible.
+- **Review seat utilization** quarterly and reallocate unused licenses.
+- **Set budgets and alerts** at the gateway so surprises are caught in days, not at quarter end.
+
+<TryIt title="Check Readiness for One Use Case">
+
+Pick your top-priority use case from Lesson 2.2:
+
+1. Answer the four data questions. Which is the weakest?
+2. List which platform components it needs that don't exist yet.
+3. Estimate its cost per unit of work, roughly, and compare it with the current cost of the process.
+4. Identify one lock-in risk and how you'd reduce it.
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "An AI search tool respects file permissions but surfaces sensitive files to many employees. What's the likely cause?",
+    options: [
+      "The model is malicious.",
+      "Files were shared too broadly in the past, and the AI makes that visible.",
+      "The tool ignores permissions.",
+      "The data is too clean."
+    ],
+    correctIndex: 1,
+    explanation: "AI search exposes existing over-sharing. Fixing permissions is part of data readiness."
+  },
+  {
+    question: "What's a key benefit of routing all model calls through a gateway?",
+    options: [
+      "It makes models more accurate.",
+      "Central logging, cost tracking, policy, and the ability to switch providers without rewriting apps.",
+      "It removes the need for evaluation.",
+      "It eliminates all costs."
+    ],
+    correctIndex: 1,
+    explanation: "A gateway centralizes control and reduces lock-in."
+  },
+  {
+    question: "Which cost metric is most useful for managing AI spending?",
+    options: [
+      "Total monthly invoice only",
+      "Cost per unit of work, such as cost per resolved ticket",
+      "Number of models available",
+      "Number of AI vendors"
+    ],
+    correctIndex: 1,
+    explanation: "Unit costs connect spending to value and show where right-sizing helps."
+  }
+]} />
+
+## Up Next
+
+Module 4 turns to governance: how to manage AI risk in a way that enables adoption rather than blocking it.

@@ -1,0 +1,171 @@
+---
+title: "Leading Adoption at Scale"
+description: "Move from licenses to real use: understand why adoption stalls, bring shadow AI into the open, align incentives, redesign workflows, and measure adoption in ways that predict value."
+module: 5
+moduleTitle: "People and Change"
+lesson: 2
+duration: "25 min"
+---
+
+import LoopDiagram from '@components/LoopDiagram.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## Licenses Are Not Adoption
+
+A common pattern: the organization buys thousands of AI assistant licenses, usage spikes in the first month, and then settles at a small core of heavy users while most people log in occasionally or not at all.
+
+<svg viewBox="0 0 720 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="An illustrative adoption chart over 12 months after rollout. The share of licensed staff who have tried the tool once rises quickly to about 80 percent. Real weekly use for key tasks peaks early at about 30 percent and settles near 18 percent when only tools are provided. With workflow redesign starting around month 3, real use climbs to about 55 percent by month 12." style="max-width:100%;height:auto;margin:1.5rem auto;display:block;">
+  <g font-family="system-ui, -apple-system, sans-serif">
+    <line x1="70" y1="30" x2="70" y2="230" stroke="#94a3b8" stroke-width="1.5"/>
+    <line x1="70" y1="230" x2="526" y2="230" stroke="#94a3b8" stroke-width="1.5"/>
+    <text x="62" y="234" text-anchor="end" fill="#64748b" font-size="11">0%</text>
+    <text x="62" y="134" text-anchor="end" fill="#64748b" font-size="11">50%</text>
+    <line x1="70" y1="130" x2="526" y2="130" stroke="#e2e8f0" stroke-width="1"/>
+    <text x="62" y="34" text-anchor="end" fill="#64748b" font-size="11">100%</text>
+    <line x1="70" y1="30" x2="526" y2="30" stroke="#e2e8f0" stroke-width="1"/>
+    <text x="70" y="248" text-anchor="middle" fill="#64748b" font-size="11">0</text>
+    <text x="184" y="248" text-anchor="middle" fill="#64748b" font-size="11">3</text>
+    <text x="298" y="248" text-anchor="middle" fill="#64748b" font-size="11">6</text>
+    <text x="412" y="248" text-anchor="middle" fill="#64748b" font-size="11">9</text>
+    <text x="526" y="248" text-anchor="middle" fill="#64748b" font-size="11">12</text>
+    <text x="298" y="270" text-anchor="middle" fill="#475569" font-size="12" font-weight="700">Months after rollout</text>
+    <text x="22" y="130" text-anchor="middle" fill="#475569" font-size="12" font-weight="700" transform="rotate(-90 22 130)">Share of licensed staff</text>
+    <polyline points="70,230 108,140 146,100 184,86 298,74 526,70" fill="none" stroke="#a5b4fc" stroke-width="3"/>
+    <polyline points="70,230 108,170 146,182 184,190 298,194 526,194" fill="none" stroke="#dc2626" stroke-width="3"/>
+    <polyline points="184,190 298,160 412,134 526,120" fill="none" stroke="#3730a3" stroke-width="3" stroke-dasharray="7 5"/>
+    <text x="538" y="74" text-anchor="start" fill="#6366f1" font-size="13" font-weight="700">Tried it once</text>
+    <text x="538" y="116" text-anchor="start" fill="#3730a3" font-size="13" font-weight="700">Real use, with</text>
+    <text x="538" y="133" text-anchor="start" fill="#3730a3" font-size="13" font-weight="700">workflow redesign</text>
+    <text x="538" y="190" text-anchor="start" fill="#b91c1c" font-size="13" font-weight="700">Real use, tools</text>
+    <text x="538" y="207" text-anchor="start" fill="#b91c1c" font-size="13" font-weight="700">only</text>
+    <text x="360" y="292" text-anchor="middle" fill="#64748b" font-size="11">Illustrative pattern, not data from a specific company.</text>
+  </g>
+</svg>
+
+That's not a technology failure. It's a change-management one. Tools that require people to change habits need the same leadership as any other major change.
+
+---
+
+## Why Adoption Stalls
+
+- **No clear use.** People don't know what to use AI for in *their* job.
+- **Bad first experiences.** An early wrong answer convinces people the tool is useless.
+- **Fear.** About job security, about being seen as lazy, or about breaking rules.
+- **No time.** Learning new ways of working takes effort that nobody budgeted.
+- **Workflow friction.** AI sits in a separate window instead of where work happens.
+- **Mixed signals.** Leaders encourage AI use while policies, reviews, or managers discourage it.
+
+Each cause has a different fix, so diagnose before you intervene. Short surveys and conversations with low-usage teams are often more useful than usage dashboards.
+
+---
+
+## Bringing Shadow AI into the Open
+
+"Shadow AI" means employees using AI tools the organization hasn't approved, often personal accounts. Surveys consistently find it's widespread.
+
+Shadow AI is a **risk** (data leakage, no oversight, no records) and a **signal** (people found value and the approved options didn't meet their needs). Respond to both:
+
+1. **Provide a good sanctioned option**, with capabilities comparable to what people are using.
+2. **Offer amnesty**: invite people to share what they use and for what, without penalty.
+3. **Learn from it**: shadow use shows you where demand and value are.
+4. **Then enforce**: once a good alternative exists, restrict unapproved tools through technical and policy controls.
+
+<Pitfall title="Measuring Adoption by Logins">
+
+**Common mistake:** reporting "80% of employees have used the AI assistant" as a success.
+
+Trying something once isn't adoption. Track **depth** (how often, for which tasks) and **workflow change** (which processes now include AI by design). Those predict value; logins don't.
+
+</Pitfall>
+
+---
+
+## From Tools to Workflows
+
+The biggest gains come when AI is built into **how work is done**, not left as an optional extra:
+
+- **Redesign the workflow**, with the team, starting from the outcome. Where does AI draft, check, route, or decide? Where does a person review?
+- **Embed AI where work happens**: in the CRM, the ticketing system, the document editor, rather than a separate chat window.
+- **Write down the new standard way of working**, including review steps.
+- **Retire the old way**, or the new one becomes optional and fades.
+
+---
+
+## Incentives and Signals
+
+People follow what's rewarded and what leaders do:
+
+- **Leaders use AI visibly** and talk about what worked and what didn't.
+- **Recognize good AI use**, including catching AI errors, not just speed.
+- **Align performance goals** so that time saved can go to valued work, rather than simply raising quotas.
+- **Make it safe to experiment** within guardrails.
+
+---
+
+## The Adoption Loop
+
+<LoopDiagram
+  label="A continuous loop for driving AI adoption"
+  colors={['#312e81', '#3730a3', '#4338ca', '#1e1b4b']}
+  steps={[
+    { title: "Enable", subtitle: "tools, training, time" },
+    { title: "Embed", subtitle: "into real workflows" },
+    { title: "Measure", subtitle: "depth and outcomes" },
+    { title: "Learn", subtitle: "fix friction, share wins" },
+  ]}
+/>
+
+Adoption isn't a launch event. Review adoption and value together each quarter, and focus support on teams where usage is shallow but the potential is high.
+
+<TryIt title="Diagnose a Stalled Rollout">
+
+Pick an AI tool with disappointing adoption (real or hypothetical):
+
+1. Which of the six stall causes are most likely? How would you check?
+2. Choose one workflow where AI should be built in, and sketch the redesigned steps, including review.
+3. Define two adoption metrics that measure depth or workflow change, not logins.
+4. Name one incentive or leadership signal you'd change.
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "What's the best first response to widespread shadow AI use?",
+    options: [
+      "Immediate disciplinary action",
+      "Provide a good sanctioned option and invite people to share what they use",
+      "Ignore it",
+      "Block the internet"
+    ],
+    correctIndex: 1,
+    explanation: "Shadow AI is both a risk and a signal of demand. Offer a safe alternative and learn from it before enforcing."
+  },
+  {
+    question: "Which metric best predicts AI value?",
+    options: [
+      "Percentage of employees who have logged in once",
+      "Number of licenses purchased",
+      "Processes that now include AI by design, and how often AI is used for key tasks",
+      "Number of AI announcements"
+    ],
+    correctIndex: 2,
+    explanation: "Depth of use and workflow change predict value; one-time logins don't."
+  },
+  {
+    question: "Why should the old way of working be retired after a workflow redesign?",
+    options: [
+      "To punish people who prefer it",
+      "Otherwise the new way stays optional and tends to fade",
+      "It's legally required",
+      "Old workflows can't run on new computers"
+    ],
+    correctIndex: 1,
+    explanation: "Change sticks when the new way becomes the standard way."
+  }
+]} />
+
+## Up Next
+
+Module 6 covers accountability: reporting to the board, handling incidents and vendors, and your 12-month roadmap.

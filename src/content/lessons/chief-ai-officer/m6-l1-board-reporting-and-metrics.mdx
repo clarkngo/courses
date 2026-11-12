@@ -1,0 +1,207 @@
+---
+title: "Board Reporting and Metrics"
+description: "Build an AI scorecard that covers value, adoption, risk, and capability; prepare for the questions boards ask about AI; and report honestly when results are mixed."
+module: 6
+moduleTitle: "Accountability"
+lesson: 1
+duration: "25 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## The Board's Job and Yours
+
+Boards are responsible for overseeing strategy and risk. For AI, that means asking whether management has a credible strategy, whether it's delivering, and whether the risks are understood and controlled. Directors increasingly face questions from investors and regulators about AI oversight.
+
+The CAIO's job is to make that oversight **possible**: clear, consistent, honest information, presented the same way each time so trends are visible.
+
+---
+
+## An AI Scorecard
+
+A one-page scorecard with four sections, reported quarterly:
+
+### 1. Value
+
+- Realized value from production use cases, measured against baselines, with ranges where estimated.
+- Pipeline value: what's expected from use cases in pilot, with confidence levels.
+- Total AI spend, and spend against plan.
+
+### 2. Adoption
+
+- Depth of use in priority roles (not just logins).
+- Number of workflows redesigned to include AI.
+- Literacy program coverage, by role layer.
+
+### 3. Risk
+
+- AI inventory size, and count by risk tier.
+- High-risk systems reviewed, and any overdue reviews.
+- Incidents: count, severity, and status.
+- Regulatory changes affecting the organization, and readiness.
+
+### 4. Capability
+
+- Platform maturity milestones.
+- Key hires and skills gaps.
+- Vendor concentration and lock-in exposure.
+
+<svg viewBox="0 0 720 316" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="An illustrative quarterly AI scorecard with four cards and status dots. Value: realized value measured at 2.1 to 2.6 million dollars, on track; pipeline value estimated at 6 to 9 million, watch; spend at 96 percent of plan, on track. Adoption: weekly use in priority roles 41 percent, on track; 7 workflows redesigned, on track; literacy coverage 68 percent, watch. Risk: 11 high-risk systems, on track; 2 reviews overdue, watch; 1 severe incident, watch. Capability: 3 of 4 platform milestones met, on track; 5 of 7 key hires made, watch; top vendor holds 64 percent of spend, act." style="max-width:100%;height:auto;margin:1.5rem auto;display:block;">
+  <g font-family="system-ui, -apple-system, sans-serif">
+    <text x="20" y="22" text-anchor="start" fill="#312e81" font-size="15" font-weight="700">AI scorecard · Q3</text>
+    <circle cx="470" cy="17" r="5" fill="#16a34a"/>
+    <text x="480" y="21" text-anchor="start" fill="#475569" font-size="12">on track</text>
+    <circle cx="545" cy="17" r="5" fill="#f59e0b"/>
+    <text x="555" y="21" text-anchor="start" fill="#475569" font-size="12">watch</text>
+    <circle cx="610" cy="17" r="5" fill="#dc2626"/>
+    <text x="620" y="21" text-anchor="start" fill="#475569" font-size="12">act</text>
+    <rect x="20" y="36" width="330" height="118" rx="10" fill="#ffffff" stroke="#c7d2fe"/>
+    <rect x="20" y="36" width="6" height="118" rx="3" fill="#4338ca"/>
+    <text x="40" y="62" text-anchor="start" fill="#312e81" font-size="15" font-weight="700">Value</text>
+    <text x="40" y="90" text-anchor="start" fill="#334155" font-size="13">Realized value (measured)</text>
+    <text x="316" y="90" text-anchor="end" fill="#0f172a" font-size="13" font-weight="700">$2.1–2.6M</text>
+    <circle cx="330" cy="86" r="5" fill="#16a34a"/>
+    <text x="40" y="114" text-anchor="start" fill="#334155" font-size="13">Pipeline value (estimated)</text>
+    <text x="316" y="114" text-anchor="end" fill="#0f172a" font-size="13" font-weight="700">$6–9M</text>
+    <circle cx="330" cy="110" r="5" fill="#f59e0b"/>
+    <text x="40" y="138" text-anchor="start" fill="#334155" font-size="13">Spend vs. plan</text>
+    <text x="316" y="138" text-anchor="end" fill="#0f172a" font-size="13" font-weight="700">96%</text>
+    <circle cx="330" cy="134" r="5" fill="#16a34a"/>
+    <rect x="370" y="36" width="330" height="118" rx="10" fill="#ffffff" stroke="#c7d2fe"/>
+    <rect x="370" y="36" width="6" height="118" rx="3" fill="#4338ca"/>
+    <text x="390" y="62" text-anchor="start" fill="#312e81" font-size="15" font-weight="700">Adoption</text>
+    <text x="390" y="90" text-anchor="start" fill="#334155" font-size="13">Weekly use, priority roles</text>
+    <text x="666" y="90" text-anchor="end" fill="#0f172a" font-size="13" font-weight="700">41%</text>
+    <circle cx="680" cy="86" r="5" fill="#16a34a"/>
+    <text x="390" y="114" text-anchor="start" fill="#334155" font-size="13">Workflows redesigned</text>
+    <text x="666" y="114" text-anchor="end" fill="#0f172a" font-size="13" font-weight="700">7</text>
+    <circle cx="680" cy="110" r="5" fill="#16a34a"/>
+    <text x="390" y="138" text-anchor="start" fill="#334155" font-size="13">Literacy coverage</text>
+    <text x="666" y="138" text-anchor="end" fill="#0f172a" font-size="13" font-weight="700">68%</text>
+    <circle cx="680" cy="134" r="5" fill="#f59e0b"/>
+    <rect x="20" y="164" width="330" height="118" rx="10" fill="#ffffff" stroke="#c7d2fe"/>
+    <rect x="20" y="164" width="6" height="118" rx="3" fill="#4338ca"/>
+    <text x="40" y="190" text-anchor="start" fill="#312e81" font-size="15" font-weight="700">Risk</text>
+    <text x="40" y="218" text-anchor="start" fill="#334155" font-size="13">High-risk systems</text>
+    <text x="316" y="218" text-anchor="end" fill="#0f172a" font-size="13" font-weight="700">11</text>
+    <circle cx="330" cy="214" r="5" fill="#16a34a"/>
+    <text x="40" y="242" text-anchor="start" fill="#334155" font-size="13">Reviews overdue</text>
+    <text x="316" y="242" text-anchor="end" fill="#0f172a" font-size="13" font-weight="700">2</text>
+    <circle cx="330" cy="238" r="5" fill="#f59e0b"/>
+    <text x="40" y="266" text-anchor="start" fill="#334155" font-size="13">Incidents (severity 1–2)</text>
+    <text x="316" y="266" text-anchor="end" fill="#0f172a" font-size="13" font-weight="700">1</text>
+    <circle cx="330" cy="262" r="5" fill="#f59e0b"/>
+    <rect x="370" y="164" width="330" height="118" rx="10" fill="#ffffff" stroke="#c7d2fe"/>
+    <rect x="370" y="164" width="6" height="118" rx="3" fill="#4338ca"/>
+    <text x="390" y="190" text-anchor="start" fill="#312e81" font-size="15" font-weight="700">Capability</text>
+    <text x="390" y="218" text-anchor="start" fill="#334155" font-size="13">Platform milestones met</text>
+    <text x="666" y="218" text-anchor="end" fill="#0f172a" font-size="13" font-weight="700">3 of 4</text>
+    <circle cx="680" cy="214" r="5" fill="#16a34a"/>
+    <text x="390" y="242" text-anchor="start" fill="#334155" font-size="13">Key hires made</text>
+    <text x="666" y="242" text-anchor="end" fill="#0f172a" font-size="13" font-weight="700">5 of 7</text>
+    <circle cx="680" cy="238" r="5" fill="#f59e0b"/>
+    <text x="390" y="266" text-anchor="start" fill="#334155" font-size="13">Top vendor share of spend</text>
+    <text x="666" y="266" text-anchor="end" fill="#0f172a" font-size="13" font-weight="700">64%</text>
+    <circle cx="680" cy="262" r="5" fill="#dc2626"/>
+    <text x="360" y="306" text-anchor="middle" fill="#64748b" font-size="11">Illustrative figures. Show trends each quarter and mark estimates clearly.</text>
+  </g>
+</svg>
+
+Use the same structure every quarter. Show trends, not just snapshots, and use traffic lights sparingly and honestly.
+
+<Pitfall title="Only Good News">
+
+**Common mistake:** presenting a highlight reel of successful pilots and impressive demos.
+
+Boards that only hear good news either lose trust when problems surface or, worse, don't find out until a crisis. Report what's stalled, what you stopped and why, incidents, and where value fell short. Credibility built in a mixed quarter is what lets you ask for investment in a good one.
+
+</Pitfall>
+
+---
+
+## Questions Boards Ask
+
+Prepare clear answers to the questions directors commonly raise:
+
+- **Strategy:** How does AI support our business strategy? What are competitors doing, and are we ahead, level, or behind?
+- **Value:** What have we spent, and what have we got? How do we know?
+- **Risk:** What AI do we use that could harm customers, employees, or the company? How do we know what's running?
+- **Regulation:** Which laws apply, and are we ready for upcoming deadlines?
+- **People:** What does AI mean for our workforce? What have we told employees?
+- **Security:** How are we protecting data in AI tools, and against AI-enabled attacks?
+- **Dependencies:** How dependent are we on a few AI vendors? What happens if one changes terms or fails?
+- **Oversight:** Who's accountable for AI, and how does the board stay informed?
+
+---
+
+## Board AI Literacy
+
+Directors need enough understanding to oversee AI, not to build it. Offer the board:
+
+- A short **education session** each year on what AI can and can't do, using your organization's own examples.
+- **Hands-on time** with the tools employees use.
+- Clarity on **which committee** oversees AI risk (often audit or risk) and how often it hears from you.
+- A **risk appetite statement** for AI that the board approves: what kinds of AI use the organization will and won't pursue.
+
+A board that has agreed an AI risk appetite makes hard decisions easier, because the CAIO can point to it.
+
+---
+
+## Telling the Story
+
+Numbers alone don't land. Pair the scorecard with:
+
+- **One case study** per quarter: a use case's before and after, told through the people involved.
+- **One lesson learned**: something that didn't work and what changed as a result.
+- **One decision needed**: a clear ask of the board, if there is one.
+
+<TryIt title="Draft Your First Scorecard">
+
+1. Fill in the four sections of the scorecard for your organization, using real or plausible figures.
+2. Mark anything that's estimated rather than measured.
+3. Choose one case study, one lesson learned, and one decision you'd bring to the board.
+4. Write a two-sentence draft of an AI risk appetite statement.
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "Why should the AI scorecard use the same structure every quarter?",
+    options: [
+      "Boards dislike change.",
+      "So trends are visible and comparisons are meaningful",
+      "It's legally required.",
+      "To save time on design"
+    ],
+    correctIndex: 1,
+    explanation: "Consistency lets directors see whether things are improving or getting worse."
+  },
+  {
+    question: "What's the risk of presenting only good news about AI to the board?",
+    options: [
+      "None. Boards want optimism.",
+      "Loss of trust when problems surface, or problems found only in a crisis",
+      "Too much investment",
+      "Shorter meetings"
+    ],
+    correctIndex: 1,
+    explanation: "Honest reporting builds the credibility needed for future investment."
+  },
+  {
+    question: "What does a board-approved AI risk appetite statement help with?",
+    options: [
+      "It replaces all governance.",
+      "It gives a clear reference point for hard decisions about which AI uses to pursue",
+      "It guarantees no incidents.",
+      "It sets the AI budget."
+    ],
+    correctIndex: 1,
+    explanation: "An agreed risk appetite makes trade-offs explicit and easier to decide."
+  }
+]} />
+
+## Up Next
+
+The final lesson covers AI incidents, vendor management, and your 12-month roadmap.

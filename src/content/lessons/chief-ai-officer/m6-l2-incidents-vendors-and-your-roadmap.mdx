@@ -1,0 +1,205 @@
+---
+title: "Incidents, Vendors, and Your 12-Month Roadmap"
+description: "Prepare for AI incidents with a response plan, manage AI vendors through due diligence and contracts, and build a 12-month CAIO roadmap that brings the whole course together."
+module: 6
+moduleTitle: "Accountability"
+lesson: 2
+duration: "30 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## AI Incidents Will Happen
+
+Every organization using AI at scale will have incidents: a chatbot giving wrong or offensive answers, an AI tool exposing confidential data, a model producing biased decisions, an agent taking an action it shouldn't, or a vendor model changing behavior overnight. The question is whether you find out quickly and respond well.
+
+### What counts as an AI incident
+
+Define it broadly enough to catch problems early:
+
+- Harm or near-harm to customers, employees, or the public from AI output or action.
+- Exposure of confidential or personal data through AI tools.
+- Discriminatory or unfair outcomes.
+- Significant performance degradation or unexpected behavior.
+- Security attacks on AI systems, such as prompt injection that causes data leakage or unauthorized actions.
+
+### A response plan
+
+<ProcessFlow
+  label="AI incident response steps"
+  color="#312e81"
+  loop="Lessons learned → update controls, tiers, and training"
+  steps={[
+    { title: "Detect", detail: "Monitoring, reports, complaints" },
+    { title: "Contain", detail: "Pause, roll back, kill switch" },
+    { title: "Assess", detail: "Scope, harm, legal duties" },
+    { title: "Notify", detail: "Affected people, regulators" },
+    { title: "Fix", detail: "Root cause, not just symptom" },
+    { title: "Learn", detail: "Blameless review, share" },
+  ]}
+/>
+
+Practical preparations:
+
+- **Plug into existing incident processes** (security, privacy, operational) rather than building a separate one, with AI-specific additions.
+- **Know how to pause** each high-risk AI system quickly: who can do it, and how.
+- **Keep logs** sufficient to reconstruct what happened.
+- **Check notification duties.** Privacy laws and some AI rules require reporting certain incidents to regulators within set timeframes.
+- **Make reporting easy and safe** for employees who spot problems.
+
+<Pitfall title="Treating the Model as the Culprit">
+
+**Common mistake:** concluding an incident with "the AI made a mistake" and adjusting the prompt.
+
+Most AI incidents are system failures: missing review steps, unclear accountability, poor data, weak monitoring, or a use that should have been in a higher risk tier. Fix the system, not just the model.
+
+</Pitfall>
+
+---
+
+## Managing AI Vendors
+
+Much of your AI arrives from vendors, either as standalone tools or embedded in software you already use. Vendor management is a core part of AI governance.
+
+### Due diligence questions
+
+- **Data:** Is our data used to train the vendor's models? Where is it processed and stored, and for how long? Who at the vendor can access it?
+- **Security:** What certifications and testing do they have? How do they handle prompt injection and data leakage?
+- **Quality:** What evaluation evidence can they share for our use case? How do they handle model updates?
+- **Transparency:** Will they notify us before material model changes? Can we get documentation needed for our regulatory obligations?
+- **Accountability:** What do they warrant? What liability do they accept? What happens to our data at exit?
+
+### Contract terms worth negotiating
+
+- Restrictions on training with your data, and retention limits.
+- Notice of material model changes, and the right to test before they apply.
+- Cooperation with audits and regulatory requests.
+- Incident notification timelines.
+- Portability and exit: getting your data, prompts, and configurations out.
+
+### Watch for silent AI
+
+Existing vendors frequently add AI features to software you already license, sometimes enabled by default. Ask procurement and IT to flag AI features in renewals and release notes, and add them to the inventory.
+
+---
+
+## Your 12-Month Roadmap
+
+Bring the course together into a roadmap with four quarters:
+
+| Quarter | Focus | Key deliverables |
+|---|---|---|
+| **Q1** | Mandate and foundations | Listening tour, AI inventory, interim policy and approved tools, 2–3 early wins, mandate agreed with CEO |
+| **Q2** | Strategy and structure | AI strategy tied to business goals, portfolio intake and scoring, operating model, core team hired, platform plan |
+| **Q3** | Governance and scale | Risk tiers and review board, regulatory map, first process transformations in production, literacy program launched |
+| **Q4** | Value and accountability | Board scorecard, value measured against baselines, incident plan tested, vendor contracts renegotiated, next-year plan |
+
+<svg viewBox="0 0 720 290" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A 12-month CAIO roadmap in four workstreams across four quarters. Strategy and value: mandate and inventory, then strategy and portfolio, then process rollouts in production, then value against baseline. Governance: interim policy, risk tiers drafted, review board live, incident drill. Platform and data: approved tools, platform plan, gateway and evaluations, vendor review and renegotiation. People: listening tour, core team hired, literacy launch, board scorecard." style="max-width:100%;height:auto;margin:1.5rem auto;display:block;">
+  <g font-family="system-ui, -apple-system, sans-serif">
+    <rect x="140" y="14" width="140" height="30" rx="8" fill="#312e81"/>
+    <text x="210" y="34" text-anchor="middle" fill="#ffffff" font-size="14" font-weight="700">Q1</text>
+    <rect x="285" y="14" width="140" height="30" rx="8" fill="#3730a3"/>
+    <text x="355" y="34" text-anchor="middle" fill="#ffffff" font-size="14" font-weight="700">Q2</text>
+    <rect x="430" y="14" width="140" height="30" rx="8" fill="#312e81"/>
+    <text x="500" y="34" text-anchor="middle" fill="#ffffff" font-size="14" font-weight="700">Q3</text>
+    <rect x="575" y="14" width="140" height="30" rx="8" fill="#3730a3"/>
+    <text x="645" y="34" text-anchor="middle" fill="#ffffff" font-size="14" font-weight="700">Q4</text>
+    <rect x="20" y="54" width="680" height="50" rx="8" fill="#eef2ff"/>
+    <text x="30" y="76" text-anchor="start" fill="#312e81" font-size="13" font-weight="700">Strategy</text>
+    <text x="30" y="92" text-anchor="start" fill="#312e81" font-size="13" font-weight="700">and value</text>
+    <rect x="145" y="63" width="130" height="32" rx="16" fill="#ffffff" stroke="#a5b4fc"/>
+    <text x="210" y="83" text-anchor="middle" fill="#1e293b" font-size="11" font-weight="700">Mandate, inventory</text>
+    <rect x="290" y="63" width="130" height="32" rx="16" fill="#ffffff" stroke="#a5b4fc"/>
+    <text x="355" y="83" text-anchor="middle" fill="#1e293b" font-size="11" font-weight="700">Strategy, portfolio</text>
+    <rect x="435" y="63" width="130" height="32" rx="16" fill="#ffffff" stroke="#a5b4fc"/>
+    <text x="500" y="83" text-anchor="middle" fill="#1e293b" font-size="11" font-weight="700">Process rollouts</text>
+    <rect x="580" y="63" width="130" height="32" rx="16" fill="#ffffff" stroke="#a5b4fc"/>
+    <text x="645" y="83" text-anchor="middle" fill="#1e293b" font-size="11" font-weight="700">Value vs. baseline</text>
+    <rect x="20" y="112" width="680" height="50" rx="8" fill="#f8fafc"/>
+    <text x="30" y="142" text-anchor="start" fill="#312e81" font-size="13" font-weight="700">Governance</text>
+    <rect x="145" y="121" width="130" height="32" rx="16" fill="#ffffff" stroke="#a5b4fc"/>
+    <text x="210" y="141" text-anchor="middle" fill="#1e293b" font-size="11" font-weight="700">Interim policy</text>
+    <rect x="290" y="121" width="130" height="32" rx="16" fill="#ffffff" stroke="#a5b4fc"/>
+    <text x="355" y="141" text-anchor="middle" fill="#1e293b" font-size="11" font-weight="700">Risk tiers drafted</text>
+    <rect x="435" y="121" width="130" height="32" rx="16" fill="#ffffff" stroke="#a5b4fc"/>
+    <text x="500" y="141" text-anchor="middle" fill="#1e293b" font-size="11" font-weight="700">Review board live</text>
+    <rect x="580" y="121" width="130" height="32" rx="16" fill="#ffffff" stroke="#a5b4fc"/>
+    <text x="645" y="141" text-anchor="middle" fill="#1e293b" font-size="11" font-weight="700">Incident drill</text>
+    <rect x="20" y="170" width="680" height="50" rx="8" fill="#eef2ff"/>
+    <text x="30" y="192" text-anchor="start" fill="#312e81" font-size="13" font-weight="700">Platform</text>
+    <text x="30" y="208" text-anchor="start" fill="#312e81" font-size="13" font-weight="700">and data</text>
+    <rect x="145" y="179" width="130" height="32" rx="16" fill="#ffffff" stroke="#a5b4fc"/>
+    <text x="210" y="199" text-anchor="middle" fill="#1e293b" font-size="11" font-weight="700">Approved tools</text>
+    <rect x="290" y="179" width="130" height="32" rx="16" fill="#ffffff" stroke="#a5b4fc"/>
+    <text x="355" y="199" text-anchor="middle" fill="#1e293b" font-size="11" font-weight="700">Platform plan</text>
+    <rect x="435" y="179" width="130" height="32" rx="16" fill="#ffffff" stroke="#a5b4fc"/>
+    <text x="500" y="199" text-anchor="middle" fill="#1e293b" font-size="11" font-weight="700">Gateway and evals</text>
+    <rect x="580" y="179" width="130" height="32" rx="16" fill="#ffffff" stroke="#a5b4fc"/>
+    <text x="645" y="199" text-anchor="middle" fill="#1e293b" font-size="11" font-weight="700">Vendor review</text>
+    <rect x="20" y="228" width="680" height="50" rx="8" fill="#f8fafc"/>
+    <text x="30" y="258" text-anchor="start" fill="#312e81" font-size="13" font-weight="700">People</text>
+    <rect x="145" y="237" width="130" height="32" rx="16" fill="#ffffff" stroke="#a5b4fc"/>
+    <text x="210" y="257" text-anchor="middle" fill="#1e293b" font-size="11" font-weight="700">Listening tour</text>
+    <rect x="290" y="237" width="130" height="32" rx="16" fill="#ffffff" stroke="#a5b4fc"/>
+    <text x="355" y="257" text-anchor="middle" fill="#1e293b" font-size="11" font-weight="700">Core team hired</text>
+    <rect x="435" y="237" width="130" height="32" rx="16" fill="#ffffff" stroke="#a5b4fc"/>
+    <text x="500" y="257" text-anchor="middle" fill="#1e293b" font-size="11" font-weight="700">Literacy launch</text>
+    <rect x="580" y="237" width="130" height="32" rx="16" fill="#ffffff" stroke="#a5b4fc"/>
+    <text x="645" y="257" text-anchor="middle" fill="#1e293b" font-size="11" font-weight="700">Board scorecard</text>
+  </g>
+</svg>
+
+Treat it as a living plan. Revisit it each quarter alongside the portfolio review.
+
+<TryIt title="Build Your Roadmap">
+
+1. Adapt the four-quarter table to your organization's situation and maturity.
+2. For each quarter, name the single most important deliverable and its owner.
+3. Write your incident definition and who can pause a high-risk system.
+4. List the three vendor contracts you'd review first, and the terms you'd seek.
+5. Schedule your first board scorecard.
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "What's usually the root cause of an AI incident?",
+    options: [
+      "The model alone",
+      "A system failure: missing review, unclear accountability, poor data, or weak monitoring",
+      "The user's prompt",
+      "Bad luck"
+    ],
+    correctIndex: 1,
+    explanation: "Fix the system around the model, not just the prompt."
+  },
+  {
+    question: "Which contract term best protects you when a vendor updates its model?",
+    options: [
+      "A lower price",
+      "Notice of material model changes and the right to test before they apply",
+      "A longer contract term",
+      "Unlimited users"
+    ],
+    correctIndex: 1,
+    explanation: "Model changes can alter behavior overnight. Notice and testing rights let you catch problems first."
+  },
+  {
+    question: "What is \"silent AI\" in vendor management?",
+    options: [
+      "AI that doesn't produce text",
+      "AI features added to software you already license, sometimes on by default",
+      "AI with no user interface",
+      "AI that runs only at night"
+    ],
+    correctIndex: 1,
+    explanation: "Existing vendors often add AI features. Flag them in renewals and add them to your inventory."
+  }
+]} />
+
+## Course Complete
+
+You now have the full CAIO toolkit: a clear mandate, a strategy tied to business goals, a managed portfolio with honest value measurement, an operating model and platform, proportionate governance aligned with major frameworks and laws, a plan for people and adoption, and the reporting and incident discipline that keeps you accountable. The technology will keep changing. A well-run AI function is built to absorb that change.
