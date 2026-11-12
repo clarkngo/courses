@@ -1,0 +1,140 @@
+---
+title: "Toxicity and the Online Disinhibition Effect"
+description: "Why ordinary people say things online they'd never say in person, how toxicity spreads through a match, what game studios have learned about who is toxic, and how to protect yourself and your team."
+module: 4
+moduleTitle: "Playing With Strangers"
+lesson: 2
+duration: "25 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Would You Say That Face to Face?
+
+Picture saying "uninstall, you're worthless" to someone sitting next to you at a café after they missed a skillshot. Most people never would. Yet messages like that show up in online games every day. Why?
+
+---
+
+## The Online Disinhibition Effect
+
+Psychologist John Suler described the **online disinhibition effect**: people say and do things online that they wouldn't in person. He identified several factors. Here's how they show up in Wild Rift:
+
+| Factor | What it means | In game |
+|---|---|---|
+| **Dissociative anonymity** | "You don't know me" | You're a summoner name, not a person with a face |
+| **Invisibility** | Nobody can see you | No eye contact, no seeing the hurt on their face |
+| **Asynchronicity** | Not a real-time conversation | You type and move on; you don't watch the reaction land |
+| **Solipsistic introjection** | Others feel like voices in your head | Teammates become characters in your internal story |
+| **Dissociative imagination** | "It's just a game" | Online feels like a separate world with separate rules |
+| **Minimized authority** | No one in charge is watching | No teacher, boss, or referee present in the moment |
+
+Suler also noted **benign disinhibition**: the same effect lets shy people open up, make friends, and be kind online. Disinhibition isn't only bad. It removes brakes, and what happens next depends on the person and the moment.
+
+---
+
+## Who Is Toxic?
+
+A common assumption is that a small group of "toxic players" causes most problems. Riot's player-behavior team reported in the early 2010s, from *League of Legends* data, that a large share of toxic incidents came from **otherwise ordinary players having an occasional bad moment**, not from a small group of permanently toxic players.
+
+That finding matters:
+
+- Toxicity is often a **state**, not a fixed **trait**. Almost anyone can slip into it when tilted.
+- It means **you** are a possible source of toxicity on a bad night, not just a possible target.
+- It suggests that prevention (helping people regulate in the moment) matters as much as punishment.
+
+---
+
+## Toxicity Is Contagious
+
+Emotions spread between people, a process called **emotional contagion**. In a match, one flaming player raises everyone's arousal. Others flame back or go quiet and disengage. Coordination drops. The team loses. The loss confirms the flamer's belief that their team is bad.
+
+Research on online-game toxicity, including studies of League of Legends' former Tribunal system, found toxic behavior is linked to **worse team performance**. Whether toxicity causes losses or losses cause toxicity, it's almost certainly both, which makes it a feedback loop.
+
+---
+
+## Deindividuation
+
+**Deindividuation** is a loss of self-awareness in groups or anonymous settings, which weakens personal standards. If you notice yourself typing something you wouldn't want your name attached to, that's deindividuation at work.
+
+One finding from deindividuation research is that **reminders of identity** reduce antisocial behavior. Simply imagining the other player as a real person, maybe a 15-year-old playing on the bus, can restore the brakes.
+
+---
+
+## What Systems Do
+
+Game designers use psychology to reduce toxicity:
+
+- **Honor and positive recognition.** Rewarding good behavior (Wild Rift has an honor system) taps into reinforcement for prosocial play.
+- **Chat filters and mute options.** Situation modification at the system level.
+- **Reporting and penalties.** Consequences restore some sense of authority.
+- **Pings and quick-chat over free text.** Lower-emotion communication channels.
+
+None of these remove toxicity entirely, because the underlying psychology (tilt, anonymity, attribution) is still there.
+
+<TryIt title="Your Personal Line">
+
+Write down one sentence that describes the line you won't cross in chat. For example:
+
+- "I don't type anything I wouldn't say to someone's face."
+- "I only use chat for game information."
+- "If I'm about to type with my thumbs shaking, I mute all instead."
+
+Then think of a time you crossed it. What was happening right before? (That's probably your tilt signature from Module 2.)
+
+</TryIt>
+
+<Pitfall title="Fighting Fire in Chat">
+
+**Common mistake:** arguing back to "defend yourself" or "teach them a lesson." It almost never changes the flamer's mind, raises your own arousal, splits your attention, and spreads the conflict to the rest of the team. **Mute, report after the game, and play.** That's not weakness. It's protecting your performance and your team's.
+
+</Pitfall>
+
+### If It Gets to You
+
+Repeated harassment can genuinely affect mood. If online abuse follows you outside the game, includes threats, or targets your identity, use the in-game report tools, block the player, and talk to someone you trust. If it's affecting your sleep, school, or work, that's a reason to step back from the game for a while. You'll cover healthy play more in Module 5.
+
+---
+
+## Key Takeaways
+
+- The **online disinhibition effect** comes from anonymity, invisibility, asynchronicity, and minimized authority.
+- Disinhibition can be **toxic** or **benign**.
+- Much toxicity comes from **ordinary players in a bad moment**, so it's a state anyone can slip into.
+- Toxicity is **contagious** and tied to worse team performance.
+- **Identity reminders** and prosocial systems (honor, mute, pings) reduce it.
+- The best personal response is usually **mute, report, play**.
+
+<Quiz
+  questions={[
+    {
+      question: "Which factor of the online disinhibition effect means you don't see the hurt on someone's face when you flame them?",
+      options: ["Invisibility", "Dissociative imagination", "Minimized authority", "Benign disinhibition"],
+      correctIndex: 0,
+      explanation: "Invisibility removes face-to-face social cues like eye contact and facial reactions that normally restrain us."
+    },
+    {
+      question: "What did player-behavior research at Riot suggest about where toxicity comes from?",
+      options: [
+        "Almost all of it comes from a tiny group of permanently toxic players",
+        "A large share comes from ordinary players having an occasional bad moment",
+        "It only happens in low ranks",
+        "It only happens in unranked modes"
+      ],
+      correctIndex: 1,
+      explanation: "Toxicity often behaves like a temporary state rather than a fixed trait, which means prevention in the moment matters."
+    },
+    {
+      question: "Which is an example of benign disinhibition?",
+      options: [
+        "Typing insults after a lost fight",
+        "A normally shy player opening up and making friends in a game club",
+        "Spam-pinging a teammate's body",
+        "Refusing to vote on surrender"
+      ],
+      correctIndex: 1,
+      explanation: "Suler noted disinhibition can also make people more open and generous online than they are in person."
+    }
+  ]}
+/>

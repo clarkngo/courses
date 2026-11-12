@@ -1,0 +1,145 @@
+---
+title: "Attention, Cognitive Load, and Flow on a Small Screen"
+description: "Why you miss the gank you 'should' have seen: limited attention, inattentional blindness, cognitive load on mobile, habits that free up attention, and the conditions for flow."
+module: 3
+moduleTitle: "Thinking Under Pressure"
+lesson: 2
+duration: "25 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Attention Is a Budget
+
+At any moment in a teamfight, you're tracking your champion, your cooldowns, enemy positions, enemy cooldowns, your HP, the minimap, and maybe a ping from a teammate. You can't fully process all of it. **Attention is limited**, and every task you add draws from the same budget.
+
+Psychologists call the mental effort a task demands its **cognitive load**. When load exceeds your capacity, something gets dropped, and in a MOBA what usually gets dropped is the **periphery**: the minimap, the enemy you aren't looking at, the objective timer.
+
+---
+
+## Inattentional Blindness
+
+In a famous study by Daniel Simons and Christopher Chabris, people counting basketball passes in a video often failed to notice a person in a gorilla suit walking through the middle of the scene. When attention is locked onto one task, even obvious unexpected things can go unseen. This is **inattentional blindness**.
+
+In Wild Rift:
+
+- You're focused on last-hitting under pressure and never see the enemy jungler's icon appear in river on the minimap.
+- You're locked on chasing a low-HP target and don't notice the other four enemies arriving.
+- You're watching your own HP bar in a fight and miss the enemy support's ultimate wind-up.
+
+The jungler wasn't invisible. Your attention was full.
+
+---
+
+## Mobile-Specific Load
+
+Playing a MOBA on a phone adds challenges a PC player doesn't face:
+
+- **Small screen, small minimap.** Peripheral information is physically smaller and easier to miss.
+- **Thumbs cover the screen.** Your hands sit over parts of the view.
+- **Notifications and interruptions.** A text or a low-battery warning splits attention at the worst moment.
+- **Environment.** Playing on a bus, in a noisy room, or while someone talks to you adds load you might not notice.
+
+Simple changes help: turn on do-not-disturb, play somewhere you won't be interrupted, and adjust HUD and minimap size in settings so the information you need is easier to see.
+
+---
+
+## Automaticity: Freeing Up the Budget
+
+Here's the good news. Tasks that are practiced enough become **automatic**: they need very little attention. A beginner has to think about every ability combo. An experienced player's hands just do it, which frees attention for the map.
+
+That's why habits are powerful:
+
+- **Minimap glance habit.** Many coaches suggest glancing at the minimap after every last hit or every few seconds. At first it costs attention. After weeks, it's automatic, and you see ganks coming without trying.
+- **Timer habit.** Saying objective spawn times to yourself until tracking them becomes second nature.
+- **Combo practice** in custom games, so you don't spend live-game attention on execution.
+
+The more you automate, the more attention you have left for decisions.
+
+---
+
+## Chunking
+
+Experts don't see more; they see in bigger **chunks**. Studies of chess players by William Chase and Herbert Simon showed masters could memorize real board positions far better than beginners, but not random ones. They recognized meaningful patterns.
+
+In Wild Rift, a high-level player looks at the minimap and sees "their jungler and mid are missing, Dragon is up in 30 seconds, they're setting up." A newer player sees five separate dots. Building chunks takes exposure plus review: watching replays and asking "what pattern was this?"
+
+---
+
+## Flow: When It All Clicks
+
+**Flow** is Mihaly Csikszentmihalyi's term for the state of complete absorption in a task, where time seems to disappear and actions feel effortless. Many players describe their best games this way.
+
+Flow tends to happen when:
+
+1. **Challenge matches skill.** Too easy is boring; too hard is anxiety. Flow lives in the band between.
+2. **Goals are clear.** You know what you're trying to do each moment.
+3. **Feedback is immediate.** You see the result of each action right away.
+
+MOBAs are naturally good at goals and feedback. The challenge-skill balance is what matchmaking tries to achieve: games close enough that they stretch you.
+
+### What Breaks Flow
+
+- Interruptions and notifications.
+- Tilt (high arousal shifts you into anxiety).
+- Chat arguments, which pull attention to people instead of the game.
+- Fatigue: late-night sessions where your skill effectively drops below the challenge.
+
+<TryIt title="Minimap Habit Drill">
+
+In your next three normal or ARAM games, set yourself one goal: **glance at the minimap every time you last-hit a minion or finish an ability combo.** Don't worry about anything else.
+
+After each game, rate 1–5 how often you remembered. Repeat for a week. Most players notice they "see" ganks earlier long before the habit feels fully automatic.
+
+</TryIt>
+
+<Pitfall title="Trying to Fix Everything at Once">
+
+**Common mistake:** after watching a coaching video, trying to improve your warding, CS, minimap awareness, positioning, and trading all in the same game. Each new focus adds cognitive load, and overloaded players usually play *worse*. Pick **one** thing per session until it becomes automatic, then add the next.
+
+</Pitfall>
+
+---
+
+## Key Takeaways
+
+- **Attention is limited**, and high cognitive load drops peripheral info like the minimap.
+- **Inattentional blindness** explains missing obvious threats when focused elsewhere.
+- Mobile play adds load: small screen, thumbs, notifications, and environment.
+- **Automaticity** and **chunking** free up attention for decisions; habits are how you get there.
+- **Flow** needs challenge matched to skill, clear goals, and immediate feedback.
+
+<Quiz
+  questions={[
+    {
+      question: "You're focused on chasing a kill and never notice four enemies arriving. Which concept explains this best?",
+      options: ["Flow", "Inattentional blindness", "Chunking", "Goal-gradient effect"],
+      correctIndex: 1,
+      explanation: "When attention is locked onto one task, unexpected things outside that focus can go unseen, even when they're obvious."
+    },
+    {
+      question: "Why does practicing combos in custom games help your awareness in ranked?",
+      options: [
+        "Custom games give bonus rank marks",
+        "Automatic skills use less attention, leaving more for the map and decisions",
+        "It increases your arousal",
+        "It doesn't; only ranked practice counts"
+      ],
+      correctIndex: 1,
+      explanation: "Automaticity frees cognitive resources. Execution that no longer needs attention leaves room for tracking the game."
+    },
+    {
+      question: "Which condition is most likely to break flow?",
+      options: [
+        "A game where challenge closely matches your skill",
+        "Clear goals each moment",
+        "A late-night session where fatigue drops your skill below the challenge",
+        "Immediate feedback on actions"
+      ],
+      correctIndex: 2,
+      explanation: "Flow needs a challenge-skill balance. Fatigue effectively lowers skill, tipping the game toward anxiety."
+    }
+  ]}
+/>
