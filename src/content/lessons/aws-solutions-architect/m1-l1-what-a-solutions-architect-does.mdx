@@ -114,6 +114,64 @@ There is almost never a single right architecture. There is the one that best fi
 - **Consistency vs latency.** Global users want local reads; strongly consistent writes need coordination.
 - **Speed of delivery vs long-term fit.** A quick lift-and-shift ships this quarter; a rearchitecture pays off later.
 
+Where a service sits on this spectrum decides how much work your team takes on. It's the main thing behind the exam's "least operational overhead" questions:
+
+<svg viewBox="0 0 720 370" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Who manages what for three compute choices. With Amazon EC2 you manage your code, the runtime, the operating system and patching, and scaling and capacity, while AWS manages the hardware. With ECS on Fargate you manage your code, the container, and scaling settings, while AWS manages the operating system and hardware. With AWS Lambda you manage only your code, and AWS manages the runtime, operating system, scaling, and hardware. Moving from EC2 to Lambda gives up control in exchange for less operational overhead." style="max-width:100%;height:auto;margin:1.5rem auto;display:block;">
+  <defs>
+    <marker id="sa-ops-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#0369a1"/>
+    </marker>
+  </defs>
+  <g font-family="system-ui, -apple-system, sans-serif" text-anchor="middle">
+    <rect x="190" y="14" width="160" height="34" rx="8" fill="#0c4a6e"/>
+    <text x="270" y="36" fill="#ffffff" font-size="13" font-weight="700">Amazon EC2</text>
+    <rect x="370" y="14" width="160" height="34" rx="8" fill="#0c4a6e"/>
+    <text x="450" y="36" fill="#ffffff" font-size="13" font-weight="700">ECS on Fargate</text>
+    <rect x="550" y="14" width="160" height="34" rx="8" fill="#0c4a6e"/>
+    <text x="630" y="36" fill="#ffffff" font-size="13" font-weight="700">AWS Lambda</text>
+    <text x="20" y="85" fill="#0f172a" font-size="13" font-weight="700" text-anchor="start">Your code</text>
+    <rect x="190" y="60" width="160" height="40" rx="6" fill="#0369a1"/>
+    <text x="270" y="85" fill="#ffffff" font-size="12" font-weight="700">You manage</text>
+    <rect x="370" y="60" width="160" height="40" rx="6" fill="#0369a1"/>
+    <text x="450" y="85" fill="#ffffff" font-size="12" font-weight="700">You manage</text>
+    <rect x="550" y="60" width="160" height="40" rx="6" fill="#0369a1"/>
+    <text x="630" y="85" fill="#ffffff" font-size="12" font-weight="700">You manage</text>
+    <text x="20" y="133" fill="#0f172a" font-size="13" font-weight="700" text-anchor="start">Runtime or container</text>
+    <rect x="190" y="108" width="160" height="40" rx="6" fill="#0369a1"/>
+    <text x="270" y="133" fill="#ffffff" font-size="12" font-weight="700">You manage</text>
+    <rect x="370" y="108" width="160" height="40" rx="6" fill="#0369a1"/>
+    <text x="450" y="133" fill="#ffffff" font-size="12" font-weight="700">You manage</text>
+    <rect x="550" y="108" width="160" height="40" rx="6" fill="#e0f2fe"/>
+    <text x="630" y="133" fill="#0c4a6e" font-size="12" font-weight="700">AWS manages</text>
+    <text x="20" y="181" fill="#0f172a" font-size="13" font-weight="700" text-anchor="start">OS and patching</text>
+    <rect x="190" y="156" width="160" height="40" rx="6" fill="#0369a1"/>
+    <text x="270" y="181" fill="#ffffff" font-size="12" font-weight="700">You manage</text>
+    <rect x="370" y="156" width="160" height="40" rx="6" fill="#e0f2fe"/>
+    <text x="450" y="181" fill="#0c4a6e" font-size="12" font-weight="700">AWS manages</text>
+    <rect x="550" y="156" width="160" height="40" rx="6" fill="#e0f2fe"/>
+    <text x="630" y="181" fill="#0c4a6e" font-size="12" font-weight="700">AWS manages</text>
+    <text x="20" y="229" fill="#0f172a" font-size="13" font-weight="700" text-anchor="start">Scaling and capacity</text>
+    <rect x="190" y="204" width="160" height="40" rx="6" fill="#0369a1"/>
+    <text x="270" y="229" fill="#ffffff" font-size="12" font-weight="700">You manage</text>
+    <rect x="370" y="204" width="160" height="40" rx="6" fill="#0369a1"/>
+    <text x="450" y="229" fill="#ffffff" font-size="12" font-weight="700">You manage</text>
+    <rect x="550" y="204" width="160" height="40" rx="6" fill="#e0f2fe"/>
+    <text x="630" y="229" fill="#0c4a6e" font-size="12" font-weight="700">AWS manages</text>
+    <text x="20" y="277" fill="#0f172a" font-size="13" font-weight="700" text-anchor="start">Hardware</text>
+    <rect x="190" y="252" width="160" height="40" rx="6" fill="#e0f2fe"/>
+    <text x="270" y="277" fill="#0c4a6e" font-size="12" font-weight="700">AWS manages</text>
+    <rect x="370" y="252" width="160" height="40" rx="6" fill="#e0f2fe"/>
+    <text x="450" y="277" fill="#0c4a6e" font-size="12" font-weight="700">AWS manages</text>
+    <rect x="550" y="252" width="160" height="40" rx="6" fill="#e0f2fe"/>
+    <text x="630" y="277" fill="#0c4a6e" font-size="12" font-weight="700">AWS manages</text>
+  </g>
+  <g font-family="system-ui, -apple-system, sans-serif" font-size="12" font-weight="700">
+    <line x1="200" y1="320" x2="700" y2="320" stroke="#0369a1" stroke-width="2.5" marker-start="url(#sa-ops-arrow)" marker-end="url(#sa-ops-arrow)"/>
+    <text x="200" y="346" fill="#334155">More control</text>
+    <text x="700" y="346" fill="#334155" text-anchor="end">Less operational overhead</text>
+  </g>
+</svg>
+
 The **AWS Well-Architected Framework** gives you a checklist for these conversations. It has six pillars: **Operational Excellence, Security, Reliability, Performance Efficiency, Cost Optimization, and Sustainability**. The SAA-C03 exam focuses on four of them: security, reliability (resilience), performance, and cost.
 
 ### Write the decision down

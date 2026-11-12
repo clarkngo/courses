@@ -116,6 +116,53 @@ Before designing, notice what these requirements **imply**. Extreme, short spike
 
 **Correctness.** Holding a seat is one **conditional write** to the seat's item in DynamoDB: set `holder = me` and `holdExpires = now + 5 min` **only if** the seat is available or its hold has expired. If two buyers try at once, exactly one write succeeds. DynamoDB **TTL** isn't used to release holds, because TTL deletes can lag; the expiry timestamp in the condition is what makes a seat available again.
 
+What happens when two buyers click the same seat at the same moment:
+
+<svg viewBox="0 0 720 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Sequence of two buyers holding the same seat. Buyer A and Buyer B both send a conditional write for seat 14C to DynamoDB at the same moment, each with the condition that the seat is available or its hold has expired. Each conditional write is atomic, so only one can succeed. DynamoDB returns success to Buyer A, who now holds the seat until 20:05. Buyer B's write fails with ConditionalCheckFailedException, and the app tells Buyer B the seat was just taken. If Buyer A doesn't pay by 20:05, the next conditional write succeeds because the hold has expired." style="max-width:100%;height:auto;margin:1.5rem auto;display:block;">
+  <defs>
+    <marker id="sa-seq-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#0369a1"/>
+    </marker>
+    <marker id="sa-seq-ok" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#15803d"/>
+    </marker>
+    <marker id="sa-seq-bad" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#b91c1c"/>
+    </marker>
+  </defs>
+  <g font-family="system-ui, -apple-system, sans-serif" text-anchor="middle">
+    <rect x="50" y="14" width="120" height="40" rx="8" fill="#e2e8f0"/>
+    <text x="110.0" y="38.0" fill="#0f172a" font-size="13" font-weight="700">Buyer A</text>
+    <rect x="290" y="14" width="140" height="40" rx="8" fill="#0369a1"/>
+    <text x="360.0" y="38.0" fill="#ffffff" font-size="12" font-weight="700">DynamoDB: seat 14C</text>
+    <rect x="550" y="14" width="120" height="40" rx="8" fill="#e2e8f0"/>
+    <text x="610.0" y="38.0" fill="#0f172a" font-size="13" font-weight="700">Buyer B</text>
+  </g>
+  <g stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="4 4">
+    <line x1="110" y1="56" x2="110" y2="250"/>
+    <line x1="360" y1="56" x2="360" y2="250"/>
+    <line x1="610" y1="56" x2="610" y2="250"/>
+  </g>
+  <g stroke-width="2.2">
+    <line x1="112" y1="96" x2="354" y2="96" stroke="#0369a1" marker-end="url(#sa-seq-arrow)"/>
+    <line x1="608" y1="96" x2="366" y2="96" stroke="#0369a1" marker-end="url(#sa-seq-arrow)"/>
+    <line x1="356" y1="178" x2="116" y2="178" stroke="#15803d" marker-end="url(#sa-seq-ok)"/>
+    <line x1="364" y1="216" x2="604" y2="216" stroke="#b91c1c" marker-end="url(#sa-seq-bad)"/>
+  </g>
+  <g font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="700" text-anchor="middle">
+    <text x="232" y="88" fill="#0c4a6e">hold 14C if available or expired</text>
+    <text x="488" y="88" fill="#0c4a6e">same write, same moment</text>
+    <rect x="280" y="114" width="160" height="40" rx="8" fill="#fef3c7"/>
+    <text x="360" y="131" fill="#78350f">Each conditional write</text>
+    <text x="360" y="146" fill="#78350f">is atomic: one wins</text>
+    <text x="232" y="170" fill="#15803d">✓ held by A until 20:05</text>
+    <text x="488" y="208" fill="#b91c1c">✕ ConditionalCheckFailed</text>
+    <text x="610" y="268" fill="#334155" font-weight="400">App shows "seat just taken"</text>
+    <text x="110" y="268" fill="#334155" font-weight="400">Checkout starts</text>
+  </g>
+  <text x="360" y="292" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#334155" text-anchor="middle">If A doesn't pay by 20:05, the next conditional write succeeds because the hold has expired.</text>
+</svg>
+
 **Resilience (Domain 2).** Every service here is **Multi-AZ by default**. Checkout is a **Step Functions** workflow: call the payment provider with retries, confirm the order, and on failure **release the seat** (a compensating step). Order events go through **EventBridge** to an **SQS queue** for email, so a slow email service never blocks a sale. For Regional disaster, **DynamoDB point-in-time recovery** meets the 1-minute RPO within the Region, **AWS Backup** copies to a second Region, and **infrastructure as code** rebuilds the stack there within the 4-hour RTO. That's backup and restore, the cheapest strategy that meets the requirement.
 
 **Security (Domain 1).** **AWS WAF** rate-limits by IP and filters known bots. **Cognito** handles sign-in. The browser sends card details **directly to the payment provider** (hosted fields or a redirect), so card data never touches the company's systems and PCI scope stays minimal. The provider's API key lives in **Secrets Manager**. Each Lambda function has its own least-privilege role.

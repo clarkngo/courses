@@ -116,6 +116,53 @@ If a question asks you to **block a specific IP address**, the answer is a netwo
 - **Envelope encryption:** KMS encrypts a small data key, and the data key encrypts your data, so large objects never travel to KMS.
 - **AWS CloudHSM** gives you dedicated, single-tenant hardware security modules when a regulation requires you to control the hardware.
 
+Envelope encryption is how most AWS services use KMS behind the scenes:
+
+<svg viewBox="0 0 720 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Envelope encryption with AWS KMS. Step 1: a service or app calls KMS GenerateDataKey for a KMS key. Step 2: KMS returns a plaintext data key and an encrypted copy of it. Step 3: the service encrypts the data locally with the plaintext data key and then discards that key. Step 4: the service stores the encrypted data together with the encrypted data key. To decrypt, the service sends the encrypted data key to KMS, gets the plaintext key back, and decrypts locally. The KMS key itself never leaves KMS unencrypted." style="max-width:100%;height:auto;margin:1.5rem auto;display:block;">
+  <defs>
+    <marker id="sa-env-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#0369a1"/>
+    </marker>
+  </defs>
+  <g font-family="system-ui, -apple-system, sans-serif" text-anchor="middle">
+    <rect x="20" y="30" width="160" height="170" rx="12" fill="#0c4a6e"/>
+    <text x="100" y="58" fill="#ffffff" font-size="14" font-weight="700">AWS KMS</text>
+    <rect x="40" y="90" width="120" height="50" rx="8" fill="#fef3c7"/>
+    <text x="100" y="120" fill="#78350f" font-size="13" font-weight="700">KMS key</text>
+    <text x="100" y="168" fill="#bae6fd" font-size="11">never leaves KMS</text>
+    <text x="100" y="184" fill="#bae6fd" font-size="11">unencrypted</text>
+
+    <rect x="300" y="30" width="160" height="170" rx="12" fill="#bae6fd"/>
+    <text x="380" y="58" fill="#0c4a6e" font-size="14" font-weight="700">Service or app</text>
+    <text x="380" y="110" fill="#0c4a6e" font-size="12" font-weight="700">3. Encrypt the data</text>
+    <text x="380" y="130" fill="#0c4a6e" font-size="11">with the plaintext</text>
+    <text x="380" y="146" fill="#0c4a6e" font-size="11">data key, then</text>
+    <text x="380" y="162" fill="#0c4a6e" font-size="11">discard that key</text>
+
+    <rect x="540" y="30" width="160" height="170" rx="12" fill="#e0f2fe"/>
+    <text x="620" y="58" fill="#0c4a6e" font-size="14" font-weight="700">Stored together</text>
+    <rect x="560" y="76" width="120" height="44" rx="8" fill="#0369a1"/>
+    <text x="620" y="103" fill="#ffffff" font-size="12" font-weight="700">Encrypted data</text>
+    <rect x="560" y="132" width="120" height="44" rx="8" fill="#fef3c7"/>
+    <text x="620" y="159" fill="#78350f" font-size="12" font-weight="700">Encrypted data key</text>
+  </g>
+  <g stroke="#0369a1" stroke-width="2.2">
+    <line x1="296" y1="80" x2="184" y2="80" marker-end="url(#sa-env-arrow)"/>
+    <line x1="184" y1="130" x2="296" y2="130" marker-end="url(#sa-env-arrow)"/>
+    <line x1="464" y1="115" x2="536" y2="115" marker-end="url(#sa-env-arrow)"/>
+  </g>
+  <g font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="700" fill="#0c4a6e" text-anchor="middle">
+    <text x="240" y="72">1. GenerateDataKey</text>
+    <text x="240" y="150">2. Plaintext key</text>
+    <text x="240" y="165">+ encrypted copy</text>
+    <text x="500" y="106">4. Store</text>
+  </g>
+  <g font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#334155">
+    <text x="20" y="238">To decrypt: send the encrypted data key to KMS, get the plaintext key back, and decrypt locally.</text>
+    <text x="20" y="260">Large data never travels to KMS. Only the small data key does.</text>
+  </g>
+</svg>
+
 Encryption for RDS and EBS is chosen **at creation**. To encrypt an existing unencrypted database, snapshot it, **copy the snapshot with encryption on**, and restore from the copy.
 
 ### Encryption in transit
