@@ -3,22 +3,22 @@ export interface Props {
   course: any;
   count: number;
   href?: string;
-  dateBadge?: string | null;
+  /** Git-derived date shown as "<prefix> <time ago>". The relative text is
+   *  recomputed in the browser so it doesn't freeze at build time. */
+  date?: { prefix: string; iso: string | null } | null;
   /** Heading level for the card title, so it nests under the surrounding section heading. */
   headingLevel?: 3 | 4;
 }
 
-const { course, count, href, dateBadge = null, headingLevel = 3 } = Astro.props;
+const { course, count, href, date = null, headingLevel = 3 } = Astro.props;
 const isAvailable = course.data.status === 'available';
 const color = course.data.color || '#3b63f5';
 const Heading = headingLevel === 4 ? 'h4' : 'h3';
 // Text the catalog's "Filter courses" box matches against.
 const searchText = [course.data.title, course.data.description, course.data.category, course.data.audience]
   .filter(Boolean).join(' ').toLowerCase();
-const meta = [
-  isAvailable && count > 0 ? `${count} lesson${count !== 1 ? 's' : ''}` : 'In development',
-  dateBadge,
-].filter(Boolean).join(' · ');
+const meta = isAvailable && count > 0 ? `${count} lesson${count !== 1 ? 's' : ''}` : 'In development';
+const dateFallback = date ? `${date.prefix} ${date.iso ? new Date(date.iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'date unknown'}` : null;
 ---
 
 <!-- The whole card is clickable via a stretched link on the title (the title's
@@ -62,7 +62,17 @@ const meta = [
     </p>
 
     <div class="flex items-center justify-between gap-3 text-xs text-gray-500 dark:text-gray-400 mt-1 sm:mt-0">
-      <span>{!isAvailable && <span class="sm:hidden">Coming soon · </span>}{meta}</span>
+      <span>
+        {!isAvailable && <span class="sm:hidden">Coming soon · </span>}{meta}
+        {date && (
+          <>
+            {' · '}
+            {date.iso ? (
+              <time datetime={date.iso} data-relative-time data-prefix={date.prefix}>{dateFallback}</time>
+            ) : dateFallback}
+          </>
+        )}
+      </span>
       {isAvailable && (
         <span class="hidden sm:inline font-semibold flex-shrink-0 text-gray-700 dark:text-gray-300 group-hover:text-brand-700 dark:group-hover:text-brand-300 transition-colors" aria-hidden="true">
           View course →
