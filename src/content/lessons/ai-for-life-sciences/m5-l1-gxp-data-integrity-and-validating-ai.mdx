@@ -1,0 +1,138 @@
+---
+title: "GxP, Data Integrity, and Validating AI"
+description: "Apply ALCOA+ data-integrity principles to AI-assisted work, understand why generative AI is hard to validate, and use a risk-based approach to fit AI into GxP processes."
+module: 5
+moduleTitle: "Regulatory and Quality"
+lesson: 1
+duration: "30 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## Why Quality Teams Are Cautious
+
+GxP systems rest on one promise: the data can be trusted, and you can prove how it was created and changed. Generative AI challenges that promise in three ways:
+
+1. **Non-determinism.** The same prompt can produce different outputs. Traditional validation assumes the same input gives the same output.
+2. **Opacity.** You can't trace why a model produced a particular sentence the way you can trace a calculation.
+3. **Change you don't control.** Cloud models are updated by vendors, sometimes without notice, so the system you validated may not be the system you're running.
+
+None of this makes AI impossible in GxP. It means the controls have to be designed around these properties.
+
+---
+
+## ALCOA+ Applied to AI
+
+Data integrity is commonly summarized as **ALCOA+**: data should be Attributable, Legible, Contemporaneous, Original, and Accurate, plus Complete, Consistent, Enduring, and Available.
+
+| Principle | What it means for AI-assisted work |
+|---|---|
+| **Attributable** | Who generated, reviewed, and approved the content, including which tool and version contributed. |
+| **Legible** | The record is readable and understandable, including what the AI did. |
+| **Contemporaneous** | AI-assisted entries are recorded when the work happens, not reconstructed later. |
+| **Original** | The source data is preserved. AI summaries never replace raw data. |
+| **Accurate** | Output is verified against source before it becomes a record. |
+| **Complete** | Rejected or regenerated outputs that influenced a decision are retained as your SOP requires. |
+| **Consistent** | The same process is followed every time, with defined prompts and review steps. |
+| **Enduring / Available** | Records, including relevant prompts and outputs, are retained and retrievable for inspection. |
+
+In the U.S., **21 CFR Part 11** governs electronic records and signatures, and in the EU, **Annex 11** of the GMP guide covers computerized systems. Both apply to systems that create or hold GxP records, whether or not AI is involved.
+
+<Pitfall title="The AI Summary Replaces the Source">
+
+**Common mistake:** an AI-generated summary of batch records or monitoring data is filed, and the reviewer signs off on the summary without checking the source.
+
+The signature attests to the data. If the summary dropped an excursion or misread a value, the signed record is wrong. Summaries can speed review; they can't stand in for it.
+
+</Pitfall>
+
+---
+
+## Risk-Based Validation
+
+Modern computerized-system thinking is **risk-based**: put validation effort where failure would affect patient safety, product quality, or data integrity. FDA's Computer Software Assurance (CSA) guidance, finalized in 2025, and industry frameworks such as ISPE's GAMP 5 (Second Edition) and its AI guidance both take this approach.
+
+<ProcessFlow
+  label="A risk-based approach to bringing an AI feature into a GxP process"
+  color="#047857"
+  loop="Monitoring shows drift or a model change → re-assess and re-test"
+  steps={[
+    { title: "Intended use", detail: "Exact task, inputs, outputs" },
+    { title: "Risk", detail: "Patient, product, data impact" },
+    { title: "Controls", detail: "Human review, limits, locks" },
+    { title: "Test", detail: "Representative and edge cases" },
+    { title: "Release", detail: "Change control, training" },
+    { title: "Monitor", detail: "Performance, drift, versions" },
+  ]}
+/>
+
+Key questions at each step:
+
+- **Intended use:** What exactly will the AI do, and what will it **not** do? A vague intended use ("help with deviations") can't be validated.
+- **Risk:** If the output is wrong, what's the worst realistic outcome, and would anyone catch it?
+- **Controls:** Is there mandatory human review? Is the model version **locked**? Are outputs constrained (picking from a list rather than free text)?
+- **Test:** Use real-world-representative data, including hard cases and known failure modes. For classification, measure what's missed as well as what's caught.
+- **Monitor:** Track performance over time. Define what happens when the vendor updates the model.
+
+---
+
+## The EU's Draft Annex 22
+
+In July 2025 the European Commission and PIC/S released a draft **Annex 22 on Artificial Intelligence** for the EU GMP guide, alongside revisions to Annex 11 and Chapter 4. As drafted, it:
+
+- Covers AI models used in **critical GMP applications**, those with direct impact on patient safety, product quality, or data integrity.
+- Expects **static, deterministic** models in those critical uses, with defined intended use, test data independent of training data, and performance metrics at least as good as the process they replace.
+- Excludes **dynamic** (continuously learning) models and **generative AI and LLMs** from critical GMP applications, while allowing them in non-critical uses with a qualified human responsible for the output.
+
+Annex 22 was a draft for consultation when this course was written. Check its current status, but the direction is clear: in critical GMP decisions, regulators want predictable, testable models, and generative AI stays in supporting roles under human control.
+
+<TryIt title="Write an Intended-Use Statement">
+
+Choose an AI use you'd like to bring into a GxP process (for example, AI-suggested categories for deviation trending). Write:
+
+1. A one-paragraph **intended use**: the task, inputs, outputs, and who acts on them.
+2. What the AI is explicitly **not** allowed to do.
+3. The worst realistic failure and how it would be detected.
+4. Three test cases, including one designed to make it fail.
+
+Share it with your quality unit as a conversation starter, not a request for approval.
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "Why is generative AI harder to validate than traditional GxP software?",
+    options: [
+      "It's always less accurate.",
+      "It can be non-deterministic, opaque, and changed by vendor updates.",
+      "It doesn't produce electronic records.",
+      "It's not covered by any regulation."
+    ],
+    correctIndex: 1,
+    explanation: "Validation traditionally assumes reproducible, traceable, controlled behavior. Generative AI challenges all three."
+  },
+  {
+    question: "Under the July 2025 draft EU GMP Annex 22, which models are expected for critical GMP applications?",
+    options: [
+      "Any model with high accuracy",
+      "Continuously learning models",
+      "Static, deterministic models with defined intended use and independent test data",
+      "Large language models with human review"
+    ],
+    correctIndex: 2,
+    explanation: "The draft excludes dynamic models and generative AI from critical uses, expecting static, deterministic, well-tested models."
+  },
+  {
+    question: "Which ALCOA+ principle is violated when an AI summary is filed in place of the raw data it summarizes?",
+    options: ["Legible", "Original", "Contemporaneous", "Available"],
+    correctIndex: 1,
+    explanation: "The original source data must be preserved. A summary can support review but can't replace the original."
+  }
+]} />
+
+## Up Next
+
+The next lesson widens the view to the regulatory landscape for AI in medicines and devices, and to using AI in regulatory writing.

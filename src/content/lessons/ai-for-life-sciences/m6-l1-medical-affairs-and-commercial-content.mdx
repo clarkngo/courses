@@ -1,0 +1,146 @@
+---
+title: "Medical Affairs and Commercial Content"
+description: "Use AI for scientific communication, medical information, and promotional content while respecting the line between scientific exchange and promotion, fair balance, and medical-legal-regulatory review."
+module: 6
+moduleTitle: "Communication and Accountability"
+lesson: 1
+duration: "25 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## Words That Are Regulated
+
+In most industries, marketing copy is judged by whether it works. In life sciences, what you say about a product is regulated. Claims must be consistent with the approved label, supported by evidence, and balanced with risk information. Medical affairs operates under different rules from promotion, and the line between them matters.
+
+AI is very good at producing persuasive, polished text. That's exactly why it needs careful handling here.
+
+---
+
+## Medical Affairs Uses
+
+### Medical information and standard response letters
+
+Medical information teams answer unsolicited questions from healthcare professionals and patients. AI can help:
+
+- **Find** relevant approved content and prior responses.
+- **Draft** a response from an approved standard response letter, tailored to the specific question.
+- **Summarize** new literature for updating response letters.
+
+Guardrails: responses must come from **approved content**, stay **non-promotional**, and go through your review process. Off-label information can be provided only in response to genuinely unsolicited requests, within your company's policies. An AI that "helpfully" volunteers off-label uses turns a compliant response into a problem.
+
+### Scientific communication
+
+Publication planning, congress materials, medical-science-liaison (MSL) slide decks, and advisory board summaries. The literature and authorship rules from Lesson 3.1 apply, along with good publication practice (such as GPP guidelines) and your company's publication SOPs.
+
+### Insights
+
+MSLs collect field insights from conversations with experts. AI can cluster and summarize large volumes of insight notes. Be careful with what goes into those notes: no identifiable patient information, and no recording of individuals' views beyond what your policies permit.
+
+---
+
+## Promotional Content
+
+AI can draft promotional copy, adapt materials across channels, and personalize messaging. Every one of those outputs is still promotional material and goes through **medical, legal, and regulatory (MLR) review**.
+
+AI introduces specific risks:
+
+- **Overstatement.** "Significantly reduces" when the trial showed a numerical but non-significant trend. "Proven" when evidence is preliminary.
+- **Missing fair balance.** Benefit claims without proportionate risk information, or risk information pushed out of sight.
+- **Off-label drift.** Copy that implies a broader population, indication, or dose than the label supports.
+- **Unsupported comparisons.** Superiority claims against a competitor without head-to-head evidence.
+- **Invented references.** Claims annotated with citations that don't support them, or don't exist.
+
+<Pitfall title="Assuming MLR Will Catch Everything">
+
+**Common mistake:** generating many AI variants of promotional content and relying on MLR review to catch problems.
+
+MLR reviewers are a control, not a filter for unlimited volume. More AI-generated variants means more review burden and more chances for an error to get through. Constrain AI to approved claims and references at the start, so what reaches MLR is already close to compliant.
+
+</Pitfall>
+
+---
+
+## A Claims-Anchored Workflow
+
+<ProcessFlow
+  label="Producing AI-assisted promotional content anchored to approved claims"
+  color="#047857"
+  loop="Claim not in the approved library → remove it, or route it to medical for substantiation"
+  steps={[
+    { title: "Claims library", detail: "Approved claims and references" },
+    { title: "Constrained draft", detail: "AI uses only the library" },
+    { title: "Self-check", detail: "Claim-by-claim vs. library" },
+    { title: "Fair balance", detail: "Risk info prominent" },
+    { title: "MLR review", detail: "Full standard review" },
+    { title: "Archive", detail: "Approved version and use" },
+  ]}
+/>
+
+The key move is the **claims library**: a set of pre-approved claims, each linked to its supporting reference and approved wording. When AI may only assemble and adapt approved claims, rather than inventing new ones, both quality and review speed improve.
+
+---
+
+## Personalization and Patient-Facing Content
+
+AI-driven personalization of messages to healthcare professionals and patients raises extra questions:
+
+- Is the personalization based on data you're allowed to use for this purpose?
+- Does every version still carry required risk information?
+- Is each variant reviewed, or is the template plus the rules for variation approved?
+- For patient-facing content, is it at an appropriate reading level, and does it avoid making medical decisions for the patient?
+
+<TryIt title="Audit an AI Draft Against the Label">
+
+Using a public product label (prescribing information) and an approved tool:
+
+1. Ask the AI to write a short, persuasive paragraph for healthcare professionals about the product.
+2. Check every claim against the label. Mark each as on-label, overstated, or not supported.
+3. Check whether risk information is present and proportionate.
+
+Then rewrite the prompt to constrain the AI to label language, and compare.
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "A medical information response drafted by AI volunteers an off-label use the requester didn't ask about. What's the issue?",
+    options: [
+      "None. More information is helpful.",
+      "Volunteering off-label information can turn a compliant response into promotion.",
+      "The response is too short.",
+      "It should have cited more studies."
+    ],
+    correctIndex: 1,
+    explanation: "Off-label information is limited to what's needed to answer genuinely unsolicited questions, within company policy."
+  },
+  {
+    question: "What does a claims library do in an AI-assisted promotional workflow?",
+    options: [
+      "Stores every draft the AI produces",
+      "Constrains AI to pre-approved claims with linked references and wording",
+      "Replaces MLR review",
+      "Tracks competitor claims"
+    ],
+    correctIndex: 1,
+    explanation: "Restricting AI to approved claims reduces overstatement and unsupported claims before review."
+  },
+  {
+    question: "AI copy says a drug \"significantly reduces\" symptoms, but the trial showed a non-significant numerical trend. What kind of error is this?",
+    options: [
+      "Fair balance",
+      "Overstatement of efficacy",
+      "Off-label promotion",
+      "A citation error"
+    ],
+    correctIndex: 1,
+    explanation: "Claiming statistical significance that the data doesn't show overstates efficacy."
+  }
+]} />
+
+## Up Next
+
+The final lesson brings everything together into personal and team accountability, and a 90-day plan.

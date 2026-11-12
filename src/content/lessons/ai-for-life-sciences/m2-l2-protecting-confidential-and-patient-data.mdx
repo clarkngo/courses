@@ -1,0 +1,136 @@
+---
+title: "Protecting Confidential and Patient Data"
+description: "Classify what you're about to share with an AI tool: unpublished research, trade secrets, material nonpublic information, and trial participant data. Learn which tools can safely receive each."
+module: 2
+moduleTitle: "Delegation and Data Protection"
+lesson: 2
+duration: "25 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## Every Prompt Is a Disclosure
+
+When you paste text into an AI tool, you send it to someone else's servers. What happens next depends on the tool's terms: whether inputs are stored, for how long, who can see them, and whether they're used to train future models. Enterprise agreements usually restrict all of these. Free consumer accounts often don't.
+
+Life-science organizations hold some of the most sensitive data in any industry. Before you prompt, know what kind of data you're holding.
+
+---
+
+## Five Kinds of Sensitive Data
+
+### 1. Unpublished research and trade secrets
+
+Unpublished results, compound structures, assay protocols, manufacturing process parameters, formulation details. Much of this value is protected as **trade secrets**, and trade-secret protection depends on taking reasonable steps to keep the information secret. Pasting it into an unapproved external tool can undermine that.
+
+### 2. Patentable inventions
+
+Patents require novelty. Whether entering an invention into an AI tool counts as a public disclosure is a legal question that depends on the tool's terms and the jurisdiction, and it isn't fully settled. Don't run that experiment on your company's pipeline. **Talk to your IP or legal team before using any external tool on unfiled inventions.**
+
+### 3. Material nonpublic information (MNPI)
+
+For public companies, top-line trial results, regulatory feedback, safety signals, and partnership negotiations can be **material nonpublic information**. Sharing it outside controlled channels creates securities-law risk. A trial readout pasted into a consumer chatbot to "draft a press release" is a real-world version of this.
+
+### 4. Trial participant and patient data
+
+Clinical data is protected by layered rules:
+
+- **HIPAA** in the U.S., where it applies to the data source.
+- **GDPR** in the EU and UK. Note that **pseudonymized data, such as a subject ID with a key held elsewhere, is still personal data under GDPR.**
+- **Informed consent** limits on how participants' data may be used.
+- **Sponsor–site and CRO contracts** that restrict data handling.
+
+Removing names isn't de-identification. Rare-disease participants, small sites, dates, and detailed narratives can identify people even without a name. Adverse-event narratives are a common trap: they combine age, sex, location, dates, and medical history in one paragraph.
+
+### 5. Partner and third-party confidential information
+
+Data received under a confidentiality agreement from a licensing partner, CRO, or vendor is often restricted to specific uses. AI processing may not be one of them.
+
+<Pitfall title="Using a Personal Account 'Just This Once'">
+
+**Common mistake:** the approved enterprise tool is slow or blocked, so you paste a protocol excerpt into a personal account to meet a deadline.
+
+Your organization's approved tools exist because someone reviewed their data handling and contract terms. A personal account sits outside all of that, and you can't recall what you sent. If the approved tool can't do the job, escalate; don't route around it.
+
+</Pitfall>
+
+---
+
+## Matching Data to Tools
+
+A practical classification most organizations use, in some form:
+
+| Data | Consumer AI (personal account) | Enterprise AI (approved, contracted) | Validated or specially approved environment |
+|---|---|---|---|
+| Public information, published papers | ✅ | ✅ | ✅ |
+| Internal but non-sensitive (agendas, general process questions) | ❌ | ✅ | ✅ |
+| Unpublished research, trade secrets, MNPI | ❌ | Only if policy allows | ✅ |
+| Identifiable or pseudonymized participant data | ❌ | Usually ❌ | Only with privacy, legal, and quality approval |
+| GxP records | ❌ | Usually ❌ | Under SOP and validation |
+
+Your organization's actual policy wins. If there's no policy, treat everything beyond public information as off limits for external tools and ask.
+
+---
+
+## Minimize What You Share
+
+Even with approved tools, share only what the task needs:
+
+- **Abstract the problem.** "Help me structure a stability-study summary table with these column headers" doesn't need the actual results.
+- **Use placeholders.** Replace compound codes, sites, and subject IDs with generic labels ("Compound A," "Site 3").
+- **Strip narrative detail.** Ask for help with structure and wording on a synthetic example, then apply it to the real document yourself.
+- **Check uploads.** Files carry metadata, tracked changes, comments, and hidden tabs. A spreadsheet you "only used one column of" still uploads every sheet.
+
+<TryIt title="Classify Before You Prompt">
+
+Pick three things you'd like AI help with this week. For each:
+
+1. Classify the data using the five categories above.
+2. Identify which tool, if any, your organization approves for that data.
+3. Rewrite the request to share the minimum needed, using placeholders or a synthetic example.
+
+If you can't find your organization's policy in five minutes, that's worth raising with your manager or compliance team.
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "Under GDPR, is trial data identified only by subject ID (with the key held at the site) considered personal data?",
+    options: [
+      "No, it's anonymous.",
+      "Yes, pseudonymized data is still personal data.",
+      "Only if it includes dates.",
+      "Only for EU citizens living in the U.S."
+    ],
+    correctIndex: 1,
+    explanation: "Pseudonymized data can be re-linked to individuals, so GDPR still treats it as personal data."
+  },
+  {
+    question: "A colleague wants to paste unannounced top-line Phase 3 results into a free chatbot to draft a press release. What's the most serious concern?",
+    options: [
+      "The press release might be too long.",
+      "It's material nonpublic information shared outside controlled channels.",
+      "The chatbot might use the wrong font.",
+      "Free tools are slower."
+    ],
+    correctIndex: 1,
+    explanation: "Unannounced trial results are often MNPI, and sharing them outside controlled channels creates securities and confidentiality risk."
+  },
+  {
+    question: "What should you do before using an external AI tool on an unfiled invention?",
+    options: [
+      "Remove the inventor names first.",
+      "Use a personal account so it's not linked to the company.",
+      "Talk to your IP or legal team.",
+      "Nothing. AI tools never count as disclosure."
+    ],
+    correctIndex: 2,
+    explanation: "Whether AI input counts as disclosure is unsettled and depends on the tool's terms. Get advice before you risk novelty."
+  }
+]} />
+
+## Up Next
+
+Module 3 moves into research and discovery, starting with literature review and scientific writing.

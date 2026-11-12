@@ -1,0 +1,138 @@
+---
+title: "Trial Operations and Pharmacovigilance"
+description: "Evaluate AI for site selection, recruitment, and data review without building in bias, and understand where AI fits, and doesn't, in adverse-event processing and signal detection."
+module: 4
+moduleTitle: "Clinical Development"
+lesson: 2
+duration: "25 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## AI in Trial Operations
+
+Operational AI tends to be predictive rather than generative, and much of it is bought from vendors. Common uses:
+
+- **Site selection and feasibility:** predicting which sites will enroll well, based on past performance and patient populations.
+- **Patient identification:** searching health records for people who may meet eligibility criteria.
+- **Enrollment forecasting:** predicting when a trial will reach its target.
+- **Risk-based monitoring and data review:** flagging sites or data points that look anomalous, such as implausible values, unusual patterns, or possible fraud.
+
+These can save months. They can also quietly narrow who gets into trials.
+
+---
+
+## The Diversity Trap
+
+Models learn from history. In trials, history includes the under-representation of many groups: older adults, women in some therapeutic areas, racial and ethnic minorities, rural populations, and people who don't speak the dominant language.
+
+- A site-selection model trained on "sites that enrolled fast before" will favor the same academic centers that produced unrepresentative trials before.
+- A patient-finding tool that relies on structured EHR data will miss people whose care is fragmented across systems, or who are seen at clinics with less complete records.
+- Eligibility screening can encode criteria that exclude groups more than the science requires.
+
+Regulators expect sponsors to plan for representative enrollment. In the U.S., FDORA (2022) requires diversity action plans for certain trials, and FDA has issued guidance on them. Check the current status, since timing and guidance have shifted. An AI tool that optimizes speed without checking representativeness can work against those plans.
+
+**Ask vendors:** what data trained the model, and how does its performance and selection vary by demographic group and site type?
+
+<Pitfall title="Optimizing Only for Speed">
+
+**Common mistake:** choosing the site list the model ranks as fastest, then discovering mid-trial that enrollment doesn't reflect the population who'll use the drug.
+
+Give the model, or your review of its output, more than one target: speed, representativeness, and geographic reach. Look at the demographic profile of predicted enrollment before you commit.
+
+</Pitfall>
+
+---
+
+## AI in Pharmacovigilance
+
+Pharmacovigilance (PV) handles very large volumes of safety information under strict reporting timelines. AI is increasingly used across the case lifecycle:
+
+<ProcessFlow
+  label="Where AI fits in the adverse-event case lifecycle"
+  color="#047857"
+  steps={[
+    { title: "Intake", detail: "AI: extract from emails, calls, literature", badge: "AI" },
+    { title: "Triage", detail: "AI suggests validity and priority", badge: "AI" },
+    { title: "Coding", detail: "AI suggests MedDRA terms", badge: "AI" },
+    { title: "Assessment", detail: "Human: seriousness, expectedness, causality", badge: "👤" },
+    { title: "Reporting", detail: "Human-approved, on deadline", badge: "👤" },
+    { title: "Signals", detail: "AI finds patterns; humans evaluate", badge: "⇄" },
+  ]}
+/>
+
+### Where AI helps
+
+- **Intake and extraction** from unstructured sources: emails, call-center notes, social media, literature.
+- **Duplicate detection** across reports.
+- **Suggested coding** to MedDRA terms, with a human confirming.
+- **Literature screening** for safety-relevant articles.
+- **Signal detection support**, finding patterns across large datasets for human review.
+
+### Where judgment stays human
+
+- **Seriousness, expectedness, and causality assessment.** These drive regulatory clocks and labeling, and they need medical judgment.
+- **Signal evaluation.** Statistical disproportionality is a starting point, not a conclusion.
+- **Regulatory submissions.** Someone accountable approves what goes to authorities.
+
+Two risks matter most in PV:
+
+1. **False negatives.** If an AI intake tool fails to recognize a valid case, the report may never reach a human, and a deadline is missed with no one aware of it. Validation must test what the tool **misses**, not just what it gets right.
+2. **Over-trust in coding suggestions.** Accepting suggested terms without reading the narrative can mis-classify events and weaken signal detection later.
+
+International groups are working on good practice here. CIOMS Working Group XIV, for example, has been developing guidance on AI in pharmacovigilance. Follow your organization's PV system documentation and any updates from your regulators.
+
+<TryIt title="Find the Silent Failure">
+
+For one AI-assisted operational or PV process at your organization (or a hypothetical one):
+
+1. Describe what happens if the AI **misses** something: a valid case, an eligible patient, an anomalous site.
+2. Who would notice, and when?
+3. What check exists, or should exist, to catch that miss? For example: a random sample of AI-rejected items reviewed by a person each week.
+
+If no one would notice, you've found the control that's most needed.
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "A site-selection model trained on historical enrollment speed recommends the same ten academic centers as last time. What's the main concern?",
+    options: [
+      "The model is too slow.",
+      "It may reproduce past under-representation and work against diversity planning.",
+      "Academic centers are always the wrong choice.",
+      "The model should only use one site."
+    ],
+    correctIndex: 1,
+    explanation: "Models trained on history repeat it. Check representativeness, not just speed."
+  },
+  {
+    question: "Which pharmacovigilance step should stay with a qualified human?",
+    options: [
+      "Extracting reporter details from an email",
+      "Detecting duplicate reports",
+      "Assessing seriousness and causality",
+      "Suggesting MedDRA terms"
+    ],
+    correctIndex: 2,
+    explanation: "Seriousness and causality need medical judgment and drive regulatory timelines."
+  },
+  {
+    question: "Why is testing for false negatives especially important for AI case intake?",
+    options: [
+      "False negatives are rare.",
+      "A missed case may never reach a human, so the failure goes unnoticed and a deadline is missed.",
+      "False negatives improve sensitivity.",
+      "Regulators only check false positives."
+    ],
+    correctIndex: 1,
+    explanation: "If the AI is the gate, what it misses is invisible downstream. Validation and ongoing sampling must look for misses."
+  }
+]} />
+
+## Up Next
+
+Module 5 turns to the rules that govern all of this: GxP, data integrity, and validating AI.

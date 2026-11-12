@@ -1,0 +1,152 @@
+---
+title: "The AI Landscape in Life Sciences"
+description: "Distinguish the three kinds of AI you'll meet in life-science work, see where each shows up across the product lifecycle, and learn the four fluency competencies this course builds."
+module: 1
+moduleTitle: "Foundations: AI in the Life-Science Lifecycle"
+lesson: 1
+duration: "20 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import LoopDiagram from '@components/LoopDiagram.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## One Word, Three Very Different Things
+
+"We're using AI" can mean almost anything in a life-science company. A protein-structure model, a chatbot that drafts a clinical study report section, and a vision system inspecting vials on a fill line are all "AI," but they fail differently, are regulated differently, and need different kinds of checking.
+
+Before you decide how much to trust any tool, sort it into one of three groups.
+
+### 1. Scientific and predictive models
+
+Purpose-built models trained on scientific data to make a specific prediction:
+
+- **Structure prediction** (for example, AlphaFold and its successors) estimates how a protein folds or how molecules bind.
+- **Property prediction** scores candidate molecules for solubility, toxicity, or binding affinity.
+- **Image analysis** counts cells, segments tissue, or flags anomalies in histology slides.
+- **Operational prediction** forecasts trial enrollment, equipment failure, or batch yield.
+
+These models usually output a number, a structure, or a classification, often with a confidence score. Their main risk is being used **outside the conditions they were trained and validated on**.
+
+### 2. General-purpose generative assistants
+
+Large language models (LLMs) such as Claude, ChatGPT, Gemini, or Copilot, used to read, summarize, draft, translate, or write code. They're flexible and fluent, which is exactly the problem: they produce confident text whether or not it's true. Most of this course focuses here, because these are the tools most professionals now use daily, often without any formal process.
+
+### 3. AI embedded in regulated systems
+
+AI features built into validated systems: a quality-management system that suggests deviation root causes, a pharmacovigilance platform that auto-codes adverse events, an electronic data capture system that flags data anomalies, or a visual-inspection system on a manufacturing line. These sit inside **GxP** processes (Good Laboratory, Clinical, Manufacturing, and Pharmacovigilance Practice), so they carry validation, data-integrity, and audit-trail obligations that a stand-alone chatbot does not.
+
+<Pitfall title="Assuming the Vendor Validated It for You">
+
+**Common mistake:** "It's a validated system, so the new AI feature is validated too."
+
+A vendor's release notes are not your validation. When AI is added to a GxP system, your organization still has to assess the feature against **your intended use**, document that assessment, and control changes to it. Ask your quality unit before turning on any new AI feature in a validated system.
+
+</Pitfall>
+
+---
+
+## Where AI Shows Up Across the Lifecycle
+
+<ProcessFlow
+  label="AI use cases across the life-science product lifecycle"
+  color="#047857"
+  steps={[
+    { title: "Discovery", detail: "Targets, molecules, literature" },
+    { title: "Preclinical", detail: "Image analysis, tox prediction" },
+    { title: "Clinical", detail: "Protocols, recruitment, data review" },
+    { title: "Regulatory", detail: "Submissions, labeling, queries" },
+    { title: "Manufacturing", detail: "Inspection, process control" },
+    { title: "Post-market", detail: "Safety, medical information" },
+  ]}
+/>
+
+The further right you move, the closer AI output gets to a patient and the heavier the regulatory obligations become. A wrong literature summary in discovery wastes time. A wrong adverse-event assessment in post-market safety can delay a safety signal.
+
+---
+
+## The Four Competencies
+
+This course is organized around the **4D AI Fluency Framework**:
+
+<LoopDiagram
+  label="The four AI fluency competencies applied to life-science work"
+  colors={['#047857', '#059669', '#10b981', '#065f46']}
+  steps={[
+    { title: "Delegation", subtitle: "what to hand to AI" },
+    { title: "Description", subtitle: "how to ask well" },
+    { title: "Discernment", subtitle: "how to check output" },
+    { title: "Diligence", subtitle: "how to stay accountable" },
+  ]}
+/>
+
+- **Delegation:** deciding which tasks AI should do, which it should assist with, and which it should stay out of, given the scientific, patient, and regulatory stakes.
+- **Description:** giving AI the context, constraints, and format it needs, without giving it data it shouldn't have.
+- **Discernment:** checking AI output against primary sources, raw data, and your own expertise.
+- **Diligence:** owning the result. Documenting AI use where it matters, following SOPs, and being transparent with colleagues, regulators, journals, and patients.
+
+The four competencies form a loop. What you learn while checking output (Discernment) changes what you delegate next time.
+
+---
+
+## How This Course Is Organized
+
+| Module | Focus |
+|---|---|
+| 1. Foundations | The AI landscape and how AI fails in science |
+| 2. Delegation and data protection | Risk-tiered delegation; confidential, patient, and proprietary data |
+| 3. Research and discovery | Literature, writing, data analysis, and discovery models |
+| 4. Clinical development | Trial documents, operations, and pharmacovigilance |
+| 5. Regulatory and quality | GxP, data integrity, validation, and the regulatory landscape |
+| 6. Communication and accountability | Medical affairs, commercial content, and your 90-day plan |
+
+You don't need to work in every function. Each module stands on its own after Modules 1 and 2, so skip ahead to the parts of the lifecycle you touch.
+
+<TryIt title="Inventory Your AI Use">
+
+List every AI tool you used, or that touched your work, in the last two weeks. For each one, note:
+
+1. Which of the three groups it falls in (scientific model, generative assistant, embedded in a regulated system).
+2. Whether it's an **approved** tool at your organization, and how you know.
+3. Whether its output fed into anything GxP, anything submitted externally, or anything a patient will see.
+
+Keep this list. You'll use it again in Module 2 and in your 90-day plan.
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "A vendor adds an AI root-cause suggestion feature to your validated quality-management system. What's the right first step?",
+    options: [
+      "Turn it on. The system is already validated.",
+      "Ask your quality unit; the feature needs assessment against your intended use and change control.",
+      "Use it only for non-urgent deviations.",
+      "Wait for an FDA inspection to find out."
+    ],
+    correctIndex: 1,
+    explanation: "New AI functionality in a GxP system is a change. Your organization must assess it for its intended use and manage it under change control."
+  },
+  {
+    question: "What is the main risk of scientific and predictive models such as structure or property predictors?",
+    options: [
+      "They write in a confusing style.",
+      "They're used outside the conditions they were trained and validated on.",
+      "They can't produce confidence scores.",
+      "They require internet access."
+    ],
+    correctIndex: 1,
+    explanation: "Purpose-built models can be very good inside their training domain and unreliable outside it. Know the domain before you trust the number."
+  },
+  {
+    question: "Which competency covers documenting AI use and being transparent with regulators and journals?",
+    options: ["Delegation", "Description", "Discernment", "Diligence"],
+    correctIndex: 3,
+    explanation: "Diligence is about accountability: documentation, transparency, and owning what you put your name to."
+  }
+]} />
+
+## Up Next
+
+Before deciding what to delegate, you need to know how AI goes wrong in scientific work. The next lesson covers the failure modes that matter most.
