@@ -1,0 +1,149 @@
+---
+title: "Decision Biases on the Rift"
+description: "Spot sunk-cost chasing, outcome bias, overconfidence, confirmation bias, and the planning fallacy in your own calls, from Baron throws to build decisions."
+module: 3
+moduleTitle: "Thinking Under Pressure"
+lesson: 1
+duration: "30 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Fast Brains, Fast Games
+
+Daniel Kahneman described two styles of thinking:
+
+- **System 1:** fast, automatic, intuitive. Dodging a skillshot.
+- **System 2:** slow, effortful, deliberate. Deciding whether to trade Dragon for top tower.
+
+A MOBA forces most decisions into System 1 because the game doesn't pause. That's fine for mechanics you've practiced thousands of times. But System 1 relies on mental shortcuts (**heuristics**) that sometimes misfire in predictable ways. Those misfires are **cognitive biases**.
+
+---
+
+## Sunk Cost: "We've Already Committed"
+
+The **sunk cost fallacy** is continuing something because of what you've already invested, rather than what you'll get from here.
+
+**On the Rift:**
+
+- You've spent 40 seconds hitting Baron. The enemy team shows up. "We're almost done, keep hitting it!" The 40 seconds is gone either way. The only question is: *from this moment*, is finishing Baron worth the fight?
+- You chased the enemy ADC through three bushes. You've burned Flash. "I've come this far…" so you tower-dive and die.
+- You bought two items for a build that isn't working. Switching feels like wasting gold, so you keep going.
+
+**Fix:** ask the forward-looking question. *"If I were arriving right now, with no history, would I start this?"*
+
+---
+
+## Outcome Bias: Judging by the Result
+
+**Outcome bias** is judging a decision by how it turned out instead of by whether it was good given what you knew.
+
+- You dove a 1-HP enemy under tower with no minions. Their jungler happened to be elsewhere, and you got the kill. Was it a good play? Probably not. You got lucky.
+- You correctly backed off a fight your team couldn't win, and your team fought anyway and lost. Your teammates blame you for "not helping." Your decision may have been right.
+
+Poker players call the habit of judging by results being **"results-oriented."** Annie Duke's book *Thinking in Bets* is built around this idea: separate **decision quality** from **outcome quality**.
+
+| | Good outcome | Bad outcome |
+|---|---|---|
+| **Good decision** | Deserved win | Bad luck |
+| **Bad decision** | Dumb luck | Deserved loss |
+
+Players who only review their losses, or only replay highlights, miss the two diagonal boxes. Those are where the learning is.
+
+---
+
+## Overconfidence
+
+People generally overrate their own skill and overestimate the chance their plans will work.
+
+- "I can 1v2 that." (You can't, usually.)
+- "My rank is lower than my skill because of my teammates."
+
+You may have heard of the **Dunning–Kruger effect**, the idea that the least skilled are the most overconfident. The original 1999 study did find low performers overestimated their rank. Later researchers have argued that part of the pattern is a statistical artifact (regression to the mean plus a general tendency for everyone to rate themselves above average). The safer takeaway: **almost everyone, at every rank, tends to overrate themselves a bit.**
+
+**Fix:** calibrate with data. Look at your actual win rates on champions and roles (the *Rift Analytics* course shows how to tell real differences from noise).
+
+---
+
+## Confirmation Bias
+
+**Confirmation bias** is noticing evidence that supports what you already believe and missing what doesn't.
+
+- You believe "supports in my elo never ward." You notice every time they don't, and forget the times they do.
+- You believe a champion is broken. Every loss to it confirms the belief; every win against it is "they were bad."
+- You believe you're "hard stuck" because of your team. You remember throws by teammates vividly and forget your own deaths.
+
+**Fix:** actively look for disconfirming evidence. In replay, track **your** mistakes first.
+
+---
+
+## Availability and Recency
+
+The **availability heuristic** judges how common something is by how easily examples come to mind. Vivid, recent events feel more frequent.
+
+- A spectacular steal last game makes you overcommit to contesting objectives this game.
+- One awful game with a certain champion on your team makes you think "that champion's players always troll."
+
+---
+
+## The Planning Fallacy
+
+People underestimate how long things will take. "One game" turns into three. "I'll stop at 11" becomes 12:30. This is the **planning fallacy**, and it's why stop rules based on **time** often need a buffer, or should be based on **number of games** instead.
+
+<TryIt title="Two-Box Replay Review">
+
+Pick one recent game. Find:
+
+1. **One good decision with a bad outcome.** (You made the right call; it didn't work.)
+2. **One bad decision with a good outcome.** (You got away with something.)
+
+Write one sentence for each explaining what made the decision good or bad *based only on what you could see at the time.* This drill trains you out of outcome bias faster than anything else.
+
+</TryIt>
+
+<Pitfall title="Using Bias Words as Weapons">
+
+**Common mistake:** learning these terms and using them to call out teammates ("lol sunk cost"). Bias labels are most useful turned **inward**. Everyone, including you, has these biases. They're features of how human brains handle fast decisions, not signs that someone is dumb.
+
+</Pitfall>
+
+---
+
+## Key Takeaways
+
+- Fast games force fast **System 1** decisions, which rely on heuristics that can misfire.
+- **Sunk cost:** judge from now forward, not from what you've already spent.
+- **Outcome bias:** separate decision quality from results.
+- **Overconfidence** is near-universal; calibrate with data.
+- **Confirmation bias** and **availability** make memorable events feel more common than they are.
+- The **planning fallacy** explains why "one more game" grows.
+
+<Quiz
+  questions={[
+    {
+      question: "Your team has Baron at 30% HP when all five enemies arrive. A teammate says 'we've already put so much into it, keep going!' What bias is that?",
+      options: ["Availability heuristic", "Sunk cost fallacy", "Planning fallacy", "Hot hand"],
+      correctIndex: 1,
+      explanation: "Past investment doesn't change what's best now. The forward-looking question is whether finishing Baron is worth fighting five enemies."
+    },
+    {
+      question: "You tower-dive with no minions and the enemy jungler happens to be away, so you get the kill. Judging this play as 'good' because it worked is…",
+      options: ["Outcome bias", "Confirmation bias", "Loss aversion", "Reappraisal"],
+      correctIndex: 0,
+      explanation: "Outcome bias judges decisions by results. Given what you knew, the dive was high risk; it was dumb luck, not a good decision."
+    },
+    {
+      question: "What's the most defensible current view of the Dunning–Kruger effect?",
+      options: [
+        "It proves low-ranked players are always delusional",
+        "It has been fully debunked",
+        "Part of the original pattern may be statistical artifact; most people tend to overrate themselves somewhat",
+        "Only high-ranked players are overconfident"
+      ],
+      correctIndex: 2,
+      explanation: "Researchers debate how much of the effect is real versus regression to the mean and the above-average effect. A safe takeaway is general overconfidence."
+    }
+  ]}
+/>

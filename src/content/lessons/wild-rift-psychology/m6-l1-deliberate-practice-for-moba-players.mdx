@@ -1,0 +1,158 @@
+---
+title: "Deliberate Practice for MOBA Players"
+description: "Why playing more doesn't automatically make you better. Apply deliberate practice, feedback loops, spaced focus, and replay review to improve faster with fewer games."
+module: 6
+moduleTitle: "Getting Better"
+lesson: 1
+duration: "30 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## 1,000 Games and Still Gold?
+
+Plenty of players have thousands of games and haven't improved much in years. Others climb steadily with far fewer. The difference usually isn't talent. It's **how** they play.
+
+Psychologist K. Anders Ericsson studied experts in music, sports, and chess and found that what separated top performers wasn't simply time spent, but time spent in **deliberate practice**.
+
+---
+
+## What Deliberate Practice Is
+
+Deliberate practice has a few key features:
+
+1. **A specific goal.** Not "get better," but "land 60% of my Ahri charms in lane."
+2. **Just beyond your current ability.** Challenging enough that you fail sometimes.
+3. **Full concentration.** Not autopilot.
+4. **Immediate, informative feedback.** You know right away whether you succeeded.
+5. **Repetition with refinement.** You adjust and try again.
+
+Compare that to how most ranked games are played: no specific goal, autopilot through laning, feedback that's just "win" or "loss," and no review. That's **naive practice**. It builds familiarity, but it plateaus.
+
+### How Much Does Practice Explain?
+
+Ericsson's claims were influential and also debated. A 2014 meta-analysis by Brooke Macnamara, David Hambrick, and Frederick Oswald found deliberate practice explained about **26% of the variation in performance in games** (like chess), less in music and sports. So practice matters a lot, but so do other factors: starting age, working memory, reaction speed, coaching, and luck.
+
+The honest lesson: **you can't control all of those factors, but practice quality is the one you control most.**
+
+---
+
+## The Feedback Problem in MOBAs
+
+Win/loss is terrible feedback for learning. A game result depends on ten players, so it tells you very little about any single decision you made. That's outcome bias (Module 3) at the level of practice.
+
+Better feedback sources:
+
+- **Specific in-game metrics.** CS per minute at 10 minutes, deaths before 8 minutes, vision score, skillshot hit rate.
+- **Replay review.** Watching your own decisions with the full information you didn't have in the moment.
+- **Custom games.** Practicing combos, last-hitting, or wave management with no pressure and instant feedback.
+- **A coach or a better friend.** Someone who can spot the error you can't see.
+
+---
+
+## One Focus Per Session
+
+Lesson 3.2 showed that piling on goals overloads attention. Deliberate practice applies the same principle: **one skill at a time**.
+
+A sample four-week plan:
+
+| Week | Focus | Measure |
+|---|---|---|
+| 1 | Last-hitting | CS at 10 minutes, tracked every game |
+| 2 | Minimap habit | Self-rated 1–5 after each game |
+| 3 | Dying less early | Deaths before 8 minutes |
+| 4 | Objective timing | Did I move to Dragon or Herald before it spawned? |
+
+Each week, the previous focus should be closer to automatic, freeing attention for the new one.
+
+---
+
+## Spacing and Rest
+
+Learning research shows that **spaced practice** (shorter sessions spread over days) usually beats **massed practice** (one long marathon) for long-term retention. Sleep also plays a role in consolidating motor skills.
+
+For a MOBA player, that means three focused games a day for a week will usually teach you more than twenty games in one Saturday, especially since games 10–20 of a marathon tend to be tired, tilted, and on autopilot.
+
+---
+
+## How to Review a Replay
+
+A focused replay review takes about 10 minutes:
+
+1. **Pick one game** and one focus (for example, your deaths).
+2. **Pause before each death.** Ask: what did I know? What could I have known (minimap, timers, enemy items)?
+3. **Find the decision point.** It's usually 5–15 seconds before the death, not the moment of death.
+4. **Write one lesson.** One sentence: "When their jungler is missing and I have no ward, I don't push past the river."
+5. **Turn it into an if-then plan** for next game.
+
+Review wins too. Wins hide mistakes that you got away with.
+
+<TryIt title="Build Your Practice Loop">
+
+Choose one skill you want to improve and fill this in:
+
+- **Specific goal:** ______
+- **How I'll measure it each game:** ______
+- **Where I'll practice it without pressure:** (custom game, normal, ARAM) ______
+- **When I'll review:** (after every game? every third?) ______
+- **If-then plan from my last review:** If ______, then ______.
+
+Track it for one week, then look at the trend.
+
+</TryIt>
+
+<Pitfall title="Measuring Progress by Rank Alone">
+
+**Common mistake:** judging a week of practice by whether your rank went up. Rank is a noisy, lagging measure. Your skill can improve for weeks before rank catches up, especially if a new habit temporarily makes you play slower while it becomes automatic. Track the **specific metric** you're practicing.
+
+</Pitfall>
+
+---
+
+## Key Takeaways
+
+- **Deliberate practice** means a specific goal, just-beyond-ability difficulty, full focus, quick feedback, and refinement.
+- Practice explains a meaningful share of skill (about 26% in game research), and it's the share **you control**.
+- Win/loss is weak feedback; use **metrics, replays, custom games, and coaching**.
+- Practice **one skill at a time** and spread sessions out.
+- Review the **decision point** before each mistake, and turn lessons into **if-then plans**.
+
+<Quiz
+  questions={[
+    {
+      question: "Which is the best example of deliberate practice?",
+      options: [
+        "Playing 15 ranked games in a row on autopilot",
+        "Spending 10 minutes in a custom game practicing a combo, tracking how often it lands",
+        "Watching a streamer while eating dinner",
+        "Playing whatever champion is free this week"
+      ],
+      correctIndex: 1,
+      explanation: "It has a specific goal, focused repetition, and immediate measurable feedback, the core features of deliberate practice."
+    },
+    {
+      question: "Why is a game's win/loss result weak feedback for learning?",
+      options: [
+        "It's hidden after the game",
+        "It depends on ten players, so it says little about any one of your decisions",
+        "It only counts in ranked",
+        "It's always accurate"
+      ],
+      correctIndex: 1,
+      explanation: "With ten players involved, the outcome is a noisy signal. Specific metrics and replay review give much better feedback."
+    },
+    {
+      question: "When reviewing a death in a replay, where is the key decision point usually found?",
+      options: [
+        "At the exact moment of death",
+        "On the post-game stats screen",
+        "Several seconds before the death, when you chose to be in that position",
+        "In champion select"
+      ],
+      correctIndex: 2,
+      explanation: "Most deaths are decided earlier, by positioning or ignoring missing enemies, not in the final second."
+    }
+  ]}
+/>

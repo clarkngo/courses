@@ -1,0 +1,125 @@
+---
+title: "Five Strangers, One Team: Group Dynamics in Solo Queue"
+description: "Explore why solo-queue teams struggle to coordinate: the fundamental attribution error, social loafing, diffusion of responsibility, trust, communication through pings, and the psychology of the surrender vote."
+module: 4
+moduleTitle: "Playing With Strangers"
+lesson: 1
+duration: "25 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## An Unusual Kind of Team
+
+Most teams in life have history. Coworkers, classmates, and sports teams learn each other's habits over weeks. A solo-queue Wild Rift team is five strangers who met 60 seconds ago, can barely talk, will probably never meet again, and have to coordinate perfectly for 15–20 minutes.
+
+Social psychology predicts that's hard. Here's why.
+
+---
+
+## The Fundamental Attribution Error
+
+When *you* make a mistake, you see the situation: "I got caught because I had to ward alone; my support was bot." When a *teammate* makes the same mistake, you see their character: "This guy is terrible."
+
+That's the **fundamental attribution error**: explaining others' behavior by their personality while explaining our own by circumstances. In solo queue it's almost unavoidable, because you **can't see** your teammates' situation. You don't know they're playing a new role, on a laggy connection, or that their lane opponent got ganked three times.
+
+**Fix:** when a teammate messes up, generate one situational explanation before you react. "Maybe their jungler camped them." It doesn't have to be true. It just interrupts the automatic judgment.
+
+---
+
+## Social Loafing and Diffusion of Responsibility
+
+**Social loafing** is the tendency to put in less effort in a group, especially when individual contributions are hard to see. **Diffusion of responsibility** is the tendency for each person to assume someone else will handle it.
+
+On the Rift:
+
+- "Someone else will ward Dragon pit."
+- "The jungler will defend the tower."
+- Nobody buys the anti-heal item because everyone assumes someone else will.
+- Nobody answers the ping for help because four people each expect the other three to go.
+
+**Fix:** individual, visible responsibility. Ping exactly what *you* will do ("on my way"), and take small jobs on yourself instead of waiting.
+
+---
+
+## Trust Without History
+
+Teams coordinate well when members **trust** each other enough to commit. If you go in, will they follow? Trust usually builds through repeated interactions, which solo queue doesn't have.
+
+So players fall back on **quick cues**: rank border, champion mastery, early-game performance. If your jungler dies twice early, the team may stop trusting their calls for the rest of the game, even when the calls are good. This is a kind of **swift trust** that's fragile and easily broken.
+
+You can build trust fast by being **predictable and clear**: ping your intentions before acting, follow through when you commit, and acknowledge good plays ("nice" goes a long way).
+
+---
+
+## Pings as a Communication System
+
+Wild Rift's pings and quick-chat let teams coordinate without typing. From a communication-research view, pings are useful because they're:
+
+- **Low effort:** fast to send mid-fight.
+- **Low ambiguity:** "enemy missing" means one thing.
+- **Low emotion:** harder to flame with a ping than with a paragraph.
+
+But pings can carry emotion too. Spam-pinging a teammate's dead body or the question-mark ping on someone who just died is a hostile signal, and teammates receive it that way. **Clear, single pings** build coordination; **spammed pings** tear it down.
+
+---
+
+## The Surrender Vote
+
+The surrender vote is a fascinating psychology moment.
+
+- **Learned helplessness.** Martin Seligman's work showed that after repeated experiences of not being able to control outcomes, people stop trying even when control returns. A team that fell behind early can "check out" mentally, which makes the loss certain even when a comeback was possible.
+- **Conformity.** In Solomon Asch's line-judgment experiments, many people went along with an obviously wrong group answer at least some of the time. When three teammates vote yes quickly, the pressure to join is real.
+- **Comebacks are real.** MOBA games often include comeback mechanics like bounties and late-game scaling. A team behind on gold isn't automatically lost.
+
+None of this means you should never surrender. Sometimes ending a hopeless game is the right call for your time and mood. The point is to **decide on the game state, not on the group's mood**.
+
+<TryIt title="The Situational-Explanation Habit">
+
+For your next five games, each time a teammate does something that annoys you, think of **one** situational reason they might have done it before you react. Keep a tally of how often you managed it.
+
+At the end, note: did games where you did this more feel less stressful?
+
+</TryIt>
+
+<Pitfall title="Assuming Your Team 'Doesn't Care'">
+
+**Common mistake:** reading a teammate's mistakes as not caring about the game. Almost everyone in ranked wants to win; that's why they're in ranked. Most bad plays come from inexperience, unfamiliar roles, or tilt, not indifference. Treating teammates as if they don't care tends to make them stop caring.
+
+</Pitfall>
+
+---
+
+## Key Takeaways
+
+- Solo-queue teams are strangers with no history and limited communication, which makes coordination hard.
+- The **fundamental attribution error** makes teammates' mistakes look like character flaws.
+- **Social loafing** and **diffusion of responsibility** mean shared jobs often go undone. Claim jobs clearly.
+- **Trust** in solo queue is fast and fragile. Be predictable and acknowledge good plays.
+- **Pings** coordinate well when clear, and hurt when spammed.
+- Surrender votes are shaped by **learned helplessness** and **conformity**; decide on the game state.
+
+<Quiz
+  questions={[
+    {
+      question: "Your mid laner gets caught out and you think 'what an idiot,' but when you got caught last game you blamed the lack of vision. This is…",
+      options: ["Social loafing", "Fundamental attribution error", "Conformity", "Flow"],
+      correctIndex: 1,
+      explanation: "We attribute others' mistakes to character and our own to circumstances, the fundamental attribution error."
+    },
+    {
+      question: "Nobody on your team builds anti-heal against a healing-heavy comp because each assumes someone else will. That illustrates…",
+      options: ["Diffusion of responsibility", "Inattentional blindness", "Loss aversion", "Reappraisal"],
+      correctIndex: 0,
+      explanation: "When responsibility is shared, each person feels less personally responsible, so tasks go undone."
+    },
+    {
+      question: "A team falls behind early and stops trying even though their comp scales better. Which concept best fits?",
+      options: ["Learned helplessness", "The hot hand", "Goal-gradient effect", "Chunking"],
+      correctIndex: 0,
+      explanation: "Learned helplessness is giving up after repeated loss of control, even when control (a comeback) is still possible."
+    }
+  ]}
+/>

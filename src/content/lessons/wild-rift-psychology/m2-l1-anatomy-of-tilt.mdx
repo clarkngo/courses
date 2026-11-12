@@ -1,0 +1,134 @@
+---
+title: "The Anatomy of Tilt"
+description: "Break tilt down into body, thoughts, and behavior. Learn how arousal affects performance, why your brain shifts into 'hot' thinking, and how streaks fool your sense of probability."
+module: 2
+moduleTitle: "Tilt and Emotion"
+lesson: 1
+duration: "25 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## What Tilt Actually Is
+
+"Tilt" came from poker: a player who gets frustrated and starts making bad bets is "on tilt," like a pinball machine that's been shoved. In Wild Rift, tilt is the state where **frustration starts making your decisions for you**.
+
+It isn't one feeling. It's a chain with three parts:
+
+1. **Body:** heart rate up, jaw tight, thumbs pressing harder on the screen.
+2. **Thoughts:** "This jungler is useless," "Every game I get the worst team," "I have to carry."
+3. **Behavior:** forcing fights, chasing kills, spam-pinging, typing in chat, queuing instantly after a loss.
+
+You can interrupt the chain at any of the three links. That's the core idea of the next lesson.
+
+---
+
+## Arousal and Performance
+
+**Arousal** is your level of physical and mental activation. The classic **Yerkes–Dodson** idea says performance rises with arousal up to a point, then falls. Too little and you're sleepy and slow. Too much and you get sloppy and narrow-focused.
+
+| Arousal | What it looks like in game |
+|---|---|
+| Low | Missing minimap timers, slow reactions, autopiloting farm |
+| Moderate | Sharp, aware, quick to respond to ganks, good decisions |
+| High (tilt) | Tunnel vision on one enemy, overextending, flashing aggressively, ignoring objectives |
+
+The exact shape of the curve varies by task and person, and modern researchers treat Yerkes–Dodson as a rough guide rather than a law. But the core point holds well for complex tasks like MOBAs: **very high arousal narrows attention**. You stop seeing the minimap. You stop noticing the enemy jungler's absence. That's why tilted players walk into the same gank twice.
+
+---
+
+## Hot and Cold Thinking
+
+Psychologists sometimes describe two modes:
+
+- **Cold cognition:** calm, deliberate reasoning. Weighing whether to contest Dragon.
+- **Hot cognition:** emotion-driven, fast, focused on threats and revenge.
+
+When you're tilted, the hot mode takes over. You still *feel* like you're thinking clearly; that's what makes tilt dangerous. The decisions just get shaped by the goal of **ending the bad feeling** ("I need to kill that Yasuo") instead of winning the game.
+
+---
+
+## Attribution: Who Gets the Blame?
+
+**Attribution** is how we explain outcomes. Under stress, people tend toward a **self-serving bias**:
+
+- When we win: "I played well." (internal cause)
+- When we lose: "My team was terrible," "The matchmaker hates me." (external cause)
+
+Some blame is accurate. Teammates do make mistakes. But habitual external blame has two costs: it **stops you learning** from your own errors, and it **fuels anger** at people you can't control, which raises arousal further.
+
+---
+
+## Streaks and the Probability Trap
+
+After losing four in a row, many players feel a win is "due." Others feel cursed and certain the next one will be a loss. Both feelings are about probability, and both are usually wrong.
+
+- **Gambler's fallacy:** believing a win is "due" after losses. If your true win rate is around 50%, each game is roughly independent. Four losses don't make the fifth game more likely to be a win.
+- **Hot hand:** believing you're "on fire" after wins. For decades researchers thought the hot hand was a total illusion. Newer analysis by Joshua Miller and Adam Sanjurjo found a real but **small** hot-hand effect in basketball shooting. People still overestimate how big it is.
+
+In Wild Rift, streaks aren't totally random, because **your state carries over**. If you're tilted, tired, or rushing, your next game really is less likely to go well. That's not the universe punishing you. It's arousal, fatigue, and hot thinking.
+
+> A losing streak is a signal about **you right now**, not a prediction from fate.
+
+<TryIt title="Find Your Tilt Signature">
+
+Think back to your last bad session and write down:
+
+- **Body:** What did you physically notice first? (Gripping the phone? Sighing? Faster breathing?)
+- **Thought:** What sentence ran through your head the most?
+- **Behavior:** What did you start doing that you don't normally do?
+
+Your earliest warning sign, usually in the body, is your **tilt signature**. Catching it early is far easier than stopping a full spiral.
+
+</TryIt>
+
+<Pitfall title="'I Don't Tilt, I Just Get Focused'">
+
+**Common mistake:** confusing high arousal with focus. True focus is broad and flexible; you can still track the map. Tilt is narrow and fixated. A simple test: can you say right now where the enemy jungler was last seen? If not, you're probably not "focused." You're tunneling.
+
+</Pitfall>
+
+---
+
+## Key Takeaways
+
+- Tilt is a chain of **body → thoughts → behavior**, and each link is a place to intervene.
+- **High arousal narrows attention**, which hurts performance in complex games.
+- Tilt shifts you into **hot cognition**, where ending the bad feeling replaces winning as the goal.
+- The **self-serving bias** blames teammates for losses and blocks learning.
+- The **gambler's fallacy** says a win is "due"; the **hot hand** is real but small. Your mental state is the real link between games.
+
+<Quiz
+  questions={[
+    {
+      question: "Why do tilted players tend to walk into ganks they'd normally see coming?",
+      options: [
+        "Tilt slows the game's frame rate",
+        "Very high arousal narrows attention, so they stop tracking the minimap",
+        "Tilt increases cold, deliberate thinking",
+        "The matchmaker gives tilted players worse teammates"
+      ],
+      correctIndex: 1,
+      explanation: "High arousal produces attentional narrowing, or tunnel vision, so peripheral information like the minimap gets missed."
+    },
+    {
+      question: "After five straight losses, your friend says 'the next one is definitely a win.' This is an example of…",
+      options: ["The hot hand", "Loss aversion", "The gambler's fallacy", "The goal-gradient effect"],
+      correctIndex: 2,
+      explanation: "The gambler's fallacy is the belief that a result is 'due' after a run of the opposite result, when games are roughly independent."
+    },
+    {
+      question: "Which is the most useful early tilt warning to catch?",
+      options: [
+        "The post-game rank loss",
+        "A body signal, like gripping the phone harder",
+        "Getting reported",
+        "Seeing your KDA at the end"
+      ],
+      correctIndex: 1,
+      explanation: "Body signals usually show up first and are the easiest point to interrupt the chain before thoughts and behavior spiral."
+    }
+  ]}
+/>

@@ -1,0 +1,138 @@
+---
+title: "Rewards, Ranks, and the Reinforcement Loop"
+description: "See how reinforcement schedules, near-misses, progress bars, and loss aversion shape the way you play ranked, open event rewards, and decide when to stop."
+module: 1
+moduleTitle: "Why We Play"
+lesson: 2
+duration: "25 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import TryIt from '@components/TryIt.astro';
+import Quiz from '@components/Quiz.astro';
+
+## Behavior Follows Consequences
+
+The simplest idea in behavioral psychology is **reinforcement**: behaviors followed by rewards tend to repeat. B. F. Skinner showed that *how* rewards are scheduled matters as much as the rewards themselves.
+
+Every Wild Rift session is full of reinforcement: kills, gold, the victory screen, rank marks, mission progress, chests. Understanding the schedules helps you notice when the system is driving your behavior instead of you.
+
+---
+
+## Four Reinforcement Schedules
+
+| Schedule | Rule | Rift example | Effect on behavior |
+|---|---|---|---|
+| **Fixed ratio** | Reward after every N actions | A mission that pays out after 3 games played | Burst of play, then a pause after the reward |
+| **Fixed interval** | Reward after a set time | A daily first-win bonus | Players show up at reset, then taper off |
+| **Variable ratio** | Reward after an unpredictable number of actions | Whether *this* game is a win; a random-drop chest | **Highest, steadiest rate** of behavior; very hard to stop |
+| **Variable interval** | Reward after an unpredictable amount of time | Limited-time shop deals appearing at random | Frequent checking |
+
+The key one is **variable ratio**. Winning a ranked game is a variable-ratio reward: you don't know whether the next game will be the win. Slot machines run on the same schedule, and it produces the most persistent behavior Skinner ever measured. That's the hidden engine of "one more game."
+
+---
+
+## Rank Marks and the Goal-Gradient Effect
+
+Wild Rift's ranked ladder breaks progress into small, visible pieces: tiers, divisions, and rank marks you fill one game at a time.
+
+The **goal-gradient effect** says people speed up as they get closer to a goal. One mark from promotion? You're far more likely to queue again, even when tired, than when you're at zero marks.
+
+Visible progress is motivating, and that's fine. The trap is that the "almost there" feeling is strongest exactly when you might be **tired, tilted, or out of time**.
+
+### Softened Losses
+
+Wild Rift has had systems (like **Ranked Fortitude**) that protect you from losing a mark in some situations. These reduce frustration and keep players from quitting after a bad loss. They also make queuing again feel lower-risk, which is part of why the system exists.
+
+---
+
+## Loss Aversion: Why Losses Hurt More
+
+Daniel Kahneman and Amos Tversky found that losses feel roughly **twice as strong** as equal-sized gains. Losing a rank mark hurts more than gaining one feels good.
+
+On the ladder this creates a lopsided emotional ledger:
+
+- Win → "nice," queue again.
+- Loss → "I need to win that back," queue again.
+
+Both outcomes lead to another game. A loss can even feel like a stronger reason to keep playing, because you want to erase it. Psychologists call this **chasing losses**, and it's one of the best-known patterns in gambling research.
+
+---
+
+## Near-Misses
+
+A **near-miss** is an outcome that almost succeeded: a game lost by one inhibitor, a teamfight lost to a 50-HP enemy. Near-misses feel like evidence that you were *close*, so they motivate trying again, even though a loss is a loss.
+
+In random games of chance, near-misses carry no information at all. In Wild Rift they carry a little (you were competitive), but players tend to over-read them. "We almost won" can push you into a game you'd have skipped after a stomp.
+
+<TryIt title="Map Your Reward Triggers">
+
+For your next session, keep a note on your phone. Each time you start a new game, write one word for *why*:
+
+- **win** (just won, riding the high)
+- **chase** (just lost, want it back)
+- **close** (one mark from promo or a mission)
+- **friend** (someone invited you)
+- **fun** (you just want to play)
+
+After a week, count them. If **chase** and **close** dominate, the ladder is choosing your games for you.
+
+</TryIt>
+
+---
+
+## Event Passes and Sunk Costs
+
+Event passes and battle-pass style systems reward you for playing a certain amount within a time window. Once you've paid for the pass, the **sunk cost** pulls at you: "I paid for this, so I need to finish it." Completion becomes an obligation.
+
+This isn't automatically bad. If you'd play that much anyway, the pass is a bonus. It becomes a problem when you're playing past the point of enjoyment because of money already spent.
+
+<Pitfall title="Assuming You're Immune">
+
+**Common mistake:** "I know how reinforcement works, so it doesn't affect me." Knowing about a bias does not switch it off. Knowledge works best when paired with **pre-commitment**: deciding your session length or stop rule *before* you open the game, while you're calm. You'll build stop rules in Module 2.
+
+</Pitfall>
+
+---
+
+## Key Takeaways
+
+- Behavior that's rewarded repeats, and **variable-ratio** rewards like ranked wins produce the most persistent play.
+- The **goal-gradient effect** makes you play harder near a promotion, often when you're most tired.
+- **Loss aversion** makes losses feel about twice as strong as wins, which fuels **chasing losses**.
+- **Near-misses** feel more informative than they are.
+- Event passes can turn play into an obligation through **sunk costs**.
+- Awareness helps, but **pre-commitment** is what actually changes behavior.
+
+<Quiz
+  questions={[
+    {
+      question: "Why is a ranked win best described as a variable-ratio reward?",
+      options: [
+        "It arrives at a fixed time each day",
+        "It arrives after an unpredictable number of games",
+        "It arrives after exactly three games",
+        "It arrives only after you spend money"
+      ],
+      correctIndex: 1,
+      explanation: "You can't predict which game will be a win. Rewards on an unpredictable count of attempts are variable ratio, the schedule that produces the most persistent behavior."
+    },
+    {
+      question: "You're one mark from promotion, it's 1 a.m., and you feel extra driven to queue. Which effect is this?",
+      options: ["Goal-gradient effect", "Fundamental attribution error", "Social loafing", "Inattentional blindness"],
+      correctIndex: 0,
+      explanation: "The goal-gradient effect is the tendency to accelerate effort as a goal gets closer."
+    },
+    {
+      question: "Loss aversion predicts that after a loss, many players will…",
+      options: [
+        "Feel nothing and log off",
+        "Feel an equal and opposite pull compared to a win",
+        "Feel a strong urge to win it back, leading to another game",
+        "Switch to a different game"
+      ],
+      correctIndex: 2,
+      explanation: "Because losses loom larger than gains, players often chase losses, queuing to erase the bad feeling."
+    }
+  ]}
+/>
