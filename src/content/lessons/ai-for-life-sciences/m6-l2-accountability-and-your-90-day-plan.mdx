@@ -1,0 +1,163 @@
+---
+title: "Accountability and Your 90-Day Plan"
+description: "Own your AI-assisted work through documentation, transparency, and escalation; help your team adopt AI responsibly; and build a 90-day plan that applies all four fluency competencies."
+module: 6
+moduleTitle: "Communication and Accountability"
+lesson: 2
+duration: "30 min"
+---
+
+import LoopDiagram from '@components/LoopDiagram.astro';
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## Your Name Is on It
+
+Every lesson in this course comes back to the same point: **AI can draft, but it can't be accountable.** Your signature on a batch record, your name on a paper, your approval on a safety case, and your sign-off in MLR all mean you stand behind the content, however it was produced.
+
+Accountability in practice comes down to four habits.
+
+### 1. Document where it matters
+
+You don't need to log every grammar fix. You do need a record when AI materially shaped something that's GxP, submitted externally, published, or used for a significant decision. A practical minimum:
+
+- What tool and version were used.
+- What it was asked to do, and what inputs it received.
+- What a person checked, and how.
+- Who approved the final result.
+
+Follow your SOPs. Where none exist yet, this list is a reasonable default.
+
+### 2. Be transparent
+
+- With **colleagues**: say when a draft was AI-assisted, so reviewers know what to look for.
+- With **journals and funders**: follow their disclosure policies.
+- With **regulators**: follow your sponsor's position, and engage early when AI supports a regulatory decision.
+- With **patients and participants**: be honest when AI shapes what they receive, in line with consent and applicable law.
+
+### 3. Escalate problems
+
+If you find an AI error that reached a GxP record, a submission, a publication, or a patient, treat it like any other quality event: report it through the normal channel, such as a deviation, CAPA, or safety report. Early reports of AI failures are how organizations learn where the controls are weak.
+
+### 4. Keep learning
+
+Tools, guidance, and regulations covered in this course will change. Several were drafts when this course was written. Make a habit of checking for updates in the areas you touch.
+
+<Pitfall title="Shadow AI Becomes the Real Process">
+
+**Common mistake:** a team quietly adopts an unapproved tool because it's faster, the practice spreads, and eventually a deliverable depends on it, with no validation, no data agreement, and no record.
+
+If a tool is genuinely useful, make the case to get it approved. Shadow use doesn't just carry risk. It also stops your organization learning what people actually need.
+
+</Pitfall>
+
+---
+
+## Helping Your Team Adopt AI Well
+
+If you lead a team or influence how it works:
+
+<ProcessFlow
+  label="Steps for responsible AI adoption on a life-science team"
+  color="#047857"
+  steps={[
+    { title: "Inventory", detail: "What's already in use?" },
+    { title: "Classify", detail: "Risk and GxP status" },
+    { title: "Approve", detail: "Tools and data rules" },
+    { title: "Train", detail: "Fluency, not just features" },
+    { title: "Measure", detail: "Time saved and errors caught" },
+    { title: "Revisit", detail: "Quarterly review" },
+  ]}
+/>
+
+- **Start with low-risk, high-volume tasks** where errors are easy to catch, to build skill and trust.
+- **Share failures as well as successes.** A team channel of "AI got this wrong" examples is one of the best training tools there is.
+- **Measure honestly.** Count time saved, and also time spent checking and errors caught. A tool that saves an hour and costs 50 minutes of review is a smaller win than it looks.
+- **Bring quality and compliance in early.** They are much easier partners at the design stage than after an audit finding.
+
+---
+
+## Your 90-Day Plan
+
+<LoopDiagram
+  label="Applying the four fluency competencies in a 90-day plan"
+  colors={['#047857', '#059669', '#10b981', '#065f46']}
+  steps={[
+    { title: "Delegation", subtitle: "pick the right tasks" },
+    { title: "Description", subtitle: "build reusable prompts" },
+    { title: "Discernment", subtitle: "set verification habits" },
+    { title: "Diligence", subtitle: "document and share" },
+  ]}
+/>
+
+### Days 1–30: Foundation
+
+- Revisit your AI inventory from Lesson 1.1. Remove or replace any unapproved tools.
+- Find your organization's AI policy, approved tools, and the SOPs that apply to your role. Note the gaps.
+- Choose **two low-risk, high-volume tasks** to use AI for consistently.
+
+### Days 31–60: Build the habit
+
+- Write a **reusable prompt** for each of your two tasks using the structure from Lesson 3.1.
+- Define the **verification step** for each and actually do it every time.
+- Keep a simple log: time saved, checking time, and errors caught.
+
+### Days 61–90: Extend and share
+
+- Add **one moderate-risk task** with a documented review step, after checking with your quality or compliance partner if it touches GxP.
+- Share what you've learned, including errors, with your team.
+- Identify one process where AI could help but would need validation or approval, and start that conversation.
+
+<TryIt title="Write Your Plan">
+
+Draft your 90-day plan on one page:
+
+1. Your two starter tasks and the verification step for each.
+2. The one moderate-risk task you'll add, and who you'll consult.
+3. The policies and SOPs you need to read or request.
+4. How you'll measure whether it's working.
+5. A date, 90 days from now, to review the plan and decide what to keep, change, or stop.
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "You find that an AI-generated error made it into a signed GxP record. What should you do?",
+    options: [
+      "Quietly correct the record.",
+      "Report it through the normal quality channel, such as a deviation or CAPA.",
+      "Stop using AI and say nothing.",
+      "Wait to see if an inspector finds it."
+    ],
+    correctIndex: 1,
+    explanation: "AI errors in GxP records are quality events. Report them so they're corrected and the controls improved."
+  },
+  {
+    question: "Which tasks are best for starting a team's AI adoption?",
+    options: [
+      "High-risk tasks, to prove value quickly",
+      "Low-risk, high-volume tasks where errors are easy to catch",
+      "Regulatory submissions",
+      "Safety causality assessments"
+    ],
+    correctIndex: 1,
+    explanation: "Starting where errors are cheap and easy to catch builds skill and trust safely."
+  },
+  {
+    question: "Why should time spent checking AI output be measured alongside time saved?",
+    options: [
+      "To justify buying more tools",
+      "Because the real benefit is the net of time saved minus review time and error correction",
+      "Because regulators require it",
+      "It shouldn't. Only time saved matters."
+    ],
+    correctIndex: 1,
+    explanation: "Honest measurement shows the real value and where AI isn't worth it yet."
+  }
+]} />
+
+## Course Complete
+
+You now have a working framework for using AI across the life-science lifecycle: know the failure modes, delegate by risk, protect sensitive data, verify against primary sources, respect GxP and regulatory expectations, and stay accountable for everything you sign. The tools will keep changing. Those habits won't.

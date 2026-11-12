@@ -1,0 +1,133 @@
+---
+title: "Risk-Tiered Delegation"
+description: "Decide what to delegate to AI by weighing how much the output influences a decision against the consequence of that decision being wrong, and separate GxP from non-GxP use."
+module: 2
+moduleTitle: "Delegation and Data Protection"
+lesson: 1
+duration: "25 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## Not "Can AI Do This?" but "What Happens If It's Wrong?"
+
+AI can draft almost anything. The useful question is how much a wrong output would matter, and how likely you are to catch it before it does.
+
+Regulators think about AI risk in a similar way. In its January 2025 draft guidance on using AI to support regulatory decision-making for drugs and biologics, FDA describes model risk as a combination of two factors:
+
+- **Model influence:** how much the AI output drives the decision, compared with other evidence.
+- **Decision consequence:** how serious the impact would be if the decision were wrong.
+
+That guidance was written for AI used to produce evidence for regulatory decisions, but the same two questions work for everyday tasks too.
+
+---
+
+## The Delegation Grid
+
+| | **Low consequence** | **High consequence** |
+|---|---|---|
+| **AI output is one input among many** | **Delegate freely.** Brainstorming, first-draft emails, meeting summaries, learning a new topic. | **Assist, then verify.** Literature scans feeding a target decision, draft protocol sections, code for an exploratory analysis. |
+| **AI output largely drives the decision** | **Delegate with spot checks.** Formatting tables, reference-style conversion, internal slide drafts. | **Keep AI out, or validate formally.** Batch release, causality assessment of an adverse event, final statistical results, labeling text, anything a patient receives without expert review. |
+
+Two things move a task to the right of the grid:
+
+1. **Proximity to a patient.** Anything that affects dosing, safety assessment, eligibility, or what a patient is told.
+2. **Proximity to a regulator.** Anything in a submission, a GxP record, or an inspection response.
+
+---
+
+## GxP vs. Non-GxP Use
+
+A simple question sorts most tasks: **does this output become part of a GxP record, or support a GxP decision?**
+
+- **Non-GxP** (most discovery, internal communication, general learning): your organization's acceptable-use policy and approved-tool list apply. Discernment is your main control.
+- **GxP** (manufacturing records, clinical trial data, pharmacovigilance cases, quality investigations, submission content): data-integrity rules, validation, audit trails, and SOPs apply. Using an unvalidated chatbot to create or change GxP content is generally not acceptable without a defined, approved process. Module 5 covers this in depth.
+
+Grey areas are common. A deviation-investigation narrative drafted with AI and then edited is still a GxP record. When unsure, ask your quality unit **before** you use AI, not after.
+
+<Pitfall title="Delegating by Default Because the Tool Is Open">
+
+**Common mistake:** using AI for a task simply because the assistant is already open in your browser, without asking where the output will end up.
+
+Before you paste or prompt, take five seconds to ask: where will this output go, and who relies on it? If the answer is "a regulator," "a patient," or "a GxP record," stop and check your SOP.
+
+</Pitfall>
+
+---
+
+## A Five-Question Delegation Check
+
+<ProcessFlow
+  label="Five questions to ask before delegating a task to AI"
+  color="#047857"
+  steps={[
+    { title: "Destination", detail: "Where will the output go?" },
+    { title: "Influence", detail: "How much does it drive the decision?" },
+    { title: "Consequence", detail: "What if it's wrong?" },
+    { title: "Data", detail: "Can this tool see these inputs?" },
+    { title: "Verification", detail: "How will I check it, and can I?" },
+  ]}
+/>
+
+The last question matters most. **Only delegate what you can verify.** If you couldn't spot an error in the output, because the topic is outside your expertise or the source data isn't available to you, the task isn't a good candidate for AI no matter how low the stakes look.
+
+### Worked examples
+
+- **Summarize 40 abstracts on a target for a team meeting.** Low-to-moderate consequence, AI is one input, you can spot-check. *Assist, then verify the claims that drive the discussion.*
+- **Draft the inclusion/exclusion criteria for a Phase 2 protocol.** High consequence, but reviewed by medical, statistics, and regulatory. *Assist with structure and wording; experts own the content.*
+- **Decide whether a spontaneous adverse-event report is serious.** High consequence, a regulatory clock is running, and it drives the decision directly. *Keep general-purpose AI out; use only validated tools under your PV SOPs.*
+
+<TryIt title="Place Your Own Tasks on the Grid">
+
+Take five tasks from the inventory you built in Lesson 1.1 (or five tasks from your week). For each:
+
+1. Place it in one of the four quadrants.
+2. Mark it GxP or non-GxP.
+3. Write one sentence on how you would verify the AI's output.
+
+If you couldn't write the verification sentence for a task, that's a sign it shouldn't be delegated yet.
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "In FDA's 2025 draft guidance, model risk is described as a combination of which two factors?",
+    options: [
+      "Model size and training data",
+      "Model influence and decision consequence",
+      "Accuracy and speed",
+      "Vendor and cost"
+    ],
+    correctIndex: 1,
+    explanation: "Risk depends on how much the AI drives a decision and how serious a wrong decision would be."
+  },
+  {
+    question: "You use a general chatbot to draft a deviation-investigation narrative, then edit it heavily. Is the final text a GxP record?",
+    options: [
+      "No, because you edited it.",
+      "No, because AI drafted it.",
+      "Yes. It's part of the quality record regardless of how it was drafted, so your SOPs apply.",
+      "Only if an inspector asks."
+    ],
+    correctIndex: 2,
+    explanation: "The record's purpose, not its drafting method, makes it GxP. Check your SOPs before using AI for any part of it."
+  },
+  {
+    question: "What's the most important question before delegating a task?",
+    options: [
+      "Is the AI tool fast?",
+      "Can I verify the output?",
+      "Has a colleague used AI for this?",
+      "Is the task boring?"
+    ],
+    correctIndex: 1,
+    explanation: "If you can't spot an error in the output, you can't safely rely on it."
+  }
+]} />
+
+## Up Next
+
+The fourth delegation question was "Can this tool see these inputs?" The next lesson covers confidential, proprietary, and patient data.

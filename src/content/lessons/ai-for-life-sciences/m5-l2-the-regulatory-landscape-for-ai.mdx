@@ -1,0 +1,143 @@
+---
+title: "The Regulatory Landscape for AI"
+description: "Navigate how FDA, EMA, and the EU AI Act approach AI used in drug development, AI as a medical device, and general-purpose AI, and use AI responsibly in regulatory writing."
+module: 5
+moduleTitle: "Regulatory and Quality"
+lesson: 2
+duration: "30 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## Three Different Questions
+
+"How is AI regulated?" breaks into three questions, each with different rules:
+
+1. **AI used to develop a product.** AI that produces evidence or supports decisions about a drug or biologic: trial analyses, manufacturing control, safety assessment.
+2. **AI that *is* the product.** Software, including AI, that meets the definition of a medical device, such as an algorithm that detects disease in images.
+3. **AI used in the business generally.** Chatbots, writing assistants, and analytics, governed mostly by company policy, data-protection law, and, in the EU, the AI Act.
+
+Mixing these up leads to bad decisions: treating a drafting assistant like a device, or treating an AI-generated trial endpoint like a drafting task.
+
+---
+
+## 1. AI Used in Drug and Biologic Development
+
+### FDA
+
+In January 2025 FDA issued draft guidance, *Considerations for the Use of Artificial Intelligence to Support Regulatory Decision-Making for Drug and Biological Products*. Its core is a **risk-based credibility assessment framework**:
+
+<ProcessFlow
+  label="FDA draft framework for establishing AI model credibility"
+  color="#047857"
+  steps={[
+    { title: "Question", detail: "Define the question of interest" },
+    { title: "Context of use", detail: "Model's role and scope" },
+    { title: "Model risk", detail: "Influence × consequence" },
+    { title: "Plan", detail: "Credibility activities" },
+    { title: "Execute", detail: "Carry out the plan" },
+    { title: "Document", detail: "Results and deviations" },
+    { title: "Decide", detail: "Adequate for this use?" },
+  ]}
+/>
+
+Key ideas: credibility is judged **for a specific context of use**, the rigor required scales with model risk, and FDA encourages **early engagement** when AI will support a regulatory decision. The guidance doesn't cover AI used only for internal efficiency (like drafting) that doesn't affect patient safety, product quality, or study reliability.
+
+### EMA
+
+EMA's *Reflection paper on the use of AI in the medicinal product lifecycle*, adopted in 2024, takes a similar risk-based view. It expects sponsors to be accountable for AI tools they use, to discuss high-impact uses with regulators early, and to apply GxP principles throughout. EMA and the heads of EU medicines agencies have also published guiding principles for staff use of LLMs. In early 2025 EMA issued its first qualification opinion on an AI tool for trial use, a methodology for assessing a liver-disease endpoint from biopsy images, showing that regulators will accept AI evidence when it's properly qualified.
+
+---
+
+## 2. AI as a Medical Device
+
+When AI software itself diagnoses, predicts, or guides treatment, it may be **Software as a Medical Device (SaMD)**.
+
+- **FDA** has authorized well over a thousand AI-enabled devices, mostly in radiology. Its December 2024 final guidance on **Predetermined Change Control Plans (PCCPs)** lets manufacturers specify in advance how a model will be updated and validated, so not every retraining needs a new submission. FDA's 2025 draft guidance on AI-enabled device software functions covers lifecycle management and submission content.
+- In February 2026 FDA's **Quality Management System Regulation (QMSR)** took effect, aligning device quality requirements with ISO 13485.
+- In the **EU**, AI medical devices fall under the Medical Device Regulation (MDR) or IVDR **and** are generally treated as high-risk under the AI Act, which layers AI-specific requirements on top of conformity assessment.
+
+---
+
+## 3. The EU AI Act
+
+The AI Act entered into force in August 2024 with obligations phased in:
+
+- **Prohibited practices and AI literacy duties** from February 2025. Organizations deploying AI must take steps to ensure their staff have sufficient AI literacy, which this course supports.
+- **General-purpose AI model obligations** from August 2025, mostly on model providers.
+- **High-risk system obligations**, including AI in medical devices, phased in from 2026 to 2027. EU proposals in late 2025 sought to delay some of these dates, so check the current timetable.
+
+Most everyday life-science uses of chatbots are not high-risk under the Act, but they still fall under GDPR, company policy, and GxP where relevant.
+
+<Pitfall title="Treating Draft Guidance as Settled Law, or as Irrelevant">
+
+**Common mistake:** either citing a draft guidance as a binding requirement, or ignoring it because it's "just a draft."
+
+Drafts show where a regulator is heading and how reviewers are likely to think. Use them to plan, cite them accurately as drafts, and check for final versions. AI regulation is moving fast enough that anything you learned a year ago may be out of date.
+
+</Pitfall>
+
+---
+
+## Using AI in Regulatory Writing
+
+Regulatory writers use AI to draft responses to agency questions, summarize prior correspondence, check submission documents for consistency, and adapt content for different regions. Rules of thumb:
+
+- **Work only from approved source documents** in an approved environment. Submissions contain the most confidential data your organization holds.
+- **Verify every number, cross-reference, and regulatory citation** against source. Regulators notice inconsistencies across modules.
+- **Never let AI paraphrase commitments.** Wording agreed with an agency, and post-marketing commitments, must be reproduced exactly.
+- **Answer the question asked.** AI tends to write long, complete-sounding responses. A focused answer is usually better.
+- **Know your sponsor's disclosure position** on AI use in submission content.
+
+<TryIt title="Map One Product to the Three Questions">
+
+Pick a product or project you work on. For each AI use that touches it, decide:
+
+1. Is it AI used **to develop** the product, AI that **is** the product, or **general business** AI?
+2. Which guidance or regulation is most relevant?
+3. For any AI that produces evidence for a regulatory decision, write a one-sentence **context of use** in FDA's sense.
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "In FDA's January 2025 draft guidance, credibility of an AI model is assessed relative to what?",
+    options: [
+      "The model's general accuracy on public benchmarks",
+      "A specific context of use",
+      "The vendor's reputation",
+      "The number of parameters"
+    ],
+    correctIndex: 1,
+    explanation: "The same model can be adequate for one context of use and inadequate for another. Credibility is use-specific."
+  },
+  {
+    question: "What does a Predetermined Change Control Plan (PCCP) allow for an AI-enabled device?",
+    options: [
+      "Unlimited changes without notice",
+      "Pre-specified, validated model updates without a new submission for each one",
+      "Skipping clinical validation",
+      "Avoiding the QMSR"
+    ],
+    correctIndex: 1,
+    explanation: "A PCCP describes in advance what will change and how it will be validated, so authorized updates can proceed."
+  },
+  {
+    question: "An AI tool rewrites a post-marketing commitment agreed with an agency into clearer language for a submission. What's the problem?",
+    options: [
+      "Nothing. Clearer is better.",
+      "Agreed commitments must be reproduced exactly; paraphrasing can change their meaning.",
+      "The font might change.",
+      "AI can't read regulatory documents."
+    ],
+    correctIndex: 1,
+    explanation: "Commitments and agreed wording are not drafting material. Reproduce them exactly."
+  }
+]} />
+
+## Up Next
+
+Module 6 looks outward: medical affairs, commercial content, and how you'll put everything from this course into practice.

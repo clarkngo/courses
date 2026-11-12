@@ -1,0 +1,140 @@
+---
+title: "Literature Review and Scientific Writing"
+description: "Use AI to search, screen, and synthesize literature without inheriting its errors, write structured scientific prompts, and follow journal and authorship policies on AI use."
+module: 3
+moduleTitle: "Research and Discovery"
+lesson: 1
+duration: "25 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## Where AI Helps with Literature
+
+Literature work is a natural fit for AI: there's too much to read, and much of the early work is triage. AI can help you:
+
+- **Map a field quickly** before a deeper review: key concepts, competing hypotheses, major groups.
+- **Draft and refine search strings** for PubMed, Embase, or patent databases.
+- **Screen titles and abstracts** against inclusion criteria, as a second reader.
+- **Extract structured data** from papers into a table (model system, dose, endpoint, effect size).
+- **Summarize and compare** a set of papers you've already chosen.
+
+Tools that **retrieve real papers** (search-connected assistants and literature-specific tools built on databases like PubMed or Semantic Scholar) are much safer for this than a chatbot answering from memory. Even then, they can mischaracterize what a paper says.
+
+---
+
+## A Verified Literature Workflow
+
+<ProcessFlow
+  label="A literature workflow that uses AI while keeping sources verified"
+  color="#047857"
+  loop="Claim not supported by the source → remove it or find a real source"
+  steps={[
+    { title: "Frame", detail: "Question, scope, criteria" },
+    { title: "Search", detail: "Real databases, logged strings" },
+    { title: "Screen", detail: "AI as second reader" },
+    { title: "Extract", detail: "Structured table" },
+    { title: "Verify", detail: "Check every claim at source" },
+    { title: "Synthesize", detail: "You write the conclusions" },
+  ]}
+/>
+
+Two habits make this work:
+
+1. **Log your search.** Record the databases, search strings, dates, and filters. If AI helped draft the strings, they should still be reproducible without the AI.
+2. **Verify extractions against the paper.** AI extraction of numbers from tables and figures is error-prone, especially with units, subgroups, and figure-only data. Spot-check a meaningful fraction, and check every number that drives a conclusion.
+
+For formal systematic reviews, follow your field's reporting standards (such as PRISMA) and describe how AI was used in your methods.
+
+---
+
+## Writing a Structured Scientific Prompt
+
+Vague prompts produce generic answers. A useful structure for scientific requests:
+
+- **Role and audience:** "You're helping a medicinal chemist prepare a briefing for a cross-functional team."
+- **Task:** "Summarize what's known about off-target cardiac effects of this target class."
+- **Sources:** "Use only the attached papers," or "Cite only sources you retrieve and include PMIDs."
+- **Constraints:** "Flag where evidence comes only from in vitro or animal models. Don't speculate beyond the sources."
+- **Format:** "A table with columns: claim, evidence type, species, source PMID, strength."
+- **Uncertainty:** "List what's unknown or contested, and the strongest counter-evidence."
+
+Asking for **evidence type and species** is especially useful in life sciences. It stops a mouse finding from being presented as if it applied to humans.
+
+<Pitfall title="Letting AI Write the Discussion Section">
+
+**Common mistake:** asking AI to "write the discussion" from your results.
+
+The discussion is where you interpret your data, acknowledge limitations, and place findings in context. It's the part of a paper most dependent on your judgment and the part where AI is most likely to overstate. Use AI to tighten your draft's language, check flow, or suggest missing limitations, not to supply the interpretation.
+
+</Pitfall>
+
+---
+
+## Journal and Authorship Policies
+
+Most major publishers and editorial bodies now have AI policies. Common themes, reflected in the ICMJE recommendations and COPE guidance:
+
+- **AI can't be an author.** Authorship requires accountability, which a tool can't take.
+- **Disclose substantive AI use**, typically in the methods or acknowledgments. Policies differ on whether basic grammar or language editing needs disclosure.
+- **Authors are responsible** for everything in the manuscript, including AI-assisted content and citations.
+- **AI-generated images** are often restricted or banned unless they're the subject of the research.
+- **Peer reviewers** generally must not upload confidential manuscripts into AI tools.
+
+Check the specific journal's policy before you submit, and your organization's publication policy before you draft. Grant agencies have similar rules. NIH, for instance, prohibits reviewers from using generative AI on applications under review.
+
+<TryIt title="Run a Verified Mini-Review">
+
+Pick a narrow question in your area (something you could answer in a short slide):
+
+1. Write a structured prompt using the six elements above, and use a search-connected tool.
+2. Ask for an evidence table with PMIDs or DOIs.
+3. Open every source. Mark each row as supported, partially supported, or not supported.
+4. Calculate the share that was fully supported.
+
+Compare the result with your stress test from Lesson 1.2. Did retrieval improve accuracy, and where did errors remain?
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "Why ask AI to include evidence type and species when summarizing literature?",
+    options: [
+      "It makes the table look more complete.",
+      "It prevents animal or in vitro findings from being presented as human evidence.",
+      "Journals require it.",
+      "It reduces the word count."
+    ],
+    correctIndex: 1,
+    explanation: "Tagging evidence type and species keeps the strength and relevance of each claim visible."
+  },
+  {
+    question: "Under common journal policies, can an AI tool be listed as a co-author?",
+    options: [
+      "Yes, if it wrote more than half the paper.",
+      "Yes, with the editor's permission.",
+      "No. Authorship requires accountability, which AI can't take.",
+      "Only in preprints."
+    ],
+    correctIndex: 2,
+    explanation: "ICMJE and most publishers say AI tools can't meet authorship criteria. Disclose their use instead."
+  },
+  {
+    question: "You're asked to peer-review a confidential manuscript. Can you upload it to an AI tool to help write your review?",
+    options: [
+      "Yes, any tool is fine.",
+      "Generally no. Most journals prohibit uploading confidential manuscripts to AI tools.",
+      "Yes, if you delete it afterward.",
+      "Only if the authors are from your institution."
+    ],
+    correctIndex: 1,
+    explanation: "Manuscripts under review are confidential. Most journal and funder policies bar reviewers from putting them into AI tools."
+  }
+]} />
+
+## Up Next
+
+The next lesson moves from reading science to doing it: AI-written analysis code, statistics, and discovery models.

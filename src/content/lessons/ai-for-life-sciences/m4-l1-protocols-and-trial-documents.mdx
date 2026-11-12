@@ -1,0 +1,136 @@
+---
+title: "Protocols and Trial Documents"
+description: "Use AI to draft, check, and harmonize clinical trial documents, from protocol sections to informed consent and plain-language summaries, while keeping medical, statistical, and ethical judgment with the people accountable for them."
+module: 4
+moduleTitle: "Clinical Development"
+lesson: 1
+duration: "25 min"
+---
+
+import ProcessFlow from '@components/ProcessFlow.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## A Document-Heavy Business
+
+A single clinical trial generates a protocol, investigator's brochure, informed consent forms in several languages, a statistical analysis plan, case report forms, monitoring plans, a clinical study report, and a plain-language results summary, plus every amendment to each. Keeping them consistent is hard, and inconsistency causes real problems: sites follow the wrong version, consent forms don't match the procedures, and amendments pile up.
+
+That makes trial documents a promising area for AI, as long as you're clear about which parts are **writing** and which are **decisions**.
+
+---
+
+## Writing vs. Decisions
+
+| AI can help with the writing | People own the decisions |
+|---|---|
+| Structuring a protocol against a template | Choosing endpoints and comparators |
+| Drafting standard sections (background, procedures) from approved sources | Setting inclusion/exclusion criteria |
+| Checking consistency across protocol, consent, and schedule of assessments | Sample size and statistical methods |
+| Simplifying consent language to a target reading level | Benefit–risk judgments and safety monitoring rules |
+| Drafting plain-language summaries from approved results | Interpreting results and their clinical meaning |
+| Comparing amendment versions and listing changes | Deciding whether a change needs ethics review |
+
+ICH E6(R3), the updated Good Clinical Practice guideline finalized in 2025, emphasizes **quality by design** and proportionate, risk-based approaches. That fits this split: put human expertise where errors would hurt participants or data reliability, and use tools to reduce routine burden elsewhere.
+
+The trend toward **structured protocols**, such as the ICH M11 harmonized protocol template, also helps. When content follows a standard structure, AI checks and reuse across documents become more reliable.
+
+---
+
+## High-Value Uses
+
+### Consistency checking
+
+One of the safest and most useful tasks. Give an approved tool the protocol and the consent form and ask it to list every procedure, visit, or risk in one that's missing or different in the other. You verify each finding. AI is good at producing a candidate list; you decide what's actually inconsistent.
+
+### Amendment impact
+
+"List every section of the protocol, consent form, and schedule of assessments affected by changing the dosing interval from every 2 weeks to every 3 weeks." This turns a manual hunt into a checklist. You still verify it's complete.
+
+### Readability
+
+Consent forms are often written well above the reading level of the people signing them. AI can rewrite to a target level and flag jargon. Check that simplification didn't **change meaning**: soft language about risks ("you may feel a little unwell") can understate what participants need to know.
+
+<Pitfall title="Simplifying Away the Risk">
+
+**Common mistake:** accepting a readable AI rewrite of a consent form's risk section without comparing it line by line with the original.
+
+Simplification often merges, softens, or drops risks, especially rare but serious ones. Every risk in the approved source must still be present, with its frequency and seriousness intact. The ethics committee approved specific content, not a summary of it.
+
+</Pitfall>
+
+---
+
+## A Review Path for AI-Assisted Trial Documents
+
+<ProcessFlow
+  label="Review path for an AI-assisted clinical trial document"
+  color="#047857"
+  loop="Meaning changed or content missing → return to author, not to the AI"
+  steps={[
+    { title: "Approved sources", detail: "Only validated inputs" },
+    { title: "AI draft", detail: "Approved tool, logged" },
+    { title: "Author review", detail: "Line-by-line vs. source" },
+    { title: "Functional review", detail: "Medical, stats, regulatory" },
+    { title: "QC", detail: "Per document SOP" },
+    { title: "Approval", detail: "Named accountable owner" },
+  ]}
+/>
+
+Notes on this path:
+
+- **Approved sources only.** Draft from the current approved protocol, investigator's brochure, and data, not from AI's general knowledge of the disease or drug class.
+- **Follow your SOP on disclosure.** Some sponsors record AI assistance in document history; others don't yet. Know your organization's rule.
+- **Sponsor responsibility doesn't move.** Under GCP the sponsor remains responsible for trial quality, including work done with tools and by vendors.
+
+<TryIt title="Run a Consistency Check on a Public Protocol">
+
+Find a published protocol and its consent form or schedule of assessments (many are posted with journal articles or on trial registries). Using an approved tool:
+
+1. Ask it to list every procedure and visit in the protocol's schedule of assessments and compare it against the procedures described elsewhere in the document.
+2. Verify each discrepancy it reports.
+3. Look for one it **missed**. There usually is one.
+
+What share of its findings were real? Did it miss anything important?
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "Which task is the best fit for AI assistance in trial documents?",
+    options: [
+      "Choosing the primary endpoint",
+      "Setting the sample size",
+      "Listing inconsistencies between the protocol and consent form for expert review",
+      "Deciding whether an amendment needs ethics review"
+    ],
+    correctIndex: 2,
+    explanation: "Consistency checking produces a candidate list that experts verify. The other tasks are decisions people must own."
+  },
+  {
+    question: "An AI rewrite of a consent form's risk section reads well but describes a serious, rare risk as \"possible discomfort.\" What should happen?",
+    options: [
+      "Accept it. Readability is the goal.",
+      "Restore the original meaning. Every approved risk must keep its seriousness and frequency.",
+      "Remove the risk to avoid confusion.",
+      "Ask the AI to make it shorter."
+    ],
+    correctIndex: 1,
+    explanation: "Simplification must not change meaning. The ethics committee approved specific risk content."
+  },
+  {
+    question: "Under GCP, if a sponsor uses AI tools or vendors for trial documents, who is responsible for quality?",
+    options: [
+      "The AI vendor",
+      "The CRO alone",
+      "The sponsor remains responsible",
+      "The investigator alone"
+    ],
+    correctIndex: 2,
+    explanation: "Sponsors can delegate tasks but keep ultimate responsibility for trial quality."
+  }
+]} />
+
+## Up Next
+
+The next lesson covers AI in trial operations and pharmacovigilance, where speed matters and errors reach patients quickly.

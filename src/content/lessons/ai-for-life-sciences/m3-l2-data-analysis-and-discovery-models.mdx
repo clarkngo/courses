@@ -1,0 +1,141 @@
+---
+title: "Data Analysis and Discovery Models"
+description: "Use AI-written analysis code without introducing silent errors, avoid AI-accelerated p-hacking, read the confidence measures of discovery models, and keep analyses reproducible."
+module: 3
+moduleTitle: "Research and Discovery"
+lesson: 2
+duration: "25 min"
+---
+
+import LoopDiagram from '@components/LoopDiagram.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## AI as Your Analysis Partner
+
+Many scientists now ask AI to write the R or Python that analyzes their data, explain an unfamiliar statistical test, or debug a failing pipeline. This is a real productivity gain, especially for bench scientists who aren't full-time programmers. It also creates a new kind of risk: **code that runs without errors and produces the wrong answer.**
+
+---
+
+## Silent Errors in AI-Written Code
+
+Errors that crash are easy. These are the ones that don't:
+
+- **Wrong test for the design.** An unpaired t-test on paired samples, or ignoring repeated measures or batch effects.
+- **Data handling slips.** Rows dropped by a join, missing values silently removed or treated as zero, replicates averaged when they should be modeled.
+- **Wrong normalization or transform.** Log-transforming already-logged data, or normalizing to the wrong control.
+- **Multiple-comparison mistakes.** Hundreds of genes tested with no correction, or the wrong correction for the design.
+- **Mislabeled groups.** Factor levels sorted alphabetically, so "treated" and "control" swap in a plot legend.
+- **Invented functions or arguments.** Calls to package functions that don't exist, or arguments that are silently ignored.
+
+### Habits that catch them
+
+1. **Describe the experimental design precisely** in your prompt: what's paired, what's nested, what the replicates are (biological vs. technical), what the batches are.
+2. **Ask AI to explain each step**, then check the explanation against your design.
+3. **Check row counts** after every filter and join.
+4. **Run it on data with a known answer.** Simulated data with a planted effect, or a published dataset you can reproduce.
+5. **Plot the raw data** before trusting any summary statistic.
+6. **Have a statistician review** anything that will be published, filed, or used for a go/no-go decision.
+
+<Pitfall title="Asking AI to 'Find Something Significant'">
+
+**Common mistake:** when results are disappointing, asking AI to try other tests, subgroups, transforms, or outlier rules until something reaches p < 0.05.
+
+AI makes p-hacking fast and frictionless. Every extra analysis you try and don't report inflates your false-positive rate. Decide the primary analysis **before** you look at outcomes, as clinical trials do with a prespecified statistical analysis plan, and label everything else as exploratory.
+
+</Pitfall>
+
+---
+
+## Reading Discovery Models
+
+Structure prediction, docking, generative chemistry, and property-prediction models output something that looks like an answer: a 3D structure, a binding pose, a score. Learn to read their **confidence measures** and **limits**.
+
+### Structure prediction
+
+AlphaFold-family models report per-residue confidence (pLDDT) and pairwise confidence (PAE) for how domains are positioned relative to each other. Low-confidence regions are often disordered or simply unknown. Key limits:
+
+- A prediction is a **static** structure. It doesn't show dynamics, conformational changes, or the effect of most post-translational modifications.
+- Confidence about one domain doesn't transfer to how domains or binding partners are arranged.
+- Predictions of complexes, mutants, and ligand binding need more caution than single well-folded domains.
+
+### Property and activity prediction
+
+- Ask what chemical space the model was trained on. Is your compound **in domain**?
+- Ask how it was validated: random splits overstate performance compared with splits by scaffold or by time.
+- Treat predictions as a way to **prioritize experiments**, not replace them.
+
+### Generative design
+
+Models that propose new molecules or sequences can generate candidates that are hard or impossible to synthesize, unstable, or that resemble known toxic or patented structures. Synthesizability, novelty, and safety checks remain human and experimental work.
+
+---
+
+## Keep It Reproducible
+
+<LoopDiagram
+  label="A reproducibility loop for AI-assisted analysis"
+  colors={['#047857', '#059669', '#10b981', '#065f46']}
+  steps={[
+    { title: "Prespecify", subtitle: "question and analysis" },
+    { title: "Generate", subtitle: "code with AI" },
+    { title: "Test", subtitle: "on known answers" },
+    { title: "Record", subtitle: "code, versions, prompts" },
+  ]}
+/>
+
+- **Save the final code, not the conversation.** The code is the method. Commit it to version control with the data version and package versions.
+- **Record which model or tool you used** when AI materially shaped an analysis, especially for models whose outputs feed decisions.
+- **Note model versions for discovery tools.** A rerun on a newer model version may give different structures or scores.
+- **Don't let AI touch raw data files.** Work on copies, and keep the originals read-only.
+
+<TryIt title="Plant an Effect and See if AI Finds It">
+
+1. Simulate (or ask AI to simulate) a small dataset with a known structure: for example, paired measurements from 8 donors before and after treatment, with a real but modest effect.
+2. In a **separate** conversation, give AI only the data and a description of the design, and ask it to write the analysis.
+3. Check: did it use a paired test? Did it estimate the effect you planted? What happens if you describe the design vaguely?
+
+This shows you how much your design description matters, using no real data at all.
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "AI-written analysis code runs without errors. What's the best next step?",
+    options: [
+      "Report the results.",
+      "Check row counts, plot the raw data, and test the code on data with a known answer.",
+      "Ask the AI if the results are correct.",
+      "Rerun it to see if the numbers match."
+    ],
+    correctIndex: 1,
+    explanation: "Running without errors doesn't mean the analysis is right. Known-answer tests and data checks catch silent errors."
+  },
+  {
+    question: "A structure prediction shows high confidence for each domain but low confidence for how two domains are positioned. What can you conclude?",
+    options: [
+      "The whole structure is reliable.",
+      "Each domain's fold may be reliable, but their relative arrangement is uncertain.",
+      "The protein is disordered.",
+      "The model failed and should be ignored."
+    ],
+    correctIndex: 1,
+    explanation: "Per-residue and pairwise confidence measure different things. High local confidence doesn't mean the domain arrangement is known."
+  },
+  {
+    question: "Why is asking AI to try many alternative analyses until one is significant a problem?",
+    options: [
+      "It takes too long.",
+      "It inflates the false-positive rate if those attempts aren't reported.",
+      "AI can't run statistical tests.",
+      "Journals don't accept AI-run analyses."
+    ],
+    correctIndex: 1,
+    explanation: "Undisclosed multiple attempts are p-hacking. Prespecify the primary analysis and label the rest exploratory."
+  }
+]} />
+
+## Up Next
+
+Module 4 moves into clinical development: protocols, trial documents, and the patients behind them.
