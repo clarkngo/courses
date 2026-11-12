@@ -121,6 +121,51 @@ Distractors are usually wrong for one of these reasons:
 - **Works, but more effort** than another option (custom scripts on EC2 vs a managed feature)
 - **Not a real feature** (a setting or integration that doesn't exist)
 
+Here is the method applied to the example question above:
+
+<svg viewBox="0 0 720 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Eliminating answers for the image-processing question. Step 1 lists four options: A, Kinesis Data Streams with EC2 consumers; B, SQS with Lambda; C, SQS with an Auto Scaling group of EC2 workers; D, larger EC2 instances processing synchronously. Step 2 eliminates A as the wrong service for a simple queue and D because it does not decouple the tiers, leaving B and C. Step 3 compares B and C on the qualifier, least operational overhead, and picks B because it has no servers to manage." style="max-width:100%;height:auto;margin:1.5rem auto;display:block;">
+  <defs>
+    <marker id="sa-elim-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#0369a1"/>
+    </marker>
+  </defs>
+  <g font-family="system-ui, -apple-system, sans-serif">
+    <text x="20" y="28" fill="#0c4a6e" font-size="13" font-weight="700">1. Read all four options</text>
+    <text x="290" y="28" fill="#0c4a6e" font-size="13" font-weight="700">2. Eliminate</text>
+    <text x="530" y="28" fill="#0c4a6e" font-size="13" font-weight="700">3. Compare on the qualifier</text>
+    <rect x="20" y="44" width="240" height="46" rx="8" fill="#fee2e2"/>
+    <text x="32" y="64" fill="#7f1d1d" font-size="12" font-weight="700">A. Kinesis Data Streams + EC2</text>
+    <text x="32" y="81" fill="#7f1d1d" font-size="11">Wrong service: no stream needed</text>
+    <line x1="28" y1="60" x2="252" y2="60" stroke="#b91c1c" stroke-width="1.5"/>
+    <rect x="20" y="98" width="240" height="46" rx="8" fill="#e0f2fe"/>
+    <text x="32" y="118" fill="#0c4a6e" font-size="12" font-weight="700">B. SQS + Lambda</text>
+    <text x="32" y="135" fill="#334155" font-size="11">Decouples the tiers</text>
+    <rect x="20" y="152" width="240" height="46" rx="8" fill="#e0f2fe"/>
+    <text x="32" y="172" fill="#0c4a6e" font-size="12" font-weight="700">C. SQS + EC2 Auto Scaling workers</text>
+    <text x="32" y="189" fill="#334155" font-size="11">Decouples the tiers</text>
+    <rect x="20" y="206" width="240" height="46" rx="8" fill="#fee2e2"/>
+    <text x="32" y="226" fill="#7f1d1d" font-size="12" font-weight="700">D. Bigger instances, same tier</text>
+    <text x="32" y="243" fill="#7f1d1d" font-size="11">Breaks the requirement: not decoupled</text>
+    <line x1="28" y1="222" x2="252" y2="222" stroke="#b91c1c" stroke-width="1.5"/>
+    <rect x="290" y="98" width="200" height="46" rx="8" fill="#bae6fd"/>
+    <text x="302" y="118" fill="#0c4a6e" font-size="12" font-weight="700">B. SQS + Lambda</text>
+    <text x="302" y="135" fill="#0c4a6e" font-size="11">No servers to manage</text>
+    <rect x="290" y="152" width="200" height="46" rx="8" fill="#bae6fd"/>
+    <text x="302" y="172" fill="#0c4a6e" font-size="12" font-weight="700">C. SQS + EC2 workers</text>
+    <text x="302" y="189" fill="#0c4a6e" font-size="11">Works, but servers to patch</text>
+    <rect x="530" y="125" width="180" height="46" rx="8" fill="#bbf7d0"/>
+    <text x="542" y="145" fill="#14532d" font-size="12" font-weight="700">B. SQS + Lambda</text>
+    <text x="542" y="162" fill="#14532d" font-size="11">Least operational overhead</text>
+  </g>
+  <g stroke="#0369a1" stroke-width="2.2">
+    <line x1="264" y1="121" x2="286" y2="121" marker-end="url(#sa-elim-arrow)"/>
+    <line x1="264" y1="175" x2="286" y2="175" marker-end="url(#sa-elim-arrow)"/>
+    <line x1="494" y1="121" x2="526" y2="143" marker-end="url(#sa-elim-arrow)"/>
+    <line x1="494" y1="175" x2="526" y2="157" stroke="#94a3b8" marker-end="url(#sa-elim-arrow)"/>
+  </g>
+  <text x="20" y="285" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#334155">Both survivors meet the requirement. The qualifier decides between them.</text>
+</svg>
+
 ---
 
 ## Key Takeaway

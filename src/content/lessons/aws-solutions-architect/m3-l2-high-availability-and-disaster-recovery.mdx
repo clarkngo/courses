@@ -89,6 +89,61 @@ The pattern: spread every tier across **at least two AZs**, size each AZ so the 
 | **Aurora Global Database** | Replicates to other Regions, typically with under a second of lag | Yes, in secondary Regions | Low-RPO cross-Region DR and local global reads |
 | **DynamoDB global tables** | Multi-Region, multi-active replication | Yes, read and write in every Region | Global apps that write in many Regions |
 
+The two features people mix up most often, side by side:
+
+<svg viewBox="0 0 720 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="RDS Multi-AZ compared with read replicas. Left: with Multi-AZ, the app reads and writes to the primary in AZ A, which replicates synchronously to a standby in AZ B. The standby serves no traffic and takes over automatically on the same endpoint. Its purpose is availability. Right: with read replicas, the app writes to the primary and reads from replicas, which receive changes asynchronously, one in the same Region and one in another Region. Replicas may lag, promotion is a manual step, and their purpose is read scaling and cross-Region disaster recovery." style="max-width:100%;height:auto;margin:1.5rem auto;display:block;">
+  <defs>
+    <marker id="sa-rr-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#0369a1"/>
+    </marker>
+  </defs>
+  <g font-family="system-ui, -apple-system, sans-serif" text-anchor="middle">
+    <rect x="10" y="10" width="340" height="280" rx="12" fill="none" stroke="#cbd5e1"/>
+    <text x="180" y="36" fill="#0c4a6e" font-size="14" font-weight="700">Multi-AZ: availability</text>
+    <rect x="120" y="52" width="120" height="40" rx="8" fill="#e2e8f0"/>
+    <text x="180" y="77" fill="#0f172a" font-size="13" font-weight="700">App</text>
+    <rect x="30" y="140" width="130" height="60" rx="8" fill="#0369a1"/>
+    <text x="95" y="166" fill="#ffffff" font-size="13" font-weight="700">Primary</text>
+    <text x="95" y="184" fill="#e0f2fe" font-size="11">AZ A</text>
+    <rect x="200" y="140" width="130" height="60" rx="8" fill="#e0f2fe" stroke="#7dd3fc"/>
+    <text x="265" y="166" fill="#0c4a6e" font-size="13" font-weight="700">Standby</text>
+    <text x="265" y="184" fill="#0c4a6e" font-size="11">AZ B</text>
+    <text x="180" y="160" fill="#0369a1" font-size="11" font-weight="700">sync</text>
+    <text x="180" y="236" fill="#334155" font-size="12">Standby serves no traffic</text>
+    <text x="180" y="256" fill="#334155" font-size="12">Automatic failover, same endpoint</text>
+
+    <rect x="370" y="10" width="340" height="280" rx="12" fill="none" stroke="#cbd5e1"/>
+    <text x="540" y="36" fill="#0c4a6e" font-size="14" font-weight="700">Read replicas: read scaling</text>
+    <rect x="400" y="52" width="120" height="40" rx="8" fill="#e2e8f0"/>
+    <text x="460" y="77" fill="#0f172a" font-size="13" font-weight="700">App</text>
+    <rect x="390" y="140" width="120" height="60" rx="8" fill="#0369a1"/>
+    <text x="450" y="166" fill="#ffffff" font-size="13" font-weight="700">Primary</text>
+    <text x="450" y="184" fill="#e0f2fe" font-size="11">writes</text>
+    <rect x="580" y="108" width="115" height="44" rx="8" fill="#bae6fd"/>
+    <text x="637" y="127" fill="#0c4a6e" font-size="12" font-weight="700">Replica</text>
+    <text x="637" y="143" fill="#0c4a6e" font-size="11">same Region</text>
+    <rect x="580" y="170" width="115" height="44" rx="8" fill="#bae6fd"/>
+    <text x="637" y="189" fill="#0c4a6e" font-size="12" font-weight="700">Replica</text>
+    <text x="637" y="205" fill="#0c4a6e" font-size="11">other Region</text>
+    <text x="546" y="166" fill="#0369a1" font-size="11" font-weight="700">async</text>
+    <text x="540" y="246" fill="#334155" font-size="12">Replicas serve reads; they can lag</text>
+    <text x="540" y="266" fill="#334155" font-size="12">Promotion is a manual step</text>
+  </g>
+  <g stroke="#0369a1" stroke-width="2.2">
+    <line x1="160" y1="94" x2="110" y2="136" marker-end="url(#sa-rr-arrow)"/>
+    <line x1="162" y1="178" x2="196" y2="178" marker-end="url(#sa-rr-arrow)"/>
+    <line x1="450" y1="94" x2="450" y2="136" marker-end="url(#sa-rr-arrow)"/>
+    <line x1="522" y1="72" x2="610" y2="104" marker-end="url(#sa-rr-arrow)"/>
+    <line x1="512" y1="160" x2="576" y2="132" marker-end="url(#sa-rr-arrow)"/>
+    <line x1="512" y1="182" x2="576" y2="190" marker-end="url(#sa-rr-arrow)"/>
+  </g>
+  <g font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="700" fill="#0c4a6e">
+    <text x="122" y="108" text-anchor="end">reads + writes</text>
+    <text x="456" y="122">writes</text>
+    <text x="574" y="82">reads</text>
+  </g>
+</svg>
+
 Remember the difference: **Multi-AZ is for availability**, and **read replicas are for read scaling** (plus cross-Region DR). Exam answers that use a read replica for automatic failover, or a classic Multi-AZ standby to serve reads, are wrong.
 
 ---

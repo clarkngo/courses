@@ -94,6 +94,49 @@ Spot capacity can be reclaimed with a **2-minute notice**. Use it only for work 
 | **S3 Glacier Flexible Retrieval** | Archive | Minutes to hours | 90 days |
 | **S3 Glacier Deep Archive** | Long-term archive, rarely if ever read | Within 12 hours (standard) or 48 hours (bulk) | 180 days |
 
+The classes trade storage price against access price:
+
+<svg viewBox="0 0 720 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="S3 storage classes from left to right: Standard with millisecond access and no minimum duration; Standard-IA with millisecond access, a retrieval fee, and a 30-day minimum; Glacier Instant Retrieval with millisecond access, a retrieval fee, and a 90-day minimum; Glacier Flexible Retrieval with minutes to hours to retrieve and a 90-day minimum; and Glacier Deep Archive with 12 to 48 hours to retrieve and a 180-day minimum. Moving right, storage price per GB goes down while retrieval cost and wait time go up. Intelligent-Tiering moves objects between similar tiers automatically based on access." style="max-width:100%;height:auto;margin:1.5rem auto;display:block;">
+  <defs>
+    <marker id="sa-s3-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#0369a1"/>
+    </marker>
+    <marker id="sa-s3-red" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#b91c1c"/>
+    </marker>
+  </defs>
+  <g font-family="system-ui, -apple-system, sans-serif" text-anchor="middle">
+    <path d="M15 46 L15 36 L425 36 L425 46" fill="none" stroke="#b45309" stroke-width="2"/>
+    <text x="220" y="26" fill="#78350f" font-size="12" font-weight="700">Intelligent-Tiering moves objects across similar tiers for you</text>
+    <rect x="15" y="64" width="130" height="56" rx="8" fill="#e0f2fe"/>
+    <text x="80.0" y="88.0" fill="#0c4a6e" font-size="12" font-weight="700">Standard</text>
+    <text x="80.0" y="104.0" fill="#0c4a6e" font-size="11">ms</text>
+    <text x="80" y="140" fill="#334155" font-size="11">no minimum</text>
+    <rect x="155" y="64" width="130" height="56" rx="8" fill="#bae6fd"/>
+    <text x="220.0" y="88.0" fill="#0c4a6e" font-size="12" font-weight="700">Standard-IA</text>
+    <text x="220.0" y="104.0" fill="#0c4a6e" font-size="11">ms + fee</text>
+    <text x="220" y="140" fill="#334155" font-size="11">min 30 days</text>
+    <rect x="295" y="64" width="130" height="56" rx="8" fill="#7dd3fc"/>
+    <text x="360.0" y="88.0" fill="#0c4a6e" font-size="12" font-weight="700">Glacier Instant</text>
+    <text x="360.0" y="104.0" fill="#0c4a6e" font-size="11">ms + fee</text>
+    <text x="360" y="140" fill="#334155" font-size="11">min 90 days</text>
+    <rect x="435" y="64" width="130" height="56" rx="8" fill="#0369a1"/>
+    <text x="500.0" y="88.0" fill="#ffffff" font-size="12" font-weight="700">Glacier Flexible</text>
+    <text x="500.0" y="104.0" fill="#ffffff" font-size="11">min to hours</text>
+    <text x="500" y="140" fill="#334155" font-size="11">min 90 days</text>
+    <rect x="575" y="64" width="130" height="56" rx="8" fill="#0c4a6e"/>
+    <text x="640.0" y="88.0" fill="#ffffff" font-size="12" font-weight="700">Deep Archive</text>
+    <text x="640.0" y="104.0" fill="#ffffff" font-size="11">12–48 hours</text>
+    <text x="640" y="140" fill="#334155" font-size="11">min 180 days</text>
+  </g>
+  <g font-family="system-ui, -apple-system, sans-serif" font-size="12" font-weight="700">
+    <line x1="15" y1="180" x2="700" y2="180" stroke="#0369a1" stroke-width="2.5" marker-end="url(#sa-s3-arrow)"/>
+    <text x="15" y="170" fill="#0c4a6e">Storage price per GB: lower →</text>
+    <line x1="15" y1="232" x2="700" y2="232" stroke="#b91c1c" stroke-width="2.5" marker-end="url(#sa-s3-red)"/>
+    <text x="15" y="222" fill="#7f1d1d">Retrieval cost and wait time: higher →</text>
+  </g>
+</svg>
+
 **Lifecycle policies** move objects between classes and delete them automatically:
 
 <ProcessFlow
