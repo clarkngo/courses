@@ -1,0 +1,181 @@
+---
+title: "Building AI Governance"
+description: "Build an AI governance system that scales: an AI inventory, risk tiers with proportionate controls, a review board with clear decision rights, and alignment with the NIST AI RMF and ISO/IEC 42001."
+module: 4
+moduleTitle: "Governance and Risk"
+lesson: 1
+duration: "30 min"
+---
+
+import LoopDiagram from '@components/LoopDiagram.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## Governance as a Path, Not a Gate
+
+Bad AI governance is a single committee that reviews everything and approves little. Good AI governance is **proportionate**: light and fast for low-risk uses, rigorous for high-risk ones, and clear enough that teams know what's expected before they start.
+
+The goal is not to minimize AI. It's to make sure the organization can **use AI confidently** because it knows what's running, what could go wrong, and who's accountable.
+
+---
+
+## Two Frameworks Worth Knowing
+
+### NIST AI Risk Management Framework
+
+The NIST AI RMF (version 1.0, released January 2023) is voluntary and widely used. It organizes AI risk management into four functions:
+
+<LoopDiagram
+  label="The four functions of the NIST AI Risk Management Framework"
+  colors={['#312e81', '#3730a3', '#4338ca', '#1e1b4b']}
+  steps={[
+    { title: "Govern", subtitle: "culture, roles, policy" },
+    { title: "Map", subtitle: "context and risks" },
+    { title: "Measure", subtitle: "assess and track" },
+    { title: "Manage", subtitle: "prioritize and act" },
+  ]}
+/>
+
+- **Govern:** policies, accountability, culture, and processes across the organization. It underpins the other three.
+- **Map:** understand the context of each AI system: its purpose, users, affected people, and potential harms.
+- **Measure:** assess risks with appropriate methods, including testing for accuracy, bias, robustness, and security.
+- **Manage:** prioritize risks, apply controls, monitor, and respond.
+
+NIST has also published a **Generative AI Profile** (NIST AI 600-1, July 2024) that applies the framework to risks specific to generative AI, such as confabulation, data privacy, and information integrity.
+
+### ISO/IEC 42001
+
+ISO/IEC 42001:2023 is an international standard for an **AI management system**, structured like ISO 27001 for information security. Unlike the NIST framework, it's **certifiable**: an external auditor can certify that your organization runs AI governance according to the standard. It's increasingly requested by enterprise customers in procurement.
+
+Many organizations use NIST AI RMF to design their risk practices and ISO/IEC 42001 to structure and certify the management system around them.
+
+---
+
+## The Building Blocks
+
+### 1. An AI inventory
+
+You can't govern what you can't see. Maintain a register of AI systems, including vendor-embedded AI, with owner, purpose, data used, affected people, risk tier, and status. The inventory you started in your first 90 days becomes a permanent, maintained asset.
+
+### 2. Risk tiers
+
+Classify each use into a small number of tiers with proportionate controls:
+
+| Tier | Examples | Typical controls |
+|---|---|---|
+| **Low** | Drafting internal documents, summarizing public information | Approved tools, acceptable-use policy, user training |
+| **Medium** | Internal decision support, customer-service drafts with human review | Owner sign-off, evaluation before launch, monitoring, documented human review |
+| **High** | Decisions about people (hiring, credit, eligibility), safety-relevant uses, fully automated customer-facing actions | Formal impact assessment, bias and robustness testing, review board approval, ongoing monitoring, incident plan |
+| **Prohibited** | Uses your policy or law forbids | Not permitted |
+
+Align tiers with applicable law. Uses that the EU AI Act treats as high-risk, for example, should land in your high tier.
+
+<svg viewBox="0 0 720 290" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Risk tiers by volume and controls. Low tier: most uses; controls are approved tools, an acceptable-use policy, and training. Medium tier: some uses; owner sign-off, evaluation, monitoring, and human review. High tier: few uses; impact assessment, bias testing, review board approval, and an incident plan. Prohibited: rare; not permitted. Scrutiny increases as the tier rises." style="max-width:100%;height:auto;margin:1.5rem auto;display:block;">
+  <defs>
+    <marker id="caio-arrow-7" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#312e81"/>
+    </marker>
+  </defs>
+  <g font-family="system-ui, -apple-system, sans-serif">
+    <text x="150" y="26" text-anchor="start" fill="#475569" font-size="13" font-weight="700">Number of AI uses in each tier</text>
+    <text x="20" y="62" text-anchor="start" fill="#0f172a" font-size="14" font-weight="700">Low</text>
+    <rect x="150" y="44" width="400" height="26" rx="6" fill="#c7d2fe"/>
+    <text x="560" y="62" text-anchor="start" fill="#64748b" font-size="12" font-weight="700">Most uses</text>
+    <text x="150" y="90" text-anchor="start" fill="#334155" font-size="12">Controls: Approved tools, acceptable-use policy, training</text>
+    <text x="20" y="122" text-anchor="start" fill="#0f172a" font-size="14" font-weight="700">Medium</text>
+    <rect x="150" y="104" width="210" height="26" rx="6" fill="#818cf8"/>
+    <text x="370" y="122" text-anchor="start" fill="#64748b" font-size="12" font-weight="700">Some</text>
+    <text x="150" y="150" text-anchor="start" fill="#334155" font-size="12">Controls: Owner sign-off, evaluation, monitoring, human review</text>
+    <text x="20" y="182" text-anchor="start" fill="#0f172a" font-size="14" font-weight="700">High</text>
+    <rect x="150" y="164" width="80" height="26" rx="6" fill="#3730a3"/>
+    <text x="240" y="182" text-anchor="start" fill="#64748b" font-size="12" font-weight="700">Few</text>
+    <text x="150" y="210" text-anchor="start" fill="#334155" font-size="12">Controls: Impact assessment, bias testing, board approval, incident plan</text>
+    <text x="20" y="242" text-anchor="start" fill="#0f172a" font-size="14" font-weight="700">Prohibited</text>
+    <rect x="150" y="224" width="24" height="26" rx="6" fill="#b91c1c"/>
+    <text x="184" y="242" text-anchor="start" fill="#64748b" font-size="12" font-weight="700">Rare</text>
+    <text x="150" y="270" text-anchor="start" fill="#334155" font-size="12">Controls: Not permitted</text>
+    <line x1="680" y1="44" x2="680" y2="270" stroke="#312e81" stroke-width="2.5" marker-end="url(#caio-arrow-7)"/>
+    <text x="664" y="160" text-anchor="middle" fill="#312e81" font-size="12" font-weight="700" transform="rotate(90 664 160)">More scrutiny</text>
+  </g>
+</svg>
+
+### 3. A review body with clear decision rights
+
+An **AI review board** (or risk council) with representatives from the CAIO's team, legal, privacy, security, risk, HR, and the business. Define:
+
+- Which tiers it reviews (usually high only; medium can be delegated).
+- What it can decide: approve, approve with conditions, or reject.
+- Its service level, so a review takes days or weeks, not months.
+
+### 4. Policy
+
+A short, readable **AI policy** covering acceptable use, data handling, approved tools, human oversight expectations, transparency to customers and employees, and how to report concerns. Supplement it with standards (detailed requirements) for teams that build AI.
+
+<Pitfall title="One Committee Reviews Everything">
+
+**Common mistake:** sending every AI use, including low-risk productivity tools, to a monthly committee.
+
+The committee is swamped, reviews become superficial, and teams route around governance. Tier first, then send only high-risk uses to the board. Make the low-risk path easy and documented.
+
+</Pitfall>
+
+---
+
+## Agents Raise the Stakes
+
+AI agents that take actions (sending emails, updating records, making purchases, running code) need governance beyond what's needed for AI that only drafts text. Add controls for:
+
+- **Scope of permissions:** least privilege, as with any system account.
+- **Human approval points** for consequential or irreversible actions.
+- **Logging of actions**, not just outputs.
+- **Kill switches** and rate limits.
+
+<TryIt title="Draft Your Risk Tiers">
+
+1. List ten AI uses from your inventory, or invent plausible ones.
+2. Assign each to low, medium, high, or prohibited.
+3. For the high tier, list the controls you'd require before launch.
+4. Decide which tiers your review board will see, and its target turnaround time.
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "What are the four functions of the NIST AI RMF?",
+    options: [
+      "Plan, Do, Check, Act",
+      "Govern, Map, Measure, Manage",
+      "Identify, Protect, Detect, Respond",
+      "Build, Test, Deploy, Monitor"
+    ],
+    correctIndex: 1,
+    explanation: "Govern underpins Map, Measure, and Manage."
+  },
+  {
+    question: "What distinguishes ISO/IEC 42001 from the NIST AI RMF?",
+    options: [
+      "ISO/IEC 42001 is certifiable by external auditors.",
+      "ISO/IEC 42001 only applies to the U.S.",
+      "NIST AI RMF is mandatory for all companies.",
+      "They cover entirely different topics."
+    ],
+    correctIndex: 0,
+    explanation: "ISO/IEC 42001 defines a certifiable AI management system; the NIST AI RMF is voluntary guidance."
+  },
+  {
+    question: "Why should low-risk AI uses not go to the AI review board?",
+    options: [
+      "Low-risk uses don't need any rules.",
+      "It swamps the board, makes reviews superficial, and pushes teams to route around governance.",
+      "The board can only meet once a year.",
+      "Low-risk uses are illegal."
+    ],
+    correctIndex: 1,
+    explanation: "Proportionate governance keeps the board focused on high-risk uses and makes low-risk adoption easy."
+  }
+]} />
+
+## Up Next
+
+The next lesson covers the regulatory landscape your governance has to satisfy.

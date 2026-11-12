@@ -1,0 +1,194 @@
+---
+title: "Choosing an Operating Model"
+description: "Compare centralized, hub-and-spoke, and federated AI operating models, decide what the center owns versus the business units, and design the core team a CAIO needs."
+module: 3
+moduleTitle: "Operating Model and Platform"
+lesson: 1
+duration: "25 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## Who Does the Work?
+
+Strategy says where AI should create value. The operating model says **who** builds, buys, runs, and governs AI, and how they work together. Get it wrong and you'll either have a central team that's a bottleneck or business units reinventing the same things with no guardrails.
+
+---
+
+## Three Models
+
+### Centralized
+
+A central AI team, often called a center of excellence (CoE), does most AI work for the whole organization.
+
+- **Strengths:** consistent standards, efficient use of scarce talent, strong governance, easier reuse.
+- **Weaknesses:** becomes a queue; distant from business problems; business units feel AI is "done to them."
+- **Fits:** organizations early in AI maturity, or with very scarce AI skills.
+
+### Federated
+
+Each business unit runs its own AI teams with a light central function for policy.
+
+- **Strengths:** close to the business, fast, strong ownership.
+- **Weaknesses:** duplication, inconsistent risk practices, hard to share platforms or talent, difficult to see the whole portfolio.
+- **Fits:** very large, diverse organizations with mature business units.
+
+### Hub-and-spoke
+
+A central hub owns platform, standards, governance, and scarce expertise. Spokes, embedded in business units, own use cases and adoption.
+
+- **Strengths:** balances consistency with business ownership; reuse through the hub, speed in the spokes.
+- **Weaknesses:** needs clear division of responsibilities and strong relationships; can drift toward either extreme.
+- **Fits:** most mid-to-large organizations once AI moves beyond early pilots.
+
+<svg viewBox="0 0 720 290" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Three AI operating models. Centralized: a center of excellence connected to four business units, doing AI work for all of them. Federated: four business units each with their own embedded AI team, and only a light policy function in the center. Hub-and-spoke: a central hub strongly connected to four business units that each have embedded AI teams; the center enables and the units deliver." style="max-width:100%;height:auto;margin:1.5rem auto;display:block;">
+  <g font-family="system-ui, -apple-system, sans-serif">
+    <rect x="20" y="16" width="220" height="236" rx="12" fill="#f8fafc" stroke="#e2e8f0"/>
+    <text x="130" y="42" text-anchor="middle" fill="#312e81" font-size="15" font-weight="700">Centralized</text>
+    <text x="130" y="240" text-anchor="middle" fill="#475569" font-size="12">AI work done by the center</text>
+    <rect x="250" y="16" width="220" height="236" rx="12" fill="#f8fafc" stroke="#e2e8f0"/>
+    <text x="360" y="42" text-anchor="middle" fill="#312e81" font-size="15" font-weight="700">Federated</text>
+    <text x="360" y="240" text-anchor="middle" fill="#475569" font-size="12">Each unit runs its own AI</text>
+    <rect x="480" y="16" width="220" height="236" rx="12" fill="#f8fafc" stroke="#e2e8f0"/>
+    <text x="590" y="42" text-anchor="middle" fill="#312e81" font-size="15" font-weight="700">Hub-and-spoke</text>
+    <text x="590" y="240" text-anchor="middle" fill="#475569" font-size="12">Center enables, units deliver</text>
+    <line x1="130" y1="110" x2="55" y2="186" stroke="#818cf8" stroke-width="1.5"/>
+    <line x1="130" y1="110" x2="98" y2="186" stroke="#818cf8" stroke-width="1.5"/>
+    <line x1="130" y1="110" x2="142" y2="186" stroke="#818cf8" stroke-width="1.5"/>
+    <line x1="130" y1="110" x2="185" y2="186" stroke="#818cf8" stroke-width="1.5"/>
+    <circle cx="130" cy="104" r="32" fill="#312e81"/>
+    <text x="130" y="109" text-anchor="middle" fill="#ffffff" font-size="14" font-weight="700">CoE</text>
+    <circle cx="55" cy="190" r="17" fill="#e0e7ff" stroke="#a5b4fc"/>
+    <text x="55" y="194" text-anchor="middle" fill="#312e81" font-size="11" font-weight="700">BU</text>
+    <circle cx="98" cy="190" r="17" fill="#e0e7ff" stroke="#a5b4fc"/>
+    <text x="98" y="194" text-anchor="middle" fill="#312e81" font-size="11" font-weight="700">BU</text>
+    <circle cx="142" cy="190" r="17" fill="#e0e7ff" stroke="#a5b4fc"/>
+    <text x="142" y="194" text-anchor="middle" fill="#312e81" font-size="11" font-weight="700">BU</text>
+    <circle cx="185" cy="190" r="17" fill="#e0e7ff" stroke="#a5b4fc"/>
+    <text x="185" y="194" text-anchor="middle" fill="#312e81" font-size="11" font-weight="700">BU</text>
+    <rect x="310" y="72" width="100" height="30" rx="6" fill="#ffffff" stroke="#a5b4fc" stroke-dasharray="4 3"/>
+    <text x="360" y="92" text-anchor="middle" fill="#3730a3" font-size="12" font-weight="700">Policy only</text>
+    <line x1="360" y1="102" x2="285" y2="172" stroke="#c7d2fe" stroke-width="1" stroke-dasharray="4 3"/>
+    <line x1="360" y1="102" x2="328" y2="172" stroke="#c7d2fe" stroke-width="1" stroke-dasharray="4 3"/>
+    <line x1="360" y1="102" x2="372" y2="172" stroke="#c7d2fe" stroke-width="1" stroke-dasharray="4 3"/>
+    <line x1="360" y1="102" x2="415" y2="172" stroke="#c7d2fe" stroke-width="1" stroke-dasharray="4 3"/>
+    <circle cx="285" cy="190" r="17" fill="#e0e7ff" stroke="#a5b4fc"/>
+    <text x="285" y="194" text-anchor="middle" fill="#312e81" font-size="11" font-weight="700">BU</text>
+    <circle cx="298" cy="176" r="7" fill="#4f46e5"/>
+    <circle cx="328" cy="190" r="17" fill="#e0e7ff" stroke="#a5b4fc"/>
+    <text x="328" y="194" text-anchor="middle" fill="#312e81" font-size="11" font-weight="700">BU</text>
+    <circle cx="341" cy="176" r="7" fill="#4f46e5"/>
+    <circle cx="372" cy="190" r="17" fill="#e0e7ff" stroke="#a5b4fc"/>
+    <text x="372" y="194" text-anchor="middle" fill="#312e81" font-size="11" font-weight="700">BU</text>
+    <circle cx="385" cy="176" r="7" fill="#4f46e5"/>
+    <circle cx="415" cy="190" r="17" fill="#e0e7ff" stroke="#a5b4fc"/>
+    <text x="415" y="194" text-anchor="middle" fill="#312e81" font-size="11" font-weight="700">BU</text>
+    <circle cx="428" cy="176" r="7" fill="#4f46e5"/>
+    <line x1="590" y1="104" x2="515" y2="186" stroke="#4f46e5" stroke-width="2"/>
+    <line x1="590" y1="104" x2="558" y2="186" stroke="#4f46e5" stroke-width="2"/>
+    <line x1="590" y1="104" x2="602" y2="186" stroke="#4f46e5" stroke-width="2"/>
+    <line x1="590" y1="104" x2="645" y2="186" stroke="#4f46e5" stroke-width="2"/>
+    <circle cx="590" cy="104" r="32" fill="#312e81"/>
+    <text x="590" y="109" text-anchor="middle" fill="#ffffff" font-size="14" font-weight="700">Hub</text>
+    <circle cx="515" cy="190" r="17" fill="#e0e7ff" stroke="#a5b4fc"/>
+    <text x="515" y="194" text-anchor="middle" fill="#312e81" font-size="11" font-weight="700">BU</text>
+    <circle cx="528" cy="176" r="7" fill="#4f46e5"/>
+    <circle cx="558" cy="190" r="17" fill="#e0e7ff" stroke="#a5b4fc"/>
+    <text x="558" y="194" text-anchor="middle" fill="#312e81" font-size="11" font-weight="700">BU</text>
+    <circle cx="571" cy="176" r="7" fill="#4f46e5"/>
+    <circle cx="602" cy="190" r="17" fill="#e0e7ff" stroke="#a5b4fc"/>
+    <text x="602" y="194" text-anchor="middle" fill="#312e81" font-size="11" font-weight="700">BU</text>
+    <circle cx="615" cy="176" r="7" fill="#4f46e5"/>
+    <circle cx="645" cy="190" r="17" fill="#e0e7ff" stroke="#a5b4fc"/>
+    <text x="645" y="194" text-anchor="middle" fill="#312e81" font-size="11" font-weight="700">BU</text>
+    <circle cx="658" cy="176" r="7" fill="#4f46e5"/>
+    <circle cx="40" cy="276" r="7" fill="#4f46e5"/>
+    <text x="54" y="280" text-anchor="start" fill="#334155" font-size="12">= AI team embedded in a business unit (BU)</text>
+  </g>
+</svg>
+
+Many organizations **start centralized and move toward hub-and-spoke** as skills spread and standards mature. Plan for that evolution rather than treating the first model as permanent.
+
+---
+
+## What the Hub Owns vs. the Spokes
+
+| The hub (central team) owns | The spokes (business units) own |
+|---|---|
+| AI strategy, portfolio view, and prioritization process | Use-case identification and business cases |
+| Shared platform, model access, and approved tools | Process redesign and change in their area |
+| Standards: security, evaluation, documentation | Day-to-day product ownership of their AI solutions |
+| Governance, risk tiering, and review | Measuring and reporting value |
+| Scarce expertise (ML engineering, evaluation, AI risk) | Domain experts and frontline adoption |
+| Enterprise vendor contracts | Local champions and training |
+
+Write this down and agree it with business-unit leaders. Ambiguity about who owns a failing AI product is a common source of conflict.
+
+<Pitfall title="The Center That Builds Everything">
+
+**Common mistake:** a strong central team keeps building every use case itself because it's faster and higher quality than the business units' attempts.
+
+It works for a year. Then demand exceeds capacity, business units feel ignored, and the CAIO's team becomes the reason AI is slow. The hub's long-term job is to **make the spokes capable**: platforms, patterns, training, and review, not delivery of everything.
+
+</Pitfall>
+
+---
+
+## The Core Team
+
+Whatever the model, a CAIO typically needs these capabilities, in-house or through partners:
+
+- **AI product management:** turning business problems into well-scoped AI products with clear metrics.
+- **AI and ML engineering:** building, integrating, and operating AI systems, including retrieval, agents, and evaluation.
+- **Platform and architecture:** the shared infrastructure, model access, and integration patterns.
+- **Data partnership:** close links to data engineering and governance, often in the CDO's team.
+- **AI risk and governance:** policy, risk assessment, model documentation, and regulatory tracking.
+- **Change and enablement:** training, communications, champions networks, and adoption measurement.
+
+Small, senior, and cross-functional beats large and specialized at the start.
+
+<TryIt title="Choose Your Model">
+
+1. Describe your organization's AI maturity in one sentence: early pilots, scattered production, or broad adoption?
+2. Pick the operating model that fits today, and the one you'd aim for in two years.
+3. Fill in a two-column hub-versus-spoke ownership table for your organization.
+4. List the three core-team roles you'd hire first, and why.
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "What's the main weakness of a fully centralized AI model?",
+    options: [
+      "Inconsistent standards",
+      "It becomes a queue and can be distant from business problems",
+      "Too much duplication",
+      "No governance"
+    ],
+    correctIndex: 1,
+    explanation: "Centralization gives consistency but can bottleneck delivery and lose touch with the business."
+  },
+  {
+    question: "In a hub-and-spoke model, who typically owns process redesign in a business area?",
+    options: ["The hub", "The spoke (business unit)", "The board", "The vendor"],
+    correctIndex: 1,
+    explanation: "Business units own their processes and adoption; the hub provides platform, standards, and expertise."
+  },
+  {
+    question: "What's the hub's long-term job?",
+    options: [
+      "Build every AI use case itself",
+      "Make the business units capable through platforms, patterns, training, and review",
+      "Approve every prompt",
+      "Replace the IT department"
+    ],
+    correctIndex: 1,
+    explanation: "A hub that builds everything becomes the bottleneck. Its job is to enable."
+  }
+]} />
+
+## Up Next
+
+The next lesson covers the foundations the operating model runs on: data, platform, and cost.

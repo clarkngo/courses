@@ -1,0 +1,160 @@
+---
+title: "AI Strategy from Business Strategy"
+description: "Derive AI strategy from business goals rather than from technology, decide where AI should create value, and make build, buy, and partner choices that keep options open."
+module: 2
+moduleTitle: "Strategy and Value"
+lesson: 1
+duration: "25 min"
+---
+
+import LoopDiagram from '@components/LoopDiagram.astro';
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## There Is No Separate AI Strategy
+
+The most common strategic mistake is writing an "AI strategy" that starts with technology: "We will deploy generative AI across the enterprise." That's a plan for activity, not for results.
+
+A good AI strategy is the **business strategy, with AI as a means**. It starts from what the company is trying to achieve, such as growing a segment, lowering cost to serve, improving quality, or launching new products, and asks where AI changes what's possible.
+
+Test any strategy statement with one question: **if AI disappeared tomorrow, would this goal still matter?** If not, it's a technology goal dressed up as a business one.
+
+---
+
+## Three Places AI Creates Value
+
+Most AI value falls into three buckets, each with different economics and risk:
+
+| Bucket | What it looks like | Typical payoff | Main risk |
+|---|---|---|---|
+| **Productivity** | Faster drafting, coding, research, summarization for employees | Broad but thin: minutes per person per day | Time saved doesn't turn into results |
+| **Process transformation** | Redesigning a workflow end to end (claims, onboarding, support) around AI | Concentrated, measurable cost and speed gains | Requires process, data, and job redesign |
+| **Products and revenue** | AI features or new AI-enabled offerings for customers | Growth and differentiation | Customer harm, liability, reputational risk |
+
+Productivity tools are the easiest to deploy and the hardest to prove. Process transformation usually delivers the clearest financial results. Product AI carries the most upside and the most exposure.
+
+A balanced strategy usually funds all three, with most of the measurable value coming from a small number of process transformations.
+
+<Pitfall title="Counting Time Saved as Money Saved">
+
+**Common mistake:** reporting that a writing assistant saves 30 minutes per employee per day, multiplying by headcount and salary, and calling it value.
+
+Saved minutes only become value if they're **redeployed**: more customers served, faster cycle times, less overtime, avoided hires. Ask what changed in the business, not just in the calendar.
+
+</Pitfall>
+
+---
+
+## Where to Play
+
+To prioritize, map AI opportunities against your strategy:
+
+1. **Start from strategic goals.** List the three to five goals the CEO and board care most about this year and next.
+2. **Find the constraints.** For each goal, what's limiting progress? Expert capacity, response time, error rates, cost per transaction, personalization at scale?
+3. **Ask where AI relaxes the constraint.** AI is strongest where work involves large volumes of language, documents, images, or patterns, and where good-enough-with-review beats slow-and-perfect.
+4. **Check the foundations.** Is the data available and usable? Is there a team that owns the process and wants the change?
+
+<svg viewBox="0 0 720 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A funnel from strategy to AI themes. Start with the strategic goals the CEO and board care about, then the constraint that limits each goal, then where AI relaxes that constraint, then check foundations: usable data and a willing owner. The output is three to five strategic AI themes, each with a goal and an owner." style="max-width:100%;height:auto;margin:1.5rem auto;display:block;">
+  <defs>
+    <marker id="caio-arrow-3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#312e81"/>
+    </marker>
+  </defs>
+  <g font-family="system-ui, -apple-system, sans-serif">
+    <polygon points="30,16 690,16 640,68 80,68" fill="#c7d2fe"/>
+    <text x="360" y="47" text-anchor="middle" fill="#1e1b4b" font-size="14" font-weight="700">1. Strategic goals the CEO and board care about</text>
+    <polygon points="80,72 640,72 595,124 125,124" fill="#818cf8"/>
+    <text x="360" y="103" text-anchor="middle" fill="#ffffff" font-size="14" font-weight="700">2. The constraint that limits each goal</text>
+    <polygon points="125,128 595,128 555,180 165,180" fill="#4f46e5"/>
+    <text x="360" y="159" text-anchor="middle" fill="#ffffff" font-size="14" font-weight="700">3. Where AI relaxes that constraint</text>
+    <polygon points="165,184 555,184 520,236 200,236" fill="#3730a3"/>
+    <text x="360" y="215" text-anchor="middle" fill="#ffffff" font-size="14" font-weight="700">4. Foundations: usable data and a willing owner</text>
+    <line x1="360" y1="240" x2="360" y2="252" stroke="#312e81" stroke-width="2.5" marker-end="url(#caio-arrow-3)"/>
+    <rect x="150" y="256" width="420" height="36" rx="18" fill="#fef3c7" stroke="#f59e0b"/>
+    <text x="360" y="279" text-anchor="middle" fill="#92400e" font-size="13" font-weight="700">3–5 strategic AI themes, each with a goal and an owner</text>
+  </g>
+</svg>
+
+The result is a short list of strategic AI themes, each tied to a business goal and owner, not a long list of tools.
+
+---
+
+## Build, Buy, or Partner
+
+For each theme, decide how to get the capability:
+
+- **Buy** when the need is common across industries (office productivity, coding assistants, service-desk triage). Vendors will improve faster than you can.
+- **Build** when the capability is a source of differentiation, depends on your proprietary data or processes, or needs tight control.
+- **Partner** when you need specialized expertise or co-development, such as with a model provider, systems integrator, or startup.
+
+Most organizations **build on top of bought foundations**: they license models or platforms and build the parts that use their own data and workflows.
+
+Keep options open. Model capabilities and prices change fast. Architectures that let you switch between model providers, and contracts that avoid long lock-in on fast-moving technology, are worth paying for.
+
+---
+
+## Strategy as a Loop
+
+<LoopDiagram
+  label="AI strategy as a continuous loop tied to business goals"
+  colors={['#312e81', '#3730a3', '#4338ca', '#1e1b4b']}
+  steps={[
+    { title: "Goals", subtitle: "business priorities" },
+    { title: "Bets", subtitle: "AI themes and use cases" },
+    { title: "Evidence", subtitle: "measured results" },
+    { title: "Reallocate", subtitle: "fund, fix, or stop" },
+  ]}
+/>
+
+AI moves too quickly for a five-year plan. Treat strategy as a loop: set direction annually, review the portfolio quarterly, and move money toward what the evidence supports.
+
+<TryIt title="Draft Three Strategic AI Themes">
+
+1. Write down your organization's top three business goals.
+2. For each, name the constraint that most limits progress.
+3. Describe one way AI could relax that constraint, and which value bucket it falls into.
+4. For each theme, decide build, buy, or partner, and give one sentence of reasoning.
+5. Apply the test: if AI disappeared, would the goal still matter?
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "Which statement is the best foundation for an AI strategy?",
+    options: [
+      "\"We will deploy generative AI across the enterprise.\"",
+      "\"We will cut claims-processing time in half to improve customer retention, using AI where it helps.\"",
+      "\"We will adopt the newest model every quarter.\"",
+      "\"We will train every employee on prompt engineering.\""
+    ],
+    correctIndex: 1,
+    explanation: "Strategy should start with a business outcome. AI is the means, not the goal."
+  },
+  {
+    question: "Why is \"30 minutes saved per employee per day\" not, by itself, proof of value?",
+    options: [
+      "The number is always wrong.",
+      "Saved time only becomes value if it's redeployed into business results.",
+      "Productivity tools have no value.",
+      "Boards don't care about time."
+    ],
+    correctIndex: 1,
+    explanation: "Ask what changed in the business: output, cycle time, cost, or avoided hiring."
+  },
+  {
+    question: "When does building an AI capability usually make more sense than buying one?",
+    options: [
+      "When the need is common across industries",
+      "When it's a source of differentiation that depends on your proprietary data or processes",
+      "When you need it next week",
+      "When vendors offer it cheaply"
+    ],
+    correctIndex: 1,
+    explanation: "Build what differentiates you; buy what's common."
+  }
+]} />
+
+## Up Next
+
+The next lesson turns themes into a managed portfolio, and covers how to measure value honestly.
