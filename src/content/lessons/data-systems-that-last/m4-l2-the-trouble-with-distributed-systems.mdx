@@ -1,0 +1,148 @@
+---
+title: "The Trouble with Distributed Systems"
+description: "Face the partial failures unique to distributed systems: unreliable networks, timeouts, unreliable clocks, and process pauses; and learn how fencing tokens and quorums let a system decide what's true."
+module: 4
+moduleTitle: "Correctness Under Concurrency and Failure"
+lesson: 2
+duration: "35 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## Partial Failure
+
+On a single computer, things usually work or fail completely: if the hardware breaks, the machine crashes. In a distributed system, **some parts can fail while others keep working**, and you often can't tell which. This is **partial failure**, and it's what makes distributed systems hard.
+
+The pessimistic stance is the useful one: anything that can go wrong eventually will, and your system must still behave sensibly.
+
+---
+
+## Unreliable Networks
+
+Most distributed systems use **asynchronous packet networks**. When you send a request and don't get a response, any of these may have happened:
+
+1. The request was lost.
+2. The request is waiting in a queue and will arrive later.
+3. The remote node crashed.
+4. The remote node is paused (more on that below).
+5. The node processed the request, but the **response** was lost or delayed.
+
+From the sender's side, all five look the same. In particular, case 5 means **a timeout doesn't tell you the operation didn't happen**. Retrying a non-idempotent operation (such as "charge the card") can do it twice.
+
+### Timeouts
+
+The only practical way to detect failure is a **timeout**, and choosing one is a trade-off:
+
+- **Too short:** declare healthy-but-slow nodes dead, triggering failovers and retries that add more load. Under heavy load this can cascade.
+- **Too long:** users wait while a dead node is still considered alive.
+
+Network delays are **unbounded** in practice, because of queueing at switches, operating systems, and virtual machine hypervisors. Good systems measure response times and adjust timeouts, rather than hard-coding a guess.
+
+<Pitfall title="Retrying Non-Idempotent Requests">
+
+**Common mistake:** wrapping every remote call in automatic retries.
+
+If the first attempt succeeded but the response was lost, a retry repeats the side effect: a double charge, a duplicate email, an extra shipment. Make operations **idempotent**, for example with a client-generated idempotency key the server uses to detect repeats, before adding retries.
+
+</Pitfall>
+
+---
+
+## Unreliable Clocks
+
+Every machine has its own clock, and they disagree.
+
+- **Time-of-day clocks** return the current date and time. They're synchronized with NTP, but can **jump backward or forward** when corrected, and drift between corrections. Clock skew between machines of tens or hundreds of milliseconds is common; misconfigured nodes can be much further off.
+- **Monotonic clocks** only move forward and are good for measuring **durations** (such as timeouts) on one machine. Their absolute value means nothing across machines.
+
+Using time-of-day timestamps to order events across machines is dangerous. **Last write wins** conflict resolution (Lesson 3.1) can silently drop a write that really happened later, if its node's clock was behind.
+
+Some systems expose clock **uncertainty** explicitly. Google's Spanner, for example, uses tightly synchronized clocks that return an interval rather than a point and waits out the uncertainty before committing. Most systems don't have that luxury.
+
+---
+
+## Process Pauses
+
+A process can be paused at any moment, for long and unpredictable periods:
+
+- **Garbage collection** "stop-the-world" pauses.
+- The virtual machine is **suspended** or live-migrated.
+- The operating system **swaps** memory to disk.
+- A laptop lid is closed.
+
+While paused, the process doesn't know time has passed. Consider a node holding a **lease** (a lock with an expiry). It checks the lease is valid, then pauses for 15 seconds. The lease expires and another node takes it over. The first node wakes, still believes it holds the lease, and writes. Now two nodes think they're in charge.
+
+---
+
+## Deciding What's True: Quorums and Fencing
+
+A single node can't trust its own judgment about whether it's alive, still the leader, or still holds a lock. Distributed systems therefore rely on **the majority**:
+
+- A **quorum** (usually more than half the nodes) decides. If the majority declares a node dead, it's dead, even if that node disagrees.
+
+To protect resources from nodes that wrongly believe they still hold a lock, use **fencing tokens**:
+
+1. Every time the lock service grants a lock or lease, it returns a **number that always increases** (33, then 34, ...).
+2. Clients include the token in every write to the storage system.
+3. The storage system **rejects writes with a token lower than one it has already seen**.
+
+The paused client with token 33 wakes up and tries to write, but the storage has already accepted token 34, so the stale write is refused.
+
+---
+
+## System Models
+
+To reason about algorithms, we state assumptions explicitly:
+
+- **Timing:** synchronous (bounded delays; unrealistic), **partially synchronous** (usually bounded, sometimes not; realistic), or asynchronous (no timing assumptions).
+- **Node failures:** crash-stop, **crash-recovery** (nodes may come back with durable state; realistic), or Byzantine (nodes may lie).
+
+Most data systems assume partial synchrony with crash-recovery faults, and don't defend against Byzantine (malicious) nodes inside their own data center.
+
+<TryIt title="Find the Hidden Assumptions">
+
+Pick a service you work on that calls other services:
+
+1. List every remote call that isn't idempotent. What happens if it's retried after a lost response?
+2. Find any code that compares timestamps from different machines to order events.
+3. Find any lock or lease. What happens if the holder pauses for 30 seconds?
+4. Propose one fix: an idempotency key, a logical clock, or a fencing token.
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "A request times out. What can you conclude?",
+    options: [
+      "The request definitely wasn't processed.",
+      "The remote node is definitely dead.",
+      "Nothing certain: the request or response may be lost or delayed, or the node may be slow or paused.",
+      "The network is partitioned."
+    ],
+    correctIndex: 2,
+    explanation: "Timeouts can't distinguish between these cases, which is why idempotency matters."
+  },
+  {
+    question: "Which clock should you use to measure a timeout on one machine?",
+    options: ["Time-of-day clock", "Monotonic clock", "The client's clock", "A database timestamp"],
+    correctIndex: 1,
+    explanation: "Monotonic clocks only move forward and are meant for measuring elapsed time locally."
+  },
+  {
+    question: "How does a fencing token stop a paused node from corrupting data?",
+    options: [
+      "It restarts the paused node.",
+      "Storage rejects writes carrying a token lower than one it has already seen.",
+      "It synchronizes all clocks.",
+      "It prevents garbage collection."
+    ],
+    correctIndex: 1,
+    explanation: "Monotonically increasing tokens let storage refuse writes from holders whose lease has been superseded."
+  }
+]} />
+
+## Up Next
+
+Module 5 builds on this: how distributed systems agree on a single truth with linearizability and consensus.

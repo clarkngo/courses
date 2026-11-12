@@ -1,0 +1,137 @@
+---
+title: "Linearizability and Ordering"
+description: "Understand linearizability as the strongest single-object guarantee, read the CAP theorem precisely, and see how causality, logical clocks, and total order broadcast let systems agree on the order of events."
+module: 5
+moduleTitle: "Consistency and Consensus"
+lesson: 1
+duration: "35 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## The Illusion of One Copy
+
+Replicated systems keep many copies of the data. Wouldn't it be simpler if the system behaved as if there were **only one copy**, and every operation took effect instantly at a single point in time? That's **linearizability** (also called atomic consistency or strong consistency).
+
+Formally: once any read has returned a new value, all later reads, by any client, must return that value or a newer one. There's no going back.
+
+Example of a violation: Alice refreshes a sports score page and sees the final result. She tells Bob, who refreshes and sees the game still in progress, because his request hit a lagging replica. In a linearizable system, that can't happen.
+
+---
+
+## Where Linearizability Is Required
+
+You don't need it everywhere, but some problems are impossible to solve correctly without it:
+
+- **Leader election and locks:** all nodes must agree which node holds the lock. Two leaders means split brain.
+- **Uniqueness constraints:** two users claiming the same username, two bookings of the same seat. Someone has to be told "no."
+- **Cross-channel timing:** a web server writes a photo to storage and sends a message to a resizing service through a queue. If storage isn't linearizable, the resizer may fetch the photo before the write is visible and see the old version.
+
+---
+
+## Which Replication Methods Can Provide It?
+
+- **Single-leader replication:** potentially linearizable if all reads and writes go to the leader, and you're certain who the leader is.
+- **Consensus algorithms:** linearizable by design (Lesson 5.2).
+- **Multi-leader replication:** generally not linearizable; concurrent writes on different leaders conflict.
+- **Leaderless quorums:** usually **not** linearizable in practice, even with w + r > n, because of timing and concurrency edge cases, unless extra steps are taken at a performance cost.
+
+---
+
+## The Cost: CAP, Read Precisely
+
+The **CAP theorem** is often summarized as "pick two of consistency, availability, and partition tolerance." That's misleading. Network partitions aren't something you choose; they happen. A more accurate reading:
+
+> When the network is partitioned, a system must choose between being **linearizable** and being **available** (every working node responding).
+
+If replicas can't talk to each other and you require linearizability, the replicas cut off from the majority must refuse requests or return errors. If you require them to keep responding, they may return stale data.
+
+CAP is also narrow: it covers one consistency model and one kind of fault. It says nothing about network delays, dead nodes, or performance. A larger practical cost of linearizability is **latency even when the network is fine**: coordinating across replicas, especially across regions, takes round trips. Many systems give up linearizability for speed, not for partition tolerance.
+
+<Pitfall title="Calling a System 'CP' or 'AP' and Stopping There">
+
+**Common mistake:** labeling databases as CP or AP and treating that as a complete description.
+
+Real systems offer different guarantees for different operations and configurations, and CAP ignores latency and most failure modes. Ask more specific questions: what guarantee does this read have? What happens to this write if a replica is unreachable? How stale can this result be?
+
+</Pitfall>
+
+---
+
+## Ordering and Causality
+
+Many guarantees are really about **order**. The key idea is **causality**: if event A could have influenced event B (a question before its answer, a row created before it's updated), every node should see A before B.
+
+- **Causal order** is a partial order: some events are causally related, others are **concurrent** and can be seen in either order.
+- **Linearizability** imposes a total order on everything, which implies causal order but costs more.
+
+**Causal consistency** is the strongest model that can stay available during network partitions, which makes it attractive for geo-distributed systems.
+
+### Logical clocks
+
+Physical clocks can't order events reliably (Lesson 4.2). **Logical clocks** can:
+
+- A **Lamport timestamp** is a pair (counter, node ID). Each node increments its counter on every operation and, when it sees a larger counter from another node, jumps ahead to it. Lamport timestamps give a total order consistent with causality.
+- But a timestamp ordering alone isn't enough to enforce a uniqueness constraint **as it happens**: when a node receives a username request, it can't know whether another node is processing a competing request with a lower timestamp right now.
+
+### Total order broadcast
+
+What's needed is **total order broadcast** (also called atomic broadcast): a protocol that delivers messages to all nodes **reliably** (nothing lost) and in **the same order**.
+
+- Every replica processes the same writes in the same order: **state machine replication**.
+- To claim a username, append "claim alice" to the log, then read the log: the **first** claim in log order wins, everywhere.
+
+Total order broadcast, linearizable compare-and-set, and consensus turn out to be **equivalent problems**: solve one and you can build the others. That's why consensus is the subject of the next lesson.
+
+<TryIt title="Spot the Ordering Bug">
+
+For each scenario, name the guarantee that's missing and a fix:
+
+1. A comment reply appears before the comment it replies to for some users.
+2. Two customers both receive confirmation for the last concert ticket.
+3. A user changes their password, then logs in on another device with the old password successfully.
+4. A message queue triggers image processing before the image upload is visible in storage.
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "What does linearizability guarantee?",
+    options: [
+      "Every write is fast.",
+      "The system behaves as if there's a single copy, and once a new value is read, no later read returns an older one.",
+      "All replicas are always identical at every instant.",
+      "Writes never conflict."
+    ],
+    correctIndex: 1,
+    explanation: "Linearizability gives a recency guarantee that makes replicated data look like one copy."
+  },
+  {
+    question: "What's the most accurate statement of the CAP theorem?",
+    options: [
+      "Pick any two of consistency, availability, and partition tolerance.",
+      "During a network partition, choose between linearizability and availability.",
+      "Distributed systems can't be consistent.",
+      "Partitions never happen in modern data centers."
+    ],
+    correctIndex: 1,
+    explanation: "Partitions are a fault you must tolerate; the choice is what to give up while one is happening."
+  },
+  {
+    question: "Which problem is equivalent to consensus?",
+    options: [
+      "Hash partitioning",
+      "Total order broadcast",
+      "Column compression",
+      "Read repair"
+    ],
+    correctIndex: 1,
+    explanation: "Total order broadcast, linearizable compare-and-set, and consensus can each be built from the others."
+  }
+]} />
+
+## Up Next
+
+The next lesson covers how consensus works, where it's used, and why distributed transactions are so hard.

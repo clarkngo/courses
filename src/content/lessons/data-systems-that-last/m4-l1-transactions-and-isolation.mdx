@@ -1,0 +1,135 @@
+---
+title: "Transactions and Isolation"
+description: "Learn what ACID actually promises, how weak isolation levels behave, and how race conditions like lost updates and write skew slip through; then compare the ways databases achieve serializability."
+module: 4
+moduleTitle: "Correctness Under Concurrency and Failure"
+lesson: 1
+duration: "40 min"
+---
+
+import Pitfall from '@components/Pitfall.astro';
+import Quiz from '@components/Quiz.astro';
+import TryIt from '@components/TryIt.astro';
+
+## Why Transactions Exist
+
+A **transaction** groups several reads and writes into one logical unit: either all of it happens, or none of it does. Transactions let application code ignore a whole class of problems, such as crashes halfway through, concurrent clients interfering, and partial failures, because the database handles them.
+
+They aren't free, and not every system needs them. But you should know exactly what you get.
+
+---
+
+## What ACID Really Means
+
+- **Atomicity:** if a transaction can't complete, all its writes are discarded. It's about **abortability**, not concurrency. You can retry safely.
+- **Consistency:** the application's invariants (such as "accounts balance") hold. This is mostly the **application's** responsibility; the database can only enforce constraints you declare.
+- **Isolation:** concurrent transactions don't interfere with each other. In theory, as if they ran one at a time (**serializability**). In practice, most databases default to something weaker.
+- **Durability:** once committed, data isn't lost, typically via a write-ahead log and, in replicated systems, copies on several nodes. No durability is absolute; disks and whole data centers can fail.
+
+---
+
+## Weak Isolation Levels
+
+Full serializability has a performance cost, so databases offer weaker levels. Know what each one prevents and what it allows.
+
+### Read committed
+
+Prevents:
+
+- **Dirty reads:** seeing another transaction's uncommitted writes.
+- **Dirty writes:** overwriting another transaction's uncommitted writes.
+
+Allows **read skew**: within one transaction, you read account A before a transfer and account B after it, so the total appears to be wrong.
+
+### Snapshot isolation (repeatable read)
+
+Each transaction reads from a **consistent snapshot** of the database as of when it started, using **multi-version concurrency control (MVCC)**: the database keeps several versions of each row and shows each transaction the right one. Readers never block writers, and writers never block readers.
+
+This fixes read skew and is great for long-running reads such as backups and analytics. It's the default or a common setting in many databases, although names vary: what one database calls "repeatable read" may behave differently in another. Check the documentation.
+
+---
+
+## Race Conditions That Slip Through
+
+### Lost updates
+
+Two clients read a counter, both add one, both write back. One increment is lost. Defenses:
+
+- **Atomic operations:** `UPDATE counters SET value = value + 1 WHERE id = 1`.
+- **Explicit locking:** `SELECT ... FOR UPDATE` before modifying.
+- **Compare-and-set:** only write if the value hasn't changed since you read it.
+- Some databases detect lost updates automatically under snapshot isolation.
+
+### Write skew
+
+A subtler problem. Two transactions read the same data, make a decision based on it, then write **different** records, and together they break an invariant.
+
+The classic example: a hospital requires at least one doctor on call. Two doctors, both on call and both feeling unwell, request to go off call at the same moment. Each transaction checks "are at least two doctors on call?", sees yes, and updates **its own** row. Both commit. Now nobody is on call.
+
+Neither transaction overwrote the other, so lost-update protection doesn't help. Other examples: double-booking a meeting room, two users claiming the same username, spending the same balance twice.
+
+**Phantoms** cause many write-skew problems: a transaction checks that no rows match a condition ("no booking for room 4 at 2pm") and then inserts one, while another transaction does the same.
+
+<Pitfall title="Trusting the Default Isolation Level">
+
+**Common mistake:** assuming your database's default isolation prevents all race conditions.
+
+Many popular databases default to read committed or snapshot isolation, neither of which prevents write skew. If your code does "check a condition, then write," find out what your isolation level actually guarantees, and use serializable isolation, explicit locks, or unique constraints where it matters.
+
+</Pitfall>
+
+---
+
+## Three Paths to Serializability
+
+1. **Actual serial execution.** Run transactions one at a time on a single thread. Feasible when the data fits in memory and transactions are short, often as **stored procedures** so there's no network round trip mid-transaction. Throughput is limited to one CPU core per partition.
+2. **Two-phase locking (2PL).** Readers and writers block each other: shared locks for reads, exclusive locks for writes, held until commit. Predicate or range locks handle phantoms. Correct, but throughput suffers and **deadlocks** must be detected and broken.
+3. **Serializable snapshot isolation (SSI).** An **optimistic** approach: transactions run on snapshots without blocking; at commit, the database checks whether the transaction's reads have been invalidated by concurrent writes and aborts it if so. Performs well when contention is low; transactions must be **retryable**.
+
+PostgreSQL's serializable level uses SSI; many other databases use variants of locking. Whatever the mechanism, serializable transactions may abort, so build retry logic.
+
+<TryIt title="Reproduce Write Skew">
+
+With PostgreSQL (or any database you can run):
+
+1. Create a table of doctors with an `on_call` flag, two of them on call.
+2. In two terminals, start transactions at the default isolation level. In each, check the count of on-call doctors, then set one different doctor off call. Commit both.
+3. Repeat at `SERIALIZABLE`. What happens to the second commit?
+4. Add a retry loop so the application handles the abort.
+
+</TryIt>
+
+<Quiz questions={[
+  {
+    question: "What does the 'A' in ACID mainly guarantee?",
+    options: [
+      "Transactions run in isolation.",
+      "A failed transaction's writes are all discarded, so it can be safely retried.",
+      "Data is always available.",
+      "Writes are fast."
+    ],
+    correctIndex: 1,
+    explanation: "Atomicity is about abortability: all or nothing."
+  },
+  {
+    question: "Two doctors each check that two are on call, then each takes themselves off call. What is this anomaly?",
+    options: ["Dirty read", "Lost update", "Write skew", "Read committed"],
+    correctIndex: 2,
+    explanation: "Both read the same data and wrote different rows, together violating an invariant."
+  },
+  {
+    question: "What must applications do when using serializable snapshot isolation?",
+    options: [
+      "Disable indexes",
+      "Retry transactions that the database aborts due to conflicts",
+      "Use only one client",
+      "Avoid reads"
+    ],
+    correctIndex: 1,
+    explanation: "SSI is optimistic: conflicting transactions are aborted at commit and must be retried."
+  }
+]} />
+
+## Up Next
+
+Transactions on one machine are hard enough. The next lesson looks at what goes wrong when many machines are involved.
