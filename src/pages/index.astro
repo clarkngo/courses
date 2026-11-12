@@ -27,7 +27,25 @@ function lessonCount(courseSlug: string) {
 // Git-derived created/modified dates per course, from the history of its
 // frontmatter file plus everything under its lessons directory. Falls back
 // to nulls (sorted last) if git isn't available in the build environment.
+// Needs full history: in a shallow clone every file appears to have been
+// added in the one commit present, so every course would get the same date.
+// The deploy workflow therefore checks out with fetch-depth: 0.
+function isShallowRepo() {
+  try {
+    return execSync('git rev-parse --is-shallow-repository', {
+      cwd: process.cwd(), encoding: 'utf-8', stdio: ['ignore', 'pipe', 'ignore'],
+    }).trim() === 'true';
+  } catch {
+    return false;
+  }
+}
+const shallowHistory = isShallowRepo();
+if (shallowHistory) {
+  console.warn('[catalog] Shallow git clone: "Recently Created/Modified" dates are unreliable. Fetch full history (fetch-depth: 0).');
+}
+
 function getGitDates(paths: string[]) {
+  if (shallowHistory) return { created: null as string | null, modified: null as string | null };
   const existing = paths.filter(p => fs.existsSync(path.join(process.cwd(), p)));
   if (existing.length === 0) return { created: null as string | null, modified: null as string | null };
   try {
@@ -43,20 +61,6 @@ function getGitDates(paths: string[]) {
   } catch {
     return { created: null, modified: null };
   }
-}
-
-function timeAgo(isoDate: string | null): string {
-  if (!isoDate) return 'Unknown';
-  const diffSec = Math.floor((Date.now() - new Date(isoDate).getTime()) / 1000);
-  const units: [string, number][] = [
-    ['year', 31536000], ['month', 2592000], ['week', 604800],
-    ['day', 86400], ['hour', 3600], ['minute', 60],
-  ];
-  for (const [name, secs] of units) {
-    const val = Math.floor(diffSec / secs);
-    if (val >= 1) return `${val} ${name}${val > 1 ? 's' : ''} ago`;
-  }
-  return 'Just now';
 }
 
 const courseMeta = courses.map(course => {
@@ -290,7 +294,7 @@ const coursesByCategory = categories.map(category => ({
             course={course}
             count={lessonCount(course.slug)}
             href={course.data.status === 'available' ? `${base}${course.slug}/` : undefined}
-            dateBadge={`Updated ${timeAgo(modified)}`}
+            date={{ prefix: 'Updated', iso: modified }}
           />
         ))}
       </div>
@@ -302,7 +306,7 @@ const coursesByCategory = categories.map(category => ({
             course={course}
             count={lessonCount(course.slug)}
             href={course.data.status === 'available' ? `${base}${course.slug}/` : undefined}
-            dateBadge={`Added ${timeAgo(created)}`}
+            date={{ prefix: 'Added', iso: created }}
           />
         ))}
       </div>
@@ -338,6 +342,27 @@ const coursesByCategory = categories.map(category => ({
 
         buttons.forEach(btn => {
           btn.addEventListener('click', () => setView(btn.getAttribute('data-view-btn')!));
+        });
+
+        // Course dates are rendered at build time as absolute dates; turn them
+        // into "3 days ago" here so the text stays current between deploys.
+        const units: [string, number][] = [
+          ['year', 31536000], ['month', 2592000], ['week', 604800],
+          ['day', 86400], ['hour', 3600], ['minute', 60],
+        ];
+        function timeAgo(iso: string): string {
+          const diffSec = Math.max(0, Math.floor((Date.now() - new Date(iso).getTime()) / 1000));
+          for (const [name, secs] of units) {
+            const val = Math.floor(diffSec / secs);
+            if (val >= 1) return `${val} ${name}${val > 1 ? 's' : ''} ago`;
+          }
+          return 'just now';
+        }
+        document.querySelectorAll<HTMLTimeElement>('time[data-relative-time]').forEach(el => {
+          const iso = el.getAttribute('datetime');
+          if (!iso || Number.isNaN(new Date(iso).getTime())) return;
+          el.title = new Date(iso).toLocaleString();
+          el.textContent = `${el.dataset.prefix ?? ''} ${timeAgo(iso)}`.trim();
         });
 
         // Smooth-scroll in-page anchors (hero pills, jump nav, "Browse" CTA)

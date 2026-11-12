@@ -20,6 +20,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          # Full history: the catalog's "Recently Created/Modified" views
+          # read each course's dates from git log at build time.
+          fetch-depth: 0
 
       - name: Setup Node
         uses: actions/setup-node@v4
