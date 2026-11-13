@@ -85,6 +85,40 @@ Tail latencies matter because:
 - The slowest requests often belong to your **most valuable users**, who have the most data.
 - **Tail latency amplification:** if one user action calls 10 backends in parallel and waits for all of them, the action is as slow as the slowest call. Even if each backend is slow only 1% of the time, about 1 in 10 actions will hit at least one slow call.
 
+<svg viewBox="0 0 720 310" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Bar chart of tail latency amplification. If each backend is slow 1 percent of the time, the chance a request hits at least one slow call is 1 percent with 1 backend, 4.9 percent with 5, 9.6 percent with 10, 22.2 percent with 25, 39.5 percent with 50, and 63.4 percent with 100." style="max-width:100%;height:auto;margin:1.5rem auto;display:block;">
+  <g font-family="system-ui, -apple-system, sans-serif">
+    <line x1="80" y1="250" x2="690" y2="250" stroke="#e2e8f0" stroke-width="1"/>
+    <text x="70" y="254" text-anchor="end" fill="#64748b" font-size="11">0%</text>
+    <line x1="80" y1="194" x2="690" y2="194" stroke="#e2e8f0" stroke-width="1"/>
+    <text x="70" y="198" text-anchor="end" fill="#64748b" font-size="11">20%</text>
+    <line x1="80" y1="138" x2="690" y2="138" stroke="#e2e8f0" stroke-width="1"/>
+    <text x="70" y="142" text-anchor="end" fill="#64748b" font-size="11">40%</text>
+    <line x1="80" y1="82" x2="690" y2="82" stroke="#e2e8f0" stroke-width="1"/>
+    <text x="70" y="86" text-anchor="end" fill="#64748b" font-size="11">60%</text>
+    <rect x="105" y="247.2" width="60" height="2.8" rx="4" fill="#22d3ee"/>
+    <text x="135" y="239.2" text-anchor="middle" fill="#164e63" font-size="13" font-weight="700">1.0%</text>
+    <text x="135" y="270" text-anchor="middle" fill="#0f172a" font-size="13" font-weight="700">1</text>
+    <rect x="205" y="236.28" width="60" height="13.72" rx="4" fill="#22d3ee"/>
+    <text x="235" y="228.28" text-anchor="middle" fill="#164e63" font-size="13" font-weight="700">4.9%</text>
+    <text x="235" y="270" text-anchor="middle" fill="#0f172a" font-size="13" font-weight="700">5</text>
+    <rect x="305" y="223.12" width="60" height="26.88" rx="4" fill="#155e75"/>
+    <text x="335" y="215.12" text-anchor="middle" fill="#164e63" font-size="13" font-weight="700">9.6%</text>
+    <text x="335" y="270" text-anchor="middle" fill="#0f172a" font-size="13" font-weight="700">10</text>
+    <rect x="405" y="187.84" width="60" height="62.16" rx="4" fill="#22d3ee"/>
+    <text x="435" y="179.84" text-anchor="middle" fill="#164e63" font-size="13" font-weight="700">22.2%</text>
+    <text x="435" y="270" text-anchor="middle" fill="#0f172a" font-size="13" font-weight="700">25</text>
+    <rect x="505" y="139.4" width="60" height="110.6" rx="4" fill="#22d3ee"/>
+    <text x="535" y="131.4" text-anchor="middle" fill="#164e63" font-size="13" font-weight="700">39.5%</text>
+    <text x="535" y="270" text-anchor="middle" fill="#0f172a" font-size="13" font-weight="700">50</text>
+    <rect x="605" y="72.48" width="60" height="177.52" rx="4" fill="#22d3ee"/>
+    <text x="635" y="64.48" text-anchor="middle" fill="#164e63" font-size="13" font-weight="700">63.4%</text>
+    <text x="635" y="270" text-anchor="middle" fill="#0f172a" font-size="13" font-weight="700">100</text>
+    <text x="385" y="292" text-anchor="middle" fill="#475569" font-size="12">backends called in parallel per request</text>
+    <text x="20" y="22" text-anchor="start" fill="#164e63" font-size="14" font-weight="700">Chance a request hits at least one slow call</text>
+    <text x="20" y="40" text-anchor="start" fill="#475569" font-size="12">when each backend is slow 1% of the time (its p99)</text>
+  </g>
+</svg>
+
 Service level objectives are usually written in percentiles: "p99 under 300 ms, measured over 5 minutes."
 
 ### Scaling up and out

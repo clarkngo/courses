@@ -88,6 +88,48 @@ To protect resources from nodes that wrongly believe they still hold a lock, use
 2. Clients include the token in every write to the storage system.
 3. The storage system **rejects writes with a token lower than one it has already seen**.
 
+<svg viewBox="0 0 720 335" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Fencing tokens. Client 1 gets a lease with token 33, then hits a long garbage-collection pause. The lease expires and the lock service grants Client 2 a lease with token 34. Client 2 writes to storage with token 34 and succeeds. Client 1 wakes and writes with token 33, and storage rejects it because 33 is below 34." style="max-width:100%;height:auto;margin:1.5rem auto;display:block;">
+  <defs>
+    <marker id="ds-a42" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#155e75"/>
+    </marker>
+  </defs>
+  <defs>
+    <marker id="ds-a42r" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#dc2626"/>
+    </marker>
+  </defs>
+  <defs>
+    <marker id="ds-a42g" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#15803d"/>
+    </marker>
+  </defs>
+  <g font-family="system-ui, -apple-system, sans-serif">
+    <text x="20" y="55" text-anchor="start" fill="#0f172a" font-size="13" font-weight="700">Client 1</text>
+    <line x1="115" y1="50" x2="700" y2="50" stroke="#cbd5e1" stroke-width="2"/>
+    <text x="20" y="135" text-anchor="start" fill="#0f172a" font-size="13" font-weight="700">Lock service</text>
+    <line x1="115" y1="130" x2="700" y2="130" stroke="#cbd5e1" stroke-width="2"/>
+    <text x="20" y="215" text-anchor="start" fill="#0f172a" font-size="13" font-weight="700">Client 2</text>
+    <line x1="115" y1="210" x2="700" y2="210" stroke="#cbd5e1" stroke-width="2"/>
+    <text x="20" y="295" text-anchor="start" fill="#0f172a" font-size="13" font-weight="700">Storage</text>
+    <line x1="115" y1="290" x2="700" y2="290" stroke="#cbd5e1" stroke-width="2"/>
+    <line x1="130" y1="126" x2="160" y2="56" stroke="#155e75" stroke-width="1.8" marker-end="url(#ds-a42)"/>
+    <text x="170" y="84" text-anchor="start" fill="#164e63" font-size="11" font-weight="700">lease, token 33</text>
+    <rect x="205" y="38" width="200" height="24" rx="4" fill="#fde68a"/>
+    <text x="305" y="55" text-anchor="middle" fill="#92400e" font-size="12" font-weight="700">GC pause</text>
+    <text x="270" y="150" text-anchor="middle" fill="#64748b" font-size="11" font-weight="700">lease expires</text>
+    <circle cx="270" cy="130" r="4" fill="#64748b"/>
+    <line x1="300" y1="136" x2="330" y2="204" stroke="#155e75" stroke-width="1.8" marker-end="url(#ds-a42)"/>
+    <text x="345" y="172" text-anchor="start" fill="#164e63" font-size="11" font-weight="700">lease, token 34</text>
+    <line x1="370" y1="214" x2="400" y2="284" stroke="#15803d" stroke-width="1.8" marker-end="url(#ds-a42g)"/>
+    <text x="410" y="254" text-anchor="start" fill="#15803d" font-size="11" font-weight="700">write, token 34: ok</text>
+    <line x1="470" y1="54" x2="590" y2="284" stroke="#dc2626" stroke-width="1.8" marker-end="url(#ds-a42r)"/>
+    <text x="560" y="112" text-anchor="start" fill="#dc2626" font-size="11" font-weight="700">write, token 33</text>
+    <rect x="560" y="300" width="150" height="24" rx="4" fill="#fee2e2"/>
+    <text x="635" y="317" text-anchor="middle" fill="#dc2626" font-size="11" font-weight="700">rejected: 33 below 34</text>
+  </g>
+</svg>
+
 The paused client with token 33 wakes up and tries to write, but the storage has already accepted token 34, so the stale write is refused.
 
 ---

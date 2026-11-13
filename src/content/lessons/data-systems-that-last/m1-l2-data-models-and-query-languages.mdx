@@ -63,6 +63,65 @@ Strengths:
 
 Friction: many-to-many relationships and references between documents are awkward. If two documents need the same data, you either duplicate it (and keep copies in sync) or join in application code.
 
+<svg viewBox="0 0 720 290" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Left: a tree of data, a user document containing a profile, addresses, and orders with nested items, all loaded together and owned by one parent. Documents fit this shape. Right: a web of people, teams, and projects linked many-to-many, where every entity is shared. Relational or graph models fit this shape." style="max-width:100%;height:auto;margin:1.5rem auto;display:block;">
+  <g font-family="system-ui, -apple-system, sans-serif">
+    <rect x="10" y="10" width="340" height="270" rx="14" fill="#ecfeff" stroke="#a5f3fc"/>
+    <text x="180" y="36" text-anchor="middle" fill="#164e63" font-size="15" font-weight="700">A tree: documents fit</text>
+    <rect x="120" y="56" width="120" height="40" rx="8" fill="#155e75"/>
+    <text x="180" y="81" text-anchor="middle" fill="#ffffff" font-size="13" font-weight="700">user</text>
+    <line x1="180" y1="96" x2="72" y2="136" stroke="#0891b2" stroke-width="1.5"/>
+    <rect x="22" y="136" width="100" height="34" rx="8" fill="#ffffff" stroke="#22d3ee"/>
+    <text x="72" y="158" text-anchor="middle" fill="#0f172a" font-size="12" font-weight="700">profile</text>
+    <line x1="180" y1="96" x2="180" y2="136" stroke="#0891b2" stroke-width="1.5"/>
+    <rect x="130" y="136" width="100" height="34" rx="8" fill="#ffffff" stroke="#22d3ee"/>
+    <text x="180" y="158" text-anchor="middle" fill="#0f172a" font-size="12" font-weight="700">addresses</text>
+    <line x1="180" y1="96" x2="288" y2="136" stroke="#0891b2" stroke-width="1.5"/>
+    <rect x="238" y="136" width="100" height="34" rx="8" fill="#ffffff" stroke="#22d3ee"/>
+    <text x="288" y="158" text-anchor="middle" fill="#0f172a" font-size="12" font-weight="700">orders</text>
+    <line x1="180" y1="170" x2="155" y2="206" stroke="#06b6d4" stroke-width="1.2"/>
+    <rect x="133" y="206" width="44" height="26" rx="6" fill="#ffffff" stroke="#67e8f9"/>
+    <text x="155" y="223" text-anchor="middle" fill="#334155" font-size="10">addr</text>
+    <line x1="180" y1="170" x2="205" y2="206" stroke="#06b6d4" stroke-width="1.2"/>
+    <rect x="183" y="206" width="44" height="26" rx="6" fill="#ffffff" stroke="#67e8f9"/>
+    <text x="205" y="223" text-anchor="middle" fill="#334155" font-size="10">addr</text>
+    <line x1="288" y1="170" x2="263" y2="206" stroke="#06b6d4" stroke-width="1.2"/>
+    <rect x="241" y="206" width="44" height="26" rx="6" fill="#ffffff" stroke="#67e8f9"/>
+    <text x="263" y="223" text-anchor="middle" fill="#334155" font-size="10">item</text>
+    <line x1="288" y1="170" x2="313" y2="206" stroke="#06b6d4" stroke-width="1.2"/>
+    <rect x="291" y="206" width="44" height="26" rx="6" fill="#ffffff" stroke="#67e8f9"/>
+    <text x="313" y="223" text-anchor="middle" fill="#334155" font-size="10">item</text>
+    <text x="180" y="262" text-anchor="middle" fill="#334155" font-size="12">Loaded together, owned by one parent</text>
+    <rect x="370" y="10" width="340" height="270" rx="14" fill="#fff7ed" stroke="#fdba74"/>
+    <text x="540" y="36" text-anchor="middle" fill="#9a3412" font-size="15" font-weight="700">A web: relational or graph fit</text>
+    <line x1="430" y1="80" x2="540" y2="115" stroke="#fb923c" stroke-width="1.4"/>
+    <line x1="430" y1="150" x2="540" y2="115" stroke="#fb923c" stroke-width="1.4"/>
+    <line x1="430" y1="150" x2="540" y2="200" stroke="#fb923c" stroke-width="1.4"/>
+    <line x1="430" y1="220" x2="540" y2="200" stroke="#fb923c" stroke-width="1.4"/>
+    <line x1="540" y1="115" x2="650" y2="80" stroke="#fb923c" stroke-width="1.4"/>
+    <line x1="540" y1="115" x2="650" y2="150" stroke="#fb923c" stroke-width="1.4"/>
+    <line x1="540" y1="200" x2="650" y2="150" stroke="#fb923c" stroke-width="1.4"/>
+    <line x1="540" y1="200" x2="650" y2="220" stroke="#fb923c" stroke-width="1.4"/>
+    <line x1="430" y1="80" x2="650" y2="220" stroke="#fb923c" stroke-width="1.4"/>
+    <rect x="396" y="66" width="68" height="28" rx="14" fill="#ffffff" stroke="#f97316"/>
+    <text x="430" y="85" text-anchor="middle" fill="#7c2d12" font-size="12" font-weight="700">Ana</text>
+    <rect x="396" y="136" width="68" height="28" rx="14" fill="#ffffff" stroke="#f97316"/>
+    <text x="430" y="155" text-anchor="middle" fill="#7c2d12" font-size="12" font-weight="700">Raj</text>
+    <rect x="396" y="206" width="68" height="28" rx="14" fill="#ffffff" stroke="#f97316"/>
+    <text x="430" y="225" text-anchor="middle" fill="#7c2d12" font-size="12" font-weight="700">Mei</text>
+    <rect x="506" y="101" width="68" height="28" rx="14" fill="#ffffff" stroke="#f97316"/>
+    <text x="540" y="120" text-anchor="middle" fill="#7c2d12" font-size="12" font-weight="700">Team X</text>
+    <rect x="506" y="186" width="68" height="28" rx="14" fill="#ffffff" stroke="#f97316"/>
+    <text x="540" y="205" text-anchor="middle" fill="#7c2d12" font-size="12" font-weight="700">Team Y</text>
+    <rect x="616" y="66" width="68" height="28" rx="14" fill="#ffffff" stroke="#f97316"/>
+    <text x="650" y="85" text-anchor="middle" fill="#7c2d12" font-size="12" font-weight="700">Proj 1</text>
+    <rect x="616" y="136" width="68" height="28" rx="14" fill="#ffffff" stroke="#f97316"/>
+    <text x="650" y="155" text-anchor="middle" fill="#7c2d12" font-size="12" font-weight="700">Proj 2</text>
+    <rect x="616" y="206" width="68" height="28" rx="14" fill="#ffffff" stroke="#f97316"/>
+    <text x="650" y="225" text-anchor="middle" fill="#7c2d12" font-size="12" font-weight="700">Proj 3</text>
+    <text x="540" y="262" text-anchor="middle" fill="#334155" font-size="12">Many-to-many: every entity is shared</text>
+  </g>
+</svg>
+
 <Pitfall title="Choosing Documents for Data That Isn't a Tree">
 
 **Common mistake:** modeling highly connected data (users, teams, projects, permissions) as nested documents because the first screen looks like a tree.
