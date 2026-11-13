@@ -66,6 +66,41 @@ A subtler problem. Two transactions read the same data, make a decision based on
 
 The classic example: a hospital requires at least one doctor on call. Two doctors, both on call and both feeling unwell, request to go off call at the same moment. Each transaction checks "are at least two doctors on call?", sees yes, and updates **its own** row. Both commit. Now nobody is on call.
 
+<svg viewBox="0 0 720 215" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Write skew. Transaction T1 for Doctor A and transaction T2 for Doctor B each read that 2 doctors are on call, each set their own row off call, and each commit. Both read the same snapshot and updated different rows, so neither overwrote the other, yet 0 doctors end up on call. Fix: serializable isolation, or lock the rows the check depends on." style="max-width:100%;height:auto;margin:1.5rem auto;display:block;">
+  <defs>
+    <marker id="ds-a41" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#155e75"/>
+    </marker>
+  </defs>
+  <g font-family="system-ui, -apple-system, sans-serif">
+    <text x="20" y="24" text-anchor="start" fill="#164e63" font-size="13" font-weight="700">T1  Doctor A</text>
+    <text x="20" y="154" text-anchor="start" fill="#7c2d12" font-size="13" font-weight="700">T2  Doctor B</text>
+    <rect x="150" y="8" width="140" height="30" rx="8" fill="#ecfeff" stroke="#22d3ee"/>
+    <text x="220" y="28" text-anchor="middle" fill="#164e63" font-size="12" font-weight="700">count on call = 2</text>
+    <rect x="150" y="138" width="140" height="30" rx="8" fill="#fff7ed" stroke="#fb923c"/>
+    <text x="220" y="158" text-anchor="middle" fill="#7c2d12" font-size="12" font-weight="700">count on call = 2</text>
+    <line x1="290" y1="23" x2="313" y2="23" stroke="#155e75" stroke-width="1.8" marker-end="url(#ds-a41)"/>
+    <line x1="290" y1="153" x2="313" y2="153" stroke="#155e75" stroke-width="1.8" marker-end="url(#ds-a41)"/>
+    <rect x="315" y="8" width="140" height="30" rx="8" fill="#ecfeff" stroke="#22d3ee"/>
+    <text x="385" y="28" text-anchor="middle" fill="#164e63" font-size="12" font-weight="700">set A off call</text>
+    <rect x="315" y="138" width="140" height="30" rx="8" fill="#fff7ed" stroke="#fb923c"/>
+    <text x="385" y="158" text-anchor="middle" fill="#7c2d12" font-size="12" font-weight="700">set B off call</text>
+    <line x1="455" y1="23" x2="478" y2="23" stroke="#155e75" stroke-width="1.8" marker-end="url(#ds-a41)"/>
+    <line x1="455" y1="153" x2="478" y2="153" stroke="#155e75" stroke-width="1.8" marker-end="url(#ds-a41)"/>
+    <rect x="480" y="8" width="140" height="30" rx="8" fill="#ecfeff" stroke="#22d3ee"/>
+    <text x="550" y="28" text-anchor="middle" fill="#164e63" font-size="12" font-weight="700">commit</text>
+    <rect x="480" y="138" width="140" height="30" rx="8" fill="#fff7ed" stroke="#fb923c"/>
+    <text x="550" y="158" text-anchor="middle" fill="#7c2d12" font-size="12" font-weight="700">commit</text>
+    <rect x="150" y="58" width="470" height="60" rx="8" fill="#f8fafc" stroke="#cbd5e1"/>
+    <text x="385" y="82" text-anchor="middle" fill="#334155" font-size="12">Both read the same snapshot: 2 on call, so going off call looks safe.</text>
+    <text x="385" y="102" text-anchor="middle" fill="#334155" font-size="12">Each updates a different row, so neither overwrites the other.</text>
+    <rect x="640" y="58" width="70" height="60" rx="8" fill="#fee2e2" stroke="#dc2626"/>
+    <text x="675" y="84" text-anchor="middle" fill="#dc2626" font-size="20" font-weight="700">0</text>
+    <text x="675" y="104" text-anchor="middle" fill="#dc2626" font-size="11" font-weight="700">on call</text>
+    <text x="360" y="200" text-anchor="middle" fill="#334155" font-size="12">Fix: serializable isolation, or lock the rows the check depends on (SELECT ... FOR UPDATE).</text>
+  </g>
+</svg>
+
 Neither transaction overwrote the other, so lost-update protection doesn't help. Other examples: double-booking a meeting room, two users claiming the same username, spending the same balance twice.
 
 **Phantoms** cause many write-skew problems: a transaction checks that no rows match a condition ("no booking for room 4 at 2pm") and then inserts one, while another transaction does the same.

@@ -84,6 +84,47 @@ The other major family, and the default in most relational databases, is the **B
 - A lookup walks from the root to a leaf: with a branching factor of a few hundred, a few levels cover billions of keys.
 - **Updates happen in place**: find the leaf page, overwrite it. If a page fills up, split it into two and update the parent.
 
+<svg viewBox="0 0 720 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A B-tree lookup for key 251 takes three page reads. The root page has ranges under 100, 100 to 199, 200 to 299, and 300 and up; the lookup follows 200 to 299 to an internal page, then 240 to 269 to a leaf page holding keys 248, 249, 251, 255, and 260. Updates overwrite the leaf in place, and a full page splits and updates its parent." style="max-width:100%;height:auto;margin:1.5rem auto;display:block;">
+  <defs>
+    <marker id="ds-a21" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#155e75"/>
+    </marker>
+  </defs>
+  <g font-family="system-ui, -apple-system, sans-serif">
+    <text x="360" y="22" text-anchor="middle" fill="#164e63" font-size="14" font-weight="700">Looking up key 251: three page reads from root to leaf</text>
+    <rect x="180" y="40" width="88" height="34" rx="4" fill="#ffffff" stroke="#0891b2"/>
+    <text x="224" y="62" text-anchor="middle" fill="#334155" font-size="12">under 100</text>
+    <rect x="272" y="40" width="88" height="34" rx="4" fill="#ffffff" stroke="#0891b2"/>
+    <text x="316" y="62" text-anchor="middle" fill="#334155" font-size="12">100–199</text>
+    <rect x="364" y="40" width="88" height="34" rx="4" fill="#155e75" stroke="#0891b2"/>
+    <text x="408" y="62" text-anchor="middle" fill="#ffffff" font-size="12" font-weight="700">200–299</text>
+    <rect x="456" y="40" width="88" height="34" rx="4" fill="#ffffff" stroke="#0891b2"/>
+    <text x="500" y="62" text-anchor="middle" fill="#334155" font-size="12">300+</text>
+    <text x="165" y="62" text-anchor="end" fill="#64748b" font-size="12">root page</text>
+    <line x1="450" y1="74" x2="360" y2="118" stroke="#155e75" stroke-width="1.8" marker-end="url(#ds-a21)"/>
+    <rect x="222" y="120" width="88" height="34" rx="4" fill="#ffffff" stroke="#0891b2"/>
+    <text x="266" y="142" text-anchor="middle" fill="#334155" font-size="12">200–239</text>
+    <rect x="314" y="120" width="88" height="34" rx="4" fill="#155e75" stroke="#0891b2"/>
+    <text x="358" y="142" text-anchor="middle" fill="#ffffff" font-size="12" font-weight="700">240–269</text>
+    <rect x="406" y="120" width="88" height="34" rx="4" fill="#ffffff" stroke="#0891b2"/>
+    <text x="450" y="142" text-anchor="middle" fill="#334155" font-size="12">270–299</text>
+    <text x="207" y="142" text-anchor="end" fill="#64748b" font-size="12">internal page</text>
+    <line x1="358" y1="154" x2="358" y2="198" stroke="#155e75" stroke-width="1.8" marker-end="url(#ds-a21)"/>
+    <rect x="220" y="200" width="52" height="34" rx="4" fill="#ffffff" stroke="#0891b2"/>
+    <text x="246" y="222" text-anchor="middle" fill="#0f172a" font-size="12">248</text>
+    <rect x="276" y="200" width="52" height="34" rx="4" fill="#ffffff" stroke="#0891b2"/>
+    <text x="302" y="222" text-anchor="middle" fill="#0f172a" font-size="12">249</text>
+    <rect x="332" y="200" width="52" height="34" rx="4" fill="#fde68a" stroke="#d97706"/>
+    <text x="358" y="222" text-anchor="middle" fill="#0f172a" font-size="12" font-weight="700">251</text>
+    <rect x="388" y="200" width="52" height="34" rx="4" fill="#ffffff" stroke="#0891b2"/>
+    <text x="414" y="222" text-anchor="middle" fill="#0f172a" font-size="12">255</text>
+    <rect x="444" y="200" width="52" height="34" rx="4" fill="#ffffff" stroke="#0891b2"/>
+    <text x="470" y="222" text-anchor="middle" fill="#0f172a" font-size="12">260</text>
+    <text x="205" y="222" text-anchor="end" fill="#64748b" font-size="12">leaf page</text>
+    <text x="360" y="262" text-anchor="middle" fill="#334155" font-size="12">Updates overwrite the leaf in place; a full page splits and updates its parent.</text>
+  </g>
+</svg>
+
 Because a page split modifies several pages, a crash mid-update could corrupt the tree. B-trees also use a **write-ahead log** so that every change is first recorded durably and can be replayed after a crash.
 
 ---
